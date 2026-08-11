@@ -1,0 +1,236 @@
+{
+  "version": "1.0.0",
+  "crop": "tomato",
+  "crop_name_vi": "Cà chua",
+  "source_dataset": "PlantVillage (phần Tomato) — 10 lớp",
+  "disclaimer": "Gợi ý xử lý mang tính tham khảo học thuật, tổng hợp từ khuyến cáo canh tác phổ biến. Người dùng cần đối chiếu với cán bộ khuyến nông địa phương và nhãn thuốc trước khi sử dụng.",
+  "severity_levels": [
+    { "key": "none", "name_vi": "Không có dấu hiệu", "max_area_ratio": 0.0 },
+    { "key": "mild", "name_vi": "Nhẹ", "max_area_ratio": 0.15 },
+    { "key": "moderate", "name_vi": "Trung bình", "max_area_ratio": 0.35 },
+    { "key": "severe", "name_vi": "Nặng", "max_area_ratio": 1.0 }
+  ],
+  "diseases": [
+    {
+      "key": "bacterial_spot",
+      "name_vi": "Đốm lá vi khuẩn",
+      "name_en": "Bacterial spot",
+      "plantvillage_dir": "Tomato___Bacterial_spot",
+      "pathogen": "Vi khuẩn Xanthomonas spp.",
+      "is_healthy": false,
+      "visual_cue": "nhiều đốm nhỏ sũng nước, sau chuyển nâu đen và có quầng vàng bao quanh",
+      "symptoms": "Trên lá xuất hiện các đốm nhỏ đường kính 1–3 mm, ban đầu sũng nước rồi chuyển nâu sẫm, thường có quầng vàng. Đốm dày lên làm lá vàng và rụng sớm. Trên quả có đốm sần sùi màu nâu.",
+      "favorable_conditions": "Ẩm độ cao, mưa nhiều, nhiệt độ 24–30°C; lây lan mạnh khi tưới phun mưa hoặc thao tác trên ruộng lúc lá còn ướt.",
+      "treatments": [
+        "Ngắt bỏ và tiêu huỷ lá bệnh, không vứt tại ruộng.",
+        "Phun thuốc gốc đồng (copper hydroxide, copper oxychloride), có thể phối hợp mancozeb để tăng hiệu quả.",
+        "Ngừng tưới phun mưa lên tán lá, chuyển sang tưới gốc hoặc tưới nhỏ giọt.",
+        "Không thao tác chăm sóc khi lá còn ướt để hạn chế lây lan."
+      ],
+      "prevention": [
+        "Dùng hạt giống/cây con sạch bệnh.",
+        "Luân canh với cây khác họ cà tối thiểu 2 năm.",
+        "Trồng thưa hợp lý để tán lá thông thoáng, mau khô."
+      ],
+      "reference_url": null
+    },
+    {
+      "key": "early_blight",
+      "name_vi": "Đốm vòng (đốm nâu)",
+      "name_en": "Early blight",
+      "plantvillage_dir": "Tomato___Early_blight",
+      "pathogen": "Nấm Alternaria solani",
+      "is_healthy": false,
+      "visual_cue": "các đốm nâu sẫm có vòng đồng tâm như hình bia bắn, xung quanh ngả vàng",
+      "symptoms": "Đốm nâu sẫm với các vòng đồng tâm đặc trưng, đường kính có thể tới 10 mm, thường xuất hiện ở lá gốc trước rồi lan dần lên trên. Mô quanh vết bệnh ngả vàng, lá khô và rụng từ dưới lên.",
+      "favorable_conditions": "Ẩm độ cao xen kẽ khô hạn, nhiệt độ 24–29°C; cây thiếu dinh dưỡng hoặc đang mang nhiều quả dễ nhiễm nặng.",
+      "treatments": [
+        "Cắt bỏ lá gốc bị bệnh, dọn sạch tàn dư trên mặt luống.",
+        "Phun luân phiên các hoạt chất mancozeb, chlorothalonil, azoxystrobin hoặc difenoconazole.",
+        "Bón cân đối đạm – lân – kali, tránh để cây suy kiệt trong giai đoạn nuôi quả."
+      ],
+      "prevention": [
+        "Phủ gốc bằng rơm hoặc màng phủ để hạn chế bào tử từ đất bắn lên lá.",
+        "Luân canh, cày vùi tàn dư sau vụ.",
+        "Tỉa bớt lá gốc để tán thông thoáng."
+      ],
+      "reference_url": null
+    },
+    {
+      "key": "late_blight",
+      "name_vi": "Mốc sương muộn",
+      "name_en": "Late blight",
+      "plantvillage_dir": "Tomato___Late_blight",
+      "pathogen": "Nấm trứng Phytophthora infestans",
+      "is_healthy": false,
+      "visual_cue": "mảng cháy lớn màu nâu xám loang lổ, viền nhợt như bị nước sôi dội qua",
+      "symptoms": "Mảng bệnh lớn, không có hình dạng rõ ràng, màu xanh xám rồi chuyển nâu đen, lan rất nhanh. Mặt dưới lá có lớp mốc trắng mịn khi trời ẩm. Thân và quả cũng bị thối nâu cứng.",
+      "favorable_conditions": "Trời mát ẩm, nhiệt độ 15–22°C kèm mưa phùn hoặc sương mù kéo dài — điều kiện rất phổ biến ở Đà Lạt.",
+      "treatments": [
+        "BỆNH NGUY HIỂM, LAN RẤT NHANH — xử lý ngay trong vòng 24 giờ khi phát hiện.",
+        "Nhổ bỏ và tiêu huỷ toàn bộ cây bệnh nặng, đưa ra khỏi ruộng.",
+        "Phun thuốc đặc hiệu: metalaxyl kết hợp mancozeb, cymoxanil, hoặc dimethomorph.",
+        "Phun phòng cho các cây xung quanh ngay cả khi chưa có triệu chứng."
+      ],
+      "prevention": [
+        "Theo dõi dự báo thời tiết, phun phòng trước các đợt mưa ẩm kéo dài.",
+        "Trồng giống có khả năng kháng bệnh.",
+        "Tuyệt đối không trồng cà chua cạnh ruộng khoai tây."
+      ],
+      "reference_url": null
+    },
+    {
+      "key": "leaf_mold",
+      "name_vi": "Mốc lá",
+      "name_en": "Leaf mold",
+      "plantvillage_dir": "Tomato___Leaf_Mold",
+      "pathogen": "Nấm Passalora fulva (Cladosporium fulvum)",
+      "is_healthy": false,
+      "visual_cue": "các mảng vàng nhạt mờ ở mặt trên lá, mặt dưới phủ lớp mốc màu ô liu",
+      "symptoms": "Mặt trên lá có mảng vàng nhạt ranh giới không rõ; mặt dưới đúng vị trí đó phủ lớp nấm mượt màu ô liu đến nâu. Lá bệnh khô, quăn lại và rụng. Bệnh phổ biến trong nhà kính, nhà lưới.",
+      "favorable_conditions": "Ẩm độ trên 85% và thông gió kém — đặc biệt hay gặp trong nhà kính, nhà màng.",
+      "treatments": [
+        "Tăng thông gió, giảm ẩm độ trong nhà kính — đây là biện pháp quan trọng nhất.",
+        "Ngắt bỏ lá bệnh ở tầng dưới.",
+        "Phun chlorothalonil, mancozeb hoặc difenoconazole khi bệnh đã xuất hiện."
+      ],
+      "prevention": [
+        "Trồng mật độ vừa phải, tỉa lá tạo độ thông thoáng.",
+        "Tưới vào buổi sáng để lá kịp khô trước đêm.",
+        "Vệ sinh, khử trùng nhà kính giữa các vụ."
+      ],
+      "reference_url": null
+    },
+    {
+      "key": "septoria_leaf_spot",
+      "name_vi": "Đốm lá Septoria",
+      "name_en": "Septoria leaf spot",
+      "plantvillage_dir": "Tomato___Septoria_leaf_spot",
+      "pathogen": "Nấm Septoria lycopersici",
+      "is_healthy": false,
+      "visual_cue": "rất nhiều đốm tròn nhỏ, tâm xám trắng viền nâu sẫm, phân bố dày đặc",
+      "symptoms": "Đốm tròn nhỏ 1–3 mm, tâm màu xám trắng với viền nâu sẫm rõ nét, số lượng rất nhiều trên một lá. Xuất hiện ở lá gốc trước, làm lá vàng và rụng từ dưới lên, khiến quả bị cháy nắng do mất tán che.",
+      "favorable_conditions": "Ẩm ướt kéo dài, nhiệt độ 20–25°C; bào tử lây lan qua nước mưa và nước tưới bắn từ đất.",
+      "treatments": [
+        "Ngắt bỏ lá bệnh ngay khi mới xuất hiện ở tầng gốc.",
+        "Phun chlorothalonil, mancozeb hoặc azoxystrobin, luân phiên hoạt chất để tránh kháng thuốc.",
+        "Chuyển sang tưới gốc, tránh nước bắn từ mặt đất lên lá."
+      ],
+      "prevention": [
+        "Phủ gốc bằng rơm hoặc màng phủ nông nghiệp.",
+        "Dọn sạch và tiêu huỷ tàn dư cây sau thu hoạch.",
+        "Luân canh tối thiểu 2 năm với cây khác họ cà."
+      ],
+      "reference_url": null
+    },
+    {
+      "key": "spider_mites",
+      "name_vi": "Nhện đỏ hai chấm",
+      "name_en": "Spider mites (Two-spotted spider mite)",
+      "plantvillage_dir": "Tomato___Spider_mites Two-spotted_spider_mite",
+      "pathogen": "Nhện hại Tetranychus urticae (không phải bệnh do nấm/vi khuẩn)",
+      "is_healthy": false,
+      "visual_cue": "vô số chấm li ti màu vàng bạc rải đều trên phiến lá, lá mất màu như bị phủ bụi",
+      "symptoms": "Lá lấm tấm chấm vàng nhạt li ti do nhện chích hút, dần bạc màu và khô giòn. Khi mật độ cao thấy tơ mỏng ở mặt dưới lá và kẽ lá. Đây là do côn trùng gây hại, không phải bệnh nhiễm.",
+      "favorable_conditions": "Thời tiết nóng khô, ít mưa; bùng phát mạnh khi lạm dụng thuốc trừ sâu phổ rộng làm chết thiên địch.",
+      "treatments": [
+        "Phun mạnh nước lên mặt dưới lá để rửa trôi nhện — hiệu quả với mật độ thấp.",
+        "Dùng thuốc trừ nhện chuyên biệt: abamectin, spiromesifen hoặc dầu khoáng.",
+        "Luân phiên hoạt chất vì nhện đỏ kháng thuốc rất nhanh.",
+        "KHÔNG dùng thuốc trừ nấm — tác nhân ở đây là côn trùng, phun sai loại chỉ tốn kém và vô ích."
+      ],
+      "prevention": [
+        "Giữ ẩm độ vườn hợp lý, tránh để khô hạn kéo dài.",
+        "Hạn chế thuốc trừ sâu phổ rộng để bảo vệ thiên địch (nhện bắt mồi, bọ rùa).",
+        "Kiểm tra mặt dưới lá định kỳ để phát hiện sớm."
+      ],
+      "reference_url": null
+    },
+    {
+      "key": "target_spot",
+      "name_vi": "Đốm mắt cua",
+      "name_en": "Target spot",
+      "plantvillage_dir": "Tomato___Target_Spot",
+      "pathogen": "Nấm Corynespora cassiicola",
+      "is_healthy": false,
+      "visual_cue": "đốm nâu có vòng tròn đồng tâm mờ, tâm vết bệnh sáng màu và khô nứt",
+      "symptoms": "Đốm nâu nhạt đến nâu sẫm với vòng đồng tâm mờ, tâm vết bệnh thường sáng màu, khô và có thể nứt rách. Bệnh xuất hiện trên cả lá, thân và quả; dễ nhầm với đốm vòng nhưng vòng đồng tâm nhạt hơn.",
+      "favorable_conditions": "Ẩm độ cao và nhiệt độ ấm 20–30°C, tán lá rậm rạp ít thông thoáng.",
+      "treatments": [
+        "Loại bỏ lá bệnh, tỉa thưa tán lá cho thông thoáng.",
+        "Phun azoxystrobin, difenoconazole hoặc mancozeb.",
+        "Luân phiên nhóm hoạt chất giữa các lần phun."
+      ],
+      "prevention": [
+        "Trồng thưa, làm giàn giúp tán lá khô nhanh sau mưa.",
+        "Dọn sạch tàn dư, luân canh cây trồng.",
+        "Tránh tưới phun mưa vào chiều tối."
+      ],
+      "reference_url": null
+    },
+    {
+      "key": "yellow_leaf_curl_virus",
+      "name_vi": "Virus xoăn vàng lá",
+      "name_en": "Tomato Yellow Leaf Curl Virus (TYLCV)",
+      "plantvillage_dir": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+      "pathogen": "Virus TYLCV, lan truyền qua bọ phấn trắng",
+      "is_healthy": false,
+      "visual_cue": "lá nhỏ lại, mép lá cuốn ngược lên trên và vàng rõ ở phần rìa",
+      "symptoms": "Lá non nhỏ hẹp bất thường, mép lá cuốn ngược lên trên và vàng từ rìa vào trong. Cây lùn, đốt ngắn, rụng hoa, hầu như không đậu quả. Nhiễm sớm có thể mất trắng.",
+      "favorable_conditions": "Mật độ bọ phấn trắng (Bemisia tabaci) cao; thời tiết nóng khô.",
+      "treatments": [
+        "KHÔNG CÓ THUỐC CHỮA VIRUS — phải nhổ bỏ và tiêu huỷ cây bệnh ngay để cắt nguồn lây.",
+        "Tập trung diệt môi giới truyền bệnh là bọ phấn trắng (pymetrozine, dinotefuran, dầu khoáng).",
+        "Đặt bẫy dính màu vàng để theo dõi và giảm mật độ bọ phấn."
+      ],
+      "prevention": [
+        "Trồng giống kháng TYLCV — biện pháp hiệu quả nhất.",
+        "Che lưới chắn côn trùng cho vườn ươm và nhà màng.",
+        "Nhổ sạch cỏ dại quanh ruộng vì đó là nơi trú của bọ phấn."
+      ],
+      "reference_url": null
+    },
+    {
+      "key": "mosaic_virus",
+      "name_vi": "Virus khảm",
+      "name_en": "Tomato mosaic virus (ToMV)",
+      "plantvillage_dir": "Tomato___Tomato_mosaic_virus",
+      "pathogen": "Virus ToMV/TMV, lan truyền qua tiếp xúc cơ học",
+      "is_healthy": false,
+      "visual_cue": "phiến lá loang lổ xanh đậm xen xanh nhạt như bức tranh khảm, bề mặt gồ ghề",
+      "symptoms": "Phiến lá loang lổ các mảng xanh đậm xen xanh nhạt hoặc vàng, bề mặt lá nhăn gồ ghề, lá có thể hẹp lại hình sợi. Cây sinh trưởng chậm, quả nhỏ và chín không đều.",
+      "favorable_conditions": "Lây qua tay người, dụng cụ, quần áo khi chăm sóc; virus tồn tại rất lâu trong tàn dư và hạt giống.",
+      "treatments": [
+        "KHÔNG CÓ THUỐC CHỮA VIRUS — nhổ bỏ và tiêu huỷ cây bệnh.",
+        "Rửa tay và khử trùng dụng cụ bằng cồn hoặc dung dịch javel sau khi chạm cây bệnh.",
+        "Không hút thuốc lá khi làm việc trong ruộng cà chua (TMV có trong sợi thuốc lá)."
+      ],
+      "prevention": [
+        "Dùng hạt giống sạch bệnh, đã qua xử lý.",
+        "Khử trùng dụng cụ trước và sau mỗi lần sử dụng.",
+        "Thao tác với cây khoẻ trước, cây nghi bệnh sau cùng."
+      ],
+      "reference_url": null
+    },
+    {
+      "key": "healthy",
+      "name_vi": "Lá khoẻ mạnh",
+      "name_en": "Healthy",
+      "plantvillage_dir": "Tomato___healthy",
+      "pathogen": null,
+      "is_healthy": true,
+      "visual_cue": "phiến lá xanh đều, không có đốm, không biến dạng",
+      "symptoms": "Lá xanh đều, phiến lá phẳng, không có đốm bệnh, không biến màu hay biến dạng.",
+      "favorable_conditions": null,
+      "treatments": [
+        "Không cần xử lý. Tiếp tục duy trì chế độ chăm sóc hiện tại.",
+        "Kiểm tra vườn định kỳ 3–5 ngày/lần để phát hiện sớm nếu có bất thường."
+      ],
+      "prevention": [
+        "Bón phân cân đối, tưới nước đều đặn.",
+        "Giữ vườn thông thoáng, sạch cỏ dại."
+      ],
+      "reference_url": null
+    }
+  ]
+}

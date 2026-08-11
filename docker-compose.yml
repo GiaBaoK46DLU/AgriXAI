@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: plantdx-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: plantdx
+      POSTGRES_PASSWORD: plantdx
+      POSTGRES_DB: plantdx
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "5432:5432"
+    volumes:
+      - plantdx-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U plantdx -d plantdx"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Giao diện web xem/sửa CSDL trực tiếp — tiện lúc phát triển, không bắt buộc.
+  # Truy cập http://localhost:8080 (System: PostgreSQL, Server: db, User/Pass: plantdx)
+  adminer:
+    image: adminer:latest
+    container_name: plantdx-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  plantdx-pgdata:

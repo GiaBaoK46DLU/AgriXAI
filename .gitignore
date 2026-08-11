@@ -1,0 +1,70 @@
+# ─── Python ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# ─── Biến môi trường ────────────────────────────────────
+.env
+.env.local
+*.env
+!.env.example
+
+# ─── Dữ liệu & mô hình (quá nặng để đưa lên Git) ────────
+model/data/raw/**
+model/data/processed/**
+model/data/field/**
+!model/data/**/.gitkeep
+model/checkpoints/**
+!model/checkpoints/.gitkeep
+model/outputs/**
+!model/outputs/**/.gitkeep
+*.pt
+*.pth
+*.onnx
+runs/
+wandb/
+
+# ─── Ảnh người dùng tải lên ─────────────────────────────
+backend/storage/uploads/**
+backend/storage/overlays/**
+!backend/storage/**/.gitkeep
+
+# ─── Node / Web ─────────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+npm-debug.log*
+yarn-error.log*
+
+# ─── Flutter / Dart ─────────────────────────────────────
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+mobile/build/
+mobile/android/
+mobile/ios/
+mobile/linux/
+mobile/macos/
+mobile/windows/
+mobile/web/
+*.iml
+
+# ─── IDE / hệ điều hành ─────────────────────────────────
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ─── File tạm của Word ──────────────────────────────────
+~$*.docx
