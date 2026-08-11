@@ -24,6 +24,7 @@ model/data/field/**
 model/checkpoints/**
 !model/checkpoints/.gitkeep
 model/outputs/**
+!model/outputs/**/
 !model/outputs/**/.gitkeep
 *.pt
 *.pth
