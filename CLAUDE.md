@@ -104,13 +104,24 @@ Thêm bệnh mới thì thêm vào cuối và phải huấn luyện lại.
 |---|---|
 | Cấu trúc thư mục + README các cấp | Đã commit lên `main` |
 | `shared/data/tomato_diseases.json` | Đã commit |
-| `model/` code | **Đã viết nhưng CHƯA CHẠY THỬ LẦN NÀO**, chưa commit |
-| `backend/` code | **Đã viết nhưng CHƯA CHẠY THỬ LẦN NÀO**, chưa commit |
+| `model/` code | Đã commit — **CHƯA CHẠY THỬ**, cần `torch` và bộ PlantVillage |
+| `backend/` code | Đã commit — **đã chạy thật**, 17/17 test pass, luồng end-to-end chạy trên PostgreSQL 16 |
 | `mobile/` (Flutter) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026 |
 | `web-admin/` (React) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026 |
 
-Code `model/` và `backend/` đang chờ review. Việc đầu tiên nên làm khi tiếp tục là
-chạy `pytest` trong `backend/` để bắt lỗi.
+Backend đã chạy được thật: đăng nhập, tạo lô đất, tải ảnh lên, chẩn đoán bằng
+`DummyPredictor`, sinh ảnh khoanh vùng, xem lịch sử, dashboard quản trị. Lần chạy
+đầu tiên phát hiện hai lỗi thật, đã sửa:
+
+- `CAST(... AS DATE)` làm sập dashboard trên SQLite (SQLite trả về số nguyên, còn
+  PostgreSQL trả về `date` — cùng câu SQL cho hai kiểu khác nhau).
+- App **không khởi động nổi khi có file `.env`**: pydantic-settings chạy
+  `json.loads()` lên field kiểu `list` trước khi validator tách dấu phẩy được gọi.
+  Nghĩa là ai làm đúng theo hướng dẫn `copy .env.example .env` sẽ gặp crash ngay.
+  Test trước đó pass chỉ vì trong repo không có `.env` — đây vẫn là điểm mù của
+  bộ test hiện tại.
+
+Việc tiếp theo: chạy thử `model/` (cần cài torch, tải PlantVillage).
 
 ---
 
@@ -138,6 +149,13 @@ Cần có: Git, Python 3.11, Docker Desktop (cho PostgreSQL), và Flutter + Node
 
 File `.env` của backend **không nằm trong Git** (chứa khoá bí mật). Trên máy mới phải
 tạo lại từ `backend/.env.example`.
+
+⚠️ **Nếu máy đã cài sẵn PostgreSQL** thì dịch vụ đó chiếm cổng 5432 và container
+Docker không tranh được. Triệu chứng: `password authentication failed for user
+"plantdx"` — vì kết nối đang đi vào PostgreSQL của máy chứ không phải container.
+Hoặc tắt dịch vụ đó đi, hoặc đổi cổng publish trong `docker-compose.yml` rồi sửa
+`DATABASE_URL` trong `.env` cho khớp. (Máy của Bảo đang vướng đúng chuyện này và
+tạm dùng cổng 5433.)
 
 Chi tiết cách chạy từng phần xem `README.md` ở thư mục gốc và README trong mỗi thư
 mục con.
