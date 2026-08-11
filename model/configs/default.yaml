@@ -1,0 +1,57 @@
+# Cấu hình mặc định cho huấn luyện mô hình nhận diện bệnh lá cà chua.
+# Chạy:  python -m src.training.train --config configs/default.yaml
+
+seed: 42
+
+data:
+  # Thư mục chứa dữ liệu PlantVillage gốc (các thư mục con Tomato___*)
+  raw_dir: data/raw
+  # Nơi ghi manifest chia tập (không copy ảnh, chỉ ghi đường dẫn)
+  processed_dir: data/processed
+  # Thư mục ảnh tự chụp ngoài đồng — dùng để đánh giá domain gap
+  field_dir: data/field
+  image_size: 224
+  val_ratio: 0.15
+  test_ratio: 0.15
+  batch_size: 32
+  num_workers: 4
+
+model:
+  # efficientnet_b0 | efficientnet_b3 | resnet50 | resnet18
+  arch: efficientnet_b0
+  pretrained: true
+  dropout: 0.3
+
+train:
+  epochs: 25
+  lr: 0.0003
+  weight_decay: 0.0001
+  # Số epoch đầu đóng băng backbone, chỉ huấn luyện lớp phân loại.
+  # Giúp lớp mới không phá hỏng trọng số pretrained ngay từ đầu.
+  freeze_backbone_epochs: 3
+  label_smoothing: 0.05
+  early_stopping_patience: 6
+  # Dùng mixed precision nếu có GPU — nhanh hơn đáng kể
+  amp: true
+
+# Tăng cường dữ liệu. Cấu hình mạnh tay một chút vì ảnh PlantVillage
+# chụp trong phòng, còn ảnh thật ngoài đồng thì đủ kiểu ánh sáng và góc chụp.
+augment:
+  horizontal_flip: 0.5
+  vertical_flip: 0.2
+  rotation_degrees: 30
+  color_jitter:
+    brightness: 0.3
+    contrast: 0.3
+    saturation: 0.3
+    hue: 0.05
+  random_resized_crop_scale: [0.7, 1.0]
+  gaussian_blur_prob: 0.15
+
+xai:
+  # Ngưỡng cắt heatmap để tạo vùng khoanh (0..1)
+  heatmap_threshold: 0.5
+
+paths:
+  checkpoint_dir: checkpoints
+  output_dir: outputs
