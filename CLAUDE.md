@@ -156,17 +156,18 @@ Docker không tranh được. Triệu chứng: `password authentication failed f
 Hoặc tắt dịch vụ đó đi, hoặc đổi cổng publish trong `docker-compose.yml` rồi sửa
 `DATABASE_URL` trong `.env` cho khớp.
 
-Máy của Bảo đã vướng đúng chuyện này (PostgreSQL 18 cài sẵn) và xử lý bằng cách
-dừng dịch vụ đó:
+Máy của Bảo đã vướng đúng chuyện này (PostgreSQL 18 cài sẵn) và **đã xử lý xong**
+ngày 11/08/2026 bằng cách chuyển dịch vụ đó sang khởi động thủ công:
 
 ```powershell
 # PowerShell chạy bằng quyền Administrator
-Stop-Service postgresql-x64-18 -Force
+Set-Service postgresql-x64-18 -StartupType Manual
+Stop-Service  postgresql-x64-18 -Force
 ```
 
-⚠️ Dịch vụ vẫn để StartType = Automatic nên **khởi động lại máy là nó chạy lại**
-và lỗi quay về. Muốn dứt điểm thì đổi luôn:
-`Set-Service postgresql-x64-18 -StartupType Manual`
+Chọn cách này thay vì đổi cổng vì CSDL của dự án là PostgreSQL 16 trong Docker —
+giữ nguyên `docker-compose.yml` thì mọi máy trong nhóm chạy giống hệt nhau.
+PG18 cài sẵn trên máy không dùng cho việc gì khác nên tắt được, không mất mát gì.
 
 Chi tiết cách chạy từng phần xem `README.md` ở thư mục gốc và README trong mỗi thư
 mục con.
