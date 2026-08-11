@@ -16,7 +16,8 @@ vì sao mô hình kết luận như vậy**: heatmap Grad-CAM được chuyển 
 đơn giản trên ảnh kèm một câu tiếng Việt thường ngày, thay vì đưa bản đồ nhiệt kỹ
 thuật cho nông dân xem.
 
-Phạm vi: cây cà chua, 10 lớp theo bộ PlantVillage.
+Phạm vi: cây cà chua — 10 lớp bệnh trên **lá** theo bộ PlantVillage, cộng thêm 5 lớp
+trên **quả** (xem mục mở rộng phạm vi bên dưới). Không làm bệnh trên thân.
 
 ## Nhóm
 
@@ -51,6 +52,67 @@ Hệ quả khi làm việc:
 - `shared/api-contract/` cố ý để trống.
 - Nếu đề xuất việc gì chỉ có ý nghĩa cho tích hợp liên nhóm, phải nói rõ đó là việc
   đang hoãn.
+
+---
+
+## Mở rộng phạm vi: thêm bệnh trên quả (chốt 11/08/2026)
+
+Đề tài ban đầu chỉ có 10 lớp lá. Nay thêm **5 lớp trên quả** để đề tài có quy mô hơn.
+Đề cương đã nộp không ghi chi tiết số lớp nên không cần xin ý kiến GVHD.
+
+**Bỏ hẳn phần bệnh trên thân.** Lý do: ảnh thân luôn lẫn nền phức tạp, triệu chứng ít
+đặc trưng, và bệnh héo rũ (Fusarium/Ralstonia) về bản chất **không chẩn đoán được qua
+ảnh** — phải cắt ngang thân xem bó mạch hoặc thử nhúng nước. Tốn công gấp đôi để ra
+kết quả yếu nhất, lại là chỗ dễ bị hỏi vặn khi bảo vệ.
+
+### 5 lớp quả
+
+| Lớp | Ghi chú |
+|---|---|
+| `fruit_healthy` | lớp âm, bắt buộc có |
+| `fruit_late_blight` | thối nâu cứng, mảng lớn — nối tiếp lớp lá cùng tên |
+| `fruit_bacterial_spot` | đốm sần sùi nổi gờ — nối tiếp lớp lá cùng tên |
+| `fruit_anthracnose` | thán thư, vết tròn lõm — **bệnh mới, chỉ có trên quả** |
+| `fruit_blossom_end_rot` | thối đáy quả — **bệnh mới**, do thiếu canxi / tưới không đều |
+
+Hai lớp cuối là phần làm đề tài thật sự rộng ra, không phải nhìn cùng một bệnh ở góc
+khác. `fruit_blossom_end_rot` **không do nấm hay vi khuẩn** nên khuyến nghị xử lý khác
+hẳn: không phun thuốc, mà chỉnh tưới và bón vôi. Cùng với `spider_mites` (côn trùng,
+không phải bệnh nhiễm), đây là hai ca chứng minh hệ thống hiểu đúng bản chất tác nhân
+chứ không chỉ dán nhãn — nên nhấn mạnh khi bảo vệ.
+
+### Kiến trúc: thêm bộ định tuyến, KHÔNG gộp 15 lớp vào một mô hình
+
+```
+ảnh vào
+   └─ organ classifier (lá / quả / khác)
+        ├─ lá   → mô hình 10 lớp hiện tại  (giữ nguyên, không huấn luyện lại)
+        ├─ quả  → mô hình 5 lớp mới
+        └─ khác → "Ảnh chưa rõ lá hay quả cà chua, bạn chụp lại giúp mình nhé"
+```
+
+Lá và quả cà chua khác nhau rõ về hình dạng lẫn màu nên bộ phân loại bộ phận là bài
+toán dễ, vài trăm ảnh mỗi lớp là đủ. Chọn cách này vì **mô hình lá không phải huấn
+luyện lại** — giữ nguyên được con số accuracy đã báo cáo.
+
+Nhánh `khác` giải quyết luôn một lỗi thật: người dùng chụp quả thối mà hệ thống vẫn
+tự tin trả về "Mốc lá 87%". Việc hệ thống biết khi nào **không** nên trả lời cũng
+đúng tinh thần XAI của đề tài.
+
+### Dữ liệu
+
+Cần ~250–300 ảnh/lớp, tổng ~1.500 ảnh. Nguồn: Roboflow Universe và Kaggle (nhãn hay
+sai, **phải kiểm tra bằng mắt**), cộng với tự chụp tại Đà Lạt. Ảnh tự chụp còn xử lý
+luôn rủi ro domain gap vì đó là ảnh thật ngoài đồng ngay từ đầu.
+
+### ⚠️ Cổng go/no-go ngày 15/09/2026
+
+Từ nay tới 15/09 **chỉ tập trung luồng lá** cho chạy thông end-to-end. Tới mốc đó nếu
+luồng lá còn trục trặc thì **bỏ hẳn phần quả, không tiếc**. Phần quả là thứ để tăng
+điểm, không phải thứ để cứu đề tài — bỏ đi thì đề tài vẫn đủ để bảo vệ.
+
+Lịch dự kiến nếu qua cổng: 15/09–10/10 thu thập ảnh, 10/10–25/10 huấn luyện mô hình
+quả + bộ định tuyến, 25/10–05/11 tích hợp và kiểm thử.
 
 ---
 
@@ -95,6 +157,14 @@ cả `model/` và `backend/` đều đọc từ đây.
 ⚠️ **Thứ tự phần tử trong mảng `diseases` chính là thứ tự output của mô hình.** Đổi
 thứ tự sau khi đã huấn luyện là làm sai toàn bộ nhãn trả về mà không báo lỗi gì.
 Thêm bệnh mới thì thêm vào cuối và phải huấn luyện lại.
+
+Khi làm phần quả: **không đụng vào mảng `diseases`**. Thêm mảng mới song song
+`fruit_diseases` với thứ tự riêng của nó, vì đó là output của một mô hình khác. Mỗi
+mảng là không gian chỉ số độc lập — giữ nguyên bất biến "thứ tự mảng = thứ tự output"
+cho từng mô hình một.
+
+`Prediction` sẽ cần thêm trường `organ` (`"leaf"` / `"fruit"`) để backend biết tra
+mảng nào. Đây là sửa **hợp đồng dùng chung** — phải báo Học trước, không tự đổi.
 
 ---
 
