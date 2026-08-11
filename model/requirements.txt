@@ -1,0 +1,11 @@
+# Cài PyTorch trước theo đúng phiên bản CUDA của máy, xem README.md
+torch>=2.2
+torchvision>=0.17
+
+numpy>=1.26
+pillow>=10.0
+opencv-python-headless>=4.9
+scikit-learn>=1.4
+matplotlib>=3.8
+pyyaml>=6.0
+tqdm>=4.66
