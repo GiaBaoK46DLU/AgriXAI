@@ -154,8 +154,19 @@ tạo lại từ `backend/.env.example`.
 Docker không tranh được. Triệu chứng: `password authentication failed for user
 "plantdx"` — vì kết nối đang đi vào PostgreSQL của máy chứ không phải container.
 Hoặc tắt dịch vụ đó đi, hoặc đổi cổng publish trong `docker-compose.yml` rồi sửa
-`DATABASE_URL` trong `.env` cho khớp. (Máy của Bảo đang vướng đúng chuyện này và
-tạm dùng cổng 5433.)
+`DATABASE_URL` trong `.env` cho khớp.
+
+Máy của Bảo đã vướng đúng chuyện này (PostgreSQL 18 cài sẵn) và xử lý bằng cách
+dừng dịch vụ đó:
+
+```powershell
+# PowerShell chạy bằng quyền Administrator
+Stop-Service postgresql-x64-18 -Force
+```
+
+⚠️ Dịch vụ vẫn để StartType = Automatic nên **khởi động lại máy là nó chạy lại**
+và lỗi quay về. Muốn dứt điểm thì đổi luôn:
+`Set-Service postgresql-x64-18 -StartupType Manual`
 
 Chi tiết cách chạy từng phần xem `README.md` ở thư mục gốc và README trong mỗi thư
 mục con.
