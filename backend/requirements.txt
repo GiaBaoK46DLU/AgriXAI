@@ -1,0 +1,26 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+
+sqlalchemy>=2.0
+psycopg2-binary>=2.9
+alembic>=1.13
+
+pydantic>=2.6
+pydantic-settings>=2.3   # cần NoDecode (xem app/core/config.py)
+
+PyJWT>=2.8
+bcrypt>=4.1
+
+pillow>=10.0
+numpy>=1.26
+opencv-python-headless>=4.9
+
+# Kiểm thử
+pytest>=8.0
+httpx>=0.27
+
+# LƯU Ý: KHÔNG cần cài torch ở đây.
+# Backend chạy được với DummyPredictor mà không có PyTorch. Chỉ khi muốn dùng
+# mô hình thật mới cài thêm torch/torchvision (xem model/requirements.txt) và
+# trỏ MODEL_CHECKPOINT trong .env tới file checkpoint.
