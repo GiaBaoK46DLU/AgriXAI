@@ -244,9 +244,13 @@ Việc tiếp theo: chạy thử `model/` (cần cài torch, tải PlantVillage)
 ## Thiết lập trên máy mới
 
 ```bash
-git clone https://github.com/GiaBaoK46DLU/do-an-tot-nghiep.git
-cd do-an-tot-nghiep
+git clone https://github.com/GiaBaoK46DLU/AgriXAI.git
+cd AgriXAI
 ```
+
+Repo đổi tên từ `do-an-tot-nghiep` thành `AgriXAI` ngày 17/08/2026. GitHub tự
+chuyển hướng URL cũ nên bản clone cũ vẫn `fetch`/`push` được, nhưng nên chạy
+`git remote set-url origin https://github.com/GiaBaoK46DLU/AgriXAI.git` cho gọn.
 
 Cần có: Git, Python 3.11, Docker Desktop (cho PostgreSQL), và Flutter + Node khi bắt
 đầu phần giao diện.

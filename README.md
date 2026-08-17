@@ -93,7 +93,7 @@ Nhờ vậy hai người làm song song: Bảo thay đổi mô hình bên trong 
 ## Cấu trúc thư mục
 
 ```
-do-an-tot-nghiep/
+AgriXAI/
 ├── docx/            Tài liệu đồ án (đề cương, phân tích)
 ├── model/           [Bảo]  PyTorch: dữ liệu, huấn luyện, đánh giá, Grad-CAM
 ├── backend/         [Học]  FastAPI + PostgreSQL + lưu trữ ảnh
