@@ -119,8 +119,15 @@ quả + bộ định tuyến, 25/10–05/11 tích hợp và kiểm thử.
 ## Quy ước Git
 
 **Branch:** `<label>/task-<XX>-<short-description>`
-Label là tên người: `bao`, `hoc`, `phuc`.
-Ví dụ: `bao/task-03-project-list-ui`, `hoc/task-01-project-crud-api`.
+Label là tên người: `bao`, `hoc`.
+
+⚠️ **`XX` là số của issue GitHub tương ứng**, không phải số thứ tự tự đếm.
+Issue #26 → nhánh `hoc/task-26-mobile-result-screen`. Nhờ vậy nhìn tên nhánh
+là biết ngay đọc issue nào.
+
+Sáu nhánh `bao/task-01` … `bao/task-06` có từ **trước khi** repo có issue nên
+số của chúng không liên quan gì tới số issue. Đã merge xong, để nguyên. Từ số
+07 trở đi mọi nhánh đều khớp issue.
 
 **Commit:** `type(scope): short description`
 Types: `feat` `fix` `refactor` `docs` `style` `test` `chore`.
@@ -128,6 +135,33 @@ Mô tả viết tiếng Anh, chữ thường, thể mệnh lệnh, không chấm
 Ví dụ: `feat(api): add POST /api/projects endpoint`.
 
 Không commit thẳng lên `main`.
+
+## Issue GitHub
+
+Toàn bộ việc còn lại đã tạo thành **76 issue**, chia **6 mốc**. Đây là nguồn duy
+nhất để biết còn phải làm gì — đừng lập bảng công việc song song ở chỗ khác.
+
+| Mốc | Thời gian | Mục tiêu |
+|---|---|---|
+| 1 | 17/08 – 31/08/2026 | Nền tảng song song: backend chạy trên máy Học, khởi tạo 2 dự án giao diện, dựng môi trường mô hình |
+| 2 | 01/09 – 30/09/2026 | Mô hình huấn luyện xong, có Grad-CAM, bắt đầu chụp ảnh thực địa |
+| 3 | 01/09 – 15/10/2026 | Giao diện dựng trên `DummyPredictor` — **chạy song song mốc 2** |
+| 4 | 01/10 – 31/10/2026 | Hợp nhất mô hình thật, tinh chỉnh XAI, đo trên ảnh thực địa |
+| 5 | 15/10 – 25/11/2026 | Báo cáo, slide, tập demo |
+| 6 | 15/09 – 05/11/2026 | Bệnh trên quả — **chỉ làm nếu qua cổng go/no-go 15/09** |
+
+Mốc 2 và 3 **cố ý trùng thời gian**: Bảo huấn luyện mô hình, Học dựng giao diện
+trên mô hình giả. Đây chính là lý do `DummyPredictor` tồn tại.
+
+Tiền tố mã việc: `MD-` mô hình · `IN-` tích hợp · `FD-` ảnh thực địa ·
+`BE-` backend · `MB-` mobile · `WA-` web admin · `OP-` demo/hạ tầng ·
+`DC-` báo cáo · `FR-` bệnh trên quả.
+
+Nhãn theo 4 trục: người (`bao`, `hoc`) · mảng (`mang:*`) · mức
+(`muc:chan` > `muc:cao` > `muc:thuong` > `muc:tuy-chon`) · trạng thái
+(`trang-thai:bi-chan`, `trang-thai:cho-cong-15-09`).
+
+Template issue và PR nằm trong `.github/`.
 
 ---
 
