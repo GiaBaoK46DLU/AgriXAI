@@ -254,8 +254,13 @@ Repo đổi tên từ `do-an-tot-nghiep` thành `AgriXAI` ngày 17/08/2026. GitH
 chuyển hướng URL cũ nên bản clone cũ vẫn `fetch`/`push` được, nhưng nên chạy
 `git remote set-url origin https://github.com/GiaBaoK46DLU/AgriXAI.git` cho gọn.
 
-Cần có: Git, Python 3.11, Docker Desktop (cho PostgreSQL), và Flutter + Node khi bắt
-đầu phần giao diện.
+Cần có: Git, Python 3.11 trở lên, Docker Desktop (cho PostgreSQL), và Flutter + Node
+khi bắt đầu phần giao diện.
+
+⚠️ Trên Windows, **đừng dùng bản Python cài từ Microsoft Store** (đường dẫn có
+`WindowsApps`). Đó là stub, venv tạo từ nó hay hỏng mỗi khi Store tự cập nhật.
+Cài bản tải thẳng từ python.org. Máy Bảo đang chạy 3.12.1 cho `model/` — torch
+≥ 2.2 hỗ trợ 3.12 nên không cần ép về đúng 3.11.
 
 File `.env` của backend **không nằm trong Git** (chứa khoá bí mật). Trên máy mới phải
 tạo lại từ `backend/.env.example`.

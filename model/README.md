@@ -67,23 +67,29 @@ epoch thực tế lâu hơn 39 giây đáng kể thì thủ phạm là khâu n�
 luồng nên nâng `num_workers` lên 8 là dư sức. VRAM còn trống nhiều, muốn nhanh
 hơn nữa có thể tăng `batch_size` — nhưng nhớ chỉnh `lr` theo, đừng đổi mỗi batch.
 
-### ⚠️ Ghi log trên Windows: phải đặt UTF-8
+### Ghi log ra file — đã xử lý sẵn
 
-Mọi script trong `model/` đều in tiếng Việt. Khi chạy thẳng trong terminal thì
-không sao, nhưng **chuyển hướng output ra file là sập ngay**:
+Ghi log thoải mái, không cần cấu hình gì thêm:
+
+```bash
+python -m src.training.train --config configs/default.yaml > outputs/logs/train.log
+```
+
+Lệnh này **từng làm sập chương trình**. Mọi script trong `model/` đều in tiếng
+Việt; khi output bị chuyển hướng ra file hay pipe, Python trên Windows thôi dùng
+console API và rơi về bảng mã cp1252 — bảng này không có ký tự tiếng Việt:
 
 ```
 UnicodeEncodeError: 'charmap' codec can't encode character 'ế'
 ```
 
-Python trên Windows dùng bảng mã cp1252 khi output không phải console, mà cp1252
-không có ký tự tiếng Việt. Một lượt huấn luyện 16 phút thì kiểu gì cũng muốn ghi
-log ra file, nên đặt biến môi trường trước:
+Nghĩa là một lượt huấn luyện 16 phút chết ngay dòng in đầu tiên, chỉ vì muốn giữ
+lại log. `src/__init__.py` giờ ép UTF-8 cho `stdout`/`stderr`, đặt ở đó vì đây là
+chỗ duy nhất mọi lệnh `python -m src.*` đều đi qua.
 
-```powershell
-$env:PYTHONIOENCODING = "utf-8"      # PowerShell, đặt một lần cho cả phiên
-python -m src.training.train --config configs/default.yaml > outputs/logs/train.log
-```
+> Chú ý khi viết code mới: cái bẫy này nằm ở Python trên Windows chứ không phải ở
+> `model/`. Notebook trong `notebooks/` hay script rời ngoài package `src/` sẽ
+> không được `src/__init__.py` che cho, gặp lại y nguyên lỗi trên.
 
 ---
 
