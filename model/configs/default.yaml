@@ -14,7 +14,9 @@ data:
   val_ratio: 0.15
   test_ratio: 0.15
   batch_size: 32
-  num_workers: 4
+  # 8 worker cho máy 16 luồng. Đo 20/08/2026 với 4 worker: epoch thật ~42s
+  # trong khi GPU chỉ cần ~30s — GPU ngồi chờ CPU giải mã ảnh ~12s mỗi epoch.
+  num_workers: 8
 
 model:
   # efficientnet_b0 | efficientnet_b3 | resnet50 | resnet18
