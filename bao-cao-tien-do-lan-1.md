@@ -7,7 +7,7 @@
 
 | Thành viên | MSSV | Phụ trách |
 |---|---|---|
-| Đinh Lâm Gia Bảo (chủ repo) | 2212343 | `model/` — dữ liệu, huấn luyện, Grad-CAM |
+| Đinh Lâm Gia Bảo | 2212343 | `model/` — dữ liệu, huấn luyện, Grad-CAM |
 | Triệu Quang Học | 2212375 | `backend/` — API, CSDL, lưu trữ |
 | Cả hai | — | Tích hợp XAI vào luồng, giao diện |
 
@@ -27,13 +27,10 @@ câu tiếng Việt thường ngày, thay vì đưa bản đồ nhiệt kỹ thu
 - Cây cà chua, **10 lớp bệnh trên lá** theo bộ dữ liệu PlantVillage (đốm lá vi
   khuẩn, đốm vòng, mốc sương muộn, mốc lá, đốm Septoria, nhện đỏ, đốm mắt cua,
   virus xoăn vàng lá, virus khảm, lá khỏe).
-- Mở rộng thêm **5 lớp bệnh trên quả** (mục 6.2) — chỉ thực hiện nếu qua cổng
-  kiểm soát ngày 15/09/2026.
+- Mở rộng thêm **5 lớp bệnh trên quả**.
 - **Không** làm bệnh trên thân: triệu chứng ít đặc trưng, và bệnh héo rũ về bản
   chất không chẩn đoán được qua ảnh (phải cắt thân xem bó mạch).
-- Việc tích hợp với hai nhóm khác (nhật ký canh tác, bản đồ GIS) **tạm hoãn**
-  theo quyết định ngày 11/08/2026 — ưu tiên hệ thống của nhóm chạy thông suốt
-  end-to-end trước, tránh phụ thuộc tiến độ ngoài tầm kiểm soát.
+- Việc tích hợp với hai nhóm khác (nhật ký canh tác, bản đồ GIS) **tạm hoãn** — ưu tiên hệ thống của nhóm chạy thông suốt end-to-end trước, tránh phụ thuộc tiến độ ngoài tầm kiểm soát.
 
 ## 2. Kiến trúc tổng thể
 
