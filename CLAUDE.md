@@ -202,13 +202,13 @@ mảng nào. Đây là sửa **hợp đồng dùng chung** — phải báo Học
 
 ---
 
-## Trạng thái hiện tại (11/08/2026)
+## Trạng thái hiện tại (20/08/2026)
 
 | Phần | Tình trạng |
 |---|---|
 | Cấu trúc thư mục + README các cấp | Đã commit lên `main` |
 | `shared/data/tomato_diseases.json` | Đã commit |
-| `model/` code | Đã commit — môi trường dựng xong 20/08 trên máy Bảo (RTX 4060 Ti), mọi module import được, Grad-CAM chạy thật trên GPU. **Chưa huấn luyện** vì chưa có bộ PlantVillage |
+| `model/` code | Đã commit — môi trường dựng xong 20/08 trên máy Bảo (RTX 4060 Ti). Dữ liệu PlantVillage đã tải 20/08: **18.160 ảnh / 10 lớp** trong `model/data/raw/` (ngoài Git — máy khác muốn huấn luyện phải tự tải, nguồn và số liệu ghi ở issue #11). Chia tập + chạy thử 1 epoch đạt, #11–#13 đã đóng qua PR #78. **Chưa huấn luyện đầy đủ** — #14 là việc kế tiếp |
 | `backend/` code | Đã commit — **đã chạy thật**, 17/17 test pass, luồng end-to-end chạy trên PostgreSQL 16 |
 | `mobile/` (Flutter) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026 |
 | `web-admin/` (React) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026 |
@@ -225,9 +225,20 @@ Backend đã chạy được thật: đăng nhập, tạo lô đất, tải ản
   Test trước đó pass chỉ vì trong repo không có `.env` — đây vẫn là điểm mù của
   bộ test hiện tại.
 
-Việc tiếp theo: tải bộ PlantVillage vào `model/data/raw/` rồi chạy `prepare` và
-`train`. Đã đo trước: trọn 25 epoch mất **≈ 16 phút** trên RTX 4060 Ti, nên Mốc 2
-không cần lùi hạn và cũng không cần Colab. Chi tiết ở `model/README.md`.
+Việc tiếp theo: chạy #14 — huấn luyện đầy đủ 25 epoch. Đo thật 20/08 với ảnh
+JPEG (không phải tensor ngẫu nhiên) sau khi nâng `num_workers` lên 8 (PR #78):
+một epoch ≈ 35 giây, trọn 25 epoch **≈ 22–25 phút** trên RTX 4060 Ti — Mốc 2
+không cần lùi hạn, không cần Colab. Con số "≈ 16 phút" trong `model/README.md`
+đo bằng tensor ngẫu nhiên, chưa tính khâu đọc ảnh — biết là lạc quan, chưa sửa.
+
+Hai điều cần nhớ khi đọc kết quả huấn luyện sau này:
+
+- Dữ liệu **lệch lớp 14,4 lần**: `yellow_leaf_curl_virus` 5.357 ảnh còn
+  `mosaic_virus` chỉ 373 (tập test ~55 ảnh). Loss không đặt trọng số lớp, nên
+  accuracy tổng có thể đẹp mà recall `mosaic_virus` thấp — soi kỹ ở #15.
+  Đây là đặc tính của bộ dữ liệu gốc, không phải lỗi tải.
+- Bảng chia tập train/val/test và số đo smoke test nằm trong PR #78 — báo cáo
+  chương thực nghiệm trích từ đó, đừng đo lại bằng trí nhớ.
 
 ---
 
