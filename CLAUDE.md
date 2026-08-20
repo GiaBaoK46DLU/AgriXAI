@@ -208,7 +208,7 @@ mảng nào. Đây là sửa **hợp đồng dùng chung** — phải báo Học
 |---|---|
 | Cấu trúc thư mục + README các cấp | Đã commit lên `main` |
 | `shared/data/tomato_diseases.json` | Đã commit |
-| `model/` code | Đã commit — **CHƯA CHẠY THỬ**, cần `torch` và bộ PlantVillage |
+| `model/` code | Đã commit — môi trường dựng xong 20/08 trên máy Bảo (RTX 4060 Ti), mọi module import được, Grad-CAM chạy thật trên GPU. **Chưa huấn luyện** vì chưa có bộ PlantVillage |
 | `backend/` code | Đã commit — **đã chạy thật**, 17/17 test pass, luồng end-to-end chạy trên PostgreSQL 16 |
 | `mobile/` (Flutter) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026 |
 | `web-admin/` (React) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026 |
@@ -225,7 +225,9 @@ Backend đã chạy được thật: đăng nhập, tạo lô đất, tải ản
   Test trước đó pass chỉ vì trong repo không có `.env` — đây vẫn là điểm mù của
   bộ test hiện tại.
 
-Việc tiếp theo: chạy thử `model/` (cần cài torch, tải PlantVillage).
+Việc tiếp theo: tải bộ PlantVillage vào `model/data/raw/` rồi chạy `prepare` và
+`train`. Đã đo trước: trọn 25 epoch mất **≈ 16 phút** trên RTX 4060 Ti, nên Mốc 2
+không cần lùi hạn và cũng không cần Colab. Chi tiết ở `model/README.md`.
 
 ---
 
@@ -252,8 +254,13 @@ Repo đổi tên từ `do-an-tot-nghiep` thành `AgriXAI` ngày 17/08/2026. GitH
 chuyển hướng URL cũ nên bản clone cũ vẫn `fetch`/`push` được, nhưng nên chạy
 `git remote set-url origin https://github.com/GiaBaoK46DLU/AgriXAI.git` cho gọn.
 
-Cần có: Git, Python 3.11, Docker Desktop (cho PostgreSQL), và Flutter + Node khi bắt
-đầu phần giao diện.
+Cần có: Git, Python 3.11 trở lên, Docker Desktop (cho PostgreSQL), và Flutter + Node
+khi bắt đầu phần giao diện.
+
+⚠️ Trên Windows, **đừng dùng bản Python cài từ Microsoft Store** (đường dẫn có
+`WindowsApps`). Đó là stub, venv tạo từ nó hay hỏng mỗi khi Store tự cập nhật.
+Cài bản tải thẳng từ python.org. Máy Bảo đang chạy 3.12.1 cho `model/` — torch
+≥ 2.2 hỗ trợ 3.12 nên không cần ép về đúng 3.11.
 
 File `.env` của backend **không nằm trong Git** (chứa khoá bí mật). Trên máy mới phải
 tạo lại từ `backend/.env.example`.

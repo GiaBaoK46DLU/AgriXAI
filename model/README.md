@@ -38,6 +38,59 @@ python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_
 
 > Huấn luyện bằng CPU vẫn chạy được nhưng chậm khoảng 20–30 lần. Nếu máy không có GPU, dùng **Google Colab** (bản miễn phí đủ dùng cho EfficientNet-B0 với 18k ảnh) rồi tải `best.pt` về.
 
+### Cấu hình đã kiểm chứng (20/08/2026 — máy của Bảo)
+
+| | |
+|---|---|
+| GPU | NVIDIA RTX 4060 Ti, 8 GiB VRAM, compute capability 8.9 |
+| CPU | Intel 16 luồng |
+| Python | 3.12.1 |
+| torch / torchvision | 2.13.0+cu126 / 0.28.0+cu126 |
+
+Dùng Python 3.12 chứ không phải 3.11 như ghi trong `CLAUDE.md`: bản 3.11 duy nhất
+trên máy là stub Microsoft Store, tạo venv từ đó hay hỏng khi Store tự cập nhật.
+torch ≥ 2.2 chạy tốt trên 3.12 nên không có lý do gì phải ép 3.11.
+
+**Thời gian huấn luyện đo được** (EfficientNet-B0, batch 32, 224px, AMP bật):
+
+| | |
+|---|---|
+| Một epoch, backbone mở khoá | ≈ 39 giây |
+| Một epoch, backbone đóng băng | ≈ 30 giây |
+| Trọn 25 epoch | **≈ 16 phút** |
+| VRAM dùng lúc cao nhất | 1,46 / 8 GiB |
+
+Con số đo bằng tensor ngẫu nhiên, **chưa tính khâu đọc ảnh JPEG từ ổ đĩa**. Đo
+riêng phần augment thì CPU cấp được ~451 ảnh/giây với `num_workers: 4`, còn GPU
+tiêu thụ 343 ảnh/giây — GPU vẫn là nút cổ chai nhưng khoảng cách khá hẹp. Nếu
+epoch thực tế lâu hơn 39 giây đáng kể thì thủ phạm là khâu nạp dữ liệu; máy 16
+luồng nên nâng `num_workers` lên 8 là dư sức. VRAM còn trống nhiều, muốn nhanh
+hơn nữa có thể tăng `batch_size` — nhưng nhớ chỉnh `lr` theo, đừng đổi mỗi batch.
+
+### Ghi log ra file — đã xử lý sẵn
+
+Ghi log thoải mái, không cần cấu hình gì thêm:
+
+```bash
+python -m src.training.train --config configs/default.yaml > outputs/logs/train.log
+```
+
+Lệnh này **từng làm sập chương trình**. Mọi script trong `model/` đều in tiếng
+Việt; khi output bị chuyển hướng ra file hay pipe, Python trên Windows thôi dùng
+console API và rơi về bảng mã cp1252 — bảng này không có ký tự tiếng Việt:
+
+```
+UnicodeEncodeError: 'charmap' codec can't encode character 'ế'
+```
+
+Nghĩa là một lượt huấn luyện 16 phút chết ngay dòng in đầu tiên, chỉ vì muốn giữ
+lại log. `src/__init__.py` giờ ép UTF-8 cho `stdout`/`stderr`, đặt ở đó vì đây là
+chỗ duy nhất mọi lệnh `python -m src.*` đều đi qua.
+
+> Chú ý khi viết code mới: cái bẫy này nằm ở Python trên Windows chứ không phải ở
+> `model/`. Notebook trong `notebooks/` hay script rời ngoài package `src/` sẽ
+> không được `src/__init__.py` che cho, gặp lại y nguyên lỗi trên.
+
 ---
 
 ## Chuẩn bị dữ liệu
