@@ -38,6 +38,53 @@ python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_
 
 > Huấn luyện bằng CPU vẫn chạy được nhưng chậm khoảng 20–30 lần. Nếu máy không có GPU, dùng **Google Colab** (bản miễn phí đủ dùng cho EfficientNet-B0 với 18k ảnh) rồi tải `best.pt` về.
 
+### Cấu hình đã kiểm chứng (20/08/2026 — máy của Bảo)
+
+| | |
+|---|---|
+| GPU | NVIDIA RTX 4060 Ti, 8 GiB VRAM, compute capability 8.9 |
+| CPU | Intel 16 luồng |
+| Python | 3.12.1 |
+| torch / torchvision | 2.13.0+cu126 / 0.28.0+cu126 |
+
+Dùng Python 3.12 chứ không phải 3.11 như ghi trong `CLAUDE.md`: bản 3.11 duy nhất
+trên máy là stub Microsoft Store, tạo venv từ đó hay hỏng khi Store tự cập nhật.
+torch ≥ 2.2 chạy tốt trên 3.12 nên không có lý do gì phải ép 3.11.
+
+**Thời gian huấn luyện đo được** (EfficientNet-B0, batch 32, 224px, AMP bật):
+
+| | |
+|---|---|
+| Một epoch, backbone mở khoá | ≈ 39 giây |
+| Một epoch, backbone đóng băng | ≈ 30 giây |
+| Trọn 25 epoch | **≈ 16 phút** |
+| VRAM dùng lúc cao nhất | 1,46 / 8 GiB |
+
+Con số đo bằng tensor ngẫu nhiên, **chưa tính khâu đọc ảnh JPEG từ ổ đĩa**. Đo
+riêng phần augment thì CPU cấp được ~451 ảnh/giây với `num_workers: 4`, còn GPU
+tiêu thụ 343 ảnh/giây — GPU vẫn là nút cổ chai nhưng khoảng cách khá hẹp. Nếu
+epoch thực tế lâu hơn 39 giây đáng kể thì thủ phạm là khâu nạp dữ liệu; máy 16
+luồng nên nâng `num_workers` lên 8 là dư sức. VRAM còn trống nhiều, muốn nhanh
+hơn nữa có thể tăng `batch_size` — nhưng nhớ chỉnh `lr` theo, đừng đổi mỗi batch.
+
+### ⚠️ Ghi log trên Windows: phải đặt UTF-8
+
+Mọi script trong `model/` đều in tiếng Việt. Khi chạy thẳng trong terminal thì
+không sao, nhưng **chuyển hướng output ra file là sập ngay**:
+
+```
+UnicodeEncodeError: 'charmap' codec can't encode character 'ế'
+```
+
+Python trên Windows dùng bảng mã cp1252 khi output không phải console, mà cp1252
+không có ký tự tiếng Việt. Một lượt huấn luyện 16 phút thì kiểu gì cũng muốn ghi
+log ra file, nên đặt biến môi trường trước:
+
+```powershell
+$env:PYTHONIOENCODING = "utf-8"      # PowerShell, đặt một lần cho cả phiên
+python -m src.training.train --config configs/default.yaml > outputs/logs/train.log
+```
+
 ---
 
 ## Chuẩn bị dữ liệu

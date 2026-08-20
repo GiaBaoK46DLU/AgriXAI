@@ -208,7 +208,7 @@ mảng nào. Đây là sửa **hợp đồng dùng chung** — phải báo Học
 |---|---|
 | Cấu trúc thư mục + README các cấp | Đã commit lên `main` |
 | `shared/data/tomato_diseases.json` | Đã commit |
-| `model/` code | Đã commit — **CHƯA CHẠY THỬ**, cần `torch` và bộ PlantVillage |
+| `model/` code | Đã commit — môi trường dựng xong 20/08 trên máy Bảo (RTX 4060 Ti), mọi module import được, Grad-CAM chạy thật trên GPU. **Chưa huấn luyện** vì chưa có bộ PlantVillage |
 | `backend/` code | Đã commit — **đã chạy thật**, 17/17 test pass, luồng end-to-end chạy trên PostgreSQL 16 |
 | `mobile/` (Flutter) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026 |
 | `web-admin/` (React) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026 |
@@ -225,7 +225,9 @@ Backend đã chạy được thật: đăng nhập, tạo lô đất, tải ản
   Test trước đó pass chỉ vì trong repo không có `.env` — đây vẫn là điểm mù của
   bộ test hiện tại.
 
-Việc tiếp theo: chạy thử `model/` (cần cài torch, tải PlantVillage).
+Việc tiếp theo: tải bộ PlantVillage vào `model/data/raw/` rồi chạy `prepare` và
+`train`. Đã đo trước: trọn 25 epoch mất **≈ 16 phút** trên RTX 4060 Ti, nên Mốc 2
+không cần lùi hạn và cũng không cần Colab. Chi tiết ở `model/README.md`.
 
 ---
 
