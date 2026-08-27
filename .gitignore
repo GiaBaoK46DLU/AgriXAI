@@ -52,8 +52,31 @@ mobile/.flutter-plugins
 mobile/.flutter-plugins-dependencies
 mobile/.packages
 mobile/build/
-mobile/android/
-mobile/ios/
+
+# `android/` và `ios/` PHẢI theo Git. Quyền camera (#8) và
+# `usesCleartextTraffic` (#9) nằm trong `AndroidManifest.xml`; ignore cả thư
+# mục thì hai sửa đổi đó không bao giờ commit được — máy khác clone về chạy
+# `flutter create` sẽ nhận manifest trắng, app không xin được quyền và không
+# gọi nổi HTTP. Chỉ chặn phần công cụ sinh ra:
+mobile/android/.gradle/
+mobile/android/captures/
+mobile/android/local.properties
+mobile/android/key.properties
+mobile/android/**/GeneratedPluginRegistrant.java
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/ios/Flutter/Generated.xcconfig
+mobile/ios/Flutter/flutter_export_environment.sh
+mobile/ios/Flutter/App.framework/
+mobile/ios/Flutter/Flutter.framework/
+mobile/ios/Flutter/Flutter.podspec
+mobile/ios/Flutter/.last_build_id
+mobile/ios/**/GeneratedPluginRegistrant.*
+mobile/**/xcuserdata/
+mobile/**/*.keystore
+mobile/**/*.jks
+
+# Đồ án không làm bản desktop/web — lỡ sinh ra thì bỏ qua.
 mobile/linux/
 mobile/macos/
 mobile/windows/

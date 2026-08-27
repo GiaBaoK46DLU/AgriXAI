@@ -1,0 +1,45 @@
+name: agrixai_farmer
+description: "AgriXAI — ứng dụng nông dân chẩn đoán bệnh cà chua kèm giải thích XAI."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: '>=3.22.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Icon hai tông màu trong thiết kế được vẽ lại nguyên si bằng SVG.
+  flutter_svg: ^2.0.10
+  # Nút "Nghe đọc" ở màn 05 — đọc câu giải thích XAI bằng tiếng Việt.
+  flutter_tts: ^4.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+
+  # Open Sans bản variable: khai báo lại cùng một file cho từng weight để
+  # Flutter khớp đúng weight (không tự làm đậm giả), rồi trục `wght` trong
+  # `fontVariations` mới là thứ tạo ra độ đậm thật. Xem core/app_typography.dart.
+  fonts:
+    - family: Open Sans
+      fonts:
+        - asset: assets/fonts/OpenSans-Variable.ttf
+          weight: 400
+        - asset: assets/fonts/OpenSans-Variable.ttf
+          weight: 500
+        - asset: assets/fonts/OpenSans-Variable.ttf
+          weight: 600
+        - asset: assets/fonts/OpenSans-Variable.ttf
+          weight: 700
+        - asset: assets/fonts/OpenSans-Variable.ttf
+          weight: 800
