@@ -1,5 +1,6 @@
 import 'package:agrixai_farmer/main.dart';
 import 'package:agrixai_farmer/screens/app_shell.dart';
+import 'package:agrixai_farmer/widgets/chips.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -43,7 +44,9 @@ void main() {
 
     expect(find.text('6 lần chẩn đoán'), findsOneWidget);
 
-    await tester.tap(find.text('Nặng'));
+    // Chữ "Nặng" xuất hiện hai chỗ: chip lọc và chip mức độ của hàng 101.
+    // Phải chỉ đúng chip lọc, nếu không `tap` gặp hai kết quả và ném lỗi.
+    await tester.tap(find.widgetWithText(SelectableChip, 'Nặng'));
     await tester.pumpAndSettle();
 
     expect(find.text('1 lần chẩn đoán ở mức nặng'), findsOneWidget);

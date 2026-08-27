@@ -567,8 +567,11 @@ class DemoData {
   /// Model dùng để chẩn đoán, hiện tại backend vẫn chạy `DummyPredictor`.
   static const String modelBadge = 'DummyPredictor · 240 ms';
 
+  /// Chép nguyên văn `disclaimer` trong `shared/data/tomato_diseases.json`.
+  /// Backend trả đúng chuỗi này trong `DiagnosisDetail.disclaimer`, nên rút
+  /// gọn ở đây là chữ trên màn đổi ngay lúc nối API.
   static const String disclaimer =
-      'Gợi ý xử lý mang tính tham khảo. Cần đối chiếu với cán bộ khuyến nông địa phương và nhãn thuốc trước khi sử dụng.';
+      'Gợi ý xử lý mang tính tham khảo học thuật, tổng hợp từ khuyến cáo canh tác phổ biến. Người dùng cần đối chiếu với cán bộ khuyến nông địa phương và nhãn thuốc trước khi sử dụng.';
 
   /// '94%' → 0.94, dùng cho bề rộng thanh tiến trình.
   static double percentToFraction(String percent) {

@@ -28,6 +28,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Cắt sẵn rồi mới đọc theo chỉ số. Đọc thẳng `history[2]` thì tài khoản
+    // chưa chẩn đoán đủ ba lần là ném `RangeError` — chắc chắn xảy ra khi
+    // thay dữ liệu mẫu bằng `GET /diagnoses`.
+    final List<DiagnosisEntry> recent = DemoData.history.take(3).toList();
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -78,18 +83,17 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                for (final DiagnosisEntry entry
-                    in DemoData.history.take(3)) ...<Widget>[
+                for (int i = 0; i < recent.length; i++) ...<Widget>[
                   DiagnosisMiniRow(
-                    entry: entry,
+                    entry: recent[i],
                     onTap: () => AppNav.push(
                       context,
                       (_) => ResultScreen(
-                        diagnosisCase: DemoData.caseByKey(entry.caseKey),
+                        diagnosisCase: DemoData.caseByKey(recent[i].caseKey),
                       ),
                     ),
                   ),
-                  if (entry != DemoData.history[2]) const SizedBox(height: 9),
+                  if (i != recent.length - 1) const SizedBox(height: 9),
                 ],
               ],
             ),
