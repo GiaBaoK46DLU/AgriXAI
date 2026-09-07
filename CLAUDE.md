@@ -202,6 +202,38 @@ mảng nào. Đây là sửa **hợp đồng dùng chung** — phải báo Học
 
 ---
 
+## Tự đăng ký tài khoản (chốt 07/09/2026 — đổi quyết định ban đầu)
+
+Thiết kế cũ (ghi trong comment `mobile/lib/screens/login_screen.dart` trước đây):
+"Tài khoản do admin cấp, không có màn tự đăng ký". Học đổi quyết định này vì cần
+đăng nhập "thật" — nông dân tự tạo tài khoản được, không phải chờ admin tạo hộ.
+
+- `POST /api/v1/auth/register` — công khai, không cần đăng nhập trước. Luôn tạo
+  tài khoản vai trò `farmer`, không nhận tham số `role` như `POST /users` (endpoint
+  đó vẫn giữ nguyên, chỉ admin gọi được, dùng khi cần tạo tài khoản `admin`).
+  Đăng ký xong đăng nhập luôn (trả về access token), không bắt quay lại màn
+  Đăng nhập gõ lại mật khẩu.
+- Bảng `users` thêm cột `email` (`nullable`, `unique`) — bắt buộc ở tầng schema
+  `RegisterRequest` cho người tự đăng ký, nhưng nullable ở DB vì 3 tài khoản
+  seed tạo trước khi có cột này (`admin`/`nongdan`/`nongdan2`) không có email lúc
+  đó — đã backfill email `*@agrixai.local` cho cả ba để nhất quán.
+- Cột `email` được thêm bằng `ALTER TABLE` thủ công trực tiếp trên DB dev, **không
+  qua Alembic** dù `Dockerfile.dev` có chạy `alembic upgrade head` mỗi lần khởi
+  động. Lý do: `alembic upgrade head` từ trước tới giờ luôn là no-op (thư mục
+  `migrations/versions/` rỗng, `alembic_version` rỗng) — toàn bộ schema hiện tại
+  sinh ra bằng `create_all` (`app/db/init_db.py`), không qua migration nào. Viết
+  một migration lẻ cho riêng cột này mà không có migration nền cho 7 bảng còn lại
+  sẽ phá `alembic upgrade head` trên máy mới (thiếu bước tạo bảng gốc). Máy khác
+  `pull` code mới rồi chạy container mới hoàn toàn (DB trống) vẫn tự đúng vì
+  `create_all` tạo bảng `users` kèm cột `email` ngay từ đầu — chỉ DB **đã tồn tại**
+  từ trước (như trên máy Học) mới cần tự chạy `ALTER TABLE users ADD COLUMN email
+  VARCHAR(255)` một lần. Bao giờ thật sự cần Alembic (nhiều máy có dữ liệu thật
+  cần đồng bộ schema) thì phải viết migration nền cho toàn bộ 7 bảng trước.
+- `email-validator` thêm vào `backend/requirements.txt` (bắt buộc để dùng
+  `pydantic.EmailStr`).
+
+---
+
 ## Tích hợp mô hình thật (chốt 07/09/2026 — IN-01, IN-02)
 
 Mốc 4 lẽ ra bắt đầu 01/10 nhưng Bảo chủ động kéo sớm phần này lên ngay sau khi có
@@ -276,6 +308,75 @@ mới** ở backend trước khi web admin đụng vào được — theo đúng
 
 ---
 
+## Nhận diện ngoại tuyến trên điện thoại (chốt 07/09/2026)
+
+Mobile giờ chạy được suy luận **ngay trên máy** khi không gọi được backend —
+nông dân ở vùng sóng yếu vẫn chẩn đoán được. Không phải hướng đi trong 76 issue
+gốc, làm theo yêu cầu trực tiếp của Học.
+
+**Chế độ hybrid:** `AnalyzingScreen` luôn thử gọi `POST /diagnoses` trước; bất
+kỳ lỗi nào (mất mạng, timeout 8s, backend sập...) đều rơi thẳng sang
+`OfflineInferenceService` mà không phân biệt loại lỗi — với nông dân, có kết
+quả quan trọng hơn thông báo lỗi chi tiết.
+
+**Vì sao ONNX chứ không phải chạy thẳng file `.pt`:** không có runtime PyTorch
+nào chạy tốt trên Flutter/Android ở mức nhẹ cân; ONNX Runtime có plugin Flutter
+ổn định (`flutter_onnxruntime`) và `torch.onnx.export` xuất thẳng từ checkpoint
+hiện có mà không cần đổi gì ở `model/`.
+
+**Vì sao vẫn giữ được vùng khoanh (XAI) mà không cần Grad-CAM thật:** Grad-CAM
+cần lan truyền ngược (backward), ONNX Runtime trên điện thoại chỉ chạy forward.
+Kiến trúc hiện tại (EfficientNet-B0: GAP rồi một lớp Linear duy nhất) cho phép
+dùng **CAM cổ điển** (Zhou et al., 2016) — về công thức, với đúng kiểu kiến
+trúc này, gần tương đương Grad-CAM — tính được bằng một phép nhân ma trận duy
+nhất trong lúc forward. `model/src/export_onnx.py` cài luôn phép nhân đó thành
+một `Conv2d` 1×1 (trọng số copy từ lớp `Linear` cuối) và xuất chung vào MỘT đồ
+thị ONNX, output ra cả xác suất lẫn CAM thô của **mọi lớp** — điện thoại tự
+chọn đúng lớp theo `argmax`, tự ReLU + chuẩn hoá min-max, không cần biết gì về
+kiến trúc gốc.
+
+**Nếu đổi kiến trúc mô hình** (khác GAP + một lớp `Linear` cuối, ví dụ thêm
+tầng ẩn hay dùng attention pooling) thì `_ExportWrapper` trong `export_onnx.py`
+không còn đúng nữa — phải viết lại cách tính CAM, không chỉ export lại.
+
+**Cách sinh file mô hình cho mobile** (không tự động, làm lại thủ công mỗi khi
+`model/checkpoints/leaf_disease_detection_model.pt` đổi):
+
+```bash
+docker exec plantdx-backend pip install onnx onnxruntime  # nếu image chưa có
+docker exec -w /model plantdx-backend python -m src.export_onnx \
+    --checkpoint /model/checkpoints/leaf_disease_detection_model.pt \
+    --out /app/model_export_tmp
+docker cp plantdx-backend:/app/model_export_tmp/tomato_leaf_v1.onnx mobile/assets/model/
+docker cp plantdx-backend:/app/model_export_tmp/tomato_leaf_v1_meta.json mobile/assets/model/
+cp shared/data/tomato_diseases.json mobile/assets/model/tomato_diseases.json
+```
+
+`mobile/assets/model/tomato_diseases.json` là **bản sao thủ công** của
+`shared/data/tomato_diseases.json`, đóng gói cứng vào app để tra tên bệnh/mức
+độ nặng/câu giải thích lúc không có mạng (không gọi `GET /diseases` được).
+Cố tình không tự động đồng bộ hai file này — sửa nội dung bệnh (triệu chứng, xử
+lý...) trong `shared/data/` mà quên chép lại thì bản offline sẽ hiển thị nội
+dung cũ, tự nhắc bản thân kiểm tra khi sửa danh mục bệnh.
+
+`mobile/lib/services/offline_inference_service.dart` cũng **chép tay lại**
+logic của `backend/app/services/xai/explain.py` + `overlay.py` (ngưỡng cắt
+heatmap 0.5, tỉ lệ vùng tối thiểu 0.5%, cách mô tả vị trí, câu giải thích) bằng
+Dart thuần — không dùng chung code với backend vì khác ngôn ngữ. Sửa một bên
+phải nhớ soát lại bên kia. Điểm khác duy nhất với backend: backend vẽ elip
+bằng OpenCV `fitEllipse` trên đường viền thật của vùng heatmap; bản Dart tìm
+vùng liên thông lớn nhất bằng BFS trên lưới 56×56 rồi vẽ elip theo khung bao —
+đơn giản hơn nhưng đủ dùng vì CAM gốc chỉ có độ phân giải 7×7.
+
+**Nâng cấp toolchain Android đi kèm bắt buộc** (không phải lựa chọn — thiếu là
+build APK lỗi ngay): Gradle 8.3→8.14.1, AGP 8.2.1→8.11.1, Kotlin 2.1.0→2.2.20,
+vì Flutter SDK trên máy (3.47.2, cài 26/08/2026) yêu cầu tối thiểu các mức đó.
+`ndkVersion` ghim cứng về bản NDK 27.1 đã cài sẵn máy vì bản 28.2 Flutter đòi
+tải không tải được (không phải NDK bắt buộc cho tính năng offline, chỉ là bản
+mới nhất không tải nổi trên mạng lúc làm).
+
+---
+
 ## Trạng thái hiện tại (20/08/2026 — model/backend/mobile cập nhật 07/09/2026)
 
 | Phần | Tình trạng |
@@ -285,7 +386,7 @@ mới** ở backend trước khi web admin đụng vào được — theo đúng
 | `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `bao-cao-huan-luyen-mo-hinh.md` ở thư mục gốc cho số liệu đầy đủ. Từ 07/09/2026, **`model/checkpoints/` và `model/outputs/` đã theo Git** (quyết định của Bảo, đảo ngược quyết định ban đầu) — máy khác `pull` về là chạy được model thật ngay, không phải huấn luyện lại. Chỉ **dữ liệu PlantVillage `model/data/raw/` (18.160 ảnh / 10 lớp, ~275 MB) vẫn nằm ngoài Git** vì tải lại được từ Kaggle (nguồn ghi ở issue #11), không cần bắt repo gánh dung lượng đó |
 | `model/research/` | Đã commit — danh mục 46 bài báo chia 8 nhóm + bản tổng hợp đối chiếu kết quả với các công bố. Xem mục "Phần việc của Bảo" bên dưới |
 | `backend/` code | **Chạy mô hình thật** (không còn `DummyPredictor` mặc định) — 19/19 test pass, xem mục "Tích hợp mô hình thật" phía trên |
-| `mobile/` (Flutter) | Giao diện đã dựng xong từ trước; **luồng chính đã nối API thật** ngày 07/09/2026: đăng nhập → danh mục → chụp/chọn ảnh → chẩn đoán thật kèm khoanh vùng → gợi ý xử lý (thuốc + video). Màn Lịch sử vẫn còn dữ liệu mẫu — chưa nối, để sau |
+| `mobile/` (Flutter) | Giao diện đã dựng xong từ trước; **luồng chính đã nối API thật** ngày 07/09/2026: đăng nhập/đăng ký → danh mục → chụp/chọn ảnh → chẩn đoán thật kèm khoanh vùng → gợi ý xử lý (thuốc + video). Có màn **Đăng ký** tự phục vụ (xem mục "Tự đăng ký tài khoản") và **chẩn đoán ngoại tuyến** khi mất mạng (xem mục "Nhận diện ngoại tuyến trên điện thoại"). Màn Lịch sử vẫn còn dữ liệu mẫu — chưa nối, để sau |
 | `web-admin/` (React) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026, xem "Phạm vi tương lai: web admin" phía trên |
 
 Backend đã chạy được thật: đăng nhập, tạo lô đất, tải ảnh lên, chẩn đoán bằng

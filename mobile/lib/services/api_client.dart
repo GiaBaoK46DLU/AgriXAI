@@ -97,7 +97,9 @@ class ApiClient {
       filename: filename,
     ));
 
-    final http.StreamedResponse streamed = await _http.send(request);
+    final http.StreamedResponse streamed = await _http
+        .send(request)
+        .timeout(const Duration(seconds: 8));
     final http.Response response = await http.Response.fromStream(streamed);
     return _decode(response);
   }

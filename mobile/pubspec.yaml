@@ -24,6 +24,12 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   # Mở link mua thuốc và video YouTube hướng dẫn ở màn 06.
   url_launcher: ^6.3.1
+  # Chạy mô hình nhận diện bệnh ngay trên máy khi không có mạng (MB offline).
+  flutter_onnxruntime: ^1.8.0
+  # Giải mã/resize ảnh thành tensor đầu vào và vẽ vùng khoanh khi suy luận offline.
+  image: ^4.3.0
+  # Thư mục tạm để lưu ảnh đã khoanh vùng khi suy luận offline.
+  path_provider: ^2.1.4
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +42,11 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    # Mô hình nhận diện bệnh + danh mục bệnh, dùng khi không có mạng — xem
+    # mobile/lib/services/offline_inference_service.dart.
+    - assets/model/tomato_leaf_v1.onnx
+    - assets/model/tomato_leaf_v1_meta.json
+    - assets/model/tomato_diseases.json
 
   # Open Sans bản variable: khai báo lại cùng một file cho từng weight để
   # Flutter khớp đúng weight (không tự làm đậm giả), rồi trục `wght` trong

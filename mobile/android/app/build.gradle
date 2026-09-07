@@ -10,7 +10,9 @@ android {
     // flutter_tts biên dịch với SDK 36 — thấp hơn thì Gradle chỉ cảnh báo,
     // không chặn build, nhưng cứ khớp cho khỏi cảnh báo mỗi lần build.
     compileSdk = 36
-    ndkVersion = flutter.ndkVersion
+    // flutter.ndkVersion (28.2) không tải được trên máy này — dùng bản NDK đã
+    // cài sẵn (27.1) thay vì để Gradle cố tải lại mỗi lần build.
+    ndkVersion = "27.1.12297006"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

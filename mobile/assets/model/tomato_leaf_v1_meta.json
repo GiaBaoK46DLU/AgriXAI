@@ -1,0 +1,30 @@
+{
+  "model_version": "efficientnet_b0-20260907-1443",
+  "image_size": 224,
+  "mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "class_keys": [
+    "bacterial_spot",
+    "early_blight",
+    "late_blight",
+    "leaf_mold",
+    "septoria_leaf_spot",
+    "spider_mites",
+    "target_spot",
+    "yellow_leaf_curl_virus",
+    "mosaic_virus",
+    "healthy"
+  ],
+  "cam_grid": [
+    7,
+    7
+  ]
+}

@@ -10,6 +10,11 @@ env/
 .ruff_cache/
 .ipynb_checkpoints/
 
+# ─── Docker cục bộ ──────────────────────────────────────
+# Override port/cấu hình riêng cho máy đang xung đột cổng với container khác —
+# không phải cấu hình chung của nhóm, đừng commit.
+docker-compose.override.yml
+
 # ─── Biến môi trường ────────────────────────────────────
 .env
 .env.local
@@ -55,6 +60,7 @@ mobile/build/
 # `flutter create` sẽ nhận manifest trắng, app không xin được quyền và không
 # gọi nổi HTTP. Chỉ chặn phần công cụ sinh ra:
 mobile/android/.gradle/
+mobile/android/build/
 mobile/android/captures/
 mobile/android/local.properties
 mobile/android/key.properties

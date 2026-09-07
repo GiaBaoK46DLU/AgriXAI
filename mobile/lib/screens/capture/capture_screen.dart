@@ -76,9 +76,21 @@ class _CaptureScreenState extends State<CaptureScreen> {
 
   void _analyze() {
     if (_image == null) return;
+    final String? plotName = _plotId == null
+        ? null
+        : _plots
+            .firstWhere(
+              (({int id, String name}) p) => p.id == _plotId,
+              orElse: () => (id: -1, name: ''),
+            )
+            .name;
     AppNav.replace(
       context,
-      (_) => AnalyzingScreen(image: _image!, plotId: _plotId),
+      (_) => AnalyzingScreen(
+        image: _image!,
+        plotId: _plotId,
+        plotName: plotName?.isEmpty ?? true ? null : plotName,
+      ),
     );
   }
 

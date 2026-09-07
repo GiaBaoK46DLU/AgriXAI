@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
@@ -245,6 +247,8 @@ class DiagnosisCase {
     required this.top3,
     this.imageUrl,
     this.overlayUrl,
+    this.imageFile,
+    this.overlayFile,
     this.urgent,
     this.modelBadge = 'DummyPredictor',
     this.disclaimer = '',
@@ -345,6 +349,12 @@ class DiagnosisCase {
   /// khi hiển thị. `null` ở dữ liệu mẫu (chưa từng có ảnh thật).
   final String? imageUrl;
   final String? overlayUrl;
+
+  /// Ảnh cục bộ khi chẩn đoán ngoại tuyến (`OfflineInferenceService`) — ưu
+  /// tiên hơn `imageUrl`/`overlayUrl` nếu có, vì lúc đó chưa từng có URL nào
+  /// từ backend. Xem `ResultScreen._imageFrame`.
+  final File? imageFile;
+  final File? overlayFile;
 
   /// Dòng cảnh báo đỏ-cam ở màn 06; `null` thì không hiện thẻ nào.
   final String? urgent;

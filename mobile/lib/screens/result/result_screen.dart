@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -207,9 +209,11 @@ class _ResultScreenState extends State<ResultScreen> {
   /// sẵn) và `image_url` (ảnh gốc). Không có ảnh thật (dữ liệu mẫu) thì hiện
   /// placeholder; có `overlay_url` mới hiện được nút gạt.
   Widget _imageFrame() {
-    final bool hasOverlay = _case.overlayUrl != null;
+    final bool hasOverlay = _case.overlayUrl != null || _case.overlayFile != null;
     final bool showOverlay = _xai && hasOverlay;
-    final String? shownUrl = showOverlay ? _case.overlayUrl : _case.imageUrl;
+    final File? shownFile = showOverlay ? _case.overlayFile : _case.imageFile;
+    final String? shownUrl =
+        shownFile != null ? null : (showOverlay ? _case.overlayUrl : _case.imageUrl);
 
     return Container(
       height: 272,
@@ -227,6 +231,7 @@ class _ResultScreenState extends State<ResultScreen> {
               child: ImageSlot(
                 placeholder: 'Kéo ảnh lá bệnh vào đây',
                 onDark: true,
+                file: shownFile,
                 imageUrl: shownUrl,
               ),
             ),

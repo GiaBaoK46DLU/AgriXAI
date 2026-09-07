@@ -13,6 +13,7 @@ import '../../core/app_transitions.dart';
 import '../../core/app_typography.dart';
 import '../../models/models.dart';
 import '../../services/api_client.dart';
+import '../../services/offline_inference_service.dart';
 import '../../services/session.dart' as session;
 import '../../widgets/agri_icons.dart';
 import '../../widgets/agri_screen.dart';
@@ -27,10 +28,14 @@ import '../result/result_screen.dart';
 /// chờ) trong lúc `POST /diagnoses` chạy thật ở nền; màn chỉ chuyển tiếp khi
 /// cả hai xong. Backend giới hạn 10 MB/ảnh nên nén trước khi gửi.
 class AnalyzingScreen extends StatefulWidget {
-  const AnalyzingScreen({required this.image, this.plotId, super.key});
+  const AnalyzingScreen({required this.image, this.plotId, this.plotName, super.key});
 
   final File image;
   final int? plotId;
+
+  /// Tên lô đất để hiện trên kết quả nếu phải rơi về suy luận ngoại tuyến —
+  /// lúc đó không gọi được `GET /plots` nên phải mang theo từ màn Chụp ảnh.
+  final String? plotName;
 
   @override
   State<AnalyzingScreen> createState() => _AnalyzingScreenState();
@@ -81,11 +86,23 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
       );
       final List<int> bytes = compressed ?? await widget.image.readAsBytes();
 
-      final DiagnosisCase result = await session.diagnosisService.diagnose(
-        imageBytes: bytes,
-        filename: widget.image.uri.pathSegments.last,
-        plotId: widget.plotId,
-      );
+      DiagnosisCase result;
+      try {
+        result = await session.diagnosisService.diagnose(
+          imageBytes: bytes,
+          filename: widget.image.uri.pathSegments.last,
+          plotId: widget.plotId,
+        );
+      } catch (_) {
+        // Không gọi được backend (mất mạng, sập tường lửa, server tắt...) —
+        // tự chuyển sang mô hình chạy ngay trên máy (xem CLAUDE.md mục suy
+        // luận ngoại tuyến). Không phân biệt loại lỗi mạng cụ thể vì với
+        // nông dân, "cứ ra được kết quả" quan trọng hơn thông báo lỗi chi tiết.
+        result = await OfflineInferenceService.instance.diagnose(
+          imageFile: widget.image,
+          plotLabel: widget.plotName ?? 'Chưa gán lô đất',
+        );
+      }
 
       // Giữ tối thiểu ~2.6s để ba bước phía trên kịp chạy hết, đúng nhịp
       // prototype — API thật thường nhanh hơn khoảng đó (~350ms trên CPU).
@@ -97,7 +114,7 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
       if (mounted) setState(() => _error = e.message);
     } catch (_) {
       if (mounted) {
-        setState(() => _error = 'Không kết nối được tới máy chủ. Thử lại nhé.');
+        setState(() => _error = 'Không phân tích được ảnh, kể cả ở chế độ ngoại tuyến. Thử lại nhé.');
       }
     }
   }
