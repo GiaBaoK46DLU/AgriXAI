@@ -32,6 +32,9 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[str] = mapped_column(String(255))
     full_name: Mapped[str] = mapped_column(String(120))
+    # Nullable vì 3 tài khoản seed tạo trước khi có cột này không có email —
+    # bắt buộc ở tầng schema (RegisterRequest) cho người tự đăng ký mới.
+    email: Mapped[str | None] = mapped_column(String(255), unique=True, index=True, default=None)
     phone: Mapped[str | None] = mapped_column(String(20), default=None)
     role: Mapped[str] = mapped_column(String(20), default=UserRole.FARMER, index=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)

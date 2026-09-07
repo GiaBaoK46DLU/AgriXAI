@@ -14,10 +14,13 @@ import '../widgets/glass_card.dart';
 import '../widgets/image_slot.dart';
 import '../widgets/inputs.dart';
 import 'app_shell.dart';
+import 'register_screen.dart';
 
-/// **01 Đăng nhập** — UC-M1. Tài khoản do admin cấp, không có màn tự đăng ký.
+/// **01 Đăng nhập** — UC-M1.
 ///
-/// API: `POST /api/v1/auth/login`, token lưu qua `AuthService`.
+/// API: `POST /api/v1/auth/login`, token lưu qua `AuthService`. Tài khoản
+/// `farmer` tự tạo được qua màn Đăng ký (`POST /api/v1/auth/register`); vai
+/// trò `admin` vẫn phải do admin khác cấp qua `POST /users`.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -69,6 +72,10 @@ class _LoginScreenState extends State<LoginScreen> {
   void _browseCatalog() {
     AppScope.read(context).select(AgriTab.catalog);
     AppNav.reset(context, (_) => const AppShell());
+  }
+
+  void _goToRegister() {
+    AppNav.push(context, (_) => const RegisterScreen());
   }
 
   @override
@@ -215,7 +222,15 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 10),
+        GhostButton(
+          label: 'Chưa có tài khoản? Đăng ký ngay',
+          onPressed: _goToRegister,
+          color: AgriColors.inkA(.88),
+          fontSize: 14.5,
+          minHeight: 46,
+          padding: EdgeInsets.zero,
+        ),
         GhostButton(
           label: 'Tra cứu bệnh mà không cần đăng nhập',
           onPressed: _browseCatalog,

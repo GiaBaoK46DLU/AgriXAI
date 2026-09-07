@@ -7,6 +7,7 @@ class CurrentUser {
     required this.username,
     required this.fullName,
     required this.role,
+    this.email,
   });
 
   factory CurrentUser.fromJson(Map<String, dynamic> json) => CurrentUser(
@@ -14,17 +15,20 @@ class CurrentUser {
         username: json['username'] as String,
         fullName: json['full_name'] as String,
         role: json['role'] as String,
+        email: json['email'] as String?,
       );
 
   final int id;
   final String username;
   final String fullName;
   final String role;
+  final String? email;
 
   bool get isAdmin => role == 'admin';
 }
 
-/// Đăng nhập bằng tài khoản do admin cấp — không có màn tự đăng ký.
+/// Đăng nhập/đăng ký. Tài khoản `admin` vẫn phải do admin khác cấp qua
+/// `POST /users` — tự đăng ký (`POST /auth/register`) chỉ tạo vai trò `farmer`.
 ///
 /// Token lưu bằng `flutter_secure_storage` để sống sót qua lần mở app kế
 /// tiếp; nạp lại vào [ApiClient] mỗi lần app khởi động (xem [tryRestore]).
@@ -43,10 +47,33 @@ class AuthService {
       'username': username,
       'password': password,
     });
+    return _applyToken(body as Map<String, dynamic>);
+  }
+
+  /// Tự đăng ký — đăng nhập luôn sau khi tạo tài khoản thành công, không bắt
+  /// người dùng phải quay lại màn Đăng nhập gõ lại mật khẩu vừa nhập.
+  Future<CurrentUser> register({
+    required String username,
+    required String password,
+    required String fullName,
+    required String email,
+    String? phone,
+  }) async {
+    final dynamic body = await _api.postJson('/auth/register', <String, dynamic>{
+      'username': username,
+      'password': password,
+      'full_name': fullName,
+      'email': email,
+      if (phone != null && phone.isNotEmpty) 'phone': phone,
+    });
+    return _applyToken(body as Map<String, dynamic>);
+  }
+
+  Future<CurrentUser> _applyToken(Map<String, dynamic> body) async {
     final String token = body['access_token'] as String;
     _api.setToken(token);
     await _tokenStore.write(token);
-    return me();
+    return CurrentUser.fromJson(body['user'] as Map<String, dynamic>);
   }
 
   /// Gọi lúc app khởi động — nếu có token đã lưu thì nạp lại và xác nhận

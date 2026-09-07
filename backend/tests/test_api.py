@@ -82,6 +82,46 @@ def test_login_wrong_password(client, seeded):
     assert response.status_code == 401
 
 
+def test_register_creates_farmer_and_logs_in(client, seeded):
+    response = client.post(f"{API}/auth/register", json={
+        "username": "nongdan_moi",
+        "password": "mkkhachang",
+        "full_name": "Nông dân Mới",
+        "email": "nongdan.moi@example.com",
+    })
+    assert response.status_code == 201, response.text
+    body = response.json()
+    assert body["user"]["role"] == "farmer"  # tự đăng ký không được chọn vai trò
+    assert body["user"]["email"] == "nongdan.moi@example.com"
+    assert "access_token" in body  # đăng ký xong đăng nhập luôn
+
+
+def test_register_rejects_duplicate_username(client, seeded):
+    response = client.post(f"{API}/auth/register", json={
+        "username": "nongdan",  # đã tồn tại từ fixture seeded
+        "password": "mkkhachang",
+        "full_name": "Trùng tên",
+        "email": "trung.ten@example.com",
+    })
+    assert response.status_code == 409
+
+
+def test_register_rejects_duplicate_email(client, seeded):
+    client.post(f"{API}/auth/register", json={
+        "username": "co_email_truoc",
+        "password": "mkkhachang",
+        "full_name": "Có Email Trước",
+        "email": "email.trung@example.com",
+    })
+    response = client.post(f"{API}/auth/register", json={
+        "username": "co_email_sau",
+        "password": "mkkhachang",
+        "full_name": "Có Email Sau",
+        "email": "email.trung@example.com",
+    })
+    assert response.status_code == 409
+
+
 def test_me(client, farmer_headers):
     body = client.get(f"{API}/auth/me", headers=farmer_headers).json()
     assert body["username"] == "nongdan"

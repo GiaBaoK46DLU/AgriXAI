@@ -8,6 +8,7 @@ alembic>=1.13
 
 pydantic>=2.6
 pydantic-settings>=2.3   # cần NoDecode (xem app/core/config.py)
+email-validator>=2.1     # bắt buộc để dùng EmailStr (xem schemas/auth.py)
 
 PyJWT>=2.8
 bcrypt>=4.1

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 from app.models.user import UserRole
 
@@ -23,16 +23,31 @@ class Token(BaseModel):
 class UserBase(BaseModel):
     username: str = Field(min_length=3, max_length=50)
     full_name: str = Field(min_length=1, max_length=120)
+    email: EmailStr | None = None
     phone: str | None = Field(default=None, max_length=20)
     role: str = UserRole.FARMER
 
 
 class UserCreate(UserBase):
+    """Admin tạo tài khoản — được chọn vai trò, xem `POST /users`."""
+
     password: str = Field(min_length=6, max_length=128)
+
+
+class RegisterRequest(BaseModel):
+    """Tự đăng ký — luôn tạo với vai trò `farmer`, không được chọn vai trò
+    như `UserCreate` (chỉ admin mới cấp quyền quản trị)."""
+
+    username: str = Field(min_length=3, max_length=50)
+    password: str = Field(min_length=6, max_length=128)
+    full_name: str = Field(min_length=1, max_length=120)
+    email: EmailStr
+    phone: str | None = Field(default=None, max_length=20)
 
 
 class UserUpdate(BaseModel):
     full_name: str | None = Field(default=None, max_length=120)
+    email: EmailStr | None = None
     phone: str | None = Field(default=None, max_length=20)
     role: str | None = None
     is_active: bool | None = None

@@ -11,8 +11,15 @@ from sqlalchemy import select
 from app.api.deps import CurrentUser, DbSession
 from app.core.config import settings
 from app.core.security import create_access_token, hash_password, verify_password
-from app.models.user import User
-from app.schemas.auth import LoginRequest, LoginResponse, Token, UserOut, UserUpdate
+from app.models.user import User, UserRole
+from app.schemas.auth import (
+    LoginRequest,
+    LoginResponse,
+    RegisterRequest,
+    Token,
+    UserOut,
+    UserUpdate,
+)
 
 router = APIRouter()
 
@@ -40,6 +47,39 @@ def _issue(user: User) -> dict:
         "token_type": "bearer",
         "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
     }
+
+
+@router.post("/register", response_model=LoginResponse, status_code=status.HTTP_201_CREATED,
+             summary="Tự đăng ký tài khoản nông dân")
+def register(payload: RegisterRequest, db: DbSession):
+    """Công khai, không cần đăng nhập trước — luôn tạo với vai trò `farmer`.
+
+    Muốn tạo tài khoản `admin` phải dùng `POST /users` (yêu cầu quyền admin),
+    xem `app/api/v1/endpoints/users.py`.
+    """
+    if db.scalar(select(User.id).where(User.username == payload.username)) is not None:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            f"Tên đăng nhập '{payload.username}' đã tồn tại",
+        )
+    if db.scalar(select(User.id).where(User.email == payload.email)) is not None:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            "Email này đã được đăng ký",
+        )
+
+    user = User(
+        username=payload.username,
+        full_name=payload.full_name,
+        email=payload.email,
+        phone=payload.phone,
+        role=UserRole.FARMER,
+        hashed_password=hash_password(payload.password),
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return {**_issue(user), "user": user}
 
 
 @router.post("/login", response_model=LoginResponse, summary="Đăng nhập (JSON)")

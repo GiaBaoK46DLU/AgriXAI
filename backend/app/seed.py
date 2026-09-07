@@ -32,11 +32,11 @@ logger = logging.getLogger(__name__)
 
 USERS = [
     {"username": "admin", "password": "admin123", "full_name": "Quản trị hệ thống",
-     "role": UserRole.ADMIN, "phone": "0900000001"},
+     "role": UserRole.ADMIN, "phone": "0900000001", "email": "admin@agrixai.local"},
     {"username": "nongdan", "password": "nongdan123", "full_name": "Nguyễn Văn Ba",
-     "role": UserRole.FARMER, "phone": "0900000002"},
+     "role": UserRole.FARMER, "phone": "0900000002", "email": "nongdan@agrixai.local"},
     {"username": "nongdan2", "password": "nongdan123", "full_name": "Trần Thị Bốn",
-     "role": UserRole.FARMER, "phone": "0900000003"},
+     "role": UserRole.FARMER, "phone": "0900000003", "email": "nongdan2@agrixai.local"},
 ]
 
 PLOTS = [
@@ -184,6 +184,7 @@ def seed_users(db) -> dict[str, User]:
             user = User(
                 username=spec["username"],
                 full_name=spec["full_name"],
+                email=spec["email"],
                 phone=spec["phone"],
                 role=spec["role"],
                 hashed_password=hash_password(spec["password"]),
