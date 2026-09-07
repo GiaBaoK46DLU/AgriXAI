@@ -39,7 +39,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
   DiagnosisCase get _case => widget.diagnosisCase;
 
-  Disease get _disease => DemoData.diseaseByKey(_case.diseaseKey);
+  Disease get _disease => _case.disease;
 
   @override
   void dispose() {
@@ -151,12 +151,12 @@ class _ResultScreenState extends State<ResultScreen> {
               children: <Widget>[
                 MetaChip(label: _case.plot),
                 MetaChip(label: _case.time),
-                const MetaChip(label: DemoData.modelBadge),
+                MetaChip(label: _case.modelBadge),
               ],
             ),
             const SizedBox(height: 14),
             Text(
-              DemoData.disclaimer,
+              _case.disclaimer,
               style: agriStyle(
                 size: 12,
                 height: 1.55,
@@ -203,8 +203,14 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
-  /// Khung ảnh 272px + lớp Grad-CAM + nút gạt XAI.
+  /// Khung ảnh 272px — gạt giữa `overlay_url` (elip khoanh vùng do backend vẽ
+  /// sẵn) và `image_url` (ảnh gốc). Không có ảnh thật (dữ liệu mẫu) thì hiện
+  /// placeholder; có `overlay_url` mới hiện được nút gạt.
   Widget _imageFrame() {
+    final bool hasOverlay = _case.overlayUrl != null;
+    final bool showOverlay = _xai && hasOverlay;
+    final String? shownUrl = showOverlay ? _case.overlayUrl : _case.imageUrl;
+
     return Container(
       height: 272,
       decoration: BoxDecoration(
@@ -217,35 +223,36 @@ class _ResultScreenState extends State<ResultScreen> {
         borderRadius: BorderRadius.circular(32),
         child: Stack(
           children: <Widget>[
-            const Positioned.fill(
+            Positioned.fill(
               child: ImageSlot(
                 placeholder: 'Kéo ảnh lá bệnh vào đây',
                 onDark: true,
+                imageUrl: shownUrl,
               ),
             ),
-            if (_xai) const Positioned.fill(child: GradCamOverlay()),
-            Positioned(
-              top: 14,
-              right: 14,
-              child: GlassCard(
-                style: GlassStyle.overImage,
-                blurSigma: 26,
-                radius: 999,
-                padding: const EdgeInsets.all(4),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    _xaiToggle('Vùng nghi ngờ', _xai, () {
-                      setState(() => _xai = true);
-                    }),
-                    const SizedBox(width: 4),
-                    _xaiToggle('Ảnh gốc', !_xai, () {
-                      setState(() => _xai = false);
-                    }),
-                  ],
+            if (hasOverlay)
+              Positioned(
+                top: 14,
+                right: 14,
+                child: GlassCard(
+                  style: GlassStyle.overImage,
+                  blurSigma: 26,
+                  radius: 999,
+                  padding: const EdgeInsets.all(4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      _xaiToggle('Vùng nghi ngờ', _xai, () {
+                        setState(() => _xai = true);
+                      }),
+                      const SizedBox(width: 4),
+                      _xaiToggle('Ảnh gốc', !_xai, () {
+                        setState(() => _xai = false);
+                      }),
+                    ],
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),

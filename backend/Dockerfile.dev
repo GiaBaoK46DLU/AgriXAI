@@ -10,7 +10,13 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+COPY requirements.txt requirements-model.txt ./
+
+# Lớp riêng cho torch (CPU-only — máy demo không có GPU, xem IN-01 trong
+# CLAUDE.md) để Docker cache lại, không tải lại PyTorch mỗi khi
+# requirements.txt đổi.
+RUN pip install --no-cache-dir -r requirements-model.txt \
+    --index-url https://download.pytorch.org/whl/cpu
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Chúng ta sẽ mount code source vào /app qua volume trong docker-compose.

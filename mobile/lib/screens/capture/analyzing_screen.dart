@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_glass.dart';
@@ -8,19 +11,26 @@ import '../../core/app_metrics.dart';
 import '../../core/app_scope.dart';
 import '../../core/app_transitions.dart';
 import '../../core/app_typography.dart';
-import '../../data/demo_data.dart';
+import '../../models/models.dart';
+import '../../services/api_client.dart';
+import '../../services/session.dart' as session;
 import '../../widgets/agri_icons.dart';
 import '../../widgets/agri_screen.dart';
+import '../../widgets/buttons.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/misc.dart';
 import '../result/result_screen.dart';
 
 /// **04 Đang phân tích** — UC-M7.
 ///
-/// Mốc thời gian lấy đúng prototype: 600ms · 1400ms · 2100ms rồi 2600ms sang
-/// màn 05. App thật cho từng bước chạy theo trạng thái request thực.
+/// Ba nhãn bước chạy theo mốc thời gian cố định (chỉ để mắt có gì nhìn khi
+/// chờ) trong lúc `POST /diagnoses` chạy thật ở nền; màn chỉ chuyển tiếp khi
+/// cả hai xong. Backend giới hạn 10 MB/ảnh nên nén trước khi gửi.
 class AnalyzingScreen extends StatefulWidget {
-  const AnalyzingScreen({super.key});
+  const AnalyzingScreen({required this.image, this.plotId, super.key});
+
+  final File image;
+  final int? plotId;
 
   @override
   State<AnalyzingScreen> createState() => _AnalyzingScreenState();
@@ -28,13 +38,14 @@ class AnalyzingScreen extends StatefulWidget {
 
 class _AnalyzingScreenState extends State<AnalyzingScreen> {
   static const List<String> _labels = <String>[
-    'Tải ảnh lên máy chủ',
-    'Nhận diện bệnh (ResNet-50)',
+    'Nén và tải ảnh lên máy chủ',
+    'Nhận diện bệnh',
     'Khoanh vùng nghi ngờ (Grad-CAM)',
   ];
 
   final List<Timer> _timers = <Timer>[];
   int _step = 0;
+  String? _error;
 
   @override
   void initState() {
@@ -43,8 +54,8 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
       Timer(const Duration(milliseconds: 600), () => _setStep(1)),
       Timer(const Duration(milliseconds: 1400), () => _setStep(2)),
       Timer(const Duration(milliseconds: 2100), () => _setStep(3)),
-      Timer(const Duration(milliseconds: 2600), _openResult),
     ]);
+    _run();
   }
 
   @override
@@ -60,12 +71,35 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
     setState(() => _step = value);
   }
 
-  void _openResult() {
-    if (!mounted) return;
-    AppNav.replace(
-      context,
-      (_) => ResultScreen(diagnosisCase: DemoData.caseByKey('severe')),
-    );
+  Future<void> _run() async {
+    try {
+      final Uint8List? compressed = await FlutterImageCompress.compressWithFile(
+        widget.image.path,
+        quality: 82,
+        minWidth: 1280,
+        minHeight: 1280,
+      );
+      final List<int> bytes = compressed ?? await widget.image.readAsBytes();
+
+      final DiagnosisCase result = await session.diagnosisService.diagnose(
+        imageBytes: bytes,
+        filename: widget.image.uri.pathSegments.last,
+        plotId: widget.plotId,
+      );
+
+      // Giữ tối thiểu ~2.6s để ba bước phía trên kịp chạy hết, đúng nhịp
+      // prototype — API thật thường nhanh hơn khoảng đó (~350ms trên CPU).
+      await Future<void>.delayed(const Duration(milliseconds: 2600));
+      _setStep(3);
+      if (!mounted) return;
+      AppNav.replace(context, (_) => ResultScreen(diagnosisCase: result));
+    } on ApiException catch (e) {
+      if (mounted) setState(() => _error = e.message);
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = 'Không kết nối được tới máy chủ. Thử lại nhé.');
+      }
+    }
   }
 
   @override
@@ -82,58 +116,97 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Center(
-                child: AgriPulse(
-                  child: GlassCard(
-                    style: const GlassStyle(
-                      topOpacity: .82,
-                      bottomOpacity: .41,
-                      borderOpacity: .62,
-                      blurSigma: 28,
-                    ),
-                    radius: 999,
-                    width: 136,
-                    height: 136,
-                    child: Center(
-                      child: AgriIcons.leaf(
-                        64,
-                        a: AgriColors.olive,
-                        b: AgriColors.primary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 28),
-              Text(
-                'Đang phân tích ảnh…',
-                textAlign: TextAlign.center,
-                style: agriStyle(size: 24, weight: FontWeight.w700, em: -0.02),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Thường mất 2–4 giây tuỳ đường mạng.',
-                textAlign: TextAlign.center,
-                style: agriStyle(size: 14, color: AgriColors.inkA(.72)),
-              ),
-              const SizedBox(height: 28),
-              for (int i = 0; i < _labels.length; i++) ...<Widget>[
-                _StepRow(index: i, label: _labels[i], done: _step > i),
-                if (i != _labels.length - 1) const SizedBox(height: 11),
-              ],
-              const SizedBox(height: 26),
-              AgriProgressBar(
-                value: (_step * 0.334).clamp(0.0, 1.0),
-                height: 8,
-                gradient: agriProgressGradient,
-                animate: true,
-              ),
-            ],
+            children: _error != null ? _errorContent() : _progressContent(),
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _errorContent() {
+    return <Widget>[
+      Center(
+        child: GlassCard(
+          style: const GlassStyle(
+            topOpacity: .82,
+            bottomOpacity: .41,
+            borderOpacity: .62,
+            blurSigma: 28,
+          ),
+          radius: 999,
+          width: 136,
+          height: 136,
+          child: Center(
+            child: AgriIcons.warning(48, triangle: AgriColors.accent, mark: AgriColors.inkOnAccent),
+          ),
+        ),
+      ),
+      const SizedBox(height: 28),
+      Text(
+        'Không phân tích được ảnh',
+        textAlign: TextAlign.center,
+        style: agriStyle(size: 22, weight: FontWeight.w700, em: -0.02),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        _error!,
+        textAlign: TextAlign.center,
+        style: agriStyle(size: 14, color: AgriColors.inkA(.72)),
+      ),
+      const SizedBox(height: 24),
+      PrimaryPillButton(
+        label: 'Quay lại chụp ảnh khác',
+        icon: AgriIcons.arrowRight(22, AgriColors.primary),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+    ];
+  }
+
+  List<Widget> _progressContent() {
+    return <Widget>[
+      Center(
+        child: AgriPulse(
+          child: GlassCard(
+            style: const GlassStyle(
+              topOpacity: .82,
+              bottomOpacity: .41,
+              borderOpacity: .62,
+              blurSigma: 28,
+            ),
+            radius: 999,
+            width: 136,
+            height: 136,
+            child: Center(
+              child: AgriIcons.leaf(64, a: AgriColors.olive, b: AgriColors.primary),
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(height: 28),
+      Text(
+        'Đang phân tích ảnh…',
+        textAlign: TextAlign.center,
+        style: agriStyle(size: 24, weight: FontWeight.w700, em: -0.02),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        'Thường mất 2–4 giây tuỳ đường mạng.',
+        textAlign: TextAlign.center,
+        style: agriStyle(size: 14, color: AgriColors.inkA(.72)),
+      ),
+      const SizedBox(height: 28),
+      for (int i = 0; i < _labels.length; i++) ...<Widget>[
+        _StepRow(index: i, label: _labels[i], done: _step > i),
+        if (i != _labels.length - 1) const SizedBox(height: 11),
+      ],
+      const SizedBox(height: 26),
+      AgriProgressBar(
+        value: (_step * 0.334).clamp(0.0, 1.0),
+        height: 8,
+        gradient: agriProgressGradient,
+        animate: true,
+      ),
+    ];
   }
 }
 

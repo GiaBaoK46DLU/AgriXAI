@@ -5,7 +5,17 @@ Bất kỳ bảng mới nào cũng phải import ở đây, nếu không ``creat
 """
 
 from app.models.diagnosis import Diagnosis
+from app.models.medicine import DiseaseGuide, DiseaseMedicine, Medicine
 from app.models.plot import Plot, PlotStatus
 from app.models.user import User, UserRole
 
-__all__ = ["Diagnosis", "Plot", "PlotStatus", "User", "UserRole"]
+__all__ = [
+    "Diagnosis",
+    "DiseaseGuide",
+    "DiseaseMedicine",
+    "Medicine",
+    "Plot",
+    "PlotStatus",
+    "User",
+    "UserRole",
+]

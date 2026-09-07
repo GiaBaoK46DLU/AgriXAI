@@ -40,11 +40,11 @@ def _to_out(record: Diagnosis) -> DiagnosisOut:
     return out
 
 
-def _to_detail(record: Diagnosis) -> DiagnosisDetail:
+def _to_detail(db, record: Diagnosis) -> DiagnosisDetail:
     detail = DiagnosisDetail.model_validate(record)
     _attach_plot(detail, record)
 
-    info = catalog.get_disease(record.disease_key)
+    info = catalog.get_disease_with_extras(db, record.disease_key)
     detail.disease = DiseaseInfo(
         **{k: v for k, v in info.items() if k in DiseaseInfo.model_fields}
     )
@@ -102,7 +102,7 @@ async def create_diagnosis(
     except InvalidImageError as exc:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
 
-    return _to_detail(record)
+    return _to_detail(db, record)
 
 
 @router.get("", response_model=DiagnosisPage, summary="Lịch sử chẩn đoán")
@@ -164,7 +164,7 @@ def list_diagnoses(
 
 @router.get("/{diagnosis_id}", response_model=DiagnosisDetail, summary="Chi tiết chẩn đoán")
 def get_diagnosis(diagnosis_id: int, db: DbSession, user: CurrentUser):
-    return _to_detail(_get_owned(db, diagnosis_id, user))
+    return _to_detail(db, _get_owned(db, diagnosis_id, user))
 
 
 @router.patch("/{diagnosis_id}", response_model=DiagnosisDetail,
@@ -185,7 +185,7 @@ def update_diagnosis(diagnosis_id: int, payload: DiagnosisUpdate,
 
     db.commit()
     db.refresh(record)
-    return _to_detail(record)
+    return _to_detail(db, record)
 
 
 @router.delete("/{diagnosis_id}", status_code=status.HTTP_204_NO_CONTENT,

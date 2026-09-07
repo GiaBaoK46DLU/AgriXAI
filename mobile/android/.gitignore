@@ -5,6 +5,8 @@ gradle-wrapper.jar
 /gradlew.bat
 /local.properties
 GeneratedPluginRegistrant.java
+# Cache biên dịch native CMake — sinh ra khi build APK, không cần lên Git.
+app/.cxx/
 
 # Remember to never publicly share your keystore.
 # See https://flutter.dev/to/reference-keystore

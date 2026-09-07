@@ -413,6 +413,18 @@ class ProductRow extends StatelessWidget {
                   product.group,
                   style: agriStyle(size: 12.5, color: AgriColors.inkA(.7)),
                 ),
+                if (product.note != null) ...<Widget>[
+                  const SizedBox(height: 4),
+                  Text(
+                    product.note!,
+                    style: agriStyle(
+                      size: 11.5,
+                      weight: FontWeight.w600,
+                      color: AgriColors.accentInk,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

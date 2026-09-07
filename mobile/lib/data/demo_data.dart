@@ -327,12 +327,19 @@ class DemoData {
         ProductLink(
           name: 'Pymetrozine',
           group: 'Trừ bọ phấn — chặn môi giới truyền virus',
+          note: 'Trị bọ phấn trắng — môi giới truyền bệnh, không phải trị virus',
         ),
-        ProductLink(name: 'Dinotefuran', group: 'Trừ bọ phấn lưu dẫn'),
-        ProductLink(name: 'Dầu khoáng', group: 'Xua và bịt lỗ thở bọ phấn'),
+        ProductLink(
+          name: 'Dinotefuran',
+          group: 'Trừ bọ phấn lưu dẫn',
+          note: 'Trị bọ phấn trắng — môi giới truyền bệnh, không phải trị virus',
+        ),
+        ProductLink(
+          name: 'Dầu khoáng',
+          group: 'Xua và bịt lỗ thở bọ phấn',
+          note: 'Xua và bịt lỗ thở bọ phấn, không phải trị virus',
+        ),
       ],
-      productNote:
-          'Các thuốc dưới đây trị bọ phấn trắng — môi giới truyền bệnh, không phải trị virus.',
       prevention: <String>[
         'Trồng giống kháng TYLCV — biện pháp hiệu quả nhất.',
         'Che lưới chắn côn trùng cho vườn ươm và nhà màng.',
@@ -509,9 +516,12 @@ class DemoData {
   ];
 
   // ── Ba trường hợp demo của màn kết quả ─────────────────────────────────
-  static const Map<String, DiagnosisCase> cases = <String, DiagnosisCase>{
+  // `final` chứ không phải `const`: `disease` tra bằng `diseaseByKey`, không
+  // tính được ở compile-time.
+  static final Map<String, DiagnosisCase> cases = <String, DiagnosisCase>{
     'severe': DiagnosisCase(
       diseaseKey: 'late_blight',
+      disease: diseaseByKey('late_blight'),
       confidence: '94%',
       affected: '42%',
       severity: Severity.severe,
@@ -521,14 +531,17 @@ class DemoData {
           'Hệ thống tập trung vào phần giữa của lá — nơi xuất hiện mảng cháy lớn màu nâu xám loang lổ, viền nhợt như bị nước sôi dội qua. Đây là dấu hiệu đặc trưng của Mốc sương muộn (độ tin cậy 94%, vùng nghi ngờ chiếm khoảng 42% diện tích ảnh).',
       urgent:
           'Mốc sương muộn lan rất nhanh trong thời tiết mát ẩm. Xử lý trong vòng 24 giờ, đồng thời phun phòng cho các cây xung quanh.',
-      top3: <(String, String)>[
+      top3: const <(String, String)>[
         ('Mốc sương muộn', '94%'),
         ('Đốm vòng (đốm nâu)', '4%'),
         ('Đốm mắt cua', '1%'),
       ],
+      modelBadge: modelBadge,
+      disclaimer: disclaimer,
     ),
     'mild': DiagnosisCase(
       diseaseKey: 'spider_mites',
+      disease: diseaseByKey('spider_mites'),
       confidence: '87%',
       affected: '11%',
       severity: Severity.mild,
@@ -538,14 +551,17 @@ class DemoData {
           'Hệ thống tập trung vào phía trên bên phải của lá — nơi xuất hiện vô số chấm li ti màu vàng bạc rải đều trên phiến lá, lá mất màu như bị phủ bụi. Đây là dấu hiệu đặc trưng của Nhện đỏ hai chấm (độ tin cậy 87%, vùng nghi ngờ chiếm khoảng 11% diện tích ảnh).',
       urgent:
           'Tác nhân là nhện hại, không phải nấm — phun thuốc trừ nấm sẽ không có tác dụng.',
-      top3: <(String, String)>[
+      top3: const <(String, String)>[
         ('Nhện đỏ hai chấm', '87%'),
         ('Mốc lá', '7%'),
         ('Đốm lá Septoria', '3%'),
       ],
+      modelBadge: modelBadge,
+      disclaimer: disclaimer,
     ),
     'healthy': DiagnosisCase(
       diseaseKey: 'healthy',
+      disease: diseaseByKey('healthy'),
       confidence: '97%',
       affected: '0%',
       severity: Severity.none,
@@ -553,11 +569,13 @@ class DemoData {
       time: 'Hôm nay 06:20',
       explanation:
           'Hệ thống không tìm thấy dấu hiệu bệnh nào rõ rệt trên lá (độ tin cậy 97%). Lá có màu đều, không có đốm hay biến dạng.',
-      top3: <(String, String)>[
+      top3: const <(String, String)>[
         ('Lá khoẻ mạnh', '97%'),
         ('Mốc lá', '2%'),
         ('Đốm vòng (đốm nâu)', '1%'),
       ],
+      modelBadge: modelBadge,
+      disclaimer: disclaimer,
     ),
   };
 

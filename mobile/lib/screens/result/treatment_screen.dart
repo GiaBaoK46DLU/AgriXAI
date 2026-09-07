@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_glass.dart';
@@ -16,18 +17,27 @@ import '../../widgets/glass_card.dart';
 import '../../widgets/misc.dart';
 import '../../widgets/rows.dart';
 
-/// **06 Gợi ý xử lý** — UC-M9.
-///
-/// API khi nối thật: `GET /diseases/{key}` → `treatments`, `prevention` và
-/// (cần thêm) `products`.
+/// **06 Gợi ý xử lý** — UC-M9. Bệnh + thuốc + video lấy nguyên từ
+/// [DiagnosisCase.disease] — đã tải sẵn từ `GET /diseases/{key}` lúc chẩn
+/// đoán, không gọi lại API ở màn này.
 class TreatmentScreen extends StatelessWidget {
   const TreatmentScreen({required this.diagnosisCase, super.key});
 
   final DiagnosisCase diagnosisCase;
 
+  Future<void> _openUrl(BuildContext context, String url) async {
+    final Uri uri = Uri.parse(url);
+    final bool opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!opened && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Không mở được liên kết này')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Disease disease = DemoData.diseaseByKey(diagnosisCase.diseaseKey);
+    final Disease disease = diagnosisCase.disease;
     final SeverityStyle sev = DemoData.sev(diagnosisCase.severity);
     final List<ProductLink> products = disease.products;
 
@@ -93,7 +103,12 @@ class TreatmentScreen extends StatelessWidget {
               style: AgriTextStyles.sectionTitle,
             ),
             const SizedBox(height: 12),
-            const _VideoBox(),
+            _VideoBox(
+              videoUrl: disease.videoUrl,
+              onTap: disease.videoUrl == null
+                  ? null
+                  : () => _openUrl(context, disease.videoUrl!),
+            ),
             const SizedBox(height: 26),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,9 +148,9 @@ class TreatmentScreen extends StatelessWidget {
               for (int i = 0; i < products.length; i++) ...<Widget>[
                 ProductRow(
                   product: products[i],
-                  // Chưa có `product_url` nào nên chưa nối `url_launcher`;
-                  // thiết kế cố ý chỉ dựng sẵn chỗ gắn link.
-                  onTap: products[i].productUrl == null ? null : () {},
+                  onTap: products[i].productUrl == null
+                      ? null
+                      : () => _openUrl(context, products[i].productUrl!),
                 ),
                 if (i != products.length - 1) const SizedBox(height: 10),
               ],
@@ -233,17 +248,23 @@ class TreatmentScreen extends StatelessWidget {
   }
 }
 
-/// Khung video 16:9. Chưa có video nào nên luôn hiện trạng thái chờ.
+/// Khung video 16:9 — nhấn mở link YouTube thật trong trình duyệt/app
+/// YouTube. `videoUrl` là `null` cho tới khi web admin gán video cho bệnh đó.
 class _VideoBox extends StatelessWidget {
-  const _VideoBox();
+  const _VideoBox({required this.videoUrl, required this.onTap});
+
+  final String? videoUrl;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final bool hasVideo = videoUrl != null;
     return AspectRatio(
       aspectRatio: 16 / 9,
       child: GlassCard(
         style: GlassStyle.soft,
         radius: 24,
+        onTap: onTap,
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -263,7 +284,9 @@ class _VideoBox extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
-                  'Video hướng dẫn sẽ được cập nhật sớm',
+                  hasVideo
+                      ? 'Nhấn để xem video hướng dẫn trên YouTube'
+                      : 'Video hướng dẫn sẽ được cập nhật sớm',
                   textAlign: TextAlign.center,
                   style: agriStyle(
                     size: 13.5,

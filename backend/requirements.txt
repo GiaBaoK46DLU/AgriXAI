@@ -1,4 +1,4 @@
-fastapi>=0.110
+﻿fastapi>=0.110
 uvicorn[standard]>=0.29
 python-multipart>=0.0.9
 
@@ -22,5 +22,5 @@ httpx>=0.27
 
 # LƯU Ý: KHÔNG cần cài torch ở đây.
 # Backend chạy được với DummyPredictor mà không có PyTorch. Chỉ khi muốn dùng
-# mô hình thật mới cài thêm torch/torchvision (xem model/requirements.txt) và
-# trỏ MODEL_CHECKPOINT trong .env tới file checkpoint.
+# mô hình thật mới cài thêm requirements-model.txt và trỏ MODEL_CHECKPOINT
+# trong .env tới file checkpoint. Xem IN-01 trong CLAUDE.md.

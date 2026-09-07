@@ -10,7 +10,11 @@ import json
 from functools import lru_cache
 from typing import Any
 
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
 from app.core.config import settings
+from app.models.medicine import DiseaseGuide, DiseaseMedicine, Medicine
 
 
 @lru_cache(maxsize=1)
@@ -55,3 +59,37 @@ def severity_levels() -> list[dict[str, Any]]:
 
 def disclaimer() -> str:
     return load_catalog().get("disclaimer", "")
+
+
+# ── Thuốc gợi ý + video hướng dẫn (CSDL, không phải JSON — xem CLAUDE.md) ──
+
+def get_medicines(db: Session, disease_key: str) -> list[dict[str, Any]]:
+    """Thuốc gợi ý cho một bệnh. Rỗng nếu chưa có thuốc nào được gán."""
+    rows = db.execute(
+        select(Medicine, DiseaseMedicine.note)
+        .join(DiseaseMedicine, DiseaseMedicine.medicine_id == Medicine.id)
+        .where(DiseaseMedicine.disease_key == disease_key)
+    ).all()
+    return [
+        {"name": m.name, "group": m.group, "purchase_url": m.purchase_url, "note": note}
+        for m, note in rows
+    ]
+
+
+def get_video_url(db: Session, disease_key: str) -> str | None:
+    """Link video YouTube hướng dẫn xử lý, hoặc None nếu chưa có."""
+    guide = db.get(DiseaseGuide, disease_key)
+    return guide.video_url if guide else None
+
+
+def get_disease_with_extras(db: Session, key: str) -> dict[str, Any]:
+    """``get_disease()`` kèm thêm ``products`` và ``video_url`` từ CSDL.
+
+    Dùng ở các endpoint trả về cho người dùng cuối (``DiseaseInfo``). Không
+    dùng ở ``xai/explain.py`` vì phần đó chỉ cần is_healthy/name_vi/visual_cue,
+    không cần đụng CSDL.
+    """
+    info = dict(get_disease(key))
+    info["products"] = get_medicines(db, key)
+    info["video_url"] = get_video_url(db, key)
+    return info

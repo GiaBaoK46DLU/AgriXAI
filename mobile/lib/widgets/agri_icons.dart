@@ -306,31 +306,3 @@ class ViewfinderCorners extends StatelessWidget {
     );
   }
 }
-
-/// Lớp khoanh vùng Grad-CAM ở màn 05 — hai ellipse vàng nét đứt trên nền
-/// radial gradient mờ dần, viewBox 370×272 kéo giãn đầy khung ảnh.
-class GradCamOverlay extends StatelessWidget {
-  const GradCamOverlay({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: SvgPicture.string(
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 370 272" '
-        'preserveAspectRatio="none">'
-        '<defs><radialGradient id="agri3Glow">'
-        '<stop offset="0%" stop-color="#F2A104" stop-opacity=".6"/>'
-        '<stop offset="62%" stop-color="#F2A104" stop-opacity=".2"/>'
-        '<stop offset="100%" stop-color="#F2A104" stop-opacity="0"/>'
-        '</radialGradient></defs>'
-        '<ellipse cx="152" cy="122" rx="100" ry="74" fill="url(#agri3Glow)"/>'
-        '<ellipse cx="152" cy="122" rx="100" ry="74" fill="none" stroke="#F2A104" '
-        'stroke-width="3" stroke-dasharray="11 8"/>'
-        '<ellipse cx="276" cy="198" rx="48" ry="34" fill="url(#agri3Glow)"/>'
-        '<ellipse cx="276" cy="198" rx="48" ry="34" fill="none" stroke="#F2A104" '
-        'stroke-width="2.4" stroke-dasharray="8 7" opacity=".85"/></svg>',
-        fit: BoxFit.fill,
-      ),
-    );
-  }
-}
