@@ -10,6 +10,7 @@ của báo cáo. Không chứa code, không chứa dữ liệu.
 | `00-danh-muc-bai-bao.md` | **File chính.** Danh sách bài báo đã lọc, chia theo 8 nhóm chủ đề, kèm link và lý do nên đọc |
 | `01-ke-hoach-thi-nghiem.md` | Từ bài báo → thí nghiệm cụ thể chạy được trên máy Bảo, và bảng so sánh để điền dần |
 | `02-cau-hoi-phan-bien.md` | Câu hỏi hội đồng hay hỏi ↔ bài báo trả lời được câu đó |
+| `03-tong-hop-doi-chieu.md` | **Đối chiếu kết quả 99,60% của nhóm với các công bố đã đọc.** Cập nhật 07/09/2026 sau PR #86 |
 | `notes/` | Ghi chú từng bài đã đọc, một file một bài |
 
 ## Cách làm việc
