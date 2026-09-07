@@ -16,19 +16,15 @@ env/
 *.env
 !.env.example
 
-# ─── Dữ liệu & mô hình (quá nặng để đưa lên Git) ────────
+# ─── Dữ liệu huấn luyện (quá nặng, tải lại được từ Kaggle — xem model/README.md) ────
 model/data/raw/**
 model/data/processed/**
 model/data/field/**
 !model/data/**/.gitkeep
-model/checkpoints/**
-!model/checkpoints/.gitkeep
-model/outputs/**
-!model/outputs/**/
-!model/outputs/**/.gitkeep
-*.pt
-*.pth
-*.onnx
+
+# checkpoints/ và outputs/ ĐÃ THEO GIT từ 07/09/2026 (quyết định của Bảo) để máy
+# khác pull về là chạy được model thật ngay, không phải huấn luyện lại ~30 phút.
+# Không thêm lại *.pt/*.pth/*.onnx vào đây — sẽ chặn ngược checkpoint.
 runs/
 wandb/
 

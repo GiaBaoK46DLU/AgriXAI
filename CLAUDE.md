@@ -282,7 +282,7 @@ mới** ở backend trước khi web admin đụng vào được — theo đúng
 |---|---|
 | Cấu trúc thư mục + README các cấp | Đã commit lên `main` |
 | `shared/data/tomato_diseases.json` | Đã commit |
-| `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `bao-cao-huan-luyen-mo-hinh.md` ở thư mục gốc cho số liệu đầy đủ. Dữ liệu PlantVillage **18.160 ảnh / 10 lớp** trong `model/data/raw/` và **checkpoint đều nằm ngoài Git** — máy khác phải tự tải dữ liệu (nguồn ghi ở issue #11) và tự huấn luyện lại (~30 phút trên GPU) |
+| `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `bao-cao-huan-luyen-mo-hinh.md` ở thư mục gốc cho số liệu đầy đủ. Từ 07/09/2026, **`model/checkpoints/` và `model/outputs/` đã theo Git** (quyết định của Bảo, đảo ngược quyết định ban đầu) — máy khác `pull` về là chạy được model thật ngay, không phải huấn luyện lại. Chỉ **dữ liệu PlantVillage `model/data/raw/` (18.160 ảnh / 10 lớp, ~275 MB) vẫn nằm ngoài Git** vì tải lại được từ Kaggle (nguồn ghi ở issue #11), không cần bắt repo gánh dung lượng đó |
 | `model/research/` | Đã commit — danh mục 46 bài báo chia 8 nhóm + bản tổng hợp đối chiếu kết quả với các công bố. Xem mục "Phần việc của Bảo" bên dưới |
 | `backend/` code | **Chạy mô hình thật** (không còn `DummyPredictor` mặc định) — 19/19 test pass, xem mục "Tích hợp mô hình thật" phía trên |
 | `mobile/` (Flutter) | Giao diện đã dựng xong từ trước; **luồng chính đã nối API thật** ngày 07/09/2026: đăng nhập → danh mục → chụp/chọn ảnh → chẩn đoán thật kèm khoanh vùng → gợi ý xử lý (thuốc + video). Màn Lịch sử vẫn còn dữ liệu mẫu — chưa nối, để sau |
@@ -358,10 +358,12 @@ tiến" chỗ này phải đọc E1 trước.
    rồi kết luận "B3 không hơn B0" là **kết luận không công bằng** — phải ghi rõ.
 2. **Không đo lại bằng trí nhớ.** Bảng chia tập và smoke test nằm trong PR #78; kết
    quả huấn luyện nằm trong `bao-cao-huan-luyen-mo-hinh.md`. Trích từ đó.
-3. **Checkpoint nằm ngoài Git.** File đang dùng là
+3. **Checkpoint đã theo Git từ 07/09/2026.** File đang dùng là
    `model/checkpoints/leaf_disease_detection_model.pt` (backend trỏ tới qua
-   `MODEL_CHECKPOINT` trong `backend/.env`). Mất file là phải huấn luyện lại —
-   **nên sao lưu ra ngoài repo**.
+   `MODEL_CHECKPOINT` trong `backend/.env`), commit thẳng cùng `best.pt`. Trước
+   đó hai file này nằm ngoài Git — đảo lại vì mục tiêu là máy khác `pull` về
+   dùng được model ngay, không phải tự huấn luyện lại. `model/data/raw/` (ảnh
+   gốc PlantVillage) vẫn ngoài Git — tải lại từ Kaggle theo issue #11.
 
 ### Quy ước về tài liệu trong `model/research/`
 
