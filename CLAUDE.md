@@ -216,7 +216,22 @@ Thiết kế cũ (ghi trong comment `mobile/lib/screens/login_screen.dart` trư�
 - Bảng `users` thêm cột `email` (`nullable`, `unique`) — bắt buộc ở tầng schema
   `RegisterRequest` cho người tự đăng ký, nhưng nullable ở DB vì 3 tài khoản
   seed tạo trước khi có cột này (`admin`/`nongdan`/`nongdan2`) không có email lúc
-  đó — đã backfill email `*@agrixai.local` cho cả ba để nhất quán.
+  đó — đã backfill email `*@agrixai.vn` cho cả ba để nhất quán.
+
+  ⚠️ **Đừng dùng domain kiểu `.local`/`.test`/`.invalid`/`.example`** cho dữ
+  liệu mẫu — đây là bài học thật đã gặp: seed ban đầu dùng `@agrixai.local`,
+  `email-validator` (chạy sau lưng `pydantic.EmailStr`) từ chối thẳng vì
+  `.local` là tên miền dành riêng theo RFC 6762 (mDNS), làm sập
+  `POST /auth/login` cho cả ba tài khoản demo với lỗi
+  `ResponseValidationError` — phát hiện được nhờ test thật trên máy, bộ test
+  tự động không bắt được vì `conftest.py` seed không gán email. Đã sửa hai lớp:
+  đổi seed sang `.vn`, VÀ đổi `UserOut.email` từ `EmailStr` sang `str` thường
+  (input — `RegisterRequest`/`UserCreate`/`UserUpdate` — vẫn giữ `EmailStr` để
+  chặn email sai cú pháp lúc nhận). Lý do đổi cả hai: `EmailStr` ở output
+  nghĩa là validate lại dữ liệu **đã nằm trong CSDL** mỗi lần trả response —
+  một bản ghi cũ/nhập tay lỡ sai sẽ sập mọi endpoint trả `UserOut`, không chỉ
+  chỗ tạo ra nó. Input vẫn cần chặn chặt; output thì dữ liệu coi như đã tin
+  cậy, chỉ cần trả nguyên văn.
 - Cột `email` được thêm bằng `ALTER TABLE` thủ công trực tiếp trên DB dev, **không
   qua Alembic** dù `Dockerfile.dev` có chạy `alembic upgrade head` mỗi lần khởi
   động. Lý do: `alembic upgrade head` từ trước tới giờ luôn là no-op (thư mục

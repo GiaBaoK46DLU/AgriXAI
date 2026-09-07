@@ -31,12 +31,16 @@ logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
 USERS = [
+    # ".local" là tên miền dành riêng theo RFC 6762 (mDNS) — email-validator
+    # (pydantic EmailStr) từ chối thẳng, gãy cả /auth/login vì UserOut validate
+    # lại khi serialize response. Dùng ".vn" cho thật, tránh mọi TLD đặc biệt
+    # (arpa/example/invalid/localhost/local/onion/test).
     {"username": "admin", "password": "admin123", "full_name": "Quản trị hệ thống",
-     "role": UserRole.ADMIN, "phone": "0900000001", "email": "admin@agrixai.local"},
+     "role": UserRole.ADMIN, "phone": "0900000001", "email": "admin@agrixai.vn"},
     {"username": "nongdan", "password": "nongdan123", "full_name": "Nguyễn Văn Ba",
-     "role": UserRole.FARMER, "phone": "0900000002", "email": "nongdan@agrixai.local"},
+     "role": UserRole.FARMER, "phone": "0900000002", "email": "nongdan@agrixai.vn"},
     {"username": "nongdan2", "password": "nongdan123", "full_name": "Trần Thị Bốn",
-     "role": UserRole.FARMER, "phone": "0900000003", "email": "nongdan2@agrixai.local"},
+     "role": UserRole.FARMER, "phone": "0900000003", "email": "nongdan2@agrixai.vn"},
 ]
 
 PLOTS = [

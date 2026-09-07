@@ -96,6 +96,32 @@ def test_register_creates_farmer_and_logs_in(client, seeded):
     assert "access_token" in body  # đăng ký xong đăng nhập luôn
 
 
+def test_login_response_serializes_stored_email(client):
+    """Hồi quy đúng sự cố thật đã gặp: seed ban đầu gán email `@agrixai.local`
+    trực tiếp bằng SQLAlchemy (bỏ qua validate của `RegisterRequest`, y hệt
+    cách `app/seed.py` tạo user) — `.local` là tên miền dành riêng (RFC 6762),
+    `EmailStr` từ chối. Khi đó `UserOut.email` còn dùng `EmailStr` nên MỌI
+    lần đọc lại user này (`/auth/login`, `/auth/me`...) đều sập
+    `ResponseValidationError` (500), dù giá trị đã nằm sẵn trong CSDL từ
+    trước, không phải input mới. Fixture `seeded` không gán email nên không
+    tự bắt được lỗi này — phải seed trực tiếp như dưới đây mới tái hiện đúng.
+    Nếu `UserOut.email` bị đổi ngược lại thành `EmailStr`, test này sẽ đỏ."""
+    from app.core.security import hash_password
+    from app.db.session import SessionLocal
+    from app.models.user import User, UserRole
+
+    with SessionLocal() as db:
+        db.add(User(username="co_san_email", full_name="Có Sẵn Email",
+                    role=UserRole.FARMER, email="legacy@agrixai.local",
+                    hashed_password=hash_password("mkkhachang")))
+        db.commit()
+
+    response = client.post(f"{API}/auth/login",
+                           json={"username": "co_san_email", "password": "mkkhachang"})
+    assert response.status_code == 200, response.text
+    assert response.json()["user"]["email"] == "legacy@agrixai.local"
+
+
 def test_register_rejects_duplicate_username(client, seeded):
     response = client.post(f"{API}/auth/register", json={
         "username": "nongdan",  # đã tồn tại từ fixture seeded

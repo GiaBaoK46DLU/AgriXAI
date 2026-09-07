@@ -55,8 +55,21 @@ class UserUpdate(BaseModel):
 
 
 class UserOut(UserBase):
+    """Trả về cho client — KHÔNG dùng lại kiểu `EmailStr` của `UserBase` cho
+    trường `email`.
+
+    `EmailStr` chạy lại toàn bộ kiểm tra cú pháp (kể cả chặn TLD dành riêng
+    như `.local`/`.test`) mỗi lần serialize, tức là validate lại dữ liệu ĐÃ
+    nằm trong CSDL. Một bản ghi cũ/nhập tay lỡ có email không hợp lệ sẽ làm
+    sập `ResponseValidationError` ở MỌI endpoint trả `UserOut` (`/auth/login`,
+    `/auth/me`...), không riêng gì chỗ tạo ra nó. Input (`RegisterRequest`,
+    `UserCreate`, `UserUpdate`) vẫn giữ `EmailStr` để chặn email sai cú pháp
+    ngay lúc nhận — chỉ output nới thành `str` vì lúc này dữ liệu coi như đã
+    tin cậy, chỉ cần trả nguyên văn."""
+
     model_config = ConfigDict(from_attributes=True)
 
+    email: str | None = None
     id: int
     is_active: bool
     created_at: datetime
