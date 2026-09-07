@@ -30,7 +30,7 @@ Bốn bài đầu đủ để viết xong chương tổng quan. Nhóm C, E, G đ
 
 | Mã | Bài | Nguồn · Năm | Số liệu đáng nhớ | Vì sao đọc | TT |
 |---|---|---|---|---|---|
-| **A1** | [Using Deep Learning for Image-Based Plant Disease Detection](https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2016.01419/full) — Mohanty, Hughes, Salathé | Front. Plant Sci. 7:1419 · 2016 | 54.306 ảnh, 14 loài, 26 bệnh, AlexNet + GoogLeNet, **99,35%** | Bài khai sinh cả bộ PlantVillage lẫn thói quen báo cáo 99%. Mọi bài sau đều so với nó. Trích ở đầu chương tổng quan | ✅ |
+| **A1** | [Using Deep Learning for Image-Based Plant Disease Detection](https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2016.01419/full) — Mohanty, Hughes, Salathé | Front. Plant Sci. 7:1419 · 2016 | 54.306 ảnh, 14 loài, 26 bệnh, AlexNet + GoogLeNet, F1 **0,9934** (GoogLeNet transfer, chia 80-20). Thử 5 tỉ lệ chia từ 80-20 tới 20-80. **Trên ảnh chụp điều kiện khác chỉ còn 31,40% và 31,69%** (38 lớp, đoán mò 2,63%) | Bài khai sinh cả bộ PlantVillage lẫn thói quen báo cáo 99%. Con số 31,40% là **bằng chứng domain gap mạnh nhất có thể trích**, vì đến từ chính tác giả benchmark | ✅ |
 | **A2** | [Uncovering bias in the PlantVillage dataset](https://arxiv.org/abs/2206.04374) — Noyan | arXiv 2206.04374 · 2022 | Chỉ dùng **8 pixel nền** đã đoán đúng **49,0%** (đoán mò 2,6%). Xoá nền **không** hết thiên lệch | Bài quan trọng nhất danh mục. Chứng minh mô hình học nhãn từ cái nền chứ không từ vết bệnh. Đây chính là lý do Grad-CAM của mình phải khoanh trúng vết bệnh — heatmap sáng ở nền là dính đúng lỗi này | ✅ |
 | **A3** | [Deep learning networks-based tomato disease and pest detection: a first review of research studies using real field datasets](https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2024.1493322/full) — Jelali | Front. Plant Sci. · 2024 | PlantVillage trung bình **90,18%** · dữ liệu đồng ruộng tự thu **84,66%**. Trên ảnh đồng: InceptionV3 93,70%, DenseNet 94,93% | Review **duy nhất chỉ đọc bài dùng ảnh đồng ruộng thật**. Cho con số domain gap có nguồn trích dẫn được, thay vì mình nói suông. Dùng để biện minh cho `data/field/` | ✅ |
 | **A4** | [Deep learning-based classification, detection, and segmentation of tomato leaf diseases: a state-of-the-art review](https://www.sciencedirect.com/science/article/pii/S258972172500025X) | ScienceDirect · 2025 | Khảo 14 bệnh lá cà chua; PlantVillage là bộ dùng nhiều nhất | Review mới nhất riêng cho cà chua. Lấy bảng tổng hợp kiến trúc để dựng khung chương 2 | ⚪ |
@@ -82,8 +82,8 @@ Liên quan tới **rủi ro số 2** trong `CLAUDE.md` (tốc độ suy luận l
 
 | Mã | Bài | Nguồn · Năm | Đáng chú ý | TT |
 |---|---|---|---|---|
-| **D1** | [Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization](https://arxiv.org/abs/1610.02391) — Selvaraju et al. | ICCV 2017 / IJCV 2020 | **Bài gốc của kỹ thuật mình đang dùng.** Bắt buộc trích dẫn. Đọc kỹ phần vì sao lấy tầng chập cuối | ⚪ |
-| **D2** | [Grad-CAM++: Improved Visual Explanations for Deep Convolutional Networks](https://arxiv.org/abs/1710.11063) — Chattopadhay et al. | WACV 2018 | Xử lý tốt hơn khi **có nhiều vết bệnh rời rạc trên một lá** — đúng cảnh hay gặp. Ứng viên số 1 để nâng cấp `src/xai/gradcam.py` | ⚪ |
+| **D1** | [Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization](https://arxiv.org/abs/1610.02391) — Selvaraju et al. | ICCV 2017 / IJCV 2020 | **Bài gốc của kỹ thuật mình đang dùng.** Bắt buộc trích dẫn. Tác giả **tự nhận** phương pháp cho "coarse localization map"; cách khắc phục của chính họ là **Guided Grad-CAM**. Trích thẳng khi bị hỏi vì sao heatmap thô | ⚠️ mới tóm tắt |
+| **D2** | [Grad-CAM++: Improved Visual Explanations for Deep Convolutional Networks](https://arxiv.org/abs/1710.11063) — Chattopadhay et al. | WACV 2018 | Dùng tổ hợp có trọng số của các **đạo hàm riêng dương**. Tốt hơn khi ảnh có **nhiều thể hiện rời rạc của cùng một lớp** và khi đối tượng chỉ xuất hiện một phần — đúng ca đốm Septoria và đốm lá vi khuẩn. Ứng viên số 1 để nâng cấp `src/xai/gradcam.py` trong #16. ⚠️ PDF arXiv không giải mã tự động được, **phải mở tay** để lấy công thức và bảng số | ⚠️ mới tóm tắt |
 | **D3** | [Score-CAM: Score-Weighted Visual Explanations for Convolutional Neural Networks](https://arxiv.org/abs/1910.01279) — Wang et al. | CVPRW 2020 | Không cần gradient nên ổn định hơn, nhưng chậm hơn nhiều lần. Nêu ở phần "phương án đã cân nhắc" | ⚪ |
 | **D4** | [XSE-TomatoNet: An explainable AI based tomato leaf disease classification method using EfficientNetB0 with squeeze-and-excitation blocks and multi-scale feature fusion](https://www.sciencedirect.com/science/article/pii/S221501612500007X) — Assaduzzaman et al. · [bản PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC12255360/) | MethodsX · 01/2025 | **Bài gần đề tài mình nhất.** EfficientNetB0 + SE, 11 lớp cà chua, 32.532 ảnh, **99,11%**, dùng cả LIME + SHAP + Grad-CAM + Grad-CAM++, triển khai bằng Flask. Khác biệt của mình: họ dừng ở heatmap kỹ thuật, mình chuyển thành vùng khoanh + câu tiếng Việt. **Đây là chỗ chứng minh đề tài không trùng lặp** | ✅ |
 | **D5** | [Leaf-Based Plant Disease Detection and Explainable AI](https://arxiv.org/html/2404.16833v1) | arXiv · 2024 | Khảo sát các phương pháp XAI cho riêng bài toán bệnh lá | ⚪ |
@@ -103,7 +103,7 @@ Nhóm này giải quyết vấn đề đã biết chắc: **lệch lớp 14,4 l�
 
 | Mã | Bài | Nguồn · Năm | Đáng chú ý | TT |
 |---|---|---|---|---|
-| **E1** | [Data-Centric Preprocessing Outperforms Loss Modifications for Hard-Class Plant Disease Classification Using MobileNetV3](https://jurnal.uny.ac.id/index.php/elinvo/article/view/95319) | Elinvo · 2025 | **Kết quả ngược trực giác:** trọng số theo tần suất nghịch đảo làm F1 lớp khó *tệ đi* (0,9621), focal loss mặc định *không hơn* cross-entropy thường (0,9647). Đọc bài này **trước khi** vội thêm class weight vào `train.py` | ⚪ |
+| **E1** | [Data-Centric Preprocessing Outperforms Loss Modifications for Hard-Class Plant Disease Classification Using MobileNetV3](https://jurnal.uny.ac.id/index.php/elinvo/article/view/95319) | Elinvo · 2025 | **Kết quả ngược trực giác, đã xác minh:** trên MobileNetV3-Small, 12 lớp khó — cross-entropy thường **0,9668** > focal loss mặc định 0,9647 > trọng số tần suất nghịch đảo 0,9621. Kết luận: hướng **data-centric** hơn hẳn sửa hàm mất mát (+4,08 điểm). → Nhóm **không thêm class weight** vào `train.py`, có căn cứ | ✅ |
 | **E2** | [Classification of imbalanced multi-label leaf diseases using CaRiT: class attention enabled RegionViT](https://link.springer.com/article/10.1007/s11042-023-17678-8) | MTAP · 2024 | Hướng attention theo lớp cho dữ liệu lệch | ⚪ |
 | **E3** | [Handling imbalance and few-sample size in ML based Onion disease classification](https://arxiv.org/pdf/2509.05341) | arXiv · 2025 | Bài toán nhỏ, dữ liệu ít — giống tình cảnh phần quả của mình | ⚪ |
 | **E4** | [FWDGAN-based data augmentation for tomato leaf disease identification](https://www.sciencedirect.com/science/article/abs/pii/S0168169922000965) | Comput. Electron. Agric. · 2022 | GAN sinh ảnh lá cà chua | ⚪ |
@@ -178,6 +178,15 @@ Cần cho **rủi ro số 1**. Ngoài ảnh tự chụp ở Đà Lạt, ba bộ 
 
 ## Đã đọc — ghi chú ở đâu
 
-| Mã | Ngày đọc | File ghi chú |
-|---|---|---|
-| _(điền dần)_ | | |
+Tổng hợp đối chiếu toàn bộ những bài dưới đây với kết quả huấn luyện của nhóm nằm ở
+**[`03-tong-hop-doi-chieu.md`](03-tong-hop-doi-chieu.md)**.
+
+| Mã | Ngày đọc | Mức | Thu được gì |
+|---|---|---|---|
+| A1 | 07/09/2026 | toàn văn | Bảng 5 tỉ lệ chia tập · **31,40% trên ảnh điều kiện khác** |
+| A2 | 07/09/2026 | toàn văn | 8 pixel nền → 49,0%; xoá nền không hết thiên lệch |
+| A3 | 07/09/2026 | toàn văn | PlantVillage 90,18% vs đồng ruộng 84,66% |
+| D4 | 07/09/2026 | toàn văn | Bảng chỉ số từng lớp; **không nêu rõ augment trước hay sau khi chia** |
+| E1 | 07/09/2026 | toàn văn | CE 0,9668 > focal 0,9647 > class weight 0,9621 |
+| D1 | 07/09/2026 | tóm tắt | Tác giả tự nhận heatmap thô; lối ra là Guided Grad-CAM |
+| D2 | 07/09/2026 | tóm tắt | Đạo hàm riêng dương; mạnh khi nhiều vết rời rạc. Chưa lấy được công thức |
