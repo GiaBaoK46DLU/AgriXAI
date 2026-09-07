@@ -14,6 +14,16 @@ dependencies:
   flutter_svg: ^2.0.10
   # Nút "Nghe đọc" ở màn 05 — đọc câu giải thích XAI bằng tiếng Việt.
   flutter_tts: ^4.0.2
+  # Gọi API backend thật (đăng nhập, danh mục, chẩn đoán).
+  http: ^1.2.2
+  # Chụp ảnh / chọn ảnh từ thư viện ở màn 03.
+  image_picker: ^1.1.2
+  # Nén ảnh trước khi gửi — backend giới hạn 10 MB mỗi ảnh.
+  flutter_image_compress: ^2.3.0
+  # Lưu JWT sau khi đăng nhập, sống sót qua lần mở app kế tiếp.
+  flutter_secure_storage: ^9.2.2
+  # Mở link mua thuốc và video YouTube hướng dẫn ở màn 06.
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:

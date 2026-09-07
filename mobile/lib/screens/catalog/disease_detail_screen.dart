@@ -6,6 +6,7 @@ import '../../core/app_scope.dart';
 import '../../core/app_typography.dart';
 import '../../data/demo_data.dart';
 import '../../models/models.dart';
+import '../../services/session.dart' as session;
 import '../../widgets/agri_screen.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/chips.dart';
@@ -16,19 +17,56 @@ import '../capture/capture_screen.dart';
 
 /// **11 Chi tiết bệnh** — UC-M13.
 ///
-/// API khi nối thật: `GET /diseases/{key}`.
-class DiseaseDetailScreen extends StatelessWidget {
-  const DiseaseDetailScreen({required this.diseaseKey, super.key});
+/// API: `GET /diseases/{key}`. Nếu đã có sẵn [disease] (đến từ màn danh mục)
+/// thì dùng luôn, không gọi lại API.
+class DiseaseDetailScreen extends StatefulWidget {
+  const DiseaseDetailScreen({required this.diseaseKey, this.disease, super.key});
 
   final String diseaseKey;
+  final Disease? disease;
+
+  @override
+  State<DiseaseDetailScreen> createState() => _DiseaseDetailScreenState();
+}
+
+class _DiseaseDetailScreenState extends State<DiseaseDetailScreen> {
+  late Future<Disease> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = widget.disease != null
+        ? Future<Disease>.value(widget.disease)
+        : session.diseaseService.fetchOne(widget.diseaseKey);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Disease disease = DemoData.diseaseByKey(diseaseKey);
+    return AgriScreen(
+      child: FutureBuilder<Disease>(
+        future: _future,
+        builder: (BuildContext context, AsyncSnapshot<Disease> snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                'Không tải được thông tin bệnh.',
+                style: agriStyle(size: 14, color: AgriColors.inkA(.72)),
+              ),
+            );
+          }
+          return _body(context, snapshot.data!);
+        },
+      ),
+    );
+  }
+
+  Widget _body(BuildContext context, Disease disease) {
     final PathogenTypeStyle tag = DemoData.tag(disease.type);
 
-    return AgriScreen(
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(
           16,
           AgriMetrics.screenTop(context),
@@ -126,8 +164,7 @@ class DiseaseDetailScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _heading(String text) => Text(

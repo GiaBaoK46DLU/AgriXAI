@@ -5,6 +5,8 @@ import '../core/app_glass.dart';
 import '../core/app_metrics.dart';
 import '../core/app_scope.dart';
 import '../core/app_typography.dart';
+import '../services/api_client.dart';
+import '../services/session.dart' as session;
 import '../widgets/agri_icons.dart';
 import '../widgets/agri_screen.dart';
 import '../widgets/buttons.dart';
@@ -13,9 +15,9 @@ import '../widgets/image_slot.dart';
 import '../widgets/inputs.dart';
 import 'app_shell.dart';
 
-/// **01 Đăng nhập** — UC-M1.
+/// **01 Đăng nhập** — UC-M1. Tài khoản do admin cấp, không có màn tự đăng ký.
 ///
-/// API khi nối thật: `POST /api/v1/auth/login` rồi lưu JWT.
+/// API: `POST /api/v1/auth/login`, token lưu qua `AuthService`.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -24,10 +26,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _account =
-      TextEditingController(text: 'quanghoc');
-  final TextEditingController _password =
-      TextEditingController(text: 'matkhau123');
+  final TextEditingController _account = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+
+  bool _loading = false;
+  String? _error;
 
   @override
   void dispose() {
@@ -36,9 +39,31 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _login() {
-    AppScope.read(context).select(AgriTab.plots);
-    AppNav.reset(context, (_) => const AppShell());
+  Future<void> _login() async {
+    final String username = _account.text.trim();
+    final String password = _password.text;
+    if (username.isEmpty || password.isEmpty) {
+      setState(() => _error = 'Nhập đủ tài khoản và mật khẩu');
+      return;
+    }
+
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    try {
+      session.currentUser = await session.authService.login(username, password);
+      if (!mounted) return;
+      AppScope.read(context).select(AgriTab.plots);
+      AppNav.reset(context, (_) => const AppShell());
+    } on ApiException catch (e) {
+      setState(() => _error = e.message);
+    } catch (_) {
+      setState(() => _error = 'Không kết nối được tới máy chủ');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   void _browseCatalog() {
@@ -170,11 +195,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 fontWeight: FontWeight.w600,
                 style: GlassStyle.fieldOnFloating,
               ),
+              if (_error != null) ...<Widget>[
+                const SizedBox(height: 12),
+                Text(
+                  _error!,
+                  style: agriStyle(
+                    size: 12.5,
+                    weight: FontWeight.w600,
+                    color: AgriColors.accentInk,
+                  ),
+                ),
+              ],
               const SizedBox(height: 20),
               PrimaryPillButton(
-                label: 'Đăng nhập',
+                label: _loading ? 'Đang đăng nhập…' : 'Đăng nhập',
                 icon: AgriIcons.arrowRight(22, AgriColors.primary),
-                onPressed: _login,
+                onPressed: _loading ? () {} : _login,
               ),
             ],
           ),

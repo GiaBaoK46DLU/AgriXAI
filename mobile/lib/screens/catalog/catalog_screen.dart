@@ -5,8 +5,8 @@ import '../../core/app_glass.dart';
 import '../../core/app_metrics.dart';
 import '../../core/app_scope.dart';
 import '../../core/app_typography.dart';
-import '../../data/demo_data.dart';
 import '../../models/models.dart';
+import '../../services/session.dart' as session;
 import '../../widgets/agri_icons.dart';
 import '../../widgets/inputs.dart';
 import '../../widgets/rows.dart';
@@ -14,7 +14,7 @@ import 'disease_detail_screen.dart';
 
 /// **10 Danh mục bệnh** — UC-M13. Tra cứu được khi chưa đăng nhập.
 ///
-/// API khi nối thật: `GET /diseases` — public, không cần token.
+/// API: `GET /diseases` — public, không cần token.
 class CatalogScreen extends StatefulWidget {
   const CatalogScreen({super.key});
 
@@ -24,6 +24,13 @@ class CatalogScreen extends StatefulWidget {
 
 class _CatalogScreenState extends State<CatalogScreen> {
   final TextEditingController _query = TextEditingController();
+  late Future<List<Disease>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = session.diseaseService.fetchAll();
+  }
 
   @override
   void dispose() {
@@ -31,18 +38,53 @@ class _CatalogScreenState extends State<CatalogScreen> {
     super.dispose();
   }
 
-  List<Disease> get _rows {
+  List<Disease> _filter(List<Disease> all) {
     final String q = _query.text.trim().toLowerCase();
-    if (q.isEmpty) return DemoData.diseases;
-    return DemoData.diseases.where((Disease d) {
+    if (q.isEmpty) return all;
+    return all.where((Disease d) {
       return '${d.name} ${d.en} ${d.cue}'.toLowerCase().contains(q);
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Disease> rows = _rows;
+    return FutureBuilder<List<Disease>>(
+      future: _future,
+      builder: (BuildContext context, AsyncSnapshot<List<Disease>> snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return _errorState(() => setState(() {
+                _future = session.diseaseService.fetchAll();
+              }));
+        }
+        return _list(context, _filter(snapshot.data!));
+      },
+    );
+  }
 
+  Widget _errorState(VoidCallback onRetry) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              'Không tải được danh mục bệnh. Kiểm tra kết nối mạng.',
+              textAlign: TextAlign.center,
+              style: agriStyle(size: 14, color: AgriColors.inkA(.72)),
+            ),
+            const SizedBox(height: 12),
+            TextButton(onPressed: onRetry, child: const Text('Thử lại')),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _list(BuildContext context, List<Disease> rows) {
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(
         16,
@@ -82,7 +124,10 @@ class _CatalogScreenState extends State<CatalogScreen> {
               disease: rows[i],
               onTap: () => AppNav.push(
                 context,
-                (_) => DiseaseDetailScreen(diseaseKey: rows[i].key),
+                (_) => DiseaseDetailScreen(
+                  diseaseKey: rows[i].key,
+                  disease: rows[i],
+                ),
               ),
             ),
             if (i != rows.length - 1) const SizedBox(height: 10),
