@@ -282,7 +282,8 @@ mới** ở backend trước khi web admin đụng vào được — theo đúng
 |---|---|
 | Cấu trúc thư mục + README các cấp | Đã commit lên `main` |
 | `shared/data/tomato_diseases.json` | Đã commit |
-| `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `docs/bao-cao-huan-luyen-mo-hinh.md` cho số liệu đầy đủ |
+| `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `bao-cao-huan-luyen-mo-hinh.md` ở thư mục gốc cho số liệu đầy đủ. Dữ liệu PlantVillage **18.160 ảnh / 10 lớp** trong `model/data/raw/` và **checkpoint đều nằm ngoài Git** — máy khác phải tự tải dữ liệu (nguồn ghi ở issue #11) và tự huấn luyện lại (~30 phút trên GPU) |
+| `model/research/` | Đã commit — danh mục 46 bài báo chia 8 nhóm + bản tổng hợp đối chiếu kết quả với các công bố. Xem mục "Phần việc của Bảo" bên dưới |
 | `backend/` code | **Chạy mô hình thật** (không còn `DummyPredictor` mặc định) — 19/19 test pass, xem mục "Tích hợp mô hình thật" phía trên |
 | `mobile/` (Flutter) | Giao diện đã dựng xong từ trước; **luồng chính đã nối API thật** ngày 07/09/2026: đăng nhập → danh mục → chụp/chọn ảnh → chẩn đoán thật kèm khoanh vùng → gợi ý xử lý (thuốc + video). Màn Lịch sử vẫn còn dữ liệu mẫu — chưa nối, để sau |
 | `web-admin/` (React) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026, xem "Phạm vi tương lai: web admin" phía trên |
@@ -299,20 +300,76 @@ Backend đã chạy được thật: đăng nhập, tạo lô đất, tải ản
   Test trước đó pass chỉ vì trong repo không có `.env` — đây vẫn là điểm mù của
   bộ test hiện tại.
 
-Việc tiếp theo: chạy #14 — huấn luyện đầy đủ 25 epoch. Đo thật 20/08 với ảnh
-JPEG (không phải tensor ngẫu nhiên) sau khi nâng `num_workers` lên 8 (PR #78):
-một epoch ≈ 35 giây, trọn 25 epoch **≈ 22–25 phút** trên RTX 4060 Ti — Mốc 2
-không cần lùi hạn, không cần Colab. Con số "≈ 16 phút" trong `model/README.md`
-đo bằng tensor ngẫu nhiên, chưa tính khâu đọc ảnh — biết là lạc quan, chưa sửa.
+---
 
-Hai điều cần nhớ khi đọc kết quả huấn luyện sau này:
+## Phần việc của Bảo (`model/`) — cập nhật 07/09/2026
 
-- Dữ liệu **lệch lớp 14,4 lần**: `yellow_leaf_curl_virus` 5.357 ảnh còn
-  `mosaic_virus` chỉ 373 (tập test ~55 ảnh). Loss không đặt trọng số lớp, nên
-  accuracy tổng có thể đẹp mà recall `mosaic_virus` thấp — soi kỹ ở #15.
-  Đây là đặc tính của bộ dữ liệu gốc, không phải lỗi tải.
-- Bảng chia tập train/val/test và số đo smoke test nằm trong PR #78 — báo cáo
-  chương thực nghiệm trích từ đó, đừng đo lại bằng trí nhớ.
+Mục này để mở repo trên **máy khác** là biết ngay đang ở đâu và làm gì tiếp.
+
+### Đã xong
+
+**#14 — huấn luyện đầy đủ.** EfficientNet-B0, 25 epoch, 29,6 phút trên RTX 4060 Ti.
+
+| | |
+|---|---|
+| Test accuracy | **99,60 %** · macro-F1 **99,55 %** · top-3 **100 %** |
+| Sai | **11 / 2.719 ảnh**, không ca nào vô lý về bệnh học |
+| Cặp nhầm nhiều nhất | Đốm lá vi khuẩn → Đốm mắt cua (4 ảnh) |
+| Ca nguy hiểm nhất | 1 ảnh mốc sương muộn → **lá khoẻ** (chiều ngược lại không xảy ra) |
+| Suy luận | 31–34 ms trên GPU. **Chưa đo trên CPU** |
+| Chia tập | 70/15/15 theo từng lớp, seed 42, đã kiểm chứng không rò rỉ |
+
+**#15 — đánh giá tập test.** Kết quả đầy đủ trong `bao-cao-huan-luyen-mo-hinh.md`
+(thư mục gốc, đã commit).
+
+**IN-01, IN-02 — đã nối mô hình thật vào backend và mobile** ngày 07/09/2026, kéo
+sớm hơn lịch mốc 4. Chi tiết ở mục "Tích hợp mô hình thật" phía trên.
+
+**Khảo sát tài liệu.** `model/research/` — 46 bài chia 8 nhóm, **7 bài đã đọc kỹ**,
+kèm `03-tong-hop-doi-chieu.md` đối chiếu kết quả của nhóm với các công bố.
+
+### ⚠️ Cảnh báo lệch lớp: đã kiểm chứng là KHÔNG xảy ra
+
+Ghi chú cũ lo `mosaic_virus` (373 ảnh, ít hơn lớp đông nhất 14,4 lần) sẽ có recall
+thấp. **Thực tế nó đạt precision = recall = F1 = 1,0000.**
+
+Lý do: triệu chứng virus khảm khác biệt rõ về thị giác so với 9 lớp còn lại, nên ít
+ảnh vẫn đủ học. **Lệch lớp là nguy cơ chứ không phải hậu quả tất yếu.**
+
+→ **Không thêm class weight hay focal loss vào `train.py`.** Quyết định này có căn
+cứ: bài E1 trong `model/research/` đo được cross-entropy thường (F1 0,9668) **thắng
+cả** focal loss (0,9647) lẫn trọng số tần suất nghịch đảo (0,9621). Ai định "cải
+tiến" chỗ này phải đọc E1 trước.
+
+### Việc tiếp theo, xếp đúng thứ tự
+
+| Thứ tự | Việc | Vì sao thứ tự này |
+|---|---|---|
+| **1** | **#17 — kiểm tra Grad-CAM có rơi đúng vết bệnh không** (5 ảnh × 10 lớp) | **Cổng kiểm soát của cả đề tài.** Nếu heatmap rơi vào nền thì toàn bộ phần XAI mất giá trị. Lý do là bài A2: có người huấn luyện **chỉ bằng 8 pixel nền** PlantVillage mà vẫn đạt 49 % (đoán mò 2,63 %) |
+| 2 | **#49 — đo trên ảnh đồng ruộng.** Dùng bộ **H1** trong `model/research/` (731 ảnh thật, 6/7 lớp trùng, tải từ Mendeley) | Có số domain gap **mà không phải chờ đi chụp ảnh**. Nửa buổi là xong |
+| 3 | **#16 — nâng Grad-CAM++** | Heatmap hiện thô vì tầng chập cuối B0 chỉ 7×7. Làm **sau** #17, vì nét hơn mà sai chỗ thì vô nghĩa |
+| 4 | **#18 — đo tốc độ suy luận trên CPU** | Rủi ro số 2. Cần chốt máy demo là máy nào |
+| 5 | **#19 — so ResNet18 / ResNet50 / B3** | `build.py` đã hỗ trợ sẵn, chỉ đổi `model.arch` trong config. 4 lượt × 25 phút |
+
+### Ba cái bẫy đã biết trước
+
+1. **`configs/default.yaml` đặt `image_size: 224` dùng chung cho mọi kiến trúc.**
+   Chạy EfficientNet-B3 ở 224 là dưới độ phân giải thiết kế của nó. Nếu #19 chạy vậy
+   rồi kết luận "B3 không hơn B0" là **kết luận không công bằng** — phải ghi rõ.
+2. **Không đo lại bằng trí nhớ.** Bảng chia tập và smoke test nằm trong PR #78; kết
+   quả huấn luyện nằm trong `bao-cao-huan-luyen-mo-hinh.md`. Trích từ đó.
+3. **Checkpoint nằm ngoài Git.** File đang dùng là
+   `model/checkpoints/leaf_disease_detection_model.pt` (backend trỏ tới qua
+   `MODEL_CHECKPOINT` trong `backend/.env`). Mất file là phải huấn luyện lại —
+   **nên sao lưu ra ngoài repo**.
+
+### Quy ước về tài liệu trong `model/research/`
+
+- Mỗi bài có **mã** (`A1`, `D4`, `E1`…). Nhắc mã là biết bài nào.
+- Cột trạng thái: ✅ đã mở toàn văn · ⚠️ mới đọc tóm tắt · ⚪ mới thấy qua tìm kiếm.
+  **Số liệu của bài ⚪ chỉ để biết bài đó có đáng đọc hay không, không được trích
+  thẳng vào báo cáo.**
+- Thư mục này **không phải bảng công việc**. Nguồn duy nhất vẫn là 76 issue GitHub.
 
 ---
 
@@ -322,6 +379,14 @@ Hai điều cần nhớ khi đọc kết quả huấn luyện sau này:
    thường đạt >99% trên tập test nhưng rớt mạnh với ảnh chụp thật ngoài đồng. Cần
    thu thập 50–100 ảnh thật vào `model/data/field/` và báo cáo cả hai con số. Làm
    sớm trong tháng 9, đừng để tháng 10.
+
+   Ba con số có nguồn trích dẫn được (chi tiết trong `model/research/`): chính tác
+   giả PlantVillage báo cáo tụt từ 99,35% xuống **31,40%** trên ảnh điều kiện khác
+   (bài A1); review 2024 đo trung bình **90,18% → 84,66%** (A3); và có người huấn
+   luyện **chỉ bằng 8 pixel nền** vẫn đạt 49% (A2).
+
+   **Không cần chờ đi chụp ảnh mới có số của mình:** bộ **H1** (731 ảnh đồng ruộng
+   thật, 6/7 lớp trùng, tải từ Mendeley) chạy `evaluate.py --manifest` là ra.
 2. **Tốc độ suy luận** trên máy chạy backend lúc demo.
 3. **Kết nối mạng** giữa điện thoại và backend khi demo — cùng LAN, đúng IP, tường
    lửa mở cổng.
