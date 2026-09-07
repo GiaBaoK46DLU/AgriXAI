@@ -42,6 +42,38 @@ def test_unknown_disease_returns_404(client):
     assert client.get(f"{API}/diseases/khong-co-benh-nay").status_code == 404
 
 
+def test_disease_without_medicines_has_empty_products(client):
+    """Bệnh chưa gán thuốc nào (CSDL test không seed) vẫn trả về mảng rỗng, không lỗi."""
+    detail = client.get(f"{API}/diseases/late_blight").json()
+    assert detail["products"] == []
+    assert detail["video_url"] is None
+
+
+def test_disease_products_come_from_database(client):
+    """Thuốc gợi ý lấy từ CSDL (medicines/disease_medicines), không phải từ JSON."""
+    from app.db.session import SessionLocal
+    from app.models.medicine import DiseaseGuide, DiseaseMedicine, Medicine
+
+    with SessionLocal() as db:
+        medicine = Medicine(name="Thuốc thử nghiệm", group="Nhóm thử",
+                            purchase_url="https://example.com/thuoc")
+        db.add(medicine)
+        db.flush()
+        db.add(DiseaseMedicine(disease_key="early_blight", medicine_id=medicine.id,
+                               note="Ghi chú thử nghiệm"))
+        db.add(DiseaseGuide(disease_key="early_blight", video_url="https://youtube.com/watch?v=test"))
+        db.commit()
+
+    detail = client.get(f"{API}/diseases/early_blight").json()
+    assert detail["products"] == [{
+        "name": "Thuốc thử nghiệm",
+        "group": "Nhóm thử",
+        "purchase_url": "https://example.com/thuoc",
+        "note": "Ghi chú thử nghiệm",
+    }]
+    assert detail["video_url"] == "https://youtube.com/watch?v=test"
+
+
 # ── Xác thực ──
 
 def test_login_wrong_password(client, seeded):

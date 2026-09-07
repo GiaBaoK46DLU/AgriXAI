@@ -61,9 +61,18 @@ Khi có checkpoint thật:
 
 ```env
 MODEL_CHECKPOINT=../model/checkpoints/best.pt
+MODEL_DEVICE=cpu
 ```
 
-rồi cài thêm `torch` + `torchvision` và khởi động lại. Không sửa một dòng code nào. Endpoint `/health` và dashboard đều báo rõ đang chạy mô hình thật hay giả — để không ai nhầm số liệu demo là số liệu thật.
+rồi cài thêm:
+
+```bash
+pip install -r requirements-model.txt --index-url https://download.pytorch.org/whl/cpu
+```
+
+và khởi động lại. Không sửa một dòng code nào. Endpoint `/health` và dashboard đều báo rõ đang chạy mô hình thật hay giả — để không ai nhầm số liệu demo là số liệu thật.
+
+`requirements-model.txt` tách riêng khỏi `requirements.txt` để máy chỉ cần dựng giao diện (chưa có checkpoint) không phải tải PyTorch (~200MB bản CPU). Đây là quyết định của IN-01 — xem lý do đầy đủ trong `CLAUDE.md`. Bản CPU-only là đủ và được khuyến nghị vì máy demo không có GPU; nếu máy có GPU, đổi `--index-url` theo bảng ở `model/README.md`.
 
 ---
 
@@ -107,7 +116,9 @@ Bộ lọc của `GET /diagnoses`: `plot_id`, `user_id` (chỉ admin), `disease_
 | Method | Đường dẫn | Mô tả |
 |---|---|---|
 | GET | `/diseases` | Toàn bộ 10 lớp |
-| GET | `/diseases/{key}` | Triệu chứng, điều kiện phát sinh, gợi ý xử lý, phòng ngừa |
+| GET | `/diseases/{key}` | Triệu chứng, điều kiện phát sinh, gợi ý xử lý, phòng ngừa, thuốc gợi ý (`products`), video hướng dẫn (`video_url`) |
+
+`treatments`/`prevention`/`symptoms` lấy từ `shared/data/tomato_diseases.json` (tĩnh). `products`/`video_url` lấy từ CSDL (bảng `medicines`, `disease_medicines`, `disease_guides`) — đây là phần web admin sẽ CRUD được sau này, xem mục "Việc còn để ngỏ".
 
 ### Thống kê & tài khoản (chỉ quản trị)
 
@@ -155,7 +166,14 @@ Kết quả trả về:
     { "disease_key": "target_spot", "name_vi": "Đốm mắt cua", "probability": 0.07 },
     { "disease_key": "septoria_leaf_spot", "name_vi": "Đốm lá Septoria", "probability": 0.03 }
   ],
-  "disease": { "treatments": ["..."], "prevention": ["..."] },
+  "disease": {
+    "treatments": ["..."],
+    "prevention": ["..."],
+    "products": [
+      { "name": "Mancozeb", "group": "Trừ nấm tiếp xúc phổ rộng", "purchase_url": "https://...", "note": null }
+    ],
+    "video_url": "https://www.youtube.com/watch?v=..."
+  },
   "model_version": "efficientnet_b0-20260913-1042",
   "disclaimer": "Gợi ý xử lý mang tính tham khảo học thuật..."
 }
@@ -205,7 +223,7 @@ backend/
 │   ├── seed.py                     Dữ liệu mẫu
 │   ├── core/{config,security}.py   Cấu hình, băm mật khẩu, JWT
 │   ├── db/{session,init_db}.py     Engine, Base, tạo bảng
-│   ├── models/                     Bảng: users, plots, diagnoses
+│   ├── models/                     Bảng: users, plots, diagnoses, medicines/disease_medicines/disease_guides
 │   ├── schemas/                    Pydantic — hợp đồng với frontend
 │   ├── api/
 │   │   ├── deps.py                 get_current_user, require_admin
@@ -225,13 +243,19 @@ backend/
 
 ## Cơ sở dữ liệu
 
-Ba bảng:
-
 **`users`** — `id`, `username`, `hashed_password`, `full_name`, `phone`, `role` (`admin`/`farmer`), `is_active`, `created_at`
 
 **`plots`** — `id`, `puc`, `name`, `owner_id`, `region`, `area_m2`, `crop`, `status`, `note`, `created_at`
 
 **`diagnoses`** — `id`, `user_id`, `plot_id`, `image_path`, `overlay_path`, `disease_key`, `disease_name`, `confidence`, `probabilities` (JSON), `severity`, `severity_name`, `affected_ratio`, `explanation`, `model_version`, `latency_ms`, `note`, `created_at`
+
+**`medicines`** — `id`, `name`, `group`, `purchase_url`. Một thuốc dùng chung được cho nhiều bệnh.
+
+**`disease_medicines`** — `id`, `disease_key`, `medicine_id`, `note`. Gắn thuốc vào bệnh; `disease_key` là chuỗi thường (không FK) vì không có bảng `diseases` — bệnh vẫn chỉ tồn tại trong `shared/data/tomato_diseases.json`. `note` dùng cho các ca như virus xoăn vàng lá: thuốc trị bọ phấn (môi giới truyền bệnh) chứ không trị virus.
+
+**`disease_guides`** — `disease_key` (khoá chính), `video_url`. Tối đa một video mỗi bệnh.
+
+Ba bảng thuốc/video thêm ngày 07/09/2026 (IN-02) — cố tình đặt trong CSDL thay vì `shared/data/tomato_diseases.json` để web admin CRUD được sau này. Lý do đầy đủ xem `CLAUDE.md`.
 
 Ghi chú thiết kế:
 
@@ -255,3 +279,4 @@ alembic upgrade head
 - Ảnh lưu trên ổ đĩa local. Đổi sang S3/MinIO chỉ cần viết lại thân các hàm trong `app/services/storage/local.py`.
 - Chưa có refresh token — token sống 7 ngày rồi phải đăng nhập lại.
 - Phần tích hợp liên nhóm (nhóm nhật ký canh tác, nhóm bản đồ GIS) chưa làm, theo đúng phạm vi đã chốt: chạy trơn tru một mình trước đã.
+- Chưa có endpoint CRUD cho `medicines`/`disease_medicines`/`disease_guides` — hiện chỉ đọc (qua `GET /diseases`), sửa dữ liệu phải chạy lại `python -m app.seed`. CRUD qua web admin là việc tương lai, xem `CLAUDE.md` mục "Phạm vi tương lai: web admin".

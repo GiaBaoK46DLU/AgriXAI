@@ -39,8 +39,20 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
+      # Backend nạp code model/ bằng sys.path ngay trong tiến trình của nó
+      # (xem app/services/inference/loader.py) — không mount thì không có
+      # "src" để import, checkpoint dù đặt đúng cũng rơi về DummyPredictor.
+      - ./model:/model:ro
+      # settings.disease_catalog_path suy từ PROJECT_ROOT = cha của thư mục
+      # backend — trong container đó là "/", nên phải mount đúng chỗ thành
+      # "/shared". Thiếu dòng này thì GET /diseases lúc nào cũng 500 trong
+      # Docker (lỗi có từ trước, không liên quan tới việc bật mô hình thật).
+      - ./shared:/shared:ro
     environment:
       - DATABASE_URL=postgresql://plantdx:plantdx@db:5432/plantdx
+      - MODEL_CHECKPOINT=/model/checkpoints/leaf_disease_detection_model.pt
+      - MODEL_PACKAGE_DIR=/model
+      - MODEL_DEVICE=cpu
     depends_on:
       db:
         condition: service_healthy

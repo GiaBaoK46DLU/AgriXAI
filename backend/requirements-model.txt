@@ -1,0 +1,13 @@
+﻿# Cài thêm file này khi backend cần chạy mô hình thật (MODEL_CHECKPOINT có giá trị).
+# Không gộp vào requirements.txt để máy chỉ cần DummyPredictor (dựng giao diện,
+# CI, v.v.) không phải tải PyTorch (~200MB bản CPU).
+#
+# Máy demo không có GPU nên dùng bản CPU-only, nhẹ hơn nhiều bản CUDA. Nếu máy
+# có GPU muốn dùng thật thì đổi index-url theo model/README.md.
+#
+#   pip install -r requirements.txt
+#   pip install -r requirements-model.txt --index-url https://download.pytorch.org/whl/cpu
+#
+# Xem lý do chọn "một môi trường chung" thay vì venv riêng trong CLAUDE.md.
+torch>=2.2
+torchvision>=0.17

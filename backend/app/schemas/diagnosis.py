@@ -9,8 +9,22 @@ from pydantic import BaseModel, ConfigDict, Field, computed_field
 STORAGE_URL_PREFIX = "/storage"
 
 
+class ProductLink(BaseModel):
+    """Một thuốc gợi ý. Tên trường khớp với ``ProductLink`` bên mobile
+    (``mobile/lib/models/models.dart``) để không phải đổi tên khi parse JSON."""
+
+    name: str
+    group: str | None = None
+    purchase_url: str | None = None
+    note: str | None = None
+
+
 class DiseaseInfo(BaseModel):
-    """Thông tin tra cứu về một loại bệnh, lấy từ danh mục dùng chung."""
+    """Thông tin tra cứu về một loại bệnh, lấy từ danh mục dùng chung.
+
+    ``products``/``video_url`` lấy từ CSDL (bảng ``medicines``/``disease_guides``),
+    không phải từ ``shared/data/tomato_diseases.json`` — xem CLAUDE.md.
+    """
 
     key: str
     name_vi: str
@@ -22,6 +36,8 @@ class DiseaseInfo(BaseModel):
     treatments: list[str] = Field(default_factory=list)
     prevention: list[str] = Field(default_factory=list)
     reference_url: str | None = None
+    products: list[ProductLink] = Field(default_factory=list)
+    video_url: str | None = None
 
 
 class ProbabilityItem(BaseModel):

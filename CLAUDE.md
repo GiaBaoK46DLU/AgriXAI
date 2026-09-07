@@ -202,16 +202,90 @@ mảng nào. Đây là sửa **hợp đồng dùng chung** — phải báo Học
 
 ---
 
-## Trạng thái hiện tại (20/08/2026)
+## Tích hợp mô hình thật (chốt 07/09/2026 — IN-01, IN-02)
+
+Mốc 4 lẽ ra bắt đầu 01/10 nhưng Bảo chủ động kéo sớm phần này lên ngay sau khi có
+`checkpoints/best.pt` (07/09/2026), vì checkpoint đã sẵn sàng và không có lý do để
+chờ. Làm trên nhánh riêng `bao/task-42-real-model-and-mobile-integration`, tự
+kiểm tra rồi merge thẳng — Bảo chủ động bỏ bước chờ review cho riêng lần này.
+
+**IN-01 — cài torch ở đâu:** chọn **một môi trường chung** (Option 1 trong issue),
+không phải venv riêng. Lý do không suy ra được từ code: `services/inference/loader.py`
+nạp mô hình bằng cách `sys.path.insert` rồi `import` thẳng code trong `model/`
+**trong cùng tiến trình** chạy uvicorn — không qua RPC hay subprocess nào. Vậy nên
+venv riêng cho torch là bất khả thi trừ khi xây thêm một lớp giao tiếp giữa hai
+tiến trình, việc đó không đáng để làm chỉ vì muốn tách gọn dependency. Cài bản
+**CPU-only** (`backend/requirements-model.txt`, `--index-url
+https://download.pytorch.org/whl/cpu`) vì máy demo không có GPU — bản CPU nhẹ hơn
+nhiều so với bản CUDA. `backend/requirements.txt` giữ nguyên không có torch để máy
+chỉ cần `DummyPredictor` (CI, dựng giao diện) không phải tải PyTorch.
+
+**IN-02 — bật mô hình thật:** `MODEL_CHECKPOINT` trong `backend/.env` trỏ tới
+`../model/checkpoints/leaf_disease_detection_model.pt`. Đã xác minh trước khi bật:
+`class_keys` trong checkpoint khớp **đúng thứ tự** mảng `diseases` trong
+`shared/data/tomato_diseases.json` (so bằng code, không phải bằng mắt) — an toàn
+với cảnh báo ở đầu file này về việc lệch thứ tự.
+
+### Danh mục thuốc gợi ý + video hướng dẫn — lệch hướng so với issue #84
+
+Issue **#84 (MB-15)** đề xuất thêm mảng `products` thẳng vào
+`shared/data/tomato_diseases.json`. Bảo chọn hướng khác: ba bảng CSDL mới
+(`medicines`, `disease_medicines`, `disease_guides`), **không đụng file JSON**.
+
+Lý do: `products`/video là thứ web admin cần **CRUD được thật** sau này (theo yêu
+cầu 07/09/2026 của Bảo — xem mục "Phạm vi tương lai: web admin" bên dưới). File
+JSON tĩnh nằm trong Git không phải chỗ để admin sửa qua giao diện web. Đặt trong
+CSDL thay vì JSON cũng tự nó tránh được đúng rủi ro issue #84 lo ngại ("nguồn sự
+thật thứ hai" cho danh mục bệnh) vì không hề đụng tới file JSON.
+
+`disease_key` trong ba bảng mới là **chuỗi thường, không phải khoá ngoại** — vì
+`Disease` vẫn chỉ tồn tại trong JSON, không có bảng `diseases` trong CSDL để tham
+chiếu tới. Cố tình để vậy, đừng "sửa" thành FK.
+
+**Cân nhắc đã bỏ qua có chủ đích:** không biến toàn bộ danh mục bệnh (`Disease`)
+thành bảng CSDL luôn trong lần này. Thứ tự lớp trong JSON gắn chặt với output của
+một checkpoint cụ thể — đưa vào CSDL sẽ cần thêm câu chuyện versioning/thứ tự mà
+chưa ai yêu cầu, đúng kiểu abstraction "để sau này dễ hơn" mà phần *Quyết định về
+phạm vi* ở trên đã nói không nên tự thêm. Khi nào web admin thật sự cần "CRUD bệnh
+cây" (sửa triệu chứng/cách xử lý), hướng làm nên là bảng `disease_overrides` khoá
+theo `disease_key`, đọc đè lên JSON — JSON vẫn giữ quyền quyết khoá/thứ tự.
+
+---
+
+## Phạm vi tương lai: web admin (chốt hướng 07/09/2026 — CHƯA LÀM)
+
+`web-admin/` hiện chỉ là khung Vite trống (xem bảng Trạng thái hiện tại bên dưới).
+Mục này **chỉ ghi lại hướng đi** để phiên làm việc sau không phải suy nghĩ lại từ
+đầu — không phải việc cần làm ngay, và không có issue GitHub nào cho phần này.
+
+| Chức năng | Bảng/endpoint đã có sẵn | Việc còn thiếu |
+|---|---|---|
+| CRUD thuốc (`medicines`) | Model đã có (`app/models/medicine.py`) | Chưa có endpoint ghi — hiện chỉ đọc qua `GET /diseases/{key}` |
+| Gán thuốc theo bệnh, sửa link mua (`disease_medicines`) | Model đã có, seed mẫu trong `app/seed.py` | Chưa có endpoint ghi |
+| CRUD video hướng dẫn theo bệnh (`disease_guides`) | Model đã có | Chưa có endpoint ghi |
+| CRUD bệnh cây (triệu chứng, cách xử lý) | — | Chưa có gì. Hướng làm: bảng `disease_overrides` khoá theo `disease_key`, đọc đè lên `shared/data/tomato_diseases.json` ở `services/catalog.py` (xem mục ngay phía trên) — **không** biến `Disease` thành bảng chính vì phá vỡ bất biến thứ tự lớp = thứ tự output mô hình |
+| CRUD người dùng | `GET/POST /users`, `GET/PATCH /users/{id}` đã có, chỉ quản trị mới gọi được | Đã đủ cho CRUD cơ bản — web admin chỉ cần dựng giao diện |
+| Quản lý lô đất theo người dùng (biết lô nào đang bệnh gì) | `GET /plots` (admin xem được lô của mọi người dùng), `PlotWithStats` đã kèm `last_disease_name`/`last_severity` | Đã đủ — chỉ cần giao diện bảng/lọc |
+| Xem lịch sử chẩn đoán toàn hệ thống | `GET /diagnoses` đã hỗ trợ lọc `user_id` (chỉ admin), `plot_id`, `disease_key`, `severity`, khoảng ngày, phân trang | Đã đủ — chỉ cần giao diện bảng |
+
+Ba dòng đầu (thuốc/gán thuốc/video) là phần duy nhất thật sự cần viết **endpoint
+mới** ở backend trước khi web admin đụng vào được — theo đúng pattern CRUD chuẩn
+(`router.post`/`patch`/`delete` trong `app/api/v1/endpoints/`, tương tự
+`plots.py` đã có), chỉ khác đối tượng thao tác là `Medicine`/`DiseaseMedicine`/
+`DiseaseGuide` thay vì `Plot`.
+
+---
+
+## Trạng thái hiện tại (20/08/2026 — model/backend/mobile cập nhật 07/09/2026)
 
 | Phần | Tình trạng |
 |---|---|
 | Cấu trúc thư mục + README các cấp | Đã commit lên `main` |
 | `shared/data/tomato_diseases.json` | Đã commit |
-| `model/` code | Đã commit — môi trường dựng xong 20/08 trên máy Bảo (RTX 4060 Ti). Dữ liệu PlantVillage đã tải 20/08: **18.160 ảnh / 10 lớp** trong `model/data/raw/` (ngoài Git — máy khác muốn huấn luyện phải tự tải, nguồn và số liệu ghi ở issue #11). Chia tập + chạy thử 1 epoch đạt, #11–#13 đã đóng qua PR #78. **Chưa huấn luyện đầy đủ** — #14 là việc kế tiếp |
-| `backend/` code | Đã commit — **đã chạy thật**, 17/17 test pass, luồng end-to-end chạy trên PostgreSQL 16 |
-| `mobile/` (Flutter) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026 |
-| `web-admin/` (React) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026 |
+| `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `docs/bao-cao-huan-luyen-mo-hinh.md` cho số liệu đầy đủ |
+| `backend/` code | **Chạy mô hình thật** (không còn `DummyPredictor` mặc định) — 19/19 test pass, xem mục "Tích hợp mô hình thật" phía trên |
+| `mobile/` (Flutter) | Giao diện đã dựng xong từ trước; **luồng chính đã nối API thật** ngày 07/09/2026: đăng nhập → danh mục → chụp/chọn ảnh → chẩn đoán thật kèm khoanh vùng → gợi ý xử lý (thuốc + video). Màn Lịch sử vẫn còn dữ liệu mẫu — chưa nối, để sau |
+| `web-admin/` (React) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026, xem "Phạm vi tương lai: web admin" phía trên |
 
 Backend đã chạy được thật: đăng nhập, tạo lô đất, tải ảnh lên, chẩn đoán bằng
 `DummyPredictor`, sinh ảnh khoanh vùng, xem lịch sử, dashboard quản trị. Lần chạy
