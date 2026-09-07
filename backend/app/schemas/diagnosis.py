@@ -31,6 +31,7 @@ class DiseaseInfo(BaseModel):
     name_en: str
     pathogen: str | None = None
     is_healthy: bool = False
+    visual_cue: str | None = None
     symptoms: str = ""
     favorable_conditions: str | None = None
     treatments: list[str] = Field(default_factory=list)
