@@ -30,6 +30,7 @@ dependencies:
   image: ^4.3.0
   # Thư mục tạm để lưu ảnh đã khoanh vùng khi suy luận offline.
   path_provider: ^2.1.4
+  package_info_plus: ^9.0.1
 
 dev_dependencies:
   flutter_test:

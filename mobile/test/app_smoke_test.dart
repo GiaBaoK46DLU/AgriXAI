@@ -63,16 +63,20 @@ http.Client _fakeBackend() {
   return MockClient((http.Request request) async {
     final String path = request.url.path;
 
+    const Map<String, dynamic> fakeUser = <String, dynamic>{
+      'id': 1,
+      'username': 'nongdan',
+      'full_name': 'Nguyễn Văn Út',
+      'role': 'farmer',
+    };
     if (path.endsWith('/auth/login')) {
-      return _jsonResponse(<String, dynamic>{'access_token': 'fake-token'});
+      return _jsonResponse(<String, dynamic>{
+        'access_token': 'fake-token',
+        'user': fakeUser,
+      });
     }
     if (path.endsWith('/auth/me')) {
-      return _jsonResponse(<String, dynamic>{
-        'id': 1,
-        'username': 'nongdan',
-        'full_name': 'Nông dân thử nghiệm',
-        'role': 'farmer',
-      });
+      return _jsonResponse(fakeUser);
     }
     if (path.endsWith('/diseases')) {
       return _jsonResponse(DemoData.diseases.map(_diseaseJson).toList());
@@ -123,7 +127,7 @@ void main() {
     await _login(tester);
 
     expect(find.byType(AppShell), findsOneWidget);
-    expect(find.text('Chào anh Học'), findsOneWidget);
+    expect(find.text('Chào Út'), findsOneWidget);
     expect(find.text('Lô đất của bạn'), findsOneWidget);
     // Năm ô của thanh tab: bốn nhãn + nút camera ở giữa.
     expect(find.text('Lô đất'), findsOneWidget);

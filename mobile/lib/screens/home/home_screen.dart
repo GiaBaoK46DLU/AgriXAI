@@ -7,6 +7,7 @@ import '../../core/app_scope.dart';
 import '../../core/app_typography.dart';
 import '../../data/demo_data.dart';
 import '../../models/models.dart';
+import '../../services/session.dart' as session;
 import '../../widgets/agri_icons.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/glass_bottom_bar.dart';
@@ -168,6 +169,14 @@ class _Hero extends StatelessWidget {
 class _GreetingRow extends StatelessWidget {
   const _GreetingRow();
 
+  /// Tên gọi ngắn — từ cuối cùng của họ tên đầy đủ, ví dụ "Nguyễn Văn Ba" → "Ba".
+  /// Khách chưa đăng nhập thì chào chung chung, không giả định giới tính bằng "anh"/"chị".
+  static String _greetingName() {
+    final String? fullName = session.currentUser?.fullName.trim();
+    if (fullName == null || fullName.isEmpty) return 'bạn';
+    return fullName.split(RegExp(r'\s+')).last;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -177,7 +186,7 @@ class _GreetingRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Chào anh Học',
+                'Chào ${_greetingName()}',
                 style: agriStyle(size: 19, weight: FontWeight.w700, em: -0.01),
               ),
               const SizedBox(height: 2),
@@ -207,7 +216,7 @@ class _GreetingRow extends StatelessWidget {
           onTap: () => AppScope.read(context).select(AgriTab.profile),
           child: Center(
             child: Text(
-              'H',
+              _greetingName().substring(0, 1).toUpperCase(),
               style: agriStyle(size: 16, weight: FontWeight.w700),
             ),
           ),

@@ -8,6 +8,7 @@ class CurrentUser {
     required this.fullName,
     required this.role,
     this.email,
+    this.phone,
   });
 
   factory CurrentUser.fromJson(Map<String, dynamic> json) => CurrentUser(
@@ -16,6 +17,7 @@ class CurrentUser {
         fullName: json['full_name'] as String,
         role: json['role'] as String,
         email: json['email'] as String?,
+        phone: json['phone'] as String?,
       );
 
   final int id;
@@ -23,6 +25,7 @@ class CurrentUser {
   final String fullName;
   final String role;
   final String? email;
+  final String? phone;
 
   bool get isAdmin => role == 'admin';
 }
@@ -93,6 +96,21 @@ class AuthService {
   Future<CurrentUser> me() async {
     final dynamic body = await _api.get('/auth/me');
     return CurrentUser.fromJson(body as Map<String, dynamic>);
+  }
+
+  /// Sửa họ tên / số điện thoại. `role`/`email`/`is_active` bị backend bỏ qua
+  /// khi tự sửa hồ sơ (chỉ `PATCH /users/{id}` của admin mới đổi được) nên
+  /// không nhận tham số ở đây.
+  Future<CurrentUser> updateMe({String? fullName, String? phone}) async {
+    final dynamic body = await _api.patchJson('/auth/me', <String, dynamic>{
+      if (fullName != null) 'full_name': fullName,
+      if (phone != null) 'phone': phone,
+    });
+    return CurrentUser.fromJson(body as Map<String, dynamic>);
+  }
+
+  Future<void> changePassword(String newPassword) async {
+    await _api.patchJson('/auth/me', <String, dynamic>{'password': newPassword});
   }
 
   Future<void> logout() async {
