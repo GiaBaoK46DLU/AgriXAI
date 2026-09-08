@@ -7,8 +7,10 @@
 class AppConfig {
   const AppConfig._();
 
-  /// Đổi giá trị này khi demo trên điện thoại thật.
-  static const String backendHost = 'localhost';
+  /// Đang chạy trên máy ảo Android (`10.0.2.2` trỏ vào `localhost` của máy
+  /// thật) — đổi thành IP LAN của máy chạy backend khi demo trên điện thoại
+  /// thật, xem `ipconfig`.
+  static const String backendHost = '10.0.2.2';
   static const int backendPort = 8000;
 
   static String get baseUrl => 'http://$backendHost:$backendPort/api/v1';
