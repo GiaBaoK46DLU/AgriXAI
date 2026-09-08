@@ -1,8 +1,9 @@
 # `mobile/` — App cho nông dân (Flutter)
 
 Giao diện đã dựng xong theo bản thiết kế **AgriXAI Farmer v4** (Claude Design).
-Toàn bộ 12 màn hình / 13 use case đã có, chạy trên **dữ liệu mẫu hard-code** —
-phần gọi API backend là bước tiếp theo.
+Toàn bộ 12 màn hình / 13 use case đã có. Luồng đăng nhập/đăng ký, chẩn đoán và
+hồ sơ cá nhân đã nối API thật (xem CLAUDE.md mục "Tích hợp mô hình thật" và
+"Tự đăng ký tài khoản"); một số màn (Trang chủ, Lịch sử) vẫn còn dữ liệu mẫu.
 
 ## Vai trò
 
@@ -35,6 +36,54 @@ Kiểm tra nhanh:
 flutter analyze
 flutter test
 ```
+
+## Chạy thử end-to-end (backend + app)
+
+**1. Bật backend** (từ thư mục gốc repo, không phải `mobile/`):
+
+```bash
+docker compose up -d
+```
+
+Chạy xong kiểm tra `http://localhost:8000/health` trả `{"status":"ok",...}`.
+Container `plantdx-backend` tự nạp mô hình thật từ `model/checkpoints/` — không
+cần cài Python/torch trên máy để chạy backend (chỉ cần Docker Desktop đang mở).
+
+**2. Trỏ app tới đúng backend** — `lib/core/app_config.dart`, hằng số
+`backendHost`:
+
+| Chạy app ở đâu | `backendHost` | Vì sao |
+|---|---|---|
+| Máy ảo Android (AVD, `flutter run`/`flutter build apk`) | `10.0.2.2` (giá trị mặc định hiện tại) | Với máy ảo, `10.0.2.2` là địa chỉ cố định trỏ vào `localhost` của máy thật chạy Docker |
+| Điện thoại thật | IP LAN của máy chạy backend, ví dụ `192.168.1.15` (xem bằng `ipconfig`) | `localhost` trên điện thoại thật là chính nó, không phải máy tính — và `10.0.2.2` chỉ có nghĩa trong máy ảo |
+| iOS Simulator / Chrome (`flutter run -d chrome`) | `localhost` | Các môi trường này dùng chung mạng với máy host nên `localhost` trỏ đúng |
+
+Đổi xong, chạy `flutter run` (hoặc build lại APK nếu đã cài) — không cần build
+lại gì phía backend.
+
+**3. Tài khoản đăng nhập** — ba tài khoản mẫu tạo sẵn bởi
+`python -m app.seed` (xem `backend/app/seed.py`):
+
+| Tài khoản | Mật khẩu | Vai trò | Ghi chú |
+|---|---|---|---|
+| `admin` | `admin123` | Quản trị | Chỉ dùng được qua API/web admin, không cần cho test app di động |
+| `nongdan` | `nongdan123` | Nông dân | Có sẵn 3 lô đất + lịch sử chẩn đoán mẫu — tài khoản chính để demo |
+| `nongdan2` | `nongdan123` | Nông dân | Có 1 lô đất riêng — dùng để kiểm tra dữ liệu không lẫn giữa hai người dùng |
+
+Ngoài ra màn Đăng nhập có nút **"Chưa có tài khoản? Đăng ký ngay"** (tự tạo tài
+khoản `farmer` mới qua `POST /auth/register`, không cần admin cấp trước) và nút
+**"Tra cứu bệnh mà không cần đăng nhập"** (vào thẳng app ở chế độ khách — xem
+mục "Trạng thái khách" bên dưới).
+
+### Trạng thái khách (chưa đăng nhập)
+
+Vào app qua "Tra cứu bệnh mà không cần đăng nhập" thì dùng được Trang chủ (dữ
+liệu mẫu), Danh mục bệnh (dữ liệu thật, không cần đăng nhập) và tab **Tôi**
+(hiện "Bạn chưa đăng nhập" kèm nút "Đăng nhập"), nhưng **không** chẩn đoán/lưu
+lô đất được — các API đó yêu cầu token. Đăng nhập từ tab Tôi bất cứ lúc nào để
+chuyển sang tài khoản thật; đăng xuất từ tab Tôi để quay lại trạng thái khách.
+Phiên đăng nhập được lưu lại trên máy (`flutter_secure_storage`) nên tắt mở lại
+app không phải đăng nhập lại.
 
 ## Nguồn thiết kế
 
@@ -96,29 +145,16 @@ Bốn màn có thanh tab (02 · 07 · 10 · 12) nằm trong `AppShell`; tám mà
 
 | Việc | Ghi chú |
 |---|---|
-| Nối API | `data/api_client.dart` + `models/` khớp `backend/app/schemas/` |
+| Nối API | Đã xong cho đăng nhập/đăng ký, chẩn đoán, hồ sơ cá nhân — xem mục "Chạy thử end-to-end" phía trên. Trang chủ và Lịch sử vẫn còn dữ liệu mẫu (`data/demo_data.dart`) |
 | Chụp / chọn ảnh thật | `image_picker` + `flutter_image_compress` (giới hạn 10 MB) |
 | Ảnh vườn, ảnh lô đất | `assets/images/` đang trống — cần ảnh thật ở Cam Ly, Đà Lạt. Chưa có ảnh thì `ImageSlot` hiện khung nét đứt |
 | Ô thời tiết | Chưa có endpoint. Open-Meteo là phương án gọn nhất (không cần API key) |
 | Link thuốc | `products[].product_url` chưa có. Thẻ thuốc đã dựng sẵn chỗ; có link thì mở bằng `url_launcher` |
 | `productNote` | Bản v4 **không** hiển thị dòng này. Với Virus xoăn vàng lá, thuốc là trừ bọ phấn (môi giới) chứ không trị virus — nên bàn lại xem có thêm dòng đó vào màn 06 không |
 
-## ⚠️ Hai chỗ chắc chắn sẽ vướng
+## ⚠️ Một chỗ chắc chắn sẽ vướng
 
-**1. Điện thoại không gọi được `localhost`.** `localhost` trên điện thoại là chính
-nó, không phải máy tính chạy backend. Phải dùng IP LAN:
-
-```bash
-# Trên máy chạy backend
-ipconfig                                          # tìm IPv4, ví dụ 192.168.1.15
-uvicorn app.main:app --host 0.0.0.0 --port 8000   # bắt buộc có --host 0.0.0.0
-```
-
-Rồi trỏ app tới `http://192.168.1.15:8000`. Điện thoại và máy tính phải cùng WiFi,
-và tường lửa Windows phải cho phép cổng 8000. Để địa chỉ này ở một chỗ duy nhất
-trong `lib/core/` để đổi nhanh lúc demo.
-
-**2. Ảnh chụp từ điện thoại thường rất nặng** (5–12 MB). Backend giới hạn 10 MB
+**Ảnh chụp từ điện thoại thường rất nặng** (5–12 MB). Backend giới hạn 10 MB
 (`MAX_UPLOAD_MB`). Nên nén ảnh phía app trước khi gửi — vừa tránh lỗi, vừa nhanh
 hơn hẳn khi mạng yếu. Ảnh cũng hay bị xoay ngang do thẻ EXIF; backend đã tự xử lý
 bước này nên app không cần lo.
