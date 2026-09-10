@@ -99,11 +99,45 @@ Nhánh `khác` giải quyết luôn một lỗi thật: người dùng chụp qu
 tự tin trả về "Mốc lá 87%". Việc hệ thống biết khi nào **không** nên trả lời cũng
 đúng tinh thần XAI của đề tài.
 
+#### ⚠️ Nhánh `khác` đã TÁCH khỏi phạm vi quả (chốt 10/09/2026)
+
+Sơ đồ trên đặt cả bộ định tuyến trong phạm vi quả, tức phụ thuộc cổng go/no-go. **Phần
+đó không còn đúng.** Sau khi thử app với mô hình thật, đo được rằng lỗi "chụp vật thể
+bất kỳ vẫn báo bệnh lá" nghiêm trọng hơn tưởng: một mảnh **nền bìa carton không có
+cọng lá nào** được kết luận là mốc sương muộn **84,5 %**, nên ngưỡng tin cậy đơn thuần
+không chặn được.
+
+Lỗi đó thuộc **luồng lá**, tồn tại ngay hôm nay, **không liên quan gì tới bệnh trên
+quả** — nên không được để nó phụ thuộc một cổng có thể cho kết quả "bỏ phần quả".
+
+Vì vậy tách thành **bộ phân loại 2 lớp** (lá cà chua / không phải lá cà chua) độc lập:
+
+- Issue **#91** thu bộ ảnh âm, **#92** huấn luyện — cả hai thuộc **Mốc 2**, **không**
+  mang nhãn `trang-thai:cho-cong-15-09`
+- Không cần một tấm ảnh quả nào. Ảnh lá đã có sẵn 18.160 tấm
+- **Khi chốt #64 (cổng go/no-go): #71 bị bỏ KHÔNG kéo theo #92.** Đây là chỗ dễ nhầm nhất
+- Nếu qua cổng, mở 2 lớp thành 3 lớp chỉ là **thêm dữ liệu**, không phải làm lại — #71
+  kế thừa từ #92
+
+Số đo và lý lẽ đầy đủ: `Plan_model.md` mục 1 và 5.
+
 ### Dữ liệu
 
 Cần ~250–300 ảnh/lớp, tổng ~1.500 ảnh. Nguồn: Roboflow Universe và Kaggle (nhãn hay
 sai, **phải kiểm tra bằng mắt**), cộng với tự chụp tại Đà Lạt. Ảnh tự chụp còn xử lý
 luôn rủi ro domain gap vì đó là ảnh thật ngoài đồng ngay từ đầu.
+
+> ⚠️ **Phần "tự chụp tại Đà Lạt" (#67) cần xem lại trước khi chốt cổng 15/09.**
+> Ngày 10/09/2026 nhóm xác nhận **không liên hệ được nhà vườn** nên #20 (chụp ảnh lá
+> ngoài đồng) đã hoãn vô thời hạn. Rào cản đó áp lên #67 nặng hơn: cà chua thường thì
+> mua ở chợ chụp được, nhưng **quả bị thán thư hoặc thối đáy quả thì chợ không bán** —
+> hai lớp đó gần như chỉ có ngoài vườn, mà chúng lại chính là hai lớp làm đề tài rộng
+> ra (xem bảng 5 lớp quả ở trên).
+>
+> Đây là **đầu vào cho quyết định ở #64**, chưa phải kết luận: nếu chỉ dựa được vào
+> Roboflow/Kaggle thì phần quả mất hẳn phần ảnh thật, và cùng lúc mất luôn lý lẽ "ảnh
+> tự chụp xử lý luôn domain gap" ghi ở đoạn trên. Phải cân nhắc rõ khi chốt cổng, đừng
+> để sót.
 
 ### ⚠️ Cổng go/no-go ngày 15/09/2026
 
@@ -113,6 +147,16 @@ luồng lá còn trục trặc thì **bỏ hẳn phần quả, không tiếc**. 
 
 Lịch dự kiến nếu qua cổng: 15/09–10/10 thu thập ảnh, 10/10–25/10 huấn luyện mô hình
 quả + bộ định tuyến, 25/10–05/11 tích hợp và kiểm thử.
+
+**Hai đầu vào mới cho quyết định này, phát sinh ngày 10/09/2026 — đọc trước khi chốt #64:**
+
+1. **Không tự chụp được ảnh quả bệnh.** Xem cảnh báo ở mục *Dữ liệu* ngay trên. Rào cản
+   này chưa có khi đặt ra cổng go/no-go, và nó ăn thẳng vào hai lớp đáng giá nhất của
+   phần quả (`fruit_anthracnose`, `fruit_blossom_end_rot`).
+2. **Bộ định tuyến không còn nằm trong phạm vi quả.** Nhánh "không phải lá cà chua" đã
+   tách thành #91 → #92, thuộc Mốc 2. Nghĩa là **bỏ phần quả không còn kéo theo việc mất
+   bộ chặn ảnh rác** — trước đây đó là một lý do để cố giữ phần quả, nay không phải nữa.
+   Quyết định về phần quả vì vậy được xét độc lập, gọn hơn trước.
 
 ---
 
@@ -138,17 +182,28 @@ Không commit thẳng lên `main`.
 
 ## Issue GitHub
 
-Toàn bộ việc còn lại đã tạo thành **76 issue**, chia **6 mốc**. Đây là nguồn duy
+Toàn bộ việc còn lại nằm trong **issue GitHub**, chia **6 mốc**. Đây là nguồn duy
 nhất để biết còn phải làm gì — đừng lập bảng công việc song song ở chỗ khác.
+
+> Cố ý **không ghi tổng số issue** ở đây. Bản đầu ghi "76 issue" và con số đó cũ
+> ngay khi nhóm thêm issue mới (đã lệch thành 89 tính tới 10/09/2026), khiến người
+> đọc tưởng danh sách đã đóng. Muốn biết số thật thì chạy
+> `gh issue list --repo GiaBaoK46DLU/AgriXAI --state all --limit 300`.
 
 | Mốc | Thời gian | Mục tiêu |
 |---|---|---|
 | 1 | 17/08 – 31/08/2026 | Nền tảng song song: backend chạy trên máy Học, khởi tạo 2 dự án giao diện, dựng môi trường mô hình |
-| 2 | 01/09 – 30/09/2026 | Mô hình huấn luyện xong, có Grad-CAM, bắt đầu chụp ảnh thực địa |
+| 2 | 01/09 – 30/09/2026 | Mô hình huấn luyện xong, có Grad-CAM, chặn được ảnh không phải lá cà chua |
 | 3 | 01/09 – 15/10/2026 | Giao diện dựng trên `DummyPredictor` — **chạy song song mốc 2** |
-| 4 | 01/10 – 31/10/2026 | Hợp nhất mô hình thật, tinh chỉnh XAI, đo trên ảnh thực địa |
+| 4 | 01/10 – 31/10/2026 | Hợp nhất mô hình thật, tinh chỉnh XAI, đo domain gap trên bộ ảnh đồng ruộng **công khai** (H1) |
 | 5 | 15/10 – 25/11/2026 | Báo cáo, slide, tập demo |
 | 6 | 15/09 – 05/11/2026 | Bệnh trên quả — **chỉ làm nếu qua cổng go/no-go 15/09** |
+
+⚠️ **Mốc 2 và Mốc 4 đã sửa mục tiêu ngày 10/09/2026.** Trước đó Mốc 2 ghi "bắt đầu
+chụp ảnh thực địa" và Mốc 4 ghi "đo trên ảnh thực địa" — cả hai đều giả định nhóm tự
+chụp được ảnh ngoài đồng, mà việc đó **đã hoãn vô thời hạn** (xem rủi ro số 1). Mốc 4
+vẫn đo được domain gap, chỉ là bằng bộ **công khai** chứ không bằng ảnh tự chụp. Mốc 2
+nhận việc mới thay vào: chặn ảnh không phải lá cà chua (#90 → #91 → #92).
 
 Mốc 2 và 3 **cố ý trùng thời gian**: Bảo huấn luyện mô hình, Học dựng giao diện
 trên mô hình giả. Đây chính là lý do `DummyPredictor` tồn tại.
@@ -459,13 +514,18 @@ tiến" chỗ này phải đọc E1 trước.
 
 ### Việc tiếp theo, xếp đúng thứ tự
 
+> Cập nhật 10/09/2026 sau buổi rà soát bốn vấn đề phát hiện khi thử app với mô hình
+> thật. Số đo và lý lẽ đầy đủ ở `Plan_model.md` mục 5.3.
+
 | Thứ tự | Việc | Vì sao thứ tự này |
 |---|---|---|
-| **1** | **#17 — kiểm tra Grad-CAM có rơi đúng vết bệnh không** (5 ảnh × 10 lớp) | **Cổng kiểm soát của cả đề tài.** Nếu heatmap rơi vào nền thì toàn bộ phần XAI mất giá trị. Lý do là bài A2: có người huấn luyện **chỉ bằng 8 pixel nền** PlantVillage mà vẫn đạt 49 % (đoán mò 2,63 %) |
-| 2 | **#49 — đo trên ảnh đồng ruộng.** Dùng bộ **H1** trong `model/research/` (731 ảnh thật, 6/7 lớp trùng, tải từ Mendeley) | Có số domain gap **mà không phải chờ đi chụp ảnh**. Nửa buổi là xong |
-| 3 | **#16 — nâng Grad-CAM++** | Heatmap hiện thô vì tầng chập cuối B0 chỉ 7×7. Làm **sau** #17, vì nét hơn mà sai chỗ thì vô nghĩa |
-| 4 | **#18 — đo tốc độ suy luận trên CPU** | Rủi ro số 2. Cần chốt máy demo là máy nào |
-| 5 | **#19 — so ResNet18 / ResNet50 / B3** | `build.py` đã hỗ trợ sẵn, chỉ đổi `model.arch` trong config. 4 lượt × 25 phút |
+| **1** | **#49 — đo domain gap trên bộ H1** (731 ảnh đồng ruộng thật, 6/7 lớp trùng, tải từ Mendeley — xem `model/research/`) | **Nay là đường DUY NHẤT** để có số domain gap, vì #20 đã hoãn (xem rủi ro số 1). Chặn cả #93, #94, #50 — chúng không có mốc nào để so sánh nếu thiếu nó. Nửa buổi là xong, không phải đi chụp |
+| **2** | **#17 — kiểm tra Grad-CAM có rơi đúng vết bệnh không** (5 ảnh × 10 lớp) | **Cổng kiểm soát của cả đề tài.** Nếu heatmap rơi vào nền thì toàn bộ phần XAI mất giá trị. Lý do là bài A2: có người huấn luyện **chỉ bằng 8 pixel nền** PlantVillage mà vẫn đạt 49 % (đoán mò 2,63 %). Tiền kiểm 10/09 đã chỉ chỗ đáng nghi: lớp `healthy` chỉ 42 % khối lượng heatmap nằm trong lá, và 14 % ảnh có điểm nóng nhất rơi ra nền |
+| **3** | **#90 — không khoanh vùng khi bản đồ nhiệt quá yếu** | Chặn ngay triệu chứng nặng nhất: app khoanh elip lên vật thể bất kỳ rồi khẳng định một loại bệnh. **1 giờ, không cần Học sửa gì** vì không đụng hợp đồng dùng chung |
+| **4** | **#91** thu bộ ảnh không phải lá → **#92** huấn luyện bộ 2 lớp | Cách chữa gốc cho lỗi trên. #91 làm được ngay tại nhà, **không cần nhà vườn**. #92 chặn bởi #91. Cũng là thứ #47 đang chờ để chốt ngưỡng bằng số liệu thật |
+| 5 | **#16 — nâng Grad-CAM++** | Heatmap hiện thô vì tầng chập cuối B0 chỉ 7×7 — đo được 40,7 % khối lượng rơi ra ngoài lá. Làm **sau #17**, vì nét hơn mà sai chỗ thì vô nghĩa |
+| ~~6~~ | ~~#18 — đo tốc độ suy luận trên CPU~~ | **Đã có số 10/09/2026: 215 ms** (CPU 4 luồng) cho `predict()` đầy đủ ở 1280 px, so với **452 ms** khi để torch tự lấy 16 luồng — tranh chấp luồng. Rủi ro số 2 hạ mức. Chỉ còn phần đo lại trên máy demo khi #51 chốt máy |
+| 7 | **#19 — so ResNet18 / ResNet50 / B3** | ⚠️ **Hạ cấp 10/09/2026: làm để BÁO CÁO, không phải để sửa lỗi.** Đã đo và kết luận đổi kiến trúc gần như không cải thiện được độ chính xác thực tế — accuracy PlantVillage đã 99,60 %, điểm nghẽn nằm ở domain gap. `build.py` đã hỗ trợ sẵn, chỉ đổi `model.arch`. 4 lượt × 25 phút |
 
 ### Ba cái bẫy đã biết trước
 
@@ -487,16 +547,30 @@ tiến" chỗ này phải đọc E1 trước.
 - Cột trạng thái: ✅ đã mở toàn văn · ⚠️ mới đọc tóm tắt · ⚪ mới thấy qua tìm kiếm.
   **Số liệu của bài ⚪ chỉ để biết bài đó có đáng đọc hay không, không được trích
   thẳng vào báo cáo.**
-- Thư mục này **không phải bảng công việc**. Nguồn duy nhất vẫn là 76 issue GitHub.
+- Thư mục này **không phải bảng công việc**. Nguồn duy nhất vẫn là issue GitHub.
 
 ---
 
 ## Ba rủi ro đã nhận diện
 
 1. **Domain gap.** PlantVillage chụp lá đơn trên nền đồng nhất trong phòng; mô hình
-   thường đạt >99% trên tập test nhưng rớt mạnh với ảnh chụp thật ngoài đồng. Cần
-   thu thập 50–100 ảnh thật vào `model/data/field/` và báo cáo cả hai con số. Làm
-   sớm trong tháng 9, đừng để tháng 10.
+   thường đạt >99% trên tập test nhưng rớt mạnh với ảnh chụp thật ngoài đồng.
+
+   ⚠️ **Kế hoạch "thu thập 50–100 ảnh thật vào `model/data/field/`" đã HOÃN VÔ THỜI
+   HẠN (10/09/2026)** — nhóm không liên hệ được nhà vườn để xin phép chụp và không
+   còn thời gian. Issue #20/#21/#48 để mở kèm nhãn `trang-thai:bi-chan`, mở lại nếu
+   tình hình đổi. **`model/data/field/` sẽ vẫn rỗng.**
+
+   Rủi ro này **không** vì thế mà bỏ trống: **#49 chạy trên bộ H1 là đường duy nhất,
+   và vẫn đủ.** H1 có 731 ảnh đồng ruộng thật — gấp 7–14 lần con số 50–100 dự kiến —
+   do nhóm độc lập công bố trên tạp chí có phản biện nên **trích dẫn được**. Phần
+   fine-tune (#50 hướng 2) đổi nguồn sang **H2 (PlantDoc)** hoặc **H3 (Taiwan)**, và
+   **H1 phải giữ nguyên vẹn làm tập test độc lập** — để ảnh H1 lọt vào tập huấn luyện
+   thì con số domain gap của cả đề tài mất giá trị, mà lỗi đó không báo lỗi gì.
+
+   **Hạn chế phải ghi vào báo cáo:** H1 chụp tại Bangladesh, H2 lấy từ Internet. Đề
+   tài kết luận được về domain gap **nói chung**, **không** kết luận được gì riêng cho
+   điều kiện canh tác ở Đà Lạt. Đừng trình bày như thể đã đo trên ảnh địa phương.
 
    Ba con số có nguồn trích dẫn được (chi tiết trong `model/research/`): chính tác
    giả PlantVillage báo cáo tụt từ 99,35% xuống **31,40%** trên ảnh điều kiện khác
