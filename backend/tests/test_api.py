@@ -225,6 +225,30 @@ def test_diagnose_returns_full_explanation(client, farmer_headers, seeded, leaf_
         assert client.get(body["overlay_url"]).status_code == 200
 
 
+def test_diagnose_without_save_does_not_persist(client, farmer_headers, seeded, leaf_image):
+    """`save=false` (nút chụp ảnh chung, không qua lô đất cụ thể) phải trả về
+    kết quả đầy đủ như bình thường nhưng KHÔNG ghi gì vào CSDL — xem CLAUDE.md
+    mục quản lý lô đất."""
+    before = client.get(f"{API}/diagnoses", headers=farmer_headers).json()["total"]
+
+    response = client.post(
+        f"{API}/diagnoses",
+        headers=farmer_headers,
+        files=_files(leaf_image),
+        data={"plot_id": str(seeded["plot_id"]), "save": "false"},
+    )
+    assert response.status_code == 201, response.text
+    body = response.json()
+
+    assert body["disease_key"]
+    assert body["explanation"]
+    # Không lưu nên không thể/không nên gắn lô đất, dù có lỡ gửi plot_id lên.
+    assert body["plot_id"] is None
+
+    after = client.get(f"{API}/diagnoses", headers=farmer_headers).json()["total"]
+    assert after == before, "save=false không được tạo bản ghi CSDL nào"
+
+
 def test_diagnose_rejects_too_few_images(client, farmer_headers, leaf_image):
     response = client.post(
         f"{API}/diagnoses", headers=farmer_headers, files=_files(leaf_image, count=2),

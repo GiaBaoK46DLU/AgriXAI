@@ -23,6 +23,7 @@ from __future__ import annotations
 import logging
 from collections import Counter
 from dataclasses import dataclass
+from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
 
@@ -108,13 +109,16 @@ def _average_probabilities(results: list[_ImageResult]) -> dict[str, float]:
     return {key: total / n for key, total in totals.items()}
 
 
-def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
-                  images: list[bytes], note: str | None = None) -> Diagnosis:
-    """Chạy toàn bộ luồng chẩn đoán cho một lô ảnh và ghi kết quả vào CSDL.
+@dataclass
+class _Aggregate:
+    results: list[_ImageResult]
+    majority_key: str
+    avg_probabilities: dict[str, float]
+    avg_confidence: float
+    representative: _ImageResult
 
-    Raises:
-        storage.InvalidImageError: một trong các ảnh hỏng hoặc sai định dạng.
-    """
+
+def _run_and_aggregate(images: list[bytes]) -> _Aggregate:
     if not images:
         raise ValueError("images không được rỗng")
 
@@ -133,30 +137,41 @@ def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
         key=lambda r: r.prediction.confidence,
     )
 
-    disease = catalog.get_disease(majority_key)
-    rep_interp = representative.interpretation
+    return _Aggregate(results, majority_key, avg_probabilities, avg_confidence, representative)
+
+
+def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
+                  images: list[bytes], note: str | None = None) -> Diagnosis:
+    """Chạy toàn bộ luồng chẩn đoán cho một lô ảnh và ghi kết quả vào CSDL.
+
+    Raises:
+        storage.InvalidImageError: một trong các ảnh hỏng hoặc sai định dạng.
+    """
+    agg = _run_and_aggregate(images)
+    disease = catalog.get_disease(agg.majority_key)
+    rep_interp = agg.representative.interpretation
 
     record = Diagnosis(
         user_id=user_id,
         plot_id=plot_id,
-        image_path=representative.image_path,
-        overlay_path=representative.overlay_path,
-        disease_key=majority_key,
-        disease_name=disease.get("name_vi", majority_key),
-        confidence=avg_confidence,
-        probabilities=avg_probabilities,
+        image_path=agg.representative.image_path,
+        overlay_path=agg.representative.overlay_path,
+        disease_key=agg.majority_key,
+        disease_name=disease.get("name_vi", agg.majority_key),
+        confidence=agg.avg_confidence,
+        probabilities=agg.avg_probabilities,
         severity=rep_interp.severity,
         severity_name=rep_interp.severity_name,
         affected_ratio=rep_interp.affected_ratio,
         explanation=rep_interp.text,
-        model_version=representative.prediction.model_version,
-        latency_ms=sum(r.prediction.latency_ms for r in results),
+        model_version=agg.representative.prediction.model_version,
+        latency_ms=sum(r.prediction.latency_ms for r in agg.results),
         note=note,
     )
     db.add(record)
     db.flush()  # cần record.id để gán khoá ngoại cho từng ảnh
 
-    for result in results:
+    for result in agg.results:
         image_disease = catalog.get_disease(result.prediction.disease_key)
         db.add(DiagnosisImage(
             diagnosis_id=record.id,
@@ -169,6 +184,58 @@ def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
 
     db.commit()
     db.refresh(record)
+    return record
+
+
+def run_diagnosis_preview(user_id: int, images: list[bytes]) -> Diagnosis:
+    """Chẩn đoán nhanh từ nút chụp ảnh chung (không qua một lô đất cụ thể) —
+    không ghi gì vào CSDL nên không xuất hiện ở Lịch sử, theo đúng quy tắc "chỉ
+    lưu kết quả khi có gắn lô đất" (xem CLAUDE.md mục quản lý lô đất).
+
+    Ảnh gốc/overlay vẫn được lưu xuống đĩa như luồng có lưu (`_run_single_image`
+    không đổi) vì màn kết quả cần URL ảnh để hiển thị khoanh vùng — chấp nhận
+    đây là ảnh mồ côi không có bản ghi CSDL trỏ tới, phạm vi đồ án nhỏ nên
+    không đáng xây thêm cơ chế dọn rác cho việc này.
+
+    Trả về một `Diagnosis` KHÔNG được `db.add()` — chỉ dùng để tái sử dụng
+    `_to_detail()` ở endpoint, không bao giờ được commit.
+    """
+    agg = _run_and_aggregate(images)
+    disease = catalog.get_disease(agg.majority_key)
+    rep_interp = agg.representative.interpretation
+
+    record = Diagnosis(
+        user_id=user_id,
+        plot_id=None,
+        image_path=agg.representative.image_path,
+        overlay_path=agg.representative.overlay_path,
+        disease_key=agg.majority_key,
+        disease_name=disease.get("name_vi", agg.majority_key),
+        confidence=agg.avg_confidence,
+        probabilities=agg.avg_probabilities,
+        severity=rep_interp.severity,
+        severity_name=rep_interp.severity_name,
+        affected_ratio=rep_interp.affected_ratio,
+        explanation=rep_interp.text,
+        model_version=agg.representative.prediction.model_version,
+        latency_ms=sum(r.prediction.latency_ms for r in agg.results),
+        note=None,
+    )
+    record.id = 0
+    record.created_at = datetime.now(timezone.utc)
+    record.images = [
+        DiagnosisImage(
+            id=idx + 1,
+            diagnosis_id=0,
+            image_path=result.image_path,
+            overlay_path=result.overlay_path,
+            disease_key=result.prediction.disease_key,
+            disease_name=catalog.get_disease(result.prediction.disease_key)
+            .get("name_vi", result.prediction.disease_key),
+            confidence=result.prediction.confidence,
+        )
+        for idx, result in enumerate(agg.results)
+    ]
     return record
 
 

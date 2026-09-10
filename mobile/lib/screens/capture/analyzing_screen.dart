@@ -32,7 +32,13 @@ import '../result/result_screen.dart';
 /// kết quả cuối cùng tổng hợp theo đa số phiếu (xem CLAUDE.md). Suy luận
 /// ngoại tuyến (khi mất mạng) chỉ hỗ trợ một ảnh nên dùng ảnh đầu tiên.
 class AnalyzingScreen extends StatefulWidget {
-  const AnalyzingScreen({required this.images, this.plotId, this.plotName, super.key});
+  const AnalyzingScreen({
+    required this.images,
+    this.plotId,
+    this.plotName,
+    this.save = true,
+    super.key,
+  });
 
   final List<File> images;
   final int? plotId;
@@ -40,6 +46,12 @@ class AnalyzingScreen extends StatefulWidget {
   /// Tên lô đất để hiện trên kết quả nếu phải rơi về suy luận ngoại tuyến —
   /// lúc đó không gọi được `GET /plots` nên phải mang theo từ màn Chụp ảnh.
   final String? plotName;
+
+  /// `false` khi vào từ nút chụp ảnh chung (không qua một lô đất cụ thể) —
+  /// backend không lưu kết quả này vào CSDL (xem CLAUDE.md mục quản lý lô
+  /// đất). Không ảnh hưởng tới nhánh suy luận ngoại tuyến, vốn đã không đụng
+  /// tới backend nên chưa bao giờ được lưu.
+  final bool save;
 
   @override
   State<AnalyzingScreen> createState() => _AnalyzingScreenState();
@@ -101,6 +113,7 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
         result = await session.diagnosisService.diagnose(
           images: images,
           plotId: widget.plotId,
+          save: widget.save,
         );
       } catch (_) {
         // Không gọi được backend (mất mạng, sập tường lửa, server tắt...) —
@@ -110,6 +123,7 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
         // Suy luận ngoại tuyến chỉ hỗ trợ một ảnh — dùng ảnh đầu tiên.
         result = await OfflineInferenceService.instance.diagnose(
           imageFile: widget.images.first,
+          imageBytes: images.first.bytes,
           plotLabel: widget.plotName ?? 'Chưa gán lô đất',
         );
       }

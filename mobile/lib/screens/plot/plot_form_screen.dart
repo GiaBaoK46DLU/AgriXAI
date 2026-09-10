@@ -6,6 +6,8 @@ import '../../core/app_metrics.dart';
 import '../../core/app_scope.dart';
 import '../../core/app_typography.dart';
 import '../../models/models.dart';
+import '../../services/api_client.dart';
+import '../../services/session.dart' as session;
 import '../../widgets/agri_screen.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/chips.dart';
@@ -16,7 +18,7 @@ import '../../widgets/misc.dart';
 
 /// **09 Thêm / sửa lô đất** — UC-M4, UC-M5.
 ///
-/// API khi nối thật: `POST /plots` hoặc `PATCH /plots/{id}`.
+/// `POST /plots` khi thêm mới, `PATCH /plots/{id}` khi sửa.
 class PlotFormScreen extends StatefulWidget {
   const PlotFormScreen({super.key, this.plot});
 
@@ -40,12 +42,18 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
       TextEditingController(text: widget.plot?.puc);
   late final TextEditingController _region =
       TextEditingController(text: widget.plot?.region);
-  late final TextEditingController _area =
-      TextEditingController(text: widget.plot?.area);
+  late final TextEditingController _area = TextEditingController(
+    text: widget.plot?.areaM2 == null
+        ? ''
+        : widget.plot!.areaM2!.toStringAsFixed(0),
+  );
   final TextEditingController _crop = TextEditingController(text: 'Cà chua');
   final TextEditingController _note = TextEditingController();
 
   late String _status = widget.plot?.status ?? 'Đang canh tác';
+
+  bool _saving = false;
+  String? _error;
 
   @override
   void dispose() {
@@ -56,6 +64,50 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
     _crop.dispose();
     _note.dispose();
     super.dispose();
+  }
+
+  Future<void> _save() async {
+    final String name = _name.text.trim();
+    if (name.isEmpty) {
+      setState(() => _error = 'Nhập tên lô đất');
+      return;
+    }
+
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+
+    final Map<String, dynamic> payload = <String, dynamic>{
+      'name': name,
+      'region': _region.text.trim().isEmpty ? null : _region.text.trim(),
+      'area_m2': double.tryParse(_area.text.trim()),
+      'status': plotStatusRawFromLabel(_status),
+      'note': _note.text.trim().isEmpty ? null : _note.text.trim(),
+    };
+
+    try {
+      if (widget.plot == null) {
+        final String puc = _puc.text.trim();
+        await session.apiClient.postJson('/plots', <String, dynamic>{
+          ...payload,
+          if (puc.isNotEmpty) 'puc': puc,
+        });
+      } else {
+        await session.apiClient.patchJson('/plots/${widget.plot!.id}', payload);
+      }
+      if (!mounted) return;
+      AppNav.toTab(context, AgriTab.plots);
+    } on ApiException catch (e) {
+      if (mounted) setState(() { _error = e.message; _saving = false; });
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _error = 'Không lưu được lô đất — kiểm tra kết nối mạng rồi thử lại.';
+          _saving = false;
+        });
+      }
+    }
   }
 
   @override
@@ -162,10 +214,17 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
                 ],
               ),
             ),
+            if (_error != null) ...<Widget>[
+              const SizedBox(height: 14),
+              Text(
+                _error!,
+                style: agriStyle(size: 12.5, weight: FontWeight.w600, color: AgriColors.accentInk),
+              ),
+            ],
             const SizedBox(height: 20),
             PrimarySolidButton(
-              label: 'Lưu lô đất',
-              onPressed: () => AppNav.toTab(context, AgriTab.plots),
+              label: _saving ? 'Đang lưu…' : 'Lưu lô đất',
+              onPressed: _saving ? () {} : _save,
             ),
             const SizedBox(height: 10),
             GlassPillButton(

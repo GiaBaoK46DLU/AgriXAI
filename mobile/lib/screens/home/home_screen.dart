@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../core/app_colors.dart';
@@ -5,8 +7,9 @@ import '../../core/app_glass.dart';
 import '../../core/app_metrics.dart';
 import '../../core/app_scope.dart';
 import '../../core/app_typography.dart';
-import '../../data/demo_data.dart';
 import '../../models/models.dart';
+import '../../services/api_client.dart';
+import '../../services/session.dart' as session;
 import '../../widgets/agri_icons.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/glass_bottom_bar.dart';
@@ -19,84 +22,226 @@ import '../plot/plot_detail_screen.dart';
 import '../plot/plot_form_screen.dart';
 import '../result/result_screen.dart';
 
+const List<String> _weekdayVi = <String>[
+  'Thứ Hai',
+  'Thứ Ba',
+  'Thứ Tư',
+  'Thứ Năm',
+  'Thứ Sáu',
+  'Thứ Bảy',
+  'Chủ Nhật',
+];
+
 /// **02 Trang chủ · lô đất** — UC-M3.
 ///
-/// API khi nối thật: `GET /plots` và `GET /diagnoses?limit=3`. Ô thời tiết
-/// chưa có endpoint — xem mục 8 của README bàn giao.
-class HomeScreen extends StatelessWidget {
+/// Nối `GET /plots`, `GET /diagnoses?page_size=3` và `GET /weather` thật.
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Cắt sẵn rồi mới đọc theo chỉ số. Đọc thẳng `history[2]` thì tài khoản
-    // chưa chẩn đoán đủ ba lần là ném `RangeError` — chắc chắn xảy ra khi
-    // thay dữ liệu mẫu bằng `GET /diagnoses`.
-    final List<DiagnosisEntry> recent = DemoData.history.take(3).toList();
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          const _Hero(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 18, 16, 22),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                const _UrgentCard(),
-                const SizedBox(height: 14),
-                _DiagnoseButton(
-                  onPressed: () =>
-                      AppNav.push(context, (_) => const CaptureScreen()),
-                ),
-                const SizedBox(height: 24),
-                SectionHeader(
-                  title: 'Lô đất của bạn',
-                  action: GlassPillButton(
-                    label: '+ Thêm lô',
+class _HomeScreenState extends State<HomeScreen> {
+  bool _loading = true;
+  String? _error;
+  List<Plot> _plots = <Plot>[];
+  List<DiagnosisEntry> _recent = <DiagnosisEntry>[];
+  WeatherSnapshot? _weather;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final List<dynamic> plotsBody =
+          await session.apiClient.get('/plots') as List<dynamic>;
+      final ({List<DiagnosisEntry> items, int total}) recentPage =
+          await session.diagnosisService.list(pageSize: 3);
+      if (!mounted) return;
+      setState(() {
+        _plots = plotsBody
+            .map((dynamic p) => Plot.fromJson(p as Map<String, dynamic>))
+            .toList();
+        _recent = recentPage.items;
+        _loading = false;
+      });
+    } on ApiException catch (e) {
+      if (mounted) setState(() { _error = e.message; _loading = false; });
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _error = 'Không tải được trang chủ — kiểm tra kết nối mạng rồi thử lại.';
+          _loading = false;
+        });
+      }
+    }
+    // Ô thời tiết tải riêng: hỏng thì chỉ ô đó rơi về trạng thái "--", không
+    // kéo sập cả trang chủ (xem rủi ro kết nối mạng lúc demo trong CLAUDE.md).
+    unawaited(_loadWeather());
+  }
+
+  Future<void> _loadWeather() async {
+    try {
+      final WeatherSnapshot w = await session.weatherService.fetch();
+      if (mounted) setState(() => _weather = w);
+    } catch (_) {
+      // Bỏ qua — `_WeatherCard` tự hiện trạng thái "chưa có dữ liệu".
+    }
+  }
+
+  Plot? get _urgentPlot {
+    for (final Plot plot in _plots) {
+      if (plot.lastSeverity == Severity.severe) return plot;
+    }
+    return null;
+  }
+
+  Future<void> _openPlot(Plot plot) async {
+    await AppNav.push(context, (_) => PlotDetailScreen(plotId: plot.id));
+    if (mounted) _load();
+  }
+
+  Future<void> _addPlot() async {
+    await AppNav.push(context, (_) => const PlotFormScreen());
+    if (mounted) _load();
+  }
+
+  Future<void> _openDiagnosis(DiagnosisEntry entry) async {
+    try {
+      final DiagnosisCase detail = await session.diagnosisService.get(entry.id);
+      if (!mounted) return;
+      await AppNav.push(context, (_) => ResultScreen(diagnosisCase: detail));
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Không mở được chi tiết bản ghi này')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Plot? urgent = _urgentPlot;
+
+    return RefreshIndicator(
+      onRefresh: _load,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            _Hero(weather: _weather),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 18, 16, 22),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  if (urgent != null) ...<Widget>[
+                    UrgentBanner(
+                      plotName: urgent.name,
+                      diseaseName: urgent.lastDisease,
+                      onViewResult: () => _openPlot(urgent),
+                    ),
+                    const SizedBox(height: 14),
+                  ],
+                  _DiagnoseButton(
                     onPressed: () =>
-                        AppNav.push(context, (_) => const PlotFormScreen()),
-                    minHeight: 40,
-                    fontSize: 13.5,
-                    color: AgriColors.primary,
-                    style: GlassStyle.field,
+                        AppNav.push(context, (_) => const CaptureScreen()),
                   ),
-                ),
-                const SizedBox(height: 12),
-                for (final Plot plot in DemoData.plots) ...<Widget>[
-                  PlotCard(
-                    plot: plot,
-                    onTap: () => AppNav.push(
-                      context,
-                      (_) => PlotDetailScreen(plotId: plot.id),
+                  const SizedBox(height: 24),
+                  SectionHeader(
+                    title: 'Lô đất của bạn',
+                    action: GlassPillButton(
+                      label: '+ Thêm lô',
+                      onPressed: _addPlot,
+                      minHeight: 40,
+                      fontSize: 13.5,
+                      color: AgriColors.primary,
+                      style: GlassStyle.field,
                     ),
                   ),
-                  if (plot != DemoData.plots.last) const SizedBox(height: 11),
-                ],
-                const SizedBox(height: 26),
-                SectionHeader(
-                  title: 'Chẩn đoán gần đây',
-                  action: GhostButton(
-                    label: 'Tất cả',
-                    onPressed: () =>
-                        AppScope.read(context).select(AgriTab.history),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                for (int i = 0; i < recent.length; i++) ...<Widget>[
-                  DiagnosisMiniRow(
-                    entry: recent[i],
-                    onTap: () => AppNav.push(
-                      context,
-                      (_) => ResultScreen(
-                        diagnosisCase: DemoData.caseByKey(recent[i].caseKey),
+                  const SizedBox(height: 12),
+                  if (_loading)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 30),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  else if (_error != null)
+                    _errorState()
+                  else if (_plots.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Text(
+                        'Chưa có lô đất nào — nhấn "+ Thêm lô" để bắt đầu theo dõi.',
+                        style: agriStyle(size: 13.5, color: AgriColors.inkA(.68)),
                       ),
+                    )
+                  else
+                    for (final Plot plot in _plots) ...<Widget>[
+                      PlotCard(plot: plot, onTap: () => _openPlot(plot)),
+                      if (plot != _plots.last) const SizedBox(height: 11),
+                    ],
+                  const SizedBox(height: 26),
+                  SectionHeader(
+                    title: 'Chẩn đoán gần đây',
+                    action: GhostButton(
+                      label: 'Tất cả',
+                      onPressed: () =>
+                          AppScope.read(context).select(AgriTab.history),
                     ),
                   ),
-                  if (i != recent.length - 1) const SizedBox(height: 9),
+                  const SizedBox(height: 12),
+                  if (!_loading && _error == null)
+                    if (_recent.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Text(
+                          'Chưa có lần chẩn đoán nào gắn với lô đất.',
+                          style: agriStyle(size: 13, color: AgriColors.inkA(.65)),
+                        ),
+                      )
+                    else
+                      for (int i = 0; i < _recent.length; i++) ...<Widget>[
+                        DiagnosisMiniRow(
+                          entry: _recent[i],
+                          onTap: () => _openDiagnosis(_recent[i]),
+                        ),
+                        if (i != _recent.length - 1) const SizedBox(height: 9),
+                      ],
                 ],
-              ],
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _errorState() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        children: <Widget>[
+          Text(
+            _error!,
+            textAlign: TextAlign.center,
+            style: agriStyle(size: 13.5, color: AgriColors.inkA(.7)),
+          ),
+          const SizedBox(height: 10),
+          GlassPillButton(
+            label: 'Thử lại',
+            onPressed: _load,
+            minHeight: 40,
+            fontSize: 13.5,
           ),
         ],
       ),
@@ -106,7 +251,9 @@ class HomeScreen extends StatelessWidget {
 
 /// Khối ảnh trên cùng: ảnh vườn + lớp phủ sáng + lời chào + ô thời tiết.
 class _Hero extends StatelessWidget {
-  const _Hero();
+  const _Hero({required this.weather});
+
+  final WeatherSnapshot? weather;
 
   @override
   Widget build(BuildContext context) {
@@ -151,11 +298,11 @@ class _Hero extends StatelessWidget {
                   20,
                   4,
                 ),
-                child: const _GreetingRow(),
+                child: _GreetingRow(location: weather?.location),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-                child: _WeatherCard(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                child: _WeatherCard(weather: weather),
               ),
             ],
           ),
@@ -166,10 +313,18 @@ class _Hero extends StatelessWidget {
 }
 
 class _GreetingRow extends StatelessWidget {
-  const _GreetingRow();
+  const _GreetingRow({this.location});
+
+  final String? location;
 
   @override
   Widget build(BuildContext context) {
+    final String name = session.currentUser?.fullName.split(' ').last ?? 'bạn';
+    final DateTime now = DateTime.now();
+    final String dateLabel =
+        '${_weekdayVi[now.weekday - 1]}, ${now.day.toString().padLeft(2, '0')}/'
+        '${now.month.toString().padLeft(2, '0')}';
+
     return Row(
       children: <Widget>[
         Expanded(
@@ -177,12 +332,12 @@ class _GreetingRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Chào anh Học',
+                'Chào $name',
                 style: agriStyle(size: 19, weight: FontWeight.w700, em: -0.01),
               ),
               const SizedBox(height: 2),
               Text(
-                'Thứ Năm, 21/08 · Cam Ly, Đà Lạt',
+                '$dateLabel · ${location ?? 'Đà Lạt'}',
                 style: agriStyle(
                   size: 12.5,
                   weight: FontWeight.w600,
@@ -207,7 +362,7 @@ class _GreetingRow extends StatelessWidget {
           onTap: () => AppScope.read(context).select(AgriTab.profile),
           child: Center(
             child: Text(
-              'H',
+              name.isEmpty ? '?' : name.substring(0, 1).toUpperCase(),
               style: agriStyle(size: 16, weight: FontWeight.w700),
             ),
           ),
@@ -218,10 +373,13 @@ class _GreetingRow extends StatelessWidget {
 }
 
 class _WeatherCard extends StatelessWidget {
-  const _WeatherCard();
+  const _WeatherCard({required this.weather});
+
+  final WeatherSnapshot? weather;
 
   @override
   Widget build(BuildContext context) {
+    final WeatherSnapshot? w = weather;
     return GlassCard(
       style: GlassStyle.floating,
       radius: 28,
@@ -244,7 +402,7 @@ class _WeatherCard extends StatelessWidget {
                       textBaseline: TextBaseline.alphabetic,
                       children: <Widget>[
                         Text(
-                          '24°C',
+                          w == null ? '--°C' : '${w.temp}°C',
                           style: agriStyle(
                             size: 32,
                             weight: FontWeight.w800,
@@ -253,19 +411,23 @@ class _WeatherCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Text(
-                          'Mát, nhiều mây',
-                          style: agriStyle(
-                            size: 13,
-                            weight: FontWeight.w600,
-                            color: AgriColors.inkSoftA(.78),
+                        Expanded(
+                          child: Text(
+                            w?.description ?? 'Đang tải thời tiết…',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: agriStyle(
+                              size: 13,
+                              weight: FontWeight.w600,
+                              color: AgriColors.inkSoftA(.78),
+                            ),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      'Độ ẩm 60% · gió nhẹ · mưa phùn về đêm',
+                      w?.detail ?? 'Không tải được thông tin thời tiết.',
                       style: agriStyle(
                         size: 12.5,
                         weight: FontWeight.w500,
@@ -277,49 +439,52 @@ class _WeatherCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          Row(
-            children: <Widget>[
-              for (final WeatherDay day in DemoData.weather) ...<Widget>[
-                Expanded(child: _ForecastCell(day: day)),
-                if (day != DemoData.weather.last) const SizedBox(width: 7),
-              ],
-            ],
-          ),
-          const SizedBox(height: 13),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
-            decoration: BoxDecoration(
-              color: AgriColors.weatherStripBg(),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          if (w != null && w.forecast.isNotEmpty) ...<Widget>[
+            const SizedBox(height: 14),
+            Row(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 1),
-                  child: AgriIcons.warning(
-                    19,
-                    triangle: AgriColors.inkDeep,
-                    mark: AgriColors.accent,
-                  ),
-                ),
-                const SizedBox(width: 9),
-                Expanded(
-                  child: Text(
-                    'Ẩm cao kéo dài — điều kiện thuận lợi cho mốc sương muộn. '
-                    'Nên kiểm tra vườn hôm nay.',
-                    style: agriStyle(
-                      size: 12.5,
-                      weight: FontWeight.w600,
-                      height: 1.45,
-                      color: AgriColors.inkDeep,
+                for (final WeatherDay day in w.forecast) ...<Widget>[
+                  Expanded(child: _ForecastCell(day: day)),
+                  if (day != w.forecast.last) const SizedBox(width: 7),
+                ],
+              ],
+            ),
+          ],
+          if (w?.advisory != null) ...<Widget>[
+            const SizedBox(height: 13),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
+              decoration: BoxDecoration(
+                color: AgriColors.weatherStripBg(),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 1),
+                    child: AgriIcons.warning(
+                      19,
+                      triangle: AgriColors.inkDeep,
+                      mark: AgriColors.accent,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: Text(
+                      w!.advisory!,
+                      style: agriStyle(
+                        size: 12.5,
+                        weight: FontWeight.w600,
+                        height: 1.45,
+                        color: AgriColors.inkDeep,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -379,124 +544,6 @@ class _ForecastCell extends StatelessWidget {
   }
 }
 
-/// Thẻ cảnh báo "Cần xử lý trong 24 giờ".
-class _UrgentCard extends StatelessWidget {
-  const _UrgentCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      radius: 28,
-      blurSigma: 26,
-      color: AgriColors.alertCardBg,
-      border: Border.all(color: AgriColors.alertCardBorder()),
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: AgriIcons.warning(
-              22,
-              triangle: AgriColors.accent,
-              mark: AgriColors.inkOnAccent,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Cần xử lý trong 24 giờ',
-                  style: agriStyle(size: 15.5, weight: FontWeight.w700),
-                ),
-                const SizedBox(height: 3),
-                Text.rich(
-                  TextSpan(
-                    children: <InlineSpan>[
-                      const TextSpan(text: 'Lô '),
-                      TextSpan(
-                        text: 'Vườn nhà trên',
-                        style: agriStyle(
-                          size: 13.5,
-                          weight: FontWeight.w700,
-                          height: 1.45,
-                          color: AgriColors.accentInk,
-                        ),
-                      ),
-                      const TextSpan(
-                        text: ' có dấu hiệu Mốc sương muộn ở mức Nặng.',
-                      ),
-                    ],
-                  ),
-                  style: agriStyle(
-                    size: 13.5,
-                    height: 1.45,
-                    color: AgriColors.inkSoftA(.76),
-                  ),
-                ),
-                const SizedBox(height: 11),
-                const _ViewResultButton(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ViewResultButton extends StatelessWidget {
-  const _ViewResultButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(999),
-          boxShadow: AgriShadows.amberButton(),
-        ),
-        child: Material(
-          color: const Color(0x00000000),
-          borderRadius: BorderRadius.circular(999),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(999),
-            onTap: () => AppNav.push(
-              context,
-              (_) => ResultScreen(
-                diagnosisCase: DemoData.caseByKey('severe'),
-              ),
-            ),
-            child: Ink(
-              decoration: BoxDecoration(
-                color: AgriColors.alertButtonBg(),
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(color: AgriColors.whiteA(.6)),
-              ),
-              child: Container(
-                constraints: const BoxConstraints(minHeight: 40),
-                padding: const EdgeInsets.symmetric(horizontal: 17),
-                alignment: Alignment.center,
-                child: Text(
-                  'Xem kết quả',
-                  style: agriStyle(
-                    size: 13.5,
-                    weight: FontWeight.w700,
-                    color: AgriColors.accentInkDarkest,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 /// Nút lớn "Chẩn đoán bệnh".
 class _DiagnoseButton extends StatelessWidget {
   const _DiagnoseButton({required this.onPressed});
@@ -545,7 +592,7 @@ class _DiagnoseButton extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Chụp ảnh hoặc tải ảnh lá lên',
+                  'Chụp ảnh nhanh — không gắn lô đất, không lưu lịch sử',
                   style: agriStyle(
                     size: 13.5,
                     color: AgriColors.whiteA(.82),

@@ -43,6 +43,14 @@ class Settings(BaseSettings):
 
     HEATMAP_THRESHOLD: float = 0.5
 
+    # Để trống -> endpoint /weather trả lỗi rõ ràng thay vì gọi OpenWeather
+    # bằng key rỗng. Toạ độ cố định Đà Lạt vì mọi lô đất trong phạm vi đề tài
+    # đều ở khu vực này (xem CLAUDE.md) — không cần lấy theo từng lô đất.
+    OPENWEATHER_API_KEY: str = ""
+    WEATHER_LOCATION_NAME: str = "Đà Lạt"
+    WEATHER_LAT: float = 11.9404
+    WEATHER_LON: float = 108.4583
+
     # NoDecode là bắt buộc, không phải trang trí: với field kiểu list,
     # pydantic-settings mặc định chạy json.loads() trên giá trị đọc từ .env
     # TRƯỚC khi validator dưới đây được gọi, nên chuỗi ngăn cách bằng dấu phẩy

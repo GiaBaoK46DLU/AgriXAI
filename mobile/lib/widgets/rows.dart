@@ -202,6 +202,130 @@ class DiagnosisCard extends StatelessWidget {
   }
 }
 
+/// Thẻ cảnh báo "Cần xử lý trong 24 giờ" — hiện khi lần chẩn đoán gần nhất
+/// của một lô đất ở mức Nặng. Dùng ở trang chủ (mọi lô đang ở mức Nặng) và ở
+/// chi tiết lô đất (khi chính lô này đang ở mức Nặng) — xem CLAUDE.md.
+class UrgentBanner extends StatelessWidget {
+  const UrgentBanner({
+    required this.plotName,
+    required this.diseaseName,
+    required this.onViewResult,
+    super.key,
+  });
+
+  final String plotName;
+  final String diseaseName;
+  final VoidCallback onViewResult;
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassCard(
+      radius: 28,
+      blurSigma: 26,
+      color: AgriColors.alertCardBg,
+      border: Border.all(color: AgriColors.alertCardBorder()),
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: AgriIcons.warning(
+              22,
+              triangle: AgriColors.accent,
+              mark: AgriColors.inkOnAccent,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Cần xử lý trong 24 giờ',
+                  style: agriStyle(size: 15.5, weight: FontWeight.w700),
+                ),
+                const SizedBox(height: 3),
+                Text.rich(
+                  TextSpan(
+                    children: <InlineSpan>[
+                      const TextSpan(text: 'Lô '),
+                      TextSpan(
+                        text: plotName,
+                        style: agriStyle(
+                          size: 13.5,
+                          weight: FontWeight.w700,
+                          height: 1.45,
+                          color: AgriColors.accentInk,
+                        ),
+                      ),
+                      TextSpan(text: ' có dấu hiệu $diseaseName ở mức Nặng.'),
+                    ],
+                  ),
+                  style: agriStyle(
+                    size: 13.5,
+                    height: 1.45,
+                    color: AgriColors.inkSoftA(.76),
+                  ),
+                ),
+                const SizedBox(height: 11),
+                _UrgentViewResultButton(onTap: onViewResult),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _UrgentViewResultButton extends StatelessWidget {
+  const _UrgentViewResultButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(999),
+          boxShadow: AgriShadows.amberButton(),
+        ),
+        child: Material(
+          color: const Color(0x00000000),
+          borderRadius: BorderRadius.circular(999),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(999),
+            onTap: onTap,
+            child: Ink(
+              decoration: BoxDecoration(
+                color: AgriColors.alertButtonBg(),
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(color: AgriColors.whiteA(.6)),
+              ),
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 40),
+                padding: const EdgeInsets.symmetric(horizontal: 17),
+                alignment: Alignment.center,
+                child: Text(
+                  'Xem kết quả',
+                  style: agriStyle(
+                    size: 13.5,
+                    weight: FontWeight.w700,
+                    color: AgriColors.accentInkDarkest,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Hàng bệnh trong danh mục (màn 10).
 class DiseaseRow extends StatelessWidget {
   const DiseaseRow({required this.disease, required this.onTap, super.key});

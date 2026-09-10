@@ -9,6 +9,7 @@ import '../../widgets/agri_icons.dart';
 import '../../widgets/chips.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/inputs.dart';
+import '../../services/session.dart' as session;
 import '../login_screen.dart';
 
 /// **12 Hồ sơ cá nhân** — UC-M2.
@@ -262,12 +263,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Future<void> _logout(BuildContext context) async {
+    await session.authService.logout();
+    session.currentUser = null;
+    if (!context.mounted) return;
+    AppNav.reset(context, (_) => const LoginScreen());
+  }
+
   Widget _logoutButton() {
     return Material(
       color: const Color(0x00000000),
       borderRadius: BorderRadius.circular(999),
       child: InkWell(
-        onTap: () => AppNav.reset(context, (_) => const LoginScreen()),
+        onTap: () => _logout(context),
         borderRadius: BorderRadius.circular(999),
         child: Ink(
           decoration: BoxDecoration(
