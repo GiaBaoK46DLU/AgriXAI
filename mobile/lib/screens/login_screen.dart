@@ -69,11 +69,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void _browseCatalog() {
-    AppScope.read(context).select(AgriTab.catalog);
-    AppNav.reset(context, (_) => const AppShell());
-  }
-
   void _goToRegister() {
     AppNav.push(context, (_) => const RegisterScreen());
   }
@@ -84,7 +79,10 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Stack(
         children: <Widget>[
           const Positioned.fill(
-            child: ImageSlot(placeholder: 'Ảnh ruộng cà chua'),
+            child: ImageSlot(
+              placeholder: 'Ảnh ruộng cà chua',
+              assetPath: 'assets/images/login_image.jpg',
+            ),
           ),
           // linear-gradient(180deg, .92 0%, .86 30%, .5 56%, .94 100%)
           Positioned.fill(
@@ -226,14 +224,6 @@ class _LoginScreenState extends State<LoginScreen> {
         GhostButton(
           label: 'Chưa có tài khoản? Đăng ký ngay',
           onPressed: _goToRegister,
-          color: AgriColors.inkA(.88),
-          fontSize: 14.5,
-          minHeight: 46,
-          padding: EdgeInsets.zero,
-        ),
-        GhostButton(
-          label: 'Tra cứu bệnh mà không cần đăng nhập',
-          onPressed: _browseCatalog,
           color: AgriColors.inkA(.88),
           fontSize: 14.5,
           minHeight: 46,

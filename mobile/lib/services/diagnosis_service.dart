@@ -7,10 +7,14 @@ class DiagnosisService {
 
   final ApiClient _api;
 
+  /// `save = false` khi chẩn đoán nhanh từ nút chụp ảnh chung, không qua một
+  /// lô đất cụ thể — backend không lưu vào CSDL nên không xuất hiện ở Lịch sử
+  /// (xem CLAUDE.md mục quản lý lô đất).
   Future<DiagnosisCase> diagnose({
     required List<({List<int> bytes, String filename})> images,
     int? plotId,
     String? note,
+    bool save = true,
   }) async {
     final dynamic body = await _api.postMultipartFiles(
       '/diagnoses',
@@ -19,6 +23,7 @@ class DiagnosisService {
       fields: <String, String>{
         if (plotId != null) 'plot_id': plotId.toString(),
         if (note != null && note.isNotEmpty) 'note': note,
+        'save': save.toString(),
       },
     );
     return DiagnosisCase.fromApi(body as Map<String, dynamic>);

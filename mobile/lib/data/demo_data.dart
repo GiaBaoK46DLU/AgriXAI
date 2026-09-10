@@ -1,13 +1,13 @@
-import 'package:flutter/painting.dart';
-
 import '../core/app_colors.dart';
 import '../models/models.dart';
 
-/// Toàn bộ nội dung của bản thiết kế **AgriXAI Farmer v4**, chép nguyên văn.
-///
-/// Chữ tiếng Việt trong đây đã được cân theo độ dài dòng trong thiết kế — sửa
-/// câu chữ là bố cục lệch theo, nên giữ y nguyên. Khi nối API thật thì thay
-/// nguồn dữ liệu, không sửa ở đây.
+/// Phần còn lại của bản thiết kế **AgriXAI Farmer v4** chưa/không nối API
+/// thật: danh mục 10 bệnh dùng làm dữ liệu giả cho `flutter test`
+/// (`test/app_smoke_test.dart` dựng JSON `GET /diseases` từ [diseases]), và
+/// các bảng tra màu/nhãn theo [Severity]/[PathogenType] dùng chung cho cả dữ
+/// liệu thật lẫn giả. Lô đất, lịch sử chẩn đoán và thời tiết đã nối API thật
+/// nên không còn dữ liệu mẫu ở đây nữa — xem `Plot.fromJson`,
+/// `DiagnosisEntry.fromJson`, `WeatherSnapshot.fromJson`.
 class DemoData {
   const DemoData._();
 
@@ -400,208 +400,11 @@ class DemoData {
         orElse: () => diseases.first,
       );
 
-  // ── Lô đất ─────────────────────────────────────────────────────────────
-  static const List<Plot> plots = <Plot>[
-    Plot(
-      id: 1,
-      puc: 'PUC-2608-0142',
-      name: 'Vườn nhà trên',
-      region: 'Tổ 12, Cam Ly',
-      area: '1.200 m²',
-      status: 'Đang canh tác',
-      count: 14,
-      last: 'hôm nay',
-      lastDisease: 'Mốc sương muộn',
-      lastSeverity: Severity.severe,
-    ),
-    Plot(
-      id: 2,
-      puc: 'PUC-2607-0088',
-      name: 'Nhà màng số 2',
-      region: 'Cam Ly, Đà Lạt',
-      area: '800 m²',
-      status: 'Đang canh tác',
-      count: 9,
-      last: '3 ngày trước',
-      lastDisease: 'Mốc lá',
-      lastSeverity: Severity.moderate,
-    ),
-    Plot(
-      id: 3,
-      puc: 'PUC-2605-0031',
-      name: 'Ruộng ven suối',
-      region: 'Ven suối Cam Ly',
-      area: '2.400 m²',
-      status: 'Bỏ hoá',
-      count: 5,
-      last: '2 tuần trước',
-      lastDisease: 'Lá khoẻ mạnh',
-      lastSeverity: Severity.none,
-    ),
-  ];
-
-  static Plot plotById(int id) => plots.firstWhere(
-        (Plot p) => p.id == id,
-        orElse: () => plots.first,
-      );
-
-  // ── Lịch sử chẩn đoán ──────────────────────────────────────────────────
-  static const List<DiagnosisEntry> history = <DiagnosisEntry>[
-    DiagnosisEntry(
-      id: 101,
-      disease: 'Mốc sương muộn',
-      severity: Severity.severe,
-      confidence: '94%',
-      plotId: 1,
-      plot: 'Vườn nhà trên',
-      time: 'Hôm nay 07:12',
-      caseKey: 'severe',
-    ),
-    DiagnosisEntry(
-      id: 102,
-      disease: 'Đốm lá Septoria',
-      severity: Severity.mild,
-      confidence: '81%',
-      plotId: 1,
-      plot: 'Vườn nhà trên',
-      time: 'Hôm qua 16:40',
-    ),
-    DiagnosisEntry(
-      id: 103,
-      disease: 'Mốc lá',
-      severity: Severity.moderate,
-      confidence: '88%',
-      plotId: 2,
-      plot: 'Nhà màng số 2',
-      time: '18/08 08:05',
-    ),
-    DiagnosisEntry(
-      id: 104,
-      disease: 'Nhện đỏ hai chấm',
-      severity: Severity.mild,
-      confidence: '87%',
-      plotId: 2,
-      plot: 'Nhà màng số 2',
-      time: '16/08 15:22',
-      caseKey: 'mild',
-    ),
-    DiagnosisEntry(
-      id: 105,
-      disease: 'Lá khoẻ mạnh',
-      severity: Severity.none,
-      confidence: '97%',
-      plotId: 3,
-      plot: 'Ruộng ven suối',
-      time: '07/08 09:30',
-      caseKey: 'healthy',
-    ),
-    DiagnosisEntry(
-      id: 106,
-      disease: 'Đốm vòng (đốm nâu)',
-      severity: Severity.moderate,
-      confidence: '90%',
-      plotId: 1,
-      plot: 'Vườn nhà trên',
-      time: '02/08 17:10',
-    ),
-  ];
-
-  // ── Thời tiết ──────────────────────────────────────────────────────────
-  static const List<WeatherDay> weather = <WeatherDay>[
-    WeatherDay(day: 'T5', temp: '24°', isNow: true),
-    WeatherDay(day: 'T6', temp: '22°', isNow: false),
-    WeatherDay(day: 'T7', temp: '25°', isNow: false),
-    WeatherDay(day: 'CN', temp: '26°', isNow: false),
-    WeatherDay(day: 'T2', temp: '23°', isNow: false),
-  ];
-
-  // ── Ba trường hợp demo của màn kết quả ─────────────────────────────────
-  // `final` chứ không phải `const`: `disease` tra bằng `diseaseByKey`, không
-  // tính được ở compile-time.
-  static final Map<String, DiagnosisCase> cases = <String, DiagnosisCase>{
-    'severe': DiagnosisCase(
-      diseaseKey: 'late_blight',
-      disease: diseaseByKey('late_blight'),
-      confidence: '94%',
-      affected: '42%',
-      severity: Severity.severe,
-      plot: 'Vườn nhà trên · PUC-2608-0142',
-      time: 'Hôm nay 07:12',
-      explanation:
-          'Hệ thống tập trung vào phần giữa của lá — nơi xuất hiện mảng cháy lớn màu nâu xám loang lổ, viền nhợt như bị nước sôi dội qua. Đây là dấu hiệu đặc trưng của Mốc sương muộn (độ tin cậy 94%, vùng nghi ngờ chiếm khoảng 42% diện tích ảnh).',
-      urgent:
-          'Mốc sương muộn lan rất nhanh trong thời tiết mát ẩm. Xử lý trong vòng 24 giờ, đồng thời phun phòng cho các cây xung quanh.',
-      top3: const <(String, String)>[
-        ('Mốc sương muộn', '94%'),
-        ('Đốm vòng (đốm nâu)', '4%'),
-        ('Đốm mắt cua', '1%'),
-      ],
-      modelBadge: modelBadge,
-      disclaimer: disclaimer,
-    ),
-    'mild': DiagnosisCase(
-      diseaseKey: 'spider_mites',
-      disease: diseaseByKey('spider_mites'),
-      confidence: '87%',
-      affected: '11%',
-      severity: Severity.mild,
-      plot: 'Nhà màng số 2 · PUC-2607-0088',
-      time: 'Hôm nay 06:48',
-      explanation:
-          'Hệ thống tập trung vào phía trên bên phải của lá — nơi xuất hiện vô số chấm li ti màu vàng bạc rải đều trên phiến lá, lá mất màu như bị phủ bụi. Đây là dấu hiệu đặc trưng của Nhện đỏ hai chấm (độ tin cậy 87%, vùng nghi ngờ chiếm khoảng 11% diện tích ảnh).',
-      urgent:
-          'Tác nhân là nhện hại, không phải nấm — phun thuốc trừ nấm sẽ không có tác dụng.',
-      top3: const <(String, String)>[
-        ('Nhện đỏ hai chấm', '87%'),
-        ('Mốc lá', '7%'),
-        ('Đốm lá Septoria', '3%'),
-      ],
-      modelBadge: modelBadge,
-      disclaimer: disclaimer,
-    ),
-    'healthy': DiagnosisCase(
-      diseaseKey: 'healthy',
-      disease: diseaseByKey('healthy'),
-      confidence: '97%',
-      affected: '0%',
-      severity: Severity.none,
-      plot: 'Ruộng ven suối · PUC-2605-0031',
-      time: 'Hôm nay 06:20',
-      explanation:
-          'Hệ thống không tìm thấy dấu hiệu bệnh nào rõ rệt trên lá (độ tin cậy 97%). Lá có màu đều, không có đốm hay biến dạng.',
-      top3: const <(String, String)>[
-        ('Lá khoẻ mạnh', '97%'),
-        ('Mốc lá', '2%'),
-        ('Đốm vòng (đốm nâu)', '1%'),
-      ],
-      modelBadge: modelBadge,
-      disclaimer: disclaimer,
-    ),
-  };
-
-  static DiagnosisCase caseByKey(String? key) =>
-      cases[key ?? 'severe'] ?? cases['severe']!;
-
-  /// Model dùng để chẩn đoán, hiện tại backend vẫn chạy `DummyPredictor`.
-  static const String modelBadge = 'DummyPredictor · 240 ms';
-
-  /// Chép nguyên văn `disclaimer` trong `shared/data/tomato_diseases.json`.
-  /// Backend trả đúng chuỗi này trong `DiagnosisDetail.disclaimer`, nên rút
-  /// gọn ở đây là chữ trên màn đổi ngay lúc nối API.
-  static const String disclaimer =
-      'Gợi ý xử lý mang tính tham khảo học thuật, tổng hợp từ khuyến cáo canh tác phổ biến. Người dùng cần đối chiếu với cán bộ khuyến nông địa phương và nhãn thuốc trước khi sử dụng.';
-
   /// '94%' → 0.94, dùng cho bề rộng thanh tiến trình.
   static double percentToFraction(String percent) {
     final double? value =
         double.tryParse(percent.replaceAll('%', '').trim());
     if (value == null) return 0;
     return (value / 100).clamp(0.0, 1.0);
-  }
-
-  /// Cặp màu icon lá của các thẻ có phân mức độ.
-  static (Color, Color) leafPair(Severity s) {
-    final SeverityStyle style = sev(s);
-    return (style.leafA, style.leafB);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_glass.dart';
@@ -17,6 +18,16 @@ import '../../widgets/glass_card.dart';
 import '../../widgets/misc.dart';
 import '../../widgets/rows.dart';
 
+Future<void> _openUrl(BuildContext context, String url) async {
+  final Uri uri = Uri.parse(url);
+  final bool opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!opened && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Không mở được liên kết này')),
+    );
+  }
+}
+
 /// **06 Gợi ý xử lý** — UC-M9. Bệnh + thuốc + video lấy nguyên từ
 /// [DiagnosisCase.disease] — đã tải sẵn từ `GET /diseases/{key}` lúc chẩn
 /// đoán, không gọi lại API ở màn này.
@@ -24,16 +35,6 @@ class TreatmentScreen extends StatelessWidget {
   const TreatmentScreen({required this.diagnosisCase, super.key});
 
   final DiagnosisCase diagnosisCase;
-
-  Future<void> _openUrl(BuildContext context, String url) async {
-    final Uri uri = Uri.parse(url);
-    final bool opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!opened && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Không mở được liên kết này')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,12 +96,7 @@ class TreatmentScreen extends StatelessWidget {
               style: AgriTextStyles.sectionTitle,
             ),
             const SizedBox(height: 12),
-            _VideoBox(
-              videoUrl: disease.videoUrl,
-              onTap: disease.videoUrl == null
-                  ? null
-                  : () => _openUrl(context, disease.videoUrl!),
-            ),
+            _VideoBox(videoUrl: disease.videoUrl),
             const SizedBox(height: 26),
             Text('Cần làm ngay', style: AgriTextStyles.sectionTitle),
             const SizedBox(height: 12),
@@ -248,23 +244,79 @@ class TreatmentScreen extends StatelessWidget {
   }
 }
 
-/// Khung video 16:9 — nhấn mở link YouTube thật trong trình duyệt/app
-/// YouTube. `videoUrl` là `null` cho tới khi web admin gán video cho bệnh đó.
-class _VideoBox extends StatelessWidget {
-  const _VideoBox({required this.videoUrl, required this.onTap});
+/// Khung video 16:9. `videoUrl` là `null` cho tới khi web admin gán video cho
+/// bệnh đó. Khi tách được ID YouTube từ URL thì nhúng thẳng trình phát ngay
+/// trong app (WebView IFrame Player API của `youtube_player_flutter`) — mở
+/// và phát tại chỗ, không nhảy qua app YouTube ngoài. Trình phát tự hiện
+/// đúng ảnh thumbnail của video trước khi nhấn play nên không cần tự tải
+/// ảnh riêng. Chỉ khi URL không phải link YouTube hợp lệ mới rơi về ô nhấn
+/// mở ngoài như cũ — vẫn không để nền trống.
+class _VideoBox extends StatefulWidget {
+  const _VideoBox({required this.videoUrl});
 
   final String? videoUrl;
-  final VoidCallback? onTap;
+
+  @override
+  State<_VideoBox> createState() => _VideoBoxState();
+}
+
+class _VideoBoxState extends State<_VideoBox> {
+  YoutubePlayerController? _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _initController();
+  }
+
+  @override
+  void didUpdateWidget(covariant _VideoBox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.videoUrl != widget.videoUrl) {
+      _controller?.dispose();
+      _controller = null;
+      _initController();
+    }
+  }
+
+  void _initController() {
+    final String? url = widget.videoUrl;
+    if (url == null) return;
+    final String? videoId = YoutubePlayer.convertUrlToId(url);
+    if (videoId == null) return;
+    _controller = YoutubePlayerController(
+      initialVideoId: videoId,
+      flags: const YoutubePlayerFlags(autoPlay: false, mute: false),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final bool hasVideo = videoUrl != null;
+    final YoutubePlayerController? controller = _controller;
+    if (controller != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: YoutubePlayer(
+          controller: controller,
+          showVideoProgressIndicator: true,
+          progressIndicatorColor: AgriColors.primary,
+        ),
+      );
+    }
+
+    final bool hasVideo = widget.videoUrl != null;
     return AspectRatio(
       aspectRatio: 16 / 9,
       child: GlassCard(
         style: GlassStyle.soft,
         radius: 24,
-        onTap: onTap,
+        onTap: hasVideo ? () => _openUrl(context, widget.videoUrl!) : null,
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,

@@ -8,6 +8,7 @@ class CurrentUser {
     required this.fullName,
     required this.role,
     this.email,
+    this.phone,
   });
 
   factory CurrentUser.fromJson(Map<String, dynamic> json) => CurrentUser(
@@ -16,6 +17,7 @@ class CurrentUser {
         fullName: json['full_name'] as String,
         role: json['role'] as String,
         email: json['email'] as String?,
+        phone: json['phone'] as String?,
       );
 
   final int id;
@@ -23,6 +25,7 @@ class CurrentUser {
   final String fullName;
   final String role;
   final String? email;
+  final String? phone;
 
   bool get isAdmin => role == 'admin';
 }
@@ -93,6 +96,28 @@ class AuthService {
   Future<CurrentUser> me() async {
     final dynamic body = await _api.get('/auth/me');
     return CurrentUser.fromJson(body as Map<String, dynamic>);
+  }
+
+  /// Sửa họ tên / số điện thoại — `PATCH /auth/me`. Không nhận mật khẩu qua
+  /// đường này, xem [changePassword].
+  Future<CurrentUser> updateMe({String? fullName, String? phone}) async {
+    final dynamic body = await _api.patchJson('/auth/me', <String, dynamic>{
+      if (fullName != null) 'full_name': fullName,
+      if (phone != null) 'phone': phone,
+    });
+    return CurrentUser.fromJson(body as Map<String, dynamic>);
+  }
+
+  /// Đổi mật khẩu tự phục vụ — bắt buộc đúng mật khẩu hiện tại
+  /// (`POST /auth/change-password`), khác `updateMe` vốn không nhận mật khẩu.
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    await _api.postJson('/auth/change-password', <String, dynamic>{
+      'current_password': currentPassword,
+      'new_password': newPassword,
+    });
   }
 
   Future<void> logout() async {

@@ -11,18 +11,20 @@ cách độc lập:
       -> overlay.draw_regions()       [vẽ vùng khoanh]
       -> lưu 2 ảnh + 1 bản ghi CSDL (``DiagnosisImage``)
 
-Kết quả cuối cùng của cả lô ảnh tổng hợp bằng cách **bỏ phiếu theo đa số**
-trên nhãn top-1 của từng ảnh — bệnh nào được nhiều ảnh dự đoán nhất thắng.
-Độ tin cậy hiển thị là **trung bình cộng** xác suất của lớp thắng cuộc qua
-tất cả các ảnh (kể cả những ảnh không tự chọn lớp đó là top-1), không phải
-độ tin cậy riêng của một ảnh nào.
+Kết quả cuối cùng của cả lô ảnh tổng hợp bằng cách gộp toàn bộ danh sách xác
+suất theo từng bệnh mà mỗi ảnh trả về, lấy **trung bình cộng theo từng bệnh**
+qua tất cả các ảnh (kể cả ảnh không tự chọn bệnh đó là top-1), rồi **xếp hạng
+từ cao xuống thấp** — bệnh có tỉ lệ trung bình cao nhất thắng. Cách này phản
+ánh đúng "% tỉ lệ tổng hợp" thay vì chỉ đếm phiếu top-1 của từng ảnh, nên một
+bệnh được nhiều ảnh đồng thuận với xác suất cao vẫn có thể thắng dù không có
+ảnh nào tự chọn nó làm top-1 riêng lẻ.
 """
 
 from __future__ import annotations
 
 import logging
-from collections import Counter
 from dataclasses import dataclass
+from datetime import datetime, timezone
 
 from sqlalchemy.orm import Session
 
@@ -82,23 +84,6 @@ def _run_single_image(image_bytes: bytes) -> _ImageResult:
     )
 
 
-def _majority_key(results: list[_ImageResult]) -> str:
-    """Bệnh được nhiều ảnh tự chọn làm top-1 nhất thắng.
-
-    Hoà phiếu (nhiều bệnh cùng số phiếu cao nhất) thì chọn bệnh có tổng xác
-    suất qua các ảnh cao hơn — vẫn nhất quán với tinh thần "trung bình cộng".
-    """
-    counts = Counter(r.prediction.disease_key for r in results)
-    top_count = max(counts.values())
-    tied = [key for key, count in counts.items() if count == top_count]
-    if len(tied) == 1:
-        return tied[0]
-    return max(
-        tied,
-        key=lambda key: sum(r.prediction.probabilities.get(key, 0.0) for r in results),
-    )
-
-
 def _average_probabilities(results: list[_ImageResult]) -> dict[str, float]:
     totals: dict[str, float] = {}
     for result in results:
@@ -108,6 +93,38 @@ def _average_probabilities(results: list[_ImageResult]) -> dict[str, float]:
     return {key: total / n for key, total in totals.items()}
 
 
+@dataclass
+class _Aggregate:
+    results: list[_ImageResult]
+    top_key: str
+    avg_probabilities: dict[str, float]
+    avg_confidence: float
+    representative: _ImageResult
+
+
+def _run_and_aggregate(images: list[bytes]) -> _Aggregate:
+    if not images:
+        raise ValueError("images không được rỗng")
+
+    results = [_run_single_image(raw) for raw in images]
+
+    avg_probabilities = _average_probabilities(results)
+    # Xếp hạng từ cao xuống thấp theo % trung bình rồi chọn bệnh đứng đầu —
+    # không phải bệnh được nhiều ảnh tự chọn làm top-1 nhất.
+    ranked = sorted(avg_probabilities.items(), key=lambda kv: kv[1], reverse=True)
+    top_key, avg_confidence = ranked[0]
+
+    # Ảnh đại diện cho phần XAI (giải thích/mức độ/ảnh overlay chính): ảnh có
+    # xác suất riêng cho đúng bệnh thắng cuộc cao nhất — luôn tồn tại vì
+    # `top_key` chỉ đứng đầu bảng xếp hạng nhờ có mặt trong xác suất của
+    # ít nhất một ảnh.
+    representative = max(
+        results, key=lambda r: r.prediction.probabilities.get(top_key, 0.0)
+    )
+
+    return _Aggregate(results, top_key, avg_probabilities, avg_confidence, representative)
+
+
 def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
                   images: list[bytes], note: str | None = None) -> Diagnosis:
     """Chạy toàn bộ luồng chẩn đoán cho một lô ảnh và ghi kết quả vào CSDL.
@@ -115,48 +132,31 @@ def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
     Raises:
         storage.InvalidImageError: một trong các ảnh hỏng hoặc sai định dạng.
     """
-    if not images:
-        raise ValueError("images không được rỗng")
-
-    results = [_run_single_image(raw) for raw in images]
-
-    majority_key = _majority_key(results)
-    avg_probabilities = _average_probabilities(results)
-    avg_confidence = avg_probabilities.get(majority_key, 0.0)
-
-    # Ảnh đại diện cho phần XAI (giải thích/mức độ/ảnh overlay chính): trong
-    # số các ảnh mà mô hình tự chọn đúng bệnh thắng cuộc, lấy ảnh có độ tin
-    # cậy riêng cao nhất — luôn tồn tại ít nhất một ảnh như vậy vì đó chính là
-    # cách `majority_key` được tính.
-    representative = max(
-        (r for r in results if r.prediction.disease_key == majority_key),
-        key=lambda r: r.prediction.confidence,
-    )
-
-    disease = catalog.get_disease(majority_key)
-    rep_interp = representative.interpretation
+    agg = _run_and_aggregate(images)
+    disease = catalog.get_disease(agg.top_key)
+    rep_interp = agg.representative.interpretation
 
     record = Diagnosis(
         user_id=user_id,
         plot_id=plot_id,
-        image_path=representative.image_path,
-        overlay_path=representative.overlay_path,
-        disease_key=majority_key,
-        disease_name=disease.get("name_vi", majority_key),
-        confidence=avg_confidence,
-        probabilities=avg_probabilities,
+        image_path=agg.representative.image_path,
+        overlay_path=agg.representative.overlay_path,
+        disease_key=agg.top_key,
+        disease_name=disease.get("name_vi", agg.top_key),
+        confidence=agg.avg_confidence,
+        probabilities=agg.avg_probabilities,
         severity=rep_interp.severity,
         severity_name=rep_interp.severity_name,
         affected_ratio=rep_interp.affected_ratio,
         explanation=rep_interp.text,
-        model_version=representative.prediction.model_version,
-        latency_ms=sum(r.prediction.latency_ms for r in results),
+        model_version=agg.representative.prediction.model_version,
+        latency_ms=sum(r.prediction.latency_ms for r in agg.results),
         note=note,
     )
     db.add(record)
     db.flush()  # cần record.id để gán khoá ngoại cho từng ảnh
 
-    for result in results:
+    for result in agg.results:
         image_disease = catalog.get_disease(result.prediction.disease_key)
         db.add(DiagnosisImage(
             diagnosis_id=record.id,
@@ -169,6 +169,58 @@ def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
 
     db.commit()
     db.refresh(record)
+    return record
+
+
+def run_diagnosis_preview(user_id: int, images: list[bytes]) -> Diagnosis:
+    """Chẩn đoán nhanh từ nút chụp ảnh chung (không qua một lô đất cụ thể) —
+    không ghi gì vào CSDL nên không xuất hiện ở Lịch sử, theo đúng quy tắc "chỉ
+    lưu kết quả khi có gắn lô đất" (xem CLAUDE.md mục quản lý lô đất).
+
+    Ảnh gốc/overlay vẫn được lưu xuống đĩa như luồng có lưu (`_run_single_image`
+    không đổi) vì màn kết quả cần URL ảnh để hiển thị khoanh vùng — chấp nhận
+    đây là ảnh mồ côi không có bản ghi CSDL trỏ tới, phạm vi đồ án nhỏ nên
+    không đáng xây thêm cơ chế dọn rác cho việc này.
+
+    Trả về một `Diagnosis` KHÔNG được `db.add()` — chỉ dùng để tái sử dụng
+    `_to_detail()` ở endpoint, không bao giờ được commit.
+    """
+    agg = _run_and_aggregate(images)
+    disease = catalog.get_disease(agg.top_key)
+    rep_interp = agg.representative.interpretation
+
+    record = Diagnosis(
+        user_id=user_id,
+        plot_id=None,
+        image_path=agg.representative.image_path,
+        overlay_path=agg.representative.overlay_path,
+        disease_key=agg.top_key,
+        disease_name=disease.get("name_vi", agg.top_key),
+        confidence=agg.avg_confidence,
+        probabilities=agg.avg_probabilities,
+        severity=rep_interp.severity,
+        severity_name=rep_interp.severity_name,
+        affected_ratio=rep_interp.affected_ratio,
+        explanation=rep_interp.text,
+        model_version=agg.representative.prediction.model_version,
+        latency_ms=sum(r.prediction.latency_ms for r in agg.results),
+        note=None,
+    )
+    record.id = 0
+    record.created_at = datetime.now(timezone.utc)
+    record.images = [
+        DiagnosisImage(
+            id=idx + 1,
+            diagnosis_id=0,
+            image_path=result.image_path,
+            overlay_path=result.overlay_path,
+            disease_key=result.prediction.disease_key,
+            disease_name=catalog.get_disease(result.prediction.disease_key)
+            .get("name_vi", result.prediction.disease_key),
+            confidence=result.prediction.confidence,
+        )
+        for idx, result in enumerate(agg.results)
+    ]
     return record
 
 

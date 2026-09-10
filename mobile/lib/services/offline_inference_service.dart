@@ -58,15 +58,22 @@ class OfflineInferenceService {
       (_catalog!['severity_levels'] as List<dynamic>).cast<Map<String, dynamic>>();
 
   /// Chẩn đoán một ảnh hoàn toàn trên máy, không cần mạng.
+  ///
+  /// `imageBytes` là ảnh đã nén (`AnalyzingScreen._compress`, tối đa
+  /// 1280×1280) — decode/vẽ overlay/encode PNG đều chạy đồng bộ trên UI
+  /// isolate (gói `image` không có bản native), nên nếu decode thẳng ảnh gốc
+  /// từ camera (có thể hơn chục megapixel) sẽ đứng hình màn hình vài giây.
+  /// `imageFile` (ảnh gốc, không nén) chỉ dùng để hiện ở nút gạt "Ảnh gốc" —
+  /// `Image.file` decode bằng codec native nên không tốn chi phí này.
   Future<DiagnosisCase> diagnose({
     required File imageFile,
+    required List<int> imageBytes,
     String plotLabel = 'Chưa gán lô đất',
   }) async {
     await _ensureLoaded();
     final DateTime started = DateTime.now();
 
-    final Uint8List bytes = await imageFile.readAsBytes();
-    img.Image? decoded = img.decodeImage(bytes);
+    img.Image? decoded = img.decodeImage(Uint8List.fromList(imageBytes));
     if (decoded == null) {
       throw const OfflineDiagnosisException('Không đọc được ảnh này để chẩn đoán ngoại tuyến.');
     }

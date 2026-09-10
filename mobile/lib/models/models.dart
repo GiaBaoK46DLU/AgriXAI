@@ -164,6 +164,31 @@ class Disease {
   final String? videoUrl;
 }
 
+/// `"active"/"fallow"/"archived"` (giá trị CSDL) <-> nhãn tiếng Việt hiện
+/// trên UI — dùng cả khi đọc (`Plot.fromJson`) lẫn khi gửi lên (`PlotFormScreen`).
+String plotStatusLabel(String raw) => switch (raw) {
+      'fallow' => 'Bỏ hoá',
+      'archived' => 'Lưu trữ',
+      _ => 'Đang canh tác',
+    };
+
+String plotStatusRawFromLabel(String label) => switch (label) {
+      'Bỏ hoá' => 'fallow',
+      'Lưu trữ' => 'archived',
+      _ => 'active',
+    };
+
+/// `1200.0` -> `"1.200"` — dấu chấm ngăn cách hàng nghìn kiểu Việt Nam.
+String formatAreaNumber(double value) {
+  final String digits = value.round().toString();
+  final StringBuffer buffer = StringBuffer();
+  for (int i = 0; i < digits.length; i++) {
+    if (i > 0 && (digits.length - i) % 3 == 0) buffer.write('.');
+    buffer.write(digits[i]);
+  }
+  return buffer.toString();
+}
+
 @immutable
 class Plot {
   const Plot({
@@ -172,23 +197,100 @@ class Plot {
     required this.name,
     required this.region,
     required this.area,
+    required this.areaM2,
     required this.status,
+    required this.statusRaw,
     required this.count,
     required this.last,
     required this.lastDisease,
     required this.lastSeverity,
   });
 
+  /// Dựng từ `PlotOut` hoặc `PlotWithStats` (`GET /plots`, `GET /plots/{id}`).
+  /// Các trường thống kê (`diagnosis_count`, `last_*`) vắng mặt ở `PlotOut`
+  /// thì rơi về giá trị "chưa có dữ liệu" thay vì lỗi — màn chi tiết lô đất tự
+  /// tính lại thống kê từ `GET /diagnoses?plot_id=` nên không cần chúng ở đây.
+  factory Plot.fromJson(Map<String, dynamic> json) {
+    final double? areaM2 = (json['area_m2'] as num?)?.toDouble();
+    final String? lastIso = json['last_diagnosis_at'] as String?;
+    final String statusRaw = (json['status'] as String?) ?? 'active';
+    final Severity lastSeverity = Severity.values.firstWhere(
+      (Severity s) => s.name == json['last_severity'],
+      orElse: () => Severity.none,
+    );
+
+    return Plot(
+      id: json['id'] as int,
+      puc: json['puc'] as String,
+      name: json['name'] as String,
+      region: (json['region'] as String?) ?? 'Chưa cập nhật khu vực',
+      area: areaM2 == null ? 'Chưa cập nhật' : '${formatAreaNumber(areaM2)} m²',
+      areaM2: areaM2,
+      status: plotStatusLabel(statusRaw),
+      statusRaw: statusRaw,
+      count: (json['diagnosis_count'] as int?) ?? 0,
+      last: lastIso == null ? 'Chưa chẩn đoán' : formatIsoTimestamp(lastIso),
+      lastDisease: (json['last_disease_name'] as String?) ?? 'Chưa chẩn đoán',
+      lastSeverity: lastSeverity,
+    );
+  }
+
   final int id;
   final String puc;
   final String name;
   final String region;
   final String area;
+
+  /// Giá trị thô (không định dạng) để đưa lại vào ô nhập khi sửa lô đất.
+  final double? areaM2;
   final String status;
+
+  /// `"active"/"fallow"/"archived"` — gửi lên backend khi sửa, thay vì
+  /// [status] (nhãn tiếng Việt chỉ để hiển thị).
+  final String statusRaw;
   final int count;
   final String last;
   final String lastDisease;
   final Severity lastSeverity;
+}
+
+/// Một ngày dự báo + điều kiện hiện tại — `GET /weather`.
+@immutable
+class WeatherSnapshot {
+  const WeatherSnapshot({
+    required this.location,
+    required this.temp,
+    required this.description,
+    required this.detail,
+    required this.forecast,
+    this.advisory,
+  });
+
+  factory WeatherSnapshot.fromJson(Map<String, dynamic> json) {
+    return WeatherSnapshot(
+      location: json['location'] as String,
+      temp: json['temp'] as int,
+      description: json['description'] as String,
+      detail: json['detail'] as String,
+      advisory: json['advisory'] as String?,
+      forecast: (json['forecast'] as List<dynamic>)
+          .map((dynamic d) => WeatherDay(
+                day: d['day'] as String,
+                temp: '${d['temp']}°',
+                isNow: d['is_now'] as bool,
+              ))
+          .toList(),
+    );
+  }
+
+  final String location;
+  final int temp;
+  final String description;
+  final String detail;
+
+  /// `null` nghĩa là không có cảnh báo nào đáng hiện.
+  final String? advisory;
+  final List<WeatherDay> forecast;
 }
 
 @immutable

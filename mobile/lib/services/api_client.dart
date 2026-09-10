@@ -77,6 +77,12 @@ class ApiClient {
     return _decode(response);
   }
 
+  Future<dynamic> delete(String path) async {
+    final http.Response response =
+        await _http.delete(_uri(path), headers: _headers);
+    return _decode(response);
+  }
+
   /// Gửi nhiều ảnh dạng `multipart/form-data`, cùng dưới một tên trường —
   /// dùng cho `POST /diagnoses` (3–5 ảnh dưới trường `files`).
   Future<dynamic> postMultipartFiles(

@@ -8,7 +8,6 @@ import '../../core/app_glass.dart';
 import '../../core/app_metrics.dart';
 import '../../core/app_scope.dart';
 import '../../core/app_typography.dart';
-import '../../services/session.dart' as session;
 import '../../widgets/agri_icons.dart';
 import '../../widgets/agri_screen.dart';
 import '../../widgets/buttons.dart';
@@ -26,48 +25,26 @@ const int _maxImages = 5;
 /// Cần 3–5 ảnh cùng một lá/vết bệnh — kết quả cuối cùng tổng hợp theo đa số
 /// phiếu giữa các ảnh (xem CLAUDE.md). Nén thật xảy ra ở [AnalyzingScreen]
 /// ngay trước khi gửi (giữ ảnh gốc ở đây để còn xem lại/bỏ bớt được).
+///
+/// Lô đất (nếu có) luôn đến từ màn *Chi tiết lô đất* qua [initialPlotId] —
+/// không còn cho chọn lô ngay ở đây. Vào từ nút chụp ảnh chung (không có lô
+/// đất) thì kết quả chỉ hiện tạm thời, KHÔNG được backend lưu lại (xem
+/// CLAUDE.md mục quản lý lô đất).
 class CaptureScreen extends StatefulWidget {
-  const CaptureScreen({super.key, this.initialPlotId});
+  const CaptureScreen({super.key, this.initialPlotId, this.initialPlotName});
 
   final int? initialPlotId;
+  final String? initialPlotName;
 
   @override
   State<CaptureScreen> createState() => _CaptureScreenState();
 }
 
 class _CaptureScreenState extends State<CaptureScreen> {
-  int? _plotId;
   final List<File> _images = <File>[];
   int _viewerPage = 0;
-  List<({int id, String name})> _plots = <({int id, String name})>[];
-  bool _loadingPlots = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _plotId = widget.initialPlotId;
-    _loadPlots();
-  }
-
-  Future<void> _loadPlots() async {
-    try {
-      final dynamic body = await session.apiClient.get('/plots');
-      final List<({int id, String name})> plots = (body as List<dynamic>)
-          .map((dynamic p) => (
-                id: p['id'] as int,
-                name: p['name'] as String,
-              ))
-          .toList();
-      if (!mounted) return;
-      setState(() {
-        _plots = plots;
-        _plotId ??= plots.isNotEmpty ? plots.first.id : null;
-        _loadingPlots = false;
-      });
-    } catch (_) {
-      if (mounted) setState(() => _loadingPlots = false);
-    }
-  }
+  bool get _hasPlot => widget.initialPlotId != null;
 
   int get _remainingSlots => _maxImages - _images.length;
 
@@ -111,20 +88,13 @@ class _CaptureScreenState extends State<CaptureScreen> {
 
   void _analyze() {
     if (_images.length < _minImages) return;
-    final String? plotName = _plotId == null
-        ? null
-        : _plots
-            .firstWhere(
-              (({int id, String name}) p) => p.id == _plotId,
-              orElse: () => (id: -1, name: ''),
-            )
-            .name;
     AppNav.replace(
       context,
       (_) => AnalyzingScreen(
         images: List<File>.of(_images),
-        plotId: _plotId,
-        plotName: plotName?.isEmpty ?? true ? null : plotName,
+        plotId: widget.initialPlotId,
+        plotName: widget.initialPlotName,
+        save: _hasPlot,
       ),
     );
   }
@@ -188,50 +158,27 @@ class _CaptureScreenState extends State<CaptureScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            Text(
-              'Gán vào lô đất',
-              style: agriStyle(
-                size: 13,
-                weight: FontWeight.w600,
-                color: AgriColors.inkA(.74),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: _hasPlot
+                    ? AgriColors.primaryLightA(.14)
+                    : AgriColors.inkSoftA(.08),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Text(
+                _hasPlot
+                    ? 'Kết quả sẽ được gắn vào lô "${widget.initialPlotName}" và lưu vào lịch sử.'
+                    : 'Chẩn đoán nhanh — kết quả sẽ KHÔNG được lưu vào lịch sử vì chưa gắn với '
+                        'lô đất nào. Vào từ màn chi tiết lô đất để lưu lại kết quả.',
+                style: agriStyle(
+                  size: 12.5,
+                  weight: FontWeight.w600,
+                  color: AgriColors.inkA(.78),
+                ),
               ),
             ),
-            const SizedBox(height: 10),
-            if (_loadingPlots)
-              const Padding(
-                padding: EdgeInsets.only(bottom: 16),
-                child: SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-              )
-            else if (_plots.isEmpty)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Text(
-                  'Chưa có lô đất nào — vẫn chẩn đoán được, chỉ là chưa gán vào lô nào.',
-                  style: agriStyle(size: 12.5, color: AgriColors.inkA(.65)),
-                ),
-              )
-            else
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Row(
-                  children: <Widget>[
-                    for (final ({int id, String name}) plot in _plots) ...<Widget>[
-                      SelectableChip(
-                        label: plot.name,
-                        selected: _plotId == plot.id,
-                        onPressed: () => setState(() => _plotId = plot.id),
-                      ),
-                      if (plot.id != _plots.last.id) const SizedBox(width: 8),
-                    ],
-                  ],
-                ),
-              ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             if (_images.length >= _minImages) ...<Widget>[
               PrimaryPillButton(
                 label: 'Phân tích ${_images.length} ảnh này',

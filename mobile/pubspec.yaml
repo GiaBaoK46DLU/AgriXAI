@@ -30,11 +30,19 @@ dependencies:
   image: ^4.3.0
   # Thư mục tạm để lưu ảnh đã khoanh vùng khi suy luận offline.
   path_provider: ^2.1.4
+  # Đọc số phiên bản thật từ pubspec.yaml cho dòng "Về ứng dụng" ở màn Hồ sơ.
+  package_info_plus: ^9.0.1
+  # Nhúng video YouTube hướng dẫn xử lý ngay trong app, không nhảy qua app YouTube.
+  youtube_player_flutter: ^9.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  # Sinh icon ứng dụng trên máy client (Android/iOS) từ đúng logo lá hai tông
+  # đang dùng trong app (xem AgriIcons.leaf) — chỉ chạy thủ công
+  # (`dart run flutter_launcher_icons`) khi đổi ảnh nguồn, không chạy lúc build.
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
   uses-material-design: true
@@ -64,3 +72,15 @@ flutter:
           weight: 700
         - asset: assets/fonts/OpenSans-Variable.ttf
           weight: 800
+
+# Icon ứng dụng trên máy client — cùng logo lá hai tông (olive/cream trên nền
+# primary) đang dùng làm huy hiệu trong app (màn Đăng nhập, màn chờ khởi
+# động), thay cho icon mascot Flutter mặc định.
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon_legacy.png"
+  adaptive_icon_background: "#2E6F40"
+  adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
+  min_sdk_android: 24
+  remove_alpha_ios: true

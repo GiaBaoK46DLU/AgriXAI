@@ -158,6 +158,48 @@ def test_endpoint_requires_auth(client):
     assert client.get(f"{API}/plots").status_code == 401
 
 
+def test_update_me_changes_name_and_phone(client, farmer_headers):
+    response = client.patch(f"{API}/auth/me", headers=farmer_headers,
+                            json={"full_name": "Nông dân Đã Sửa", "phone": "0909123456"})
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["full_name"] == "Nông dân Đã Sửa"
+    assert body["phone"] == "0909123456"
+
+    again = client.get(f"{API}/auth/me", headers=farmer_headers).json()
+    assert again["full_name"] == "Nông dân Đã Sửa"
+
+
+def test_update_me_ignores_password_field(client, farmer_headers):
+    """Đổi mật khẩu phải qua `/auth/change-password` — `PATCH /auth/me` bỏ qua
+    trường `password` dù `UserUpdate` (dùng chung với admin) vẫn khai báo nó."""
+    client.patch(f"{API}/auth/me", headers=farmer_headers,
+                json={"password": "mat-khau-moi-123"})
+    response = client.post(f"{API}/auth/login",
+                           json={"username": "nongdan", "password": "nongdan123"})
+    assert response.status_code == 200, "Mật khẩu cũ vẫn phải còn dùng được"
+
+
+def test_change_password_requires_correct_current_password(client, farmer_headers):
+    response = client.post(f"{API}/auth/change-password", headers=farmer_headers,
+                           json={"current_password": "sai-mat-khau", "new_password": "mkkhachang"})
+    assert response.status_code == 401
+
+
+def test_change_password_succeeds_then_old_password_stops_working(client, farmer_headers):
+    response = client.post(f"{API}/auth/change-password", headers=farmer_headers,
+                           json={"current_password": "nongdan123", "new_password": "mkkhachang"})
+    assert response.status_code == 200, response.text
+
+    old = client.post(f"{API}/auth/login",
+                      json={"username": "nongdan", "password": "nongdan123"})
+    assert old.status_code == 401
+
+    new = client.post(f"{API}/auth/login",
+                      json={"username": "nongdan", "password": "mkkhachang"})
+    assert new.status_code == 200
+
+
 # ── Lô đất ──
 
 def test_create_and_list_plot(client, farmer_headers):
@@ -223,6 +265,30 @@ def test_diagnose_returns_full_explanation(client, farmer_headers, seeded, leaf_
     assert client.get(body["image_url"]).status_code == 200
     if body["overlay_url"]:
         assert client.get(body["overlay_url"]).status_code == 200
+
+
+def test_diagnose_without_save_does_not_persist(client, farmer_headers, seeded, leaf_image):
+    """`save=false` (nút chụp ảnh chung, không qua lô đất cụ thể) phải trả về
+    kết quả đầy đủ như bình thường nhưng KHÔNG ghi gì vào CSDL — xem CLAUDE.md
+    mục quản lý lô đất."""
+    before = client.get(f"{API}/diagnoses", headers=farmer_headers).json()["total"]
+
+    response = client.post(
+        f"{API}/diagnoses",
+        headers=farmer_headers,
+        files=_files(leaf_image),
+        data={"plot_id": str(seeded["plot_id"]), "save": "false"},
+    )
+    assert response.status_code == 201, response.text
+    body = response.json()
+
+    assert body["disease_key"]
+    assert body["explanation"]
+    # Không lưu nên không thể/không nên gắn lô đất, dù có lỡ gửi plot_id lên.
+    assert body["plot_id"] is None
+
+    after = client.get(f"{API}/diagnoses", headers=farmer_headers).json()["total"]
+    assert after == before, "save=false không được tạo bản ghi CSDL nào"
 
 
 def test_diagnose_rejects_too_few_images(client, farmer_headers, leaf_image):

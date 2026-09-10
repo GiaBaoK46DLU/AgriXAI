@@ -81,13 +81,25 @@ async def create_diagnosis(
     ),
     plot_id: int | None = Form(default=None, description="Lô đất áp dụng"),
     note: str | None = Form(default=None, description="Ghi chú của người dùng"),
+    save: bool = Form(
+        default=True,
+        description=(
+            "False khi chẩn đoán nhanh từ nút chụp ảnh chung, không qua một lô "
+            "đất cụ thể — không lưu vào CSDL nên không xuất hiện ở Lịch sử "
+            "(xem CLAUDE.md mục quản lý lô đất)."
+        ),
+    ),
 ):
     """Nhận 3–5 ảnh, chạy mô hình + Grad-CAM riêng cho từng ảnh, rồi tổng hợp kết
     quả bằng bỏ phiếu theo đa số (xem ``diagnosis_service.run_diagnosis``).
 
     Đây là endpoint mà app di động gọi ở màn hình *Chụp / tải ảnh*.
     """
-    if plot_id is not None:
+    if not save:
+        # Chẩn đoán nhanh không gắn lô đất — bỏ qua plot_id nếu lỡ gửi kèm,
+        # vì kết quả này sẽ không được lưu lại nên gắn lô đất là vô nghĩa.
+        plot_id = None
+    elif plot_id is not None:
         plot = db.get(Plot, plot_id)
         if plot is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "Không tìm thấy lô đất")
@@ -114,9 +126,12 @@ async def create_diagnosis(
         images.append(data)
 
     try:
-        record = diagnosis_service.run_diagnosis(
-            db, user_id=user.id, plot_id=plot_id, images=images, note=note
-        )
+        if save:
+            record = diagnosis_service.run_diagnosis(
+                db, user_id=user.id, plot_id=plot_id, images=images, note=note
+            )
+        else:
+            record = diagnosis_service.run_diagnosis_preview(user_id=user.id, images=images)
     except InvalidImageError as exc:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
 
