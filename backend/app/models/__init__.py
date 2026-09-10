@@ -4,13 +4,14 @@ Bất kỳ bảng mới nào cũng phải import ở đây, nếu không ``creat
 ``alembic revision --autogenerate`` sẽ bỏ sót.
 """
 
-from app.models.diagnosis import Diagnosis
+from app.models.diagnosis import Diagnosis, DiagnosisImage
 from app.models.medicine import DiseaseGuide, DiseaseMedicine, Medicine
 from app.models.plot import Plot, PlotStatus
 from app.models.user import User, UserRole
 
 __all__ = [
     "Diagnosis",
+    "DiagnosisImage",
     "DiseaseGuide",
     "DiseaseMedicine",
     "Medicine",

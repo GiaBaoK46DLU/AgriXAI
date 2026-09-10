@@ -90,14 +90,6 @@ class TreatmentScreen extends StatelessWidget {
               _urgentCard(diagnosisCase.urgent!),
               const SizedBox(height: 22),
             ],
-            Text('Cần làm ngay', style: AgriTextStyles.sectionTitle),
-            const SizedBox(height: 12),
-            for (int i = 0; i < disease.treatments.length; i++) ...<Widget>[
-              TreatmentStep(index: i + 1, text: disease.treatments[i]),
-              if (i != disease.treatments.length - 1)
-                const SizedBox(height: 10),
-            ],
-            const SizedBox(height: 28),
             Text(
               'Video hướng dẫn xử lý',
               style: AgriTextStyles.sectionTitle,
@@ -110,6 +102,14 @@ class TreatmentScreen extends StatelessWidget {
                   : () => _openUrl(context, disease.videoUrl!),
             ),
             const SizedBox(height: 26),
+            Text('Cần làm ngay', style: AgriTextStyles.sectionTitle),
+            const SizedBox(height: 12),
+            for (int i = 0; i < disease.treatments.length; i++) ...<Widget>[
+              TreatmentStep(index: i + 1, text: disease.treatments[i]),
+              if (i != disease.treatments.length - 1)
+                const SizedBox(height: 10),
+            ],
+            const SizedBox(height: 28),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[

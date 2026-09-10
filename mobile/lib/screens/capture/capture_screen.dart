@@ -18,10 +18,14 @@ import '../../widgets/image_slot.dart';
 import '../../widgets/misc.dart';
 import 'analyzing_screen.dart';
 
+const int _minImages = 3;
+const int _maxImages = 5;
+
 /// **03 Chụp ảnh** — UC-M7.
 ///
-/// Chụp bằng `image_picker`; nén thật xảy ra ở [AnalyzingScreen] ngay trước
-/// khi gửi (giữ ảnh gốc ở đây để còn xem lại/chụp lại được).
+/// Cần 3–5 ảnh cùng một lá/vết bệnh — kết quả cuối cùng tổng hợp theo đa số
+/// phiếu giữa các ảnh (xem CLAUDE.md). Nén thật xảy ra ở [AnalyzingScreen]
+/// ngay trước khi gửi (giữ ảnh gốc ở đây để còn xem lại/bỏ bớt được).
 class CaptureScreen extends StatefulWidget {
   const CaptureScreen({super.key, this.initialPlotId});
 
@@ -33,7 +37,8 @@ class CaptureScreen extends StatefulWidget {
 
 class _CaptureScreenState extends State<CaptureScreen> {
   int? _plotId;
-  File? _image;
+  final List<File> _images = <File>[];
+  int _viewerPage = 0;
   List<({int id, String name})> _plots = <({int id, String name})>[];
   bool _loadingPlots = true;
 
@@ -64,18 +69,48 @@ class _CaptureScreenState extends State<CaptureScreen> {
     }
   }
 
-  Future<void> _pick(ImageSource source) async {
+  int get _remainingSlots => _maxImages - _images.length;
+
+  Future<void> _pickFromCamera() async {
+    if (_remainingSlots <= 0) return;
     final XFile? picked = await ImagePicker().pickImage(
-      source: source,
+      source: ImageSource.camera,
       maxWidth: 1600,
       imageQuality: 90,
     );
     if (picked == null) return;
-    setState(() => _image = File(picked.path));
+    setState(() {
+      _images.add(File(picked.path));
+      _viewerPage = _images.length - 1;
+    });
+  }
+
+  Future<void> _pickFromGallery() async {
+    if (_remainingSlots <= 0) return;
+    final List<XFile> picked = await ImagePicker().pickMultiImage(
+      maxWidth: 1600,
+      imageQuality: 90,
+    );
+    if (picked.isEmpty) return;
+    setState(() {
+      _images.addAll(
+        picked.take(_remainingSlots).map((XFile x) => File(x.path)),
+      );
+      _viewerPage = _images.length - 1;
+    });
+  }
+
+  void _removeAt(int index) {
+    setState(() {
+      _images.removeAt(index);
+      if (_viewerPage >= _images.length) {
+        _viewerPage = _images.isEmpty ? 0 : _images.length - 1;
+      }
+    });
   }
 
   void _analyze() {
-    if (_image == null) return;
+    if (_images.length < _minImages) return;
     final String? plotName = _plotId == null
         ? null
         : _plots
@@ -87,11 +122,20 @@ class _CaptureScreenState extends State<CaptureScreen> {
     AppNav.replace(
       context,
       (_) => AnalyzingScreen(
-        image: _image!,
+        images: List<File>.of(_images),
         plotId: _plotId,
         plotName: plotName?.isEmpty ?? true ? null : plotName,
       ),
     );
+  }
+
+  String get _countHint {
+    if (_images.isEmpty) return 'Chọn từ $_minImages đến $_maxImages ảnh cùng một lá/vết bệnh';
+    if (_images.length < _minImages) {
+      return 'Đã chọn ${_images.length}/$_maxImages ảnh — cần thêm ít nhất '
+          '${_minImages - _images.length} ảnh nữa';
+    }
+    return 'Đã chọn ${_images.length}/$_maxImages ảnh';
   }
 
   @override
@@ -112,7 +156,27 @@ class _CaptureScreenState extends State<CaptureScreen> {
               onBack: () => Navigator.of(context).pop(),
             ),
             const SizedBox(height: 16),
-            _Viewfinder(image: _image),
+            _Viewfinder(images: _images, page: _viewerPage),
+            const SizedBox(height: 12),
+            Text(
+              _countHint,
+              style: agriStyle(
+                size: 12.5,
+                weight: FontWeight.w600,
+                color: _images.length >= _minImages
+                    ? AgriColors.primary
+                    : AgriColors.inkA(.68),
+              ),
+            ),
+            if (_images.isNotEmpty) ...<Widget>[
+              const SizedBox(height: 10),
+              _ThumbnailStrip(
+                images: _images,
+                selected: _viewerPage,
+                onSelect: (int i) => setState(() => _viewerPage = i),
+                onRemove: _removeAt,
+              ),
+            ],
             const SizedBox(height: 16),
             const Wrap(
               spacing: 7,
@@ -168,17 +232,17 @@ class _CaptureScreenState extends State<CaptureScreen> {
                 ),
               ),
             const SizedBox(height: 8),
-            if (_image != null) ...<Widget>[
+            if (_images.length >= _minImages) ...<Widget>[
               PrimaryPillButton(
-                label: 'Phân tích ảnh này',
+                label: 'Phân tích ${_images.length} ảnh này',
                 icon: AgriIcons.arrowRight(22, AgriColors.primary),
                 onPressed: _analyze,
               ),
               const SizedBox(height: 10),
             ],
             GlassPillButton(
-              label: 'Chụp ảnh',
-              onPressed: () => _pick(ImageSource.camera),
+              label: _remainingSlots > 0 ? 'Chụp ảnh' : 'Đã đủ $_maxImages ảnh',
+              onPressed: _pickFromCamera,
               icon: AgriIcons.camera(
                 20,
                 body: AgriColors.primary,
@@ -189,8 +253,8 @@ class _CaptureScreenState extends State<CaptureScreen> {
             ),
             const SizedBox(height: 10),
             GlassPillButton(
-              label: 'Tải ảnh từ thư viện',
-              onPressed: () => _pick(ImageSource.gallery),
+              label: _remainingSlots > 0 ? 'Tải ảnh từ thư viện' : 'Đã đủ $_maxImages ảnh',
+              onPressed: _pickFromGallery,
               icon: AgriIcons.upload(20, AgriColors.primary),
               minHeight: 52,
               fontSize: 15.5,
@@ -213,10 +277,39 @@ class _CaptureScreenState extends State<CaptureScreen> {
 }
 
 /// Khung ngắm cao 312, nền `#081711`, bốn góc chữ L trắng.
-class _Viewfinder extends StatelessWidget {
-  const _Viewfinder({this.image});
+///
+/// Chưa chọn ảnh nào thì hiện placeholder như cũ; có ảnh thì lướt qua từng
+/// ảnh bằng `PageView`, đồng bộ trang với [_ThumbnailStrip] bên dưới.
+class _Viewfinder extends StatefulWidget {
+  const _Viewfinder({required this.images, required this.page});
 
-  final File? image;
+  final List<File> images;
+  final int page;
+
+  @override
+  State<_Viewfinder> createState() => _ViewfinderState();
+}
+
+class _ViewfinderState extends State<_Viewfinder> {
+  late final PageController _controller = PageController(initialPage: widget.page);
+
+  @override
+  void didUpdateWidget(_Viewfinder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.page != widget.page && _controller.hasClients) {
+      _controller.animateToPage(
+        widget.page,
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -232,14 +325,26 @@ class _Viewfinder extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
         child: Stack(
           children: <Widget>[
-            Positioned.fill(
-              child: ImageSlot(
-                placeholder: 'Chưa có ảnh — chụp hoặc chọn từ thư viện',
-                onDark: true,
-                file: image,
+            if (widget.images.isEmpty)
+              const Positioned.fill(
+                child: ImageSlot(
+                  placeholder: 'Chưa có ảnh — chụp hoặc chọn từ thư viện',
+                  onDark: true,
+                ),
+              )
+            else
+              Positioned.fill(
+                child: PageView.builder(
+                  controller: _controller,
+                  itemCount: widget.images.length,
+                  itemBuilder: (BuildContext context, int i) => ImageSlot(
+                    placeholder: '',
+                    onDark: true,
+                    file: widget.images[i],
+                  ),
+                ),
               ),
-            ),
-            if (image == null) ...<Widget>[
+            if (widget.images.isEmpty) ...<Widget>[
               const Positioned.fill(child: ViewfinderCorners()),
               Positioned(
                 left: 0,
@@ -260,9 +365,93 @@ class _Viewfinder extends StatelessWidget {
                   ),
                 ),
               ),
-            ],
+            ] else
+              Positioned(
+                top: 14,
+                right: 14,
+                child: GlassCard(
+                  style: GlassStyle.overImage,
+                  radius: 999,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  child: Text(
+                    '${widget.page + 1}/${widget.images.length}',
+                    style: agriStyle(size: 12, weight: FontWeight.w700),
+                  ),
+                ),
+              ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Dải thumbnail 64×64 bên dưới khung ngắm — chọn ảnh để xem lại, xoá bớt
+/// bằng nút "x" ở góc, hoặc thêm ảnh nếu chưa đủ 5.
+class _ThumbnailStrip extends StatelessWidget {
+  const _ThumbnailStrip({
+    required this.images,
+    required this.selected,
+    required this.onSelect,
+    required this.onRemove,
+  });
+
+  final List<File> images;
+  final int selected;
+  final ValueChanged<int> onSelect;
+  final ValueChanged<int> onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 64,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: images.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (BuildContext context, int i) {
+          final bool active = i == selected;
+          return GestureDetector(
+            onTap: () => onSelect(i),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: <Widget>[
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: active ? AgriColors.primary : AgriColors.whiteA(.7),
+                      width: active ? 2.5 : 1.5,
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: Image.file(images[i], fit: BoxFit.cover),
+                  ),
+                ),
+                Positioned(
+                  top: -6,
+                  right: -6,
+                  child: GestureDetector(
+                    onTap: () => onRemove(i),
+                    child: Container(
+                      width: 22,
+                      height: 22,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE0442C),
+                        shape: BoxShape.circle,
+                      ),
+                      alignment: Alignment.center,
+                      child: const Icon(Icons.close, size: 14, color: Color(0xFFFFFFFF)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

@@ -22,10 +22,12 @@
       "symptoms": "Trên lá xuất hiện các đốm nhỏ đường kính 1–3 mm, ban đầu sũng nước rồi chuyển nâu sẫm, thường có quầng vàng. Đốm dày lên làm lá vàng và rụng sớm. Trên quả có đốm sần sùi màu nâu.",
       "favorable_conditions": "Ẩm độ cao, mưa nhiều, nhiệt độ 24–30°C; lây lan mạnh khi tưới phun mưa hoặc thao tác trên ruộng lúc lá còn ướt.",
       "treatments": [
-        "Ngắt bỏ và tiêu huỷ lá bệnh, không vứt tại ruộng.",
-        "Phun thuốc gốc đồng (copper hydroxide, copper oxychloride), có thể phối hợp mancozeb để tăng hiệu quả.",
-        "Ngừng tưới phun mưa lên tán lá, chuyển sang tưới gốc hoặc tưới nhỏ giọt.",
-        "Không thao tác chăm sóc khi lá còn ướt để hạn chế lây lan."
+        "Ngắt ngay các lá có đốm sũng nước hoặc đã chuyển nâu đen, cho vào túi kín mang ra khỏi vườn để đốt hoặc chôn sâu — không vứt lại trên mặt luống.",
+        "Trong 1–2 ngày tới, phun thuốc gốc đồng (copper hydroxide hoặc copper oxychloride) đều lên cả hai mặt lá, có thể phối hợp mancozeb để tăng hiệu quả.",
+        "Lặp lại sau mỗi 7 ngày, liên tục 2–3 lần nếu đốm mới vẫn tiếp tục xuất hiện.",
+        "Ngừng tưới phun mưa lên tán lá ngay từ hôm nay, chuyển sang tưới gốc hoặc tưới nhỏ giọt.",
+        "Không buộc dây, tỉa nhánh hay hái quả khi lá còn ướt sương hoặc ướt mưa — vi khuẩn lây rất nhanh qua tay và dụng cụ lúc lá ướt.",
+        "Sau 5–7 ngày kiểm tra lại: nếu vẫn còn đốm mới, rút ngắn chu kỳ phun xuống 5 ngày/lần."
       ],
       "prevention": [
         "Dùng hạt giống/cây con sạch bệnh.",
@@ -45,9 +47,11 @@
       "symptoms": "Đốm nâu sẫm với các vòng đồng tâm đặc trưng, đường kính có thể tới 10 mm, thường xuất hiện ở lá gốc trước rồi lan dần lên trên. Mô quanh vết bệnh ngả vàng, lá khô và rụng từ dưới lên.",
       "favorable_conditions": "Ẩm độ cao xen kẽ khô hạn, nhiệt độ 24–29°C; cây thiếu dinh dưỡng hoặc đang mang nhiều quả dễ nhiễm nặng.",
       "treatments": [
-        "Cắt bỏ lá gốc bị bệnh, dọn sạch tàn dư trên mặt luống.",
-        "Phun luân phiên các hoạt chất mancozeb, chlorothalonil, azoxystrobin hoặc difenoconazole.",
-        "Bón cân đối đạm – lân – kali, tránh để cây suy kiệt trong giai đoạn nuôi quả."
+        "Cắt bỏ ngay các lá gốc có vòng đồng tâm đặc trưng, gom và tiêu huỷ — không để tàn dư trên mặt luống vì đó là nguồn bào tử lây tiếp.",
+        "Phun một trong các hoạt chất mancozeb, chlorothalonil, azoxystrobin hoặc difenoconazole trong 1–2 ngày tới; luân phiên đổi hoạt chất giữa các lần phun để tránh kháng thuốc.",
+        "Lặp lại phun mỗi 7–10 ngày trong giai đoạn cây đang mang nhiều quả — đây là lúc cây dễ suy kiệt và nhiễm nặng nhất.",
+        "Bón bổ sung cân đối đạm – lân – kali ngay trong đợt bón phân gần nhất, tránh để cây thiếu dinh dưỡng lúc nuôi quả.",
+        "Theo dõi lá gốc mỗi 5–7 ngày; nếu bệnh lan lên các tầng lá phía trên, tăng tần suất phun và cân nhắc tỉa bớt lá gốc để thông thoáng."
       ],
       "prevention": [
         "Phủ gốc bằng rơm hoặc màng phủ để hạn chế bào tử từ đất bắn lên lá.",
@@ -67,10 +71,12 @@
       "symptoms": "Mảng bệnh lớn, không có hình dạng rõ ràng, màu xanh xám rồi chuyển nâu đen, lan rất nhanh. Mặt dưới lá có lớp mốc trắng mịn khi trời ẩm. Thân và quả cũng bị thối nâu cứng.",
       "favorable_conditions": "Trời mát ẩm, nhiệt độ 15–22°C kèm mưa phùn hoặc sương mù kéo dài — điều kiện rất phổ biến ở Đà Lạt.",
       "treatments": [
-        "BỆNH NGUY HIỂM, LAN RẤT NHANH — xử lý ngay trong vòng 24 giờ khi phát hiện.",
-        "Nhổ bỏ và tiêu huỷ toàn bộ cây bệnh nặng, đưa ra khỏi ruộng.",
-        "Phun thuốc đặc hiệu: metalaxyl kết hợp mancozeb, cymoxanil, hoặc dimethomorph.",
-        "Phun phòng cho các cây xung quanh ngay cả khi chưa có triệu chứng."
+        "BỆNH NGUY HIỂM, LAN RẤT NHANH — xử lý ngay trong vòng 24 giờ kể từ lúc phát hiện, không chờ đến hôm sau.",
+        "Nhổ bỏ ngay các cây bệnh nặng (mảng cháy lớn, thối nâu ở thân/quả), cho vào bao kín và đưa hẳn ra khỏi ruộng để tiêu huỷ — không để lại gần luống còn cây khoẻ.",
+        "Phun ngay thuốc đặc hiệu lên toàn bộ luống: metalaxyl kết hợp mancozeb, hoặc cymoxanil, hoặc dimethomorph — chọn một loại đang có sẵn, không cần chờ mua đủ cả ba.",
+        "Phun phòng cho tất cả cây xung quanh trong bán kính luống, kể cả cây chưa có triệu chứng gì — mốc sương muộn lây qua bào tử trong không khí.",
+        "Lặp lại phun mỗi 5–7 ngày trong suốt đợt trời mát ẩm hoặc có sương mù kéo dài, không đợi thấy bệnh mới phun đợt tiếp theo.",
+        "Kiểm tra ruộng mỗi ngày trong tuần đầu sau khi phát hiện — bệnh có thể lan ra diện rộng chỉ sau 2–3 ngày nếu trời ẩm."
       ],
       "prevention": [
         "Theo dõi dự báo thời tiết, phun phòng trước các đợt mưa ẩm kéo dài.",
@@ -90,9 +96,11 @@
       "symptoms": "Mặt trên lá có mảng vàng nhạt ranh giới không rõ; mặt dưới đúng vị trí đó phủ lớp nấm mượt màu ô liu đến nâu. Lá bệnh khô, quăn lại và rụng. Bệnh phổ biến trong nhà kính, nhà lưới.",
       "favorable_conditions": "Ẩm độ trên 85% và thông gió kém — đặc biệt hay gặp trong nhà kính, nhà màng.",
       "treatments": [
-        "Tăng thông gió, giảm ẩm độ trong nhà kính — đây là biện pháp quan trọng nhất.",
-        "Ngắt bỏ lá bệnh ở tầng dưới.",
-        "Phun chlorothalonil, mancozeb hoặc difenoconazole khi bệnh đã xuất hiện."
+        "Mở cửa/quạt thông gió nhà kính ngay hôm nay, kéo dài thời gian mở cửa để giảm ẩm độ xuống dưới 85% — đây là biện pháp quan trọng nhất, làm trước cả việc phun thuốc.",
+        "Ngắt bỏ ngay các lá tầng dưới có mảng vàng ở mặt trên và lớp mốc ô liu ở mặt dưới, mang ra khỏi nhà kính tiêu huỷ.",
+        "Phun chlorothalonil, mancozeb hoặc difenoconazole trong 1–2 ngày tới, tập trung phun kỹ mặt dưới lá — nơi nấm thực sự phát triển.",
+        "Lặp lại phun mỗi 7 ngày cho tới khi hết mảng vàng mới xuất hiện.",
+        "Sau đợt xử lý, duy trì thông gió thường xuyên và tưới vào buổi sáng để phòng bệnh quay lại — nhà kính ẩm bí là điều kiện thuận lợi nhất cho nấm này."
       ],
       "prevention": [
         "Trồng mật độ vừa phải, tỉa lá tạo độ thông thoáng.",
@@ -112,9 +120,11 @@
       "symptoms": "Đốm tròn nhỏ 1–3 mm, tâm màu xám trắng với viền nâu sẫm rõ nét, số lượng rất nhiều trên một lá. Xuất hiện ở lá gốc trước, làm lá vàng và rụng từ dưới lên, khiến quả bị cháy nắng do mất tán che.",
       "favorable_conditions": "Ẩm ướt kéo dài, nhiệt độ 20–25°C; bào tử lây lan qua nước mưa và nước tưới bắn từ đất.",
       "treatments": [
-        "Ngắt bỏ lá bệnh ngay khi mới xuất hiện ở tầng gốc.",
-        "Phun chlorothalonil, mancozeb hoặc azoxystrobin, luân phiên hoạt chất để tránh kháng thuốc.",
-        "Chuyển sang tưới gốc, tránh nước bắn từ mặt đất lên lá."
+        "Ngắt bỏ ngay các lá tầng gốc có nhiều đốm tròn nhỏ tâm xám viền nâu, tiêu huỷ khỏi ruộng — đốm càng dày càng cần cắt sớm.",
+        "Phun chlorothalonil, mancozeb hoặc azoxystrobin trong 1–2 ngày tới; đổi luân phiên hoạt chất giữa các lần phun kế tiếp để tránh nấm kháng thuốc.",
+        "Lặp lại phun mỗi 7 ngày trong suốt đợt mưa ẩm kéo dài — bào tử phát tán rất nhanh qua nước mưa và nước tưới bắn từ đất.",
+        "Chuyển ngay sang tưới gốc hoặc tưới nhỏ giọt, tránh để nước bắn từ mặt đất lên lá dưới.",
+        "Kiểm tra lá gốc mỗi 5 ngày; nếu số đốm trên mỗi lá tăng nhanh, tỉa bớt lá gốc để hạn chế mất tán che cho quả."
       ],
       "prevention": [
         "Phủ gốc bằng rơm hoặc màng phủ nông nghiệp.",
@@ -134,10 +144,11 @@
       "symptoms": "Lá lấm tấm chấm vàng nhạt li ti do nhện chích hút, dần bạc màu và khô giòn. Khi mật độ cao thấy tơ mỏng ở mặt dưới lá và kẽ lá. Đây là do côn trùng gây hại, không phải bệnh nhiễm.",
       "favorable_conditions": "Thời tiết nóng khô, ít mưa; bùng phát mạnh khi lạm dụng thuốc trừ sâu phổ rộng làm chết thiên địch.",
       "treatments": [
-        "Phun mạnh nước lên mặt dưới lá để rửa trôi nhện — hiệu quả với mật độ thấp.",
-        "Dùng thuốc trừ nhện chuyên biệt: abamectin, spiromesifen hoặc dầu khoáng.",
-        "Luân phiên hoạt chất vì nhện đỏ kháng thuốc rất nhanh.",
-        "KHÔNG dùng thuốc trừ nấm — tác nhân ở đây là côn trùng, phun sai loại chỉ tốn kém và vô ích."
+        "Nếu mật độ còn thấp (mới thấy lấm tấm vàng), phun tia nước mạnh thẳng lên mặt dưới lá ngay hôm nay để rửa trôi bớt nhện, làm 2–3 ngày liên tục.",
+        "Nếu mật độ đã cao (lá bạc màu rõ, có tơ mỏng), phun ngay thuốc trừ nhện chuyên biệt: abamectin, spiromesifen hoặc dầu khoáng, phun kỹ mặt dưới lá.",
+        "Lặp lại sau 5–7 ngày vì trứng nhện thường không chết ở lần phun đầu; đổi luân phiên hoạt chất giữa các lần vì nhện đỏ kháng thuốc rất nhanh.",
+        "KHÔNG dùng thuốc trừ nấm cho trường hợp này — tác nhân là côn trùng chích hút, phun sai loại chỉ tốn kém và làm chết oan thiên địch.",
+        "Kiểm tra lại mặt dưới lá sau mỗi đợt phun; nếu còn thấy chấm vàng lan rộng, tiếp tục thêm một đợt phun nữa trước khi coi là đã kiểm soát được."
       ],
       "prevention": [
         "Giữ ẩm độ vườn hợp lý, tránh để khô hạn kéo dài.",
@@ -157,9 +168,11 @@
       "symptoms": "Đốm nâu nhạt đến nâu sẫm với vòng đồng tâm mờ, tâm vết bệnh thường sáng màu, khô và có thể nứt rách. Bệnh xuất hiện trên cả lá, thân và quả; dễ nhầm với đốm vòng nhưng vòng đồng tâm nhạt hơn.",
       "favorable_conditions": "Ẩm độ cao và nhiệt độ ấm 20–30°C, tán lá rậm rạp ít thông thoáng.",
       "treatments": [
-        "Loại bỏ lá bệnh, tỉa thưa tán lá cho thông thoáng.",
-        "Phun azoxystrobin, difenoconazole hoặc mancozeb.",
-        "Luân phiên nhóm hoạt chất giữa các lần phun."
+        "Loại bỏ ngay các lá có đốm nâu vòng đồng tâm mờ, tâm sáng màu và nứt — dấu hiệu đặc trưng dễ nhầm với đốm vòng nhưng vòng nhạt hơn.",
+        "Tỉa thưa tán lá trong 1–2 ngày tới để cây thông thoáng, giảm ẩm độ quanh tán — bệnh này ưa tán rậm rạp.",
+        "Phun azoxystrobin, difenoconazole hoặc mancozeb ngay sau khi tỉa lá, phun đều cả lá, thân và quả vì bệnh gây hại trên cả ba bộ phận.",
+        "Lặp lại phun mỗi 7 ngày, luân phiên đổi nhóm hoạt chất giữa các lần để tránh kháng thuốc.",
+        "Theo dõi cả quả sau mỗi đợt mưa — nếu thấy đốm xuất hiện trên quả, xử lý ngay để tránh lan sang các quả lân cận."
       ],
       "prevention": [
         "Trồng thưa, làm giàn giúp tán lá khô nhanh sau mưa.",
@@ -179,9 +192,11 @@
       "symptoms": "Lá non nhỏ hẹp bất thường, mép lá cuốn ngược lên trên và vàng từ rìa vào trong. Cây lùn, đốt ngắn, rụng hoa, hầu như không đậu quả. Nhiễm sớm có thể mất trắng.",
       "favorable_conditions": "Mật độ bọ phấn trắng (Bemisia tabaci) cao; thời tiết nóng khô.",
       "treatments": [
-        "KHÔNG CÓ THUỐC CHỮA VIRUS — phải nhổ bỏ và tiêu huỷ cây bệnh ngay để cắt nguồn lây.",
-        "Tập trung diệt môi giới truyền bệnh là bọ phấn trắng (pymetrozine, dinotefuran, dầu khoáng).",
-        "Đặt bẫy dính màu vàng để theo dõi và giảm mật độ bọ phấn."
+        "KHÔNG CÓ THUỐC CHỮA VIRUS — nhổ bỏ ngay cây bệnh (lá nhỏ cuốn ngược, cây lùn rõ rệt), cho vào bao kín đưa ra khỏi ruộng để cắt nguồn lây càng sớm càng tốt.",
+        "Ngay sau khi nhổ cây bệnh, phun thuốc diệt bọ phấn trắng — môi giới truyền bệnh — bằng pymetrozine, dinotefuran hoặc dầu khoáng cho toàn bộ khu vực còn lại.",
+        "Đặt bẫy dính màu vàng quanh ruộng trong 1–2 ngày tới để theo dõi mật độ bọ phấn và giảm bớt số lượng.",
+        "Kiểm tra các cây còn lại mỗi 3–5 ngày để phát hiện sớm cây nhiễm mới — nhổ ngay khi vừa thấy triệu chứng, đừng chờ lan rộng.",
+        "Nếu tỷ lệ cây bệnh trong ruộng đã vượt khoảng 20–30%, cân nhắc phá bỏ sớm và trồng lại bằng giống kháng TYLCV cho vụ sau thay vì cố cứu vụ hiện tại."
       ],
       "prevention": [
         "Trồng giống kháng TYLCV — biện pháp hiệu quả nhất.",
@@ -201,9 +216,11 @@
       "symptoms": "Phiến lá loang lổ các mảng xanh đậm xen xanh nhạt hoặc vàng, bề mặt lá nhăn gồ ghề, lá có thể hẹp lại hình sợi. Cây sinh trưởng chậm, quả nhỏ và chín không đều.",
       "favorable_conditions": "Lây qua tay người, dụng cụ, quần áo khi chăm sóc; virus tồn tại rất lâu trong tàn dư và hạt giống.",
       "treatments": [
-        "KHÔNG CÓ THUỐC CHỮA VIRUS — nhổ bỏ và tiêu huỷ cây bệnh.",
-        "Rửa tay và khử trùng dụng cụ bằng cồn hoặc dung dịch javel sau khi chạm cây bệnh.",
-        "Không hút thuốc lá khi làm việc trong ruộng cà chua (TMV có trong sợi thuốc lá)."
+        "KHÔNG CÓ THUỐC CHỮA VIRUS — nhổ bỏ ngay cây có lá loang lổ khảm, cho vào bao kín và đưa ra khỏi ruộng để tiêu huỷ.",
+        "Ngay sau khi chạm vào cây bệnh, rửa tay bằng xà phòng và khử trùng dụng cụ (kéo, dao tỉa) bằng cồn hoặc dung dịch javel trước khi chạm sang cây khác.",
+        "Từ hôm nay, luôn chăm sóc cây khoẻ trước, cây nghi bệnh sau cùng trong mỗi lượt đi thăm vườn — tránh mang virus từ cây bệnh sang cây khoẻ qua tay.",
+        "Không hút thuốc lá khi làm việc trong ruộng cà chua, vì virus TMV có thể tồn tại trong sợi thuốc lá và lây qua tay.",
+        "Theo dõi các cây xung quanh cây vừa nhổ trong 1–2 tuần tới — virus lây qua tiếp xúc cơ học nên cây liền kề có nguy cơ cao nhất."
       ],
       "prevention": [
         "Dùng hạt giống sạch bệnh, đã qua xử lý.",
