@@ -77,12 +77,12 @@ class ApiClient {
     return _decode(response);
   }
 
-  /// Gửi ảnh dạng `multipart/form-data` — dùng cho `POST /diagnoses`.
-  Future<dynamic> postMultipart(
+  /// Gửi nhiều ảnh dạng `multipart/form-data`, cùng dưới một tên trường —
+  /// dùng cho `POST /diagnoses` (3–5 ảnh dưới trường `files`).
+  Future<dynamic> postMultipartFiles(
     String path, {
     required String fileField,
-    required List<int> fileBytes,
-    required String filename,
+    required List<({List<int> bytes, String filename})> files,
     Map<String, String> fields = const <String, String>{},
   }) async {
     final http.MultipartRequest request =
@@ -91,15 +91,17 @@ class ApiClient {
       request.headers['Authorization'] = 'Bearer $_token';
     }
     request.fields.addAll(fields);
-    request.files.add(http.MultipartFile.fromBytes(
-      fileField,
-      fileBytes,
-      filename: filename,
-    ));
+    for (final ({List<int> bytes, String filename}) file in files) {
+      request.files.add(http.MultipartFile.fromBytes(
+        fileField,
+        file.bytes,
+        filename: file.filename,
+      ));
+    }
 
     final http.StreamedResponse streamed = await _http
         .send(request)
-        .timeout(const Duration(seconds: 8));
+        .timeout(const Duration(seconds: 20));
     final http.Response response = await http.Response.fromStream(streamed);
     return _decode(response);
   }

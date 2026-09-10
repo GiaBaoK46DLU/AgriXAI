@@ -60,6 +60,35 @@ class Diagnosis(Base):
 
     user: Mapped["User"] = relationship(back_populates="diagnoses")
     plot: Mapped["Plot | None"] = relationship(back_populates="diagnoses")
+    images: Mapped[list["DiagnosisImage"]] = relationship(
+        back_populates="diagnosis", cascade="all, delete-orphan", order_by="DiagnosisImage.id"
+    )
 
     def __repr__(self) -> str:
         return f"<Diagnosis #{self.id} {self.disease_key} {self.confidence:.2f}>"
+
+
+class DiagnosisImage(Base):
+    """Kết quả mô hình cho MỘT trong 3–5 ảnh của một lần chẩn đoán.
+
+    ``Diagnosis`` giữ bản ghi tổng hợp (bệnh thắng theo đa số phiếu + độ tin
+    cậy trung bình cộng — xem ``diagnosis_service.run_diagnosis``); bảng này
+    giữ kết quả riêng của từng ảnh để màn kết quả vẽ được carousel khoanh vùng
+    cho từng ảnh một, không chỉ một ảnh đại diện.
+    """
+
+    __tablename__ = "diagnosis_images"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    diagnosis_id: Mapped[int] = mapped_column(
+        ForeignKey("diagnoses.id", ondelete="CASCADE"), index=True
+    )
+
+    image_path: Mapped[str] = mapped_column(String(255))
+    overlay_path: Mapped[str | None] = mapped_column(String(255), default=None)
+
+    disease_key: Mapped[str] = mapped_column(String(50))
+    disease_name: Mapped[str] = mapped_column(String(120))
+    confidence: Mapped[float] = mapped_column(Float)
+
+    diagnosis: Mapped["Diagnosis"] = relationship(back_populates="images")

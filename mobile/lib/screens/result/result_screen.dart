@@ -37,6 +37,7 @@ class ResultScreen extends StatefulWidget {
 class _ResultScreenState extends State<ResultScreen> {
   bool _xai = true;
   bool _speaking = false;
+  int _imagePage = 0;
   FlutterTts? _tts;
 
   DiagnosisCase get _case => widget.diagnosisCase;
@@ -141,11 +142,11 @@ class _ResultScreenState extends State<ResultScreen> {
               ],
             ),
             const SizedBox(height: 16),
+            _top3Card(),
+            const SizedBox(height: 14),
             _metricsCard(),
             const SizedBox(height: 14),
             _explainCard(),
-            const SizedBox(height: 14),
-            _top3Card(),
             const SizedBox(height: 16),
             Wrap(
               spacing: 7,
@@ -205,18 +206,86 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
-  /// Khung ảnh 272px — gạt giữa `overlay_url` (elip khoanh vùng do backend vẽ
-  /// sẵn) và `image_url` (ảnh gốc). Không có ảnh thật (dữ liệu mẫu) thì hiện
-  /// placeholder; có `overlay_url` mới hiện được nút gạt.
+  /// Khung ảnh 272px. Có `_case.images` (3–5 ảnh thật) thì lướt qua từng ảnh
+  /// bằng `PageView`, mỗi ảnh gạt riêng được "Vùng nghi ngờ"/"Ảnh gốc"; dữ
+  /// liệu mẫu cũ (`images` rỗng) rơi về hiện một ảnh duy nhất như trước.
   Widget _imageFrame() {
-    final bool hasOverlay = _case.overlayUrl != null || _case.overlayFile != null;
+    final List<DiagnosisImageResult> images = _case.images;
+    if (images.isEmpty) {
+      return _singleImageFrame(
+        overlayUrl: _case.overlayUrl,
+        overlayFile: _case.overlayFile,
+        imageUrl: _case.imageUrl,
+        imageFile: _case.imageFile,
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        SizedBox(
+          height: 272,
+          child: PageView.builder(
+            itemCount: images.length,
+            onPageChanged: (int i) => setState(() => _imagePage = i),
+            itemBuilder: (BuildContext context, int i) {
+              final DiagnosisImageResult img = images[i];
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: _singleImageFrame(
+                  overlayUrl: img.overlayUrl,
+                  overlayFile: img.overlayFile,
+                  imageUrl: img.imageUrl,
+                  imageFile: img.imageFile,
+                  badge: '${i + 1}/${images.length} · ${img.diseaseName} '
+                      '${img.confidence}',
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 10),
+        Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              for (int i = 0; i < images.length; i++)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: i == _imagePage ? 18 : 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                    color: i == _imagePage
+                        ? AgriColors.primary
+                        : AgriColors.inkSoftA(.24),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Một khung ảnh — gạt giữa `overlay` (elip khoanh vùng do backend vẽ sẵn)
+  /// và ảnh gốc. Không có ảnh thật (dữ liệu mẫu) thì hiện placeholder; có
+  /// overlay mới hiện được nút gạt. `badge` (nếu có) hiện ở góc trái thay vì
+  /// chỗ nút gạt — dùng cho carousel đa ảnh để biết đang xem ảnh nào.
+  Widget _singleImageFrame({
+    required String? overlayUrl,
+    required File? overlayFile,
+    required String? imageUrl,
+    required File? imageFile,
+    String? badge,
+  }) {
+    final bool hasOverlay = overlayUrl != null || overlayFile != null;
     final bool showOverlay = _xai && hasOverlay;
-    final File? shownFile = showOverlay ? _case.overlayFile : _case.imageFile;
+    final File? shownFile = showOverlay ? overlayFile : imageFile;
     final String? shownUrl =
-        shownFile != null ? null : (showOverlay ? _case.overlayUrl : _case.imageUrl);
+        shownFile != null ? null : (showOverlay ? overlayUrl : imageUrl);
 
     return Container(
-      height: 272,
       decoration: BoxDecoration(
         color: AgriColors.viewfinderVoid,
         borderRadius: BorderRadius.circular(32),
@@ -235,6 +304,21 @@ class _ResultScreenState extends State<ResultScreen> {
                 imageUrl: shownUrl,
               ),
             ),
+            if (badge != null)
+              Positioned(
+                left: 14,
+                top: 14,
+                child: GlassCard(
+                  style: GlassStyle.overImage,
+                  blurSigma: 26,
+                  radius: 999,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  child: Text(
+                    badge,
+                    style: agriStyle(size: 11.5, weight: FontWeight.w700),
+                  ),
+                ),
+              ),
             if (hasOverlay)
               Positioned(
                 top: 14,
@@ -294,28 +378,18 @@ class _ResultScreenState extends State<ResultScreen> {
     );
   }
 
-  /// Hai thanh: độ tin cậy và tỉ lệ vùng nghi ngờ.
+  /// Tỉ lệ vùng nghi ngờ trên ảnh — "Độ tin cậy" đã nhường chỗ cho thẻ "Ba
+  /// khả năng cao nhất" ở trên, tránh lặp lại cùng một con số hai lần.
   Widget _metricsCard() {
     return GlassCard(
       style: GlassStyle.card,
       radius: 28,
       padding: const EdgeInsets.all(18),
       shadows: AgriShadows.raised(.12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          _metricRow(
-            'Độ tin cậy',
-            _case.confidence,
-            gradient: agriProgressGradient,
-          ),
-          const SizedBox(height: 14),
-          _metricRow(
-            'Vùng nghi ngờ trên ảnh',
-            _case.affected,
-            color: AgriColors.accent,
-          ),
-        ],
+      child: _metricRow(
+        'Vùng nghi ngờ trên ảnh',
+        _case.affected,
+        color: AgriColors.accent,
       ),
     );
   }

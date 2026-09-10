@@ -179,11 +179,17 @@ def test_farmer_cannot_assign_plot_to_others(client, farmer_headers, seeded):
 
 # ── Luồng chẩn đoán — phần quan trọng nhất ──
 
+def _files(image: bytes, count: int = 3) -> list[tuple[str, tuple[str, bytes, str]]]:
+    """Danh sách `files` dạng httpx cho `count` bản sao của cùng một ảnh —
+    đủ để test luồng đa ảnh mà không cần sinh nhiều ảnh giả khác nhau."""
+    return [("files", (f"la{i}.jpg", image, "image/jpeg")) for i in range(count)]
+
+
 def test_diagnose_returns_full_explanation(client, farmer_headers, seeded, leaf_image):
     response = client.post(
         f"{API}/diagnoses",
         headers=farmer_headers,
-        files={"file": ("la.jpg", leaf_image, "image/jpeg")},
+        files=_files(leaf_image),
         data={"plot_id": str(seeded["plot_id"]), "note": "Chụp sáng nay"},
     )
     assert response.status_code == 201, response.text
@@ -207,36 +213,63 @@ def test_diagnose_returns_full_explanation(client, farmer_headers, seeded, leaf_
     assert body["top_predictions"], "Phải có top-3 để người dùng thấy mô hình phân vân gì"
     assert body["disclaimer"], "Phải luôn kèm khuyến cáo"
 
+    # Kết quả riêng từng ảnh — dùng vẽ carousel khoanh vùng ở mobile
+    assert len(body["images"]) == 3
+    for image in body["images"]:
+        assert image["disease_key"]
+        assert image["image_url"].startswith("/storage/uploads/")
+
     # Ảnh gốc và ảnh overlay phải tải về được
     assert client.get(body["image_url"]).status_code == 200
     if body["overlay_url"]:
         assert client.get(body["overlay_url"]).status_code == 200
 
 
+def test_diagnose_rejects_too_few_images(client, farmer_headers, leaf_image):
+    response = client.post(
+        f"{API}/diagnoses", headers=farmer_headers, files=_files(leaf_image, count=2),
+    )
+    assert response.status_code == 400
+
+
+def test_diagnose_rejects_too_many_images(client, farmer_headers, leaf_image):
+    response = client.post(
+        f"{API}/diagnoses", headers=farmer_headers, files=_files(leaf_image, count=6),
+    )
+    assert response.status_code == 400
+
+
 def test_diagnose_rejects_non_image(client, farmer_headers):
     response = client.post(
         f"{API}/diagnoses",
         headers=farmer_headers,
-        files={"file": ("virus.txt", b"day khong phai anh", "text/plain")},
+        files=[
+            ("files", ("virus1.txt", b"day khong phai anh", "text/plain")),
+            ("files", ("virus2.txt", b"day khong phai anh", "text/plain")),
+            ("files", ("virus3.txt", b"day khong phai anh", "text/plain")),
+        ],
     )
     assert response.status_code == 422
 
 
-def test_diagnose_rejects_empty_file(client, farmer_headers):
+def test_diagnose_rejects_empty_file(client, farmer_headers, leaf_image):
     response = client.post(
         f"{API}/diagnoses",
         headers=farmer_headers,
-        files={"file": ("rong.jpg", b"", "image/jpeg")},
+        files=[
+            ("files", ("la1.jpg", leaf_image, "image/jpeg")),
+            ("files", ("la2.jpg", leaf_image, "image/jpeg")),
+            ("files", ("rong.jpg", b"", "image/jpeg")),
+        ],
     )
     assert response.status_code == 400
 
 
 def test_dummy_predictor_is_deterministic(client, farmer_headers, leaf_image):
-    """Cùng một ảnh phải cho cùng một kết quả — nếu không thì không test được gì."""
+    """Cùng một lô ảnh phải cho cùng một kết quả — nếu không thì không test được gì."""
     results = []
     for _ in range(2):
-        response = client.post(f"{API}/diagnoses", headers=farmer_headers,
-                               files={"file": ("la.jpg", leaf_image, "image/jpeg")})
+        response = client.post(f"{API}/diagnoses", headers=farmer_headers, files=_files(leaf_image))
         results.append(response.json()["disease_key"])
     assert results[0] == results[1]
 

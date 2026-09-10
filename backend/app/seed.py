@@ -303,7 +303,7 @@ def seed_diagnoses(db, users: dict[str, User], plots: list[Plot], count: int = 4
             db,
             user_id=plot.owner_id,
             plot_id=plot.id,
-            image_bytes=_fake_leaf_image(rng),
+            images=[_fake_leaf_image(rng) for _ in range(3)],
             note=None,
         )
         # Rải ngược thời gian để biểu đồ theo ngày có hình dạng

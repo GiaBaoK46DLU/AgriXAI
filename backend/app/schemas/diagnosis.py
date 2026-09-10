@@ -47,7 +47,40 @@ class ProbabilityItem(BaseModel):
     probability: float
 
 
-class DiagnosisBase(BaseModel):
+class ImageUrlMixin(BaseModel):
+    """`image_path`/`overlay_path` -> URL đầy đủ dưới `/storage/...`.
+
+    Dùng chung cho ``DiagnosisBase`` (ảnh đại diện của cả lần chẩn đoán) và
+    ``DiagnosisImageOut`` (từng ảnh trong 3–5 ảnh đã tải lên) để không lặp lại
+    hai `computed_field` này ở hai chỗ.
+    """
+
+    image_path: str
+    overlay_path: str | None
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def image_url(self) -> str:
+        return f"{STORAGE_URL_PREFIX}/{self.image_path}"
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def overlay_url(self) -> str | None:
+        return f"{STORAGE_URL_PREFIX}/{self.overlay_path}" if self.overlay_path else None
+
+
+class DiagnosisImageOut(ImageUrlMixin):
+    """Kết quả riêng của một ảnh trong lô 3–5 ảnh — dùng vẽ carousel khoanh vùng."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    disease_key: str
+    disease_name: str
+    confidence: float
+
+
+class DiagnosisBase(ImageUrlMixin):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
@@ -65,19 +98,6 @@ class DiagnosisBase(BaseModel):
     note: str | None
     created_at: datetime
 
-    image_path: str
-    overlay_path: str | None
-
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def image_url(self) -> str:
-        return f"{STORAGE_URL_PREFIX}/{self.image_path}"
-
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def overlay_url(self) -> str | None:
-        return f"{STORAGE_URL_PREFIX}/{self.overlay_path}" if self.overlay_path else None
-
 
 class DiagnosisOut(DiagnosisBase):
     """Bản rút gọn cho danh sách lịch sử."""
@@ -92,6 +112,7 @@ class DiagnosisDetail(DiagnosisOut):
     disease: DiseaseInfo | None = None
     top_predictions: list[ProbabilityItem] = Field(default_factory=list)
     disclaimer: str = ""
+    images: list[DiagnosisImageOut] = Field(default_factory=list)
 
 
 class DiagnosisUpdate(BaseModel):

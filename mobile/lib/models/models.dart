@@ -204,6 +204,33 @@ class DiagnosisEntry {
     this.caseKey,
   });
 
+  /// Dựng từ một phần tử `items` của `GET /diagnoses` (`DiagnosisOut`).
+  ///
+  /// `plotId` dùng `-1` làm giá trị "không có" khi bản ghi chưa gán lô đất —
+  /// cùng quy ước sentinel đã dùng ở `capture_screen.dart` — để không phải
+  /// đổi field này sang `int?` và kéo theo sửa mọi nơi đang dùng nó.
+  factory DiagnosisEntry.fromJson(Map<String, dynamic> json) {
+    final Severity severity = Severity.values.firstWhere(
+      (Severity s) => s.name == json['severity'],
+      orElse: () => Severity.mild,
+    );
+    final String? plotName = json['plot_name'] as String?;
+    final String? plotPuc = json['plot_puc'] as String?;
+    final String plotLabel = plotName == null
+        ? 'Chưa gán lô đất'
+        : (plotPuc == null ? plotName : '$plotName · $plotPuc');
+
+    return DiagnosisEntry(
+      id: json['id'] as int,
+      disease: json['disease_name'] as String,
+      severity: severity,
+      confidence: '${((json['confidence'] as num) * 100).round()}%',
+      plotId: (json['plot_id'] as int?) ?? -1,
+      plot: plotLabel,
+      time: formatIsoTimestamp(json['created_at'] as String),
+    );
+  }
+
   final int id;
   final String disease;
   final Severity severity;
@@ -216,6 +243,41 @@ class DiagnosisEntry {
   final String? caseKey;
 
   String get meta => '$plot · $time';
+}
+
+/// Kết quả riêng của MỘT trong 3–5 ảnh đã tải lên — dùng vẽ carousel khoanh
+/// vùng ở màn kết quả. Xem `DiagnosisDetail.images` (`DiagnosisImageOut`) ở
+/// backend.
+@immutable
+class DiagnosisImageResult {
+  const DiagnosisImageResult({
+    required this.diseaseName,
+    required this.confidence,
+    this.imageUrl,
+    this.overlayUrl,
+    this.imageFile,
+    this.overlayFile,
+  });
+
+  factory DiagnosisImageResult.fromApi(Map<String, dynamic> json) {
+    return DiagnosisImageResult(
+      diseaseName: json['disease_name'] as String,
+      confidence: '${((json['confidence'] as num) * 100).round()}%',
+      imageUrl: DiagnosisCase._absoluteUrl(json['image_url'] as String?),
+      overlayUrl: DiagnosisCase._absoluteUrl(json['overlay_url'] as String?),
+    );
+  }
+
+  final String diseaseName;
+  final String confidence;
+  final String? imageUrl;
+  final String? overlayUrl;
+
+  /// Ảnh cục bộ khi chẩn đoán ngoại tuyến — ưu tiên hơn `imageUrl`/`overlayUrl`.
+  final File? imageFile;
+  final File? overlayFile;
+
+  bool get hasOverlay => overlayUrl != null || overlayFile != null;
 }
 
 @immutable
@@ -249,6 +311,7 @@ class DiagnosisCase {
     this.overlayUrl,
     this.imageFile,
     this.overlayFile,
+    this.images = const <DiagnosisImageResult>[],
     this.urgent,
     this.modelBadge = 'DummyPredictor',
     this.disclaimer = '',
@@ -284,6 +347,12 @@ class DiagnosisCase {
         ? disease.treatments.first
         : null;
 
+    final List<DiagnosisImageResult> images =
+        (json['images'] as List<dynamic>? ?? const <dynamic>[])
+            .map((dynamic i) =>
+                DiagnosisImageResult.fromApi(i as Map<String, dynamic>))
+            .toList();
+
     return DiagnosisCase(
       diseaseKey: json['disease_key'] as String,
       disease: disease,
@@ -291,11 +360,12 @@ class DiagnosisCase {
       affected: _percent(affected),
       severity: severity,
       plot: _plotLabel(json),
-      time: _formatTime(json['created_at'] as String),
+      time: formatIsoTimestamp(json['created_at'] as String),
       explanation: (json['explanation'] as String?) ?? '',
       top3: top3,
       imageUrl: _absoluteUrl(json['image_url'] as String?),
       overlayUrl: _absoluteUrl(json['overlay_url'] as String?),
+      images: images,
       urgent: urgent,
       modelBadge: '${json['model_version']} · ${(json['latency_ms'] as num).round()} ms',
       disclaimer: (json['disclaimer'] as String?) ?? '',
@@ -313,24 +383,6 @@ class DiagnosisCase {
     final String? puc = json['plot_puc'] as String?;
     if (name == null) return 'Chưa gán lô đất';
     return puc == null ? name : '$name · $puc';
-  }
-
-  static String _formatTime(String isoTimestamp) {
-    final DateTime utc = DateTime.parse(isoTimestamp);
-    final DateTime local = utc.toLocal();
-    final DateTime now = DateTime.now();
-    final String hm =
-        '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
-    final bool sameDay = local.year == now.year &&
-        local.month == now.month &&
-        local.day == now.day;
-    if (sameDay) return 'Hôm nay $hm';
-    final DateTime yesterday = now.subtract(const Duration(days: 1));
-    final bool wasYesterday = local.year == yesterday.year &&
-        local.month == yesterday.month &&
-        local.day == yesterday.day;
-    if (wasYesterday) return 'Hôm qua $hm';
-    return '${local.day.toString().padLeft(2, '0')}/${local.month.toString().padLeft(2, '0')} $hm';
   }
 
   final String diseaseKey;
@@ -356,6 +408,10 @@ class DiagnosisCase {
   final File? imageFile;
   final File? overlayFile;
 
+  /// Kết quả riêng từng ảnh trong 3–5 ảnh đã tải lên — rỗng ở dữ liệu mẫu cũ
+  /// (chưa từng có nhiều ảnh), khi đó màn kết quả rơi về hiện một ảnh như cũ.
+  final List<DiagnosisImageResult> images;
+
   /// Dòng cảnh báo đỏ-cam ở màn 06; `null` thì không hiện thẻ nào.
   final String? urgent;
 
@@ -364,4 +420,25 @@ class DiagnosisCase {
 
   /// Khuyến cáo tham khảo học thuật, lấy từ `DiagnosisDetail.disclaimer`.
   final String disclaimer;
+}
+
+/// `"Hôm nay 07:12"` / `"Hôm qua 16:40"` / `"18/08 08:05"` — dùng chung cho
+/// `DiagnosisCase.fromApi` và `DiagnosisEntry.fromJson` để hai màn Kết quả và
+/// Lịch sử luôn hiện thời gian theo đúng một định dạng.
+String formatIsoTimestamp(String isoTimestamp) {
+  final DateTime utc = DateTime.parse(isoTimestamp);
+  final DateTime local = utc.toLocal();
+  final DateTime now = DateTime.now();
+  final String hm =
+      '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+  final bool sameDay = local.year == now.year &&
+      local.month == now.month &&
+      local.day == now.day;
+  if (sameDay) return 'Hôm nay $hm';
+  final DateTime yesterday = now.subtract(const Duration(days: 1));
+  final bool wasYesterday = local.year == yesterday.year &&
+      local.month == yesterday.month &&
+      local.day == yesterday.day;
+  if (wasYesterday) return 'Hôm qua $hm';
+  return '${local.day.toString().padLeft(2, '0')}/${local.month.toString().padLeft(2, '0')} $hm';
 }

@@ -27,10 +27,14 @@ import '../result/result_screen.dart';
 /// Ba nhãn bước chạy theo mốc thời gian cố định (chỉ để mắt có gì nhìn khi
 /// chờ) trong lúc `POST /diagnoses` chạy thật ở nền; màn chỉ chuyển tiếp khi
 /// cả hai xong. Backend giới hạn 10 MB/ảnh nên nén trước khi gửi.
+///
+/// Nhận 3–5 ảnh (`widget.images`) — mỗi ảnh chạy qua mô hình riêng ở backend,
+/// kết quả cuối cùng tổng hợp theo đa số phiếu (xem CLAUDE.md). Suy luận
+/// ngoại tuyến (khi mất mạng) chỉ hỗ trợ một ảnh nên dùng ảnh đầu tiên.
 class AnalyzingScreen extends StatefulWidget {
-  const AnalyzingScreen({required this.image, this.plotId, this.plotName, super.key});
+  const AnalyzingScreen({required this.images, this.plotId, this.plotName, super.key});
 
-  final File image;
+  final List<File> images;
   final int? plotId;
 
   /// Tên lô đất để hiện trên kết quả nếu phải rơi về suy luận ngoại tuyến —
@@ -76,21 +80,26 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
     setState(() => _step = value);
   }
 
+  Future<({List<int> bytes, String filename})> _compress(File file) async {
+    final Uint8List? compressed = await FlutterImageCompress.compressWithFile(
+      file.path,
+      quality: 82,
+      minWidth: 1280,
+      minHeight: 1280,
+    );
+    final List<int> bytes = compressed ?? await file.readAsBytes();
+    return (bytes: bytes, filename: file.uri.pathSegments.last);
+  }
+
   Future<void> _run() async {
     try {
-      final Uint8List? compressed = await FlutterImageCompress.compressWithFile(
-        widget.image.path,
-        quality: 82,
-        minWidth: 1280,
-        minHeight: 1280,
-      );
-      final List<int> bytes = compressed ?? await widget.image.readAsBytes();
+      final List<({List<int> bytes, String filename})> images =
+          await Future.wait(widget.images.map(_compress));
 
       DiagnosisCase result;
       try {
         result = await session.diagnosisService.diagnose(
-          imageBytes: bytes,
-          filename: widget.image.uri.pathSegments.last,
+          images: images,
           plotId: widget.plotId,
         );
       } catch (_) {
@@ -98,8 +107,9 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
         // tự chuyển sang mô hình chạy ngay trên máy (xem CLAUDE.md mục suy
         // luận ngoại tuyến). Không phân biệt loại lỗi mạng cụ thể vì với
         // nông dân, "cứ ra được kết quả" quan trọng hơn thông báo lỗi chi tiết.
+        // Suy luận ngoại tuyến chỉ hỗ trợ một ảnh — dùng ảnh đầu tiên.
         result = await OfflineInferenceService.instance.diagnose(
-          imageFile: widget.image,
+          imageFile: widget.images.first,
           plotLabel: widget.plotName ?? 'Chưa gán lô đất',
         );
       }

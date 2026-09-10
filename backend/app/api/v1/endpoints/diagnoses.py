@@ -15,6 +15,7 @@ from app.models.plot import Plot
 from app.models.user import User
 from app.schemas.diagnosis import (
     DiagnosisDetail,
+    DiagnosisImageOut,
     DiagnosisOut,
     DiagnosisPage,
     DiagnosisUpdate,
@@ -25,6 +26,9 @@ from app.services import catalog, diagnosis_service
 from app.services.storage.local import InvalidImageError
 
 router = APIRouter()
+
+MIN_DIAGNOSIS_IMAGES = 3
+MAX_DIAGNOSIS_IMAGES = 5
 
 
 # ── Chuyển bản ghi CSDL thành schema trả về ──
@@ -52,6 +56,7 @@ def _to_detail(db, record: Diagnosis) -> DiagnosisDetail:
         ProbabilityItem(**p) for p in diagnosis_service.top_predictions(record)
     ]
     detail.disclaimer = catalog.disclaimer()
+    detail.images = [DiagnosisImageOut.model_validate(img) for img in record.images]
     return detail
 
 
@@ -67,15 +72,18 @@ def _get_owned(db, diagnosis_id: int, user: User) -> Diagnosis:
 # ── Endpoint ──
 
 @router.post("", response_model=DiagnosisDetail, status_code=status.HTTP_201_CREATED,
-             summary="Chẩn đoán bệnh từ ảnh")
+             summary="Chẩn đoán bệnh từ 3–5 ảnh")
 async def create_diagnosis(
     db: DbSession,
     user: CurrentUser,
-    file: UploadFile = File(..., description="Ảnh lá cà chua (JPEG/PNG/WEBP)"),
+    files: list[UploadFile] = File(
+        ..., description="3–5 ảnh lá cà chua (JPEG/PNG/WEBP), cùng một lá/vết bệnh"
+    ),
     plot_id: int | None = Form(default=None, description="Lô đất áp dụng"),
     note: str | None = Form(default=None, description="Ghi chú của người dùng"),
 ):
-    """Nhận ảnh, chạy mô hình + Grad-CAM, lưu kết quả và trả về đầy đủ phần giải thích.
+    """Nhận 3–5 ảnh, chạy mô hình + Grad-CAM riêng cho từng ảnh, rồi tổng hợp kết
+    quả bằng bỏ phiếu theo đa số (xem ``diagnosis_service.run_diagnosis``).
 
     Đây là endpoint mà app di động gọi ở màn hình *Chụp / tải ảnh*.
     """
@@ -86,18 +94,28 @@ async def create_diagnosis(
         if not user.is_admin and plot.owner_id != user.id:
             raise HTTPException(status.HTTP_403_FORBIDDEN, "Lô đất này không thuộc về bạn")
 
-    data = await file.read()
-    if not data:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "File ảnh rỗng")
-    if len(data) > settings.max_upload_bytes:
+    if not (MIN_DIAGNOSIS_IMAGES <= len(files) <= MAX_DIAGNOSIS_IMAGES):
         raise HTTPException(
-            status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-            f"Ảnh vượt quá {settings.MAX_UPLOAD_MB} MB. Hãy chụp ở độ phân giải thấp hơn.",
+            status.HTTP_400_BAD_REQUEST,
+            f"Cần tải lên từ {MIN_DIAGNOSIS_IMAGES} đến {MAX_DIAGNOSIS_IMAGES} ảnh, "
+            f"hiện có {len(files)}.",
         )
+
+    images: list[bytes] = []
+    for f in files:
+        data = await f.read()
+        if not data:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, "Có ảnh rỗng trong danh sách")
+        if len(data) > settings.max_upload_bytes:
+            raise HTTPException(
+                status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                f"Một ảnh vượt quá {settings.MAX_UPLOAD_MB} MB. Hãy chụp ở độ phân giải thấp hơn.",
+            )
+        images.append(data)
 
     try:
         record = diagnosis_service.run_diagnosis(
-            db, user_id=user.id, plot_id=plot_id, image_bytes=data, note=note
+            db, user_id=user.id, plot_id=plot_id, images=images, note=note
         )
     except InvalidImageError as exc:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
