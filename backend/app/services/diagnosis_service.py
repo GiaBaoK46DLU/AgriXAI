@@ -11,17 +11,18 @@ cách độc lập:
       -> overlay.draw_regions()       [vẽ vùng khoanh]
       -> lưu 2 ảnh + 1 bản ghi CSDL (``DiagnosisImage``)
 
-Kết quả cuối cùng của cả lô ảnh tổng hợp bằng cách **bỏ phiếu theo đa số**
-trên nhãn top-1 của từng ảnh — bệnh nào được nhiều ảnh dự đoán nhất thắng.
-Độ tin cậy hiển thị là **trung bình cộng** xác suất của lớp thắng cuộc qua
-tất cả các ảnh (kể cả những ảnh không tự chọn lớp đó là top-1), không phải
-độ tin cậy riêng của một ảnh nào.
+Kết quả cuối cùng của cả lô ảnh tổng hợp bằng cách gộp toàn bộ danh sách xác
+suất theo từng bệnh mà mỗi ảnh trả về, lấy **trung bình cộng theo từng bệnh**
+qua tất cả các ảnh (kể cả ảnh không tự chọn bệnh đó là top-1), rồi **xếp hạng
+từ cao xuống thấp** — bệnh có tỉ lệ trung bình cao nhất thắng. Cách này phản
+ánh đúng "% tỉ lệ tổng hợp" thay vì chỉ đếm phiếu top-1 của từng ảnh, nên một
+bệnh được nhiều ảnh đồng thuận với xác suất cao vẫn có thể thắng dù không có
+ảnh nào tự chọn nó làm top-1 riêng lẻ.
 """
 
 from __future__ import annotations
 
 import logging
-from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
@@ -83,23 +84,6 @@ def _run_single_image(image_bytes: bytes) -> _ImageResult:
     )
 
 
-def _majority_key(results: list[_ImageResult]) -> str:
-    """Bệnh được nhiều ảnh tự chọn làm top-1 nhất thắng.
-
-    Hoà phiếu (nhiều bệnh cùng số phiếu cao nhất) thì chọn bệnh có tổng xác
-    suất qua các ảnh cao hơn — vẫn nhất quán với tinh thần "trung bình cộng".
-    """
-    counts = Counter(r.prediction.disease_key for r in results)
-    top_count = max(counts.values())
-    tied = [key for key, count in counts.items() if count == top_count]
-    if len(tied) == 1:
-        return tied[0]
-    return max(
-        tied,
-        key=lambda key: sum(r.prediction.probabilities.get(key, 0.0) for r in results),
-    )
-
-
 def _average_probabilities(results: list[_ImageResult]) -> dict[str, float]:
     totals: dict[str, float] = {}
     for result in results:
@@ -112,7 +96,7 @@ def _average_probabilities(results: list[_ImageResult]) -> dict[str, float]:
 @dataclass
 class _Aggregate:
     results: list[_ImageResult]
-    majority_key: str
+    top_key: str
     avg_probabilities: dict[str, float]
     avg_confidence: float
     representative: _ImageResult
@@ -124,20 +108,21 @@ def _run_and_aggregate(images: list[bytes]) -> _Aggregate:
 
     results = [_run_single_image(raw) for raw in images]
 
-    majority_key = _majority_key(results)
     avg_probabilities = _average_probabilities(results)
-    avg_confidence = avg_probabilities.get(majority_key, 0.0)
+    # Xếp hạng từ cao xuống thấp theo % trung bình rồi chọn bệnh đứng đầu —
+    # không phải bệnh được nhiều ảnh tự chọn làm top-1 nhất.
+    ranked = sorted(avg_probabilities.items(), key=lambda kv: kv[1], reverse=True)
+    top_key, avg_confidence = ranked[0]
 
-    # Ảnh đại diện cho phần XAI (giải thích/mức độ/ảnh overlay chính): trong
-    # số các ảnh mà mô hình tự chọn đúng bệnh thắng cuộc, lấy ảnh có độ tin
-    # cậy riêng cao nhất — luôn tồn tại ít nhất một ảnh như vậy vì đó chính là
-    # cách `majority_key` được tính.
+    # Ảnh đại diện cho phần XAI (giải thích/mức độ/ảnh overlay chính): ảnh có
+    # xác suất riêng cho đúng bệnh thắng cuộc cao nhất — luôn tồn tại vì
+    # `top_key` chỉ đứng đầu bảng xếp hạng nhờ có mặt trong xác suất của
+    # ít nhất một ảnh.
     representative = max(
-        (r for r in results if r.prediction.disease_key == majority_key),
-        key=lambda r: r.prediction.confidence,
+        results, key=lambda r: r.prediction.probabilities.get(top_key, 0.0)
     )
 
-    return _Aggregate(results, majority_key, avg_probabilities, avg_confidence, representative)
+    return _Aggregate(results, top_key, avg_probabilities, avg_confidence, representative)
 
 
 def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
@@ -148,7 +133,7 @@ def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
         storage.InvalidImageError: một trong các ảnh hỏng hoặc sai định dạng.
     """
     agg = _run_and_aggregate(images)
-    disease = catalog.get_disease(agg.majority_key)
+    disease = catalog.get_disease(agg.top_key)
     rep_interp = agg.representative.interpretation
 
     record = Diagnosis(
@@ -156,8 +141,8 @@ def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
         plot_id=plot_id,
         image_path=agg.representative.image_path,
         overlay_path=agg.representative.overlay_path,
-        disease_key=agg.majority_key,
-        disease_name=disease.get("name_vi", agg.majority_key),
+        disease_key=agg.top_key,
+        disease_name=disease.get("name_vi", agg.top_key),
         confidence=agg.avg_confidence,
         probabilities=agg.avg_probabilities,
         severity=rep_interp.severity,
@@ -201,7 +186,7 @@ def run_diagnosis_preview(user_id: int, images: list[bytes]) -> Diagnosis:
     `_to_detail()` ở endpoint, không bao giờ được commit.
     """
     agg = _run_and_aggregate(images)
-    disease = catalog.get_disease(agg.majority_key)
+    disease = catalog.get_disease(agg.top_key)
     rep_interp = agg.representative.interpretation
 
     record = Diagnosis(
@@ -209,8 +194,8 @@ def run_diagnosis_preview(user_id: int, images: list[bytes]) -> Diagnosis:
         plot_id=None,
         image_path=agg.representative.image_path,
         overlay_path=agg.representative.overlay_path,
-        disease_key=agg.majority_key,
-        disease_name=disease.get("name_vi", agg.majority_key),
+        disease_key=agg.top_key,
+        disease_name=disease.get("name_vi", agg.top_key),
         confidence=agg.avg_confidence,
         probabilities=agg.avg_probabilities,
         severity=rep_interp.severity,

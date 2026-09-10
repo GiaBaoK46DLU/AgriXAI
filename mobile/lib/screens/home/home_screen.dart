@@ -332,7 +332,7 @@ class _GreetingRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Chào $name',
+                'Chào bác $name',
                 style: agriStyle(size: 19, weight: FontWeight.w700, em: -0.01),
               ),
               const SizedBox(height: 2),

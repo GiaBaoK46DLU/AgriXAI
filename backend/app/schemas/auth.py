@@ -77,3 +77,13 @@ class UserOut(UserBase):
 
 class LoginResponse(Token):
     user: UserOut
+
+
+class ChangePasswordRequest(BaseModel):
+    """Đổi mật khẩu tự phục vụ — khác `UserUpdate.password` (admin đặt mật
+    khẩu hộ người khác, không cần biết mật khẩu cũ). Bắt buộc gửi kèm mật
+    khẩu hiện tại để tránh việc một token bị đánh cắp có thể khoá tài khoản
+    thật ngoài bằng cách đổi mật khẩu mà chủ tài khoản không biết."""
+
+    current_password: str = Field(min_length=6, max_length=128)
+    new_password: str = Field(min_length=6, max_length=128)

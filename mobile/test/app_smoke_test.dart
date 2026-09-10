@@ -231,7 +231,7 @@ void main() {
     expect(find.byType(AppShell), findsOneWidget);
     // Tên hiển thị là từ cuối của họ tên đầy đủ (đúng vị trí tên gọi trong
     // tên người Việt) — tài khoản giả `Nông dân thử nghiệm` -> "nghiệm".
-    expect(find.text('Chào nghiệm'), findsOneWidget);
+    expect(find.text('Chào bác nghiệm'), findsOneWidget);
     expect(find.text('Lô đất của bạn'), findsOneWidget);
     // Năm ô của thanh tab: bốn nhãn + nút camera ở giữa.
     expect(find.text('Lô đất'), findsOneWidget);
