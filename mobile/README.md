@@ -103,20 +103,76 @@ Bốn màn có thanh tab (02 · 07 · 10 · 12) nằm trong `AppShell`; tám mà
 | Link thuốc | `products[].product_url` chưa có. Thẻ thuốc đã dựng sẵn chỗ; có link thì mở bằng `url_launcher` |
 | `productNote` | Bản v4 **không** hiển thị dòng này. Với Virus xoăn vàng lá, thuốc là trừ bọ phấn (môi giới) chứ không trị virus — nên bàn lại xem có thêm dòng đó vào màn 06 không |
 
-## ⚠️ Hai chỗ chắc chắn sẽ vướng
+## Quy trình khởi chạy mỗi lần (Docker + máy ảo)
 
-**1. Điện thoại không gọi được `localhost`.** `localhost` trên điện thoại là chính
-nó, không phải máy tính chạy backend. Phải dùng IP LAN:
+Backend giờ chạy qua `docker-compose` (không còn gõ `uvicorn` tay), container đã
+bind `0.0.0.0:8000` sẵn trong `Dockerfile.dev` — bước hay thiếu là **IP LAN đổi
+theo mạng, còn `AppConfig.backendHost` thì đứng yên**. Theo đúng thứ tự:
 
-```bash
-# Trên máy chạy backend
-ipconfig                                          # tìm IPv4, ví dụ 192.168.1.15
-uvicorn app.main:app --host 0.0.0.0 --port 8000   # bắt buộc có --host 0.0.0.0
-```
+1. **Mở Docker Desktop**, đợi chạy hẳn rồi kiểm tra 4 container đã lên:
+   ```bash
+   docker compose up -d          # ở gốc repo, nếu chưa bật
+   docker ps                     # phải thấy plantdx-backend, plantdx-db,
+                                  # plantdx-adminer, plantdx-web-admin đều "Up"
+   ```
+2. **Lấy IP LAN hiện tại của máy chạy backend:**
+   ```powershell
+   ipconfig            # tìm IPv4 Address ở adapter đang thật sự online
+                        # (Wi-Fi hoặc Ethernet — bỏ qua adapter ảo kiểu 172.x)
+   ```
+3. **So với `mobile/lib/core/app_config.dart`** — dòng `backendHost`. IP này
+   **thay đổi mỗi khi máy đổi mạng** (về nhà, đổi router, đổi Wi-Fi công cộng...)
+   nhưng file không tự cập nhật. Lệch IP là nguyên nhân phổ biến nhất của lỗi
+   "không thể kết nối tới server" dù Docker đã chạy đúng.
 
-Rồi trỏ app tới `http://192.168.1.15:8000`. Điện thoại và máy tính phải cùng WiFi,
-và tường lửa Windows phải cho phép cổng 8000. Để địa chỉ này ở một chỗ duy nhất
-trong `lib/core/` để đổi nhanh lúc demo.
+   ⚠️ **Sửa xong file này chưa đủ — phải build lại app.** `backendHost` là
+   hằng số `const`, bị đóng cứng vào APK lúc biên dịch. App đã cài sẵn trên máy
+   ảo (mở lại bằng cách bấm icon, không qua `flutter run`) **vẫn chạy đúng bản
+   build cũ** dù bạn vừa sửa xong source — nó tiếp tục gọi vào IP cũ đã không
+   còn tồn tại và báo y hệt lỗi "Không kết nối được tới máy chủ". Đây là lỗi
+   thật đã gặp 12/09/2026: sửa `app_config.dart` xong, mở lại app bằng icon
+   trên máy ảo, vẫn báo lỗi y như cũ — vì máy ảo đang chạy bản cài từ trước.
+   Cách khắc phục đúng, tuỳ tình huống:
+   - **Đang có sẵn phiên `flutter run` gắn với máy ảo** (cửa sổ terminal còn
+     mở, chưa `q` thoát) → gõ **`R`** (hot restart, chữ hoa) vào cửa sổ đó.
+     Hot reload (`r` thường) **không ăn thua** vì đây là hằng số, không phải
+     state — Flutter không áp lại giá trị `const` mới qua hot reload.
+   - **Không có phiên nào đang chạy** (trường hợp thường gặp nhất — mở app
+     bằng icon, không qua terminal) → phải build lại từ đầu:
+     ```bash
+     cd mobile
+     flutter run -d emulator-5554   # hoặc id máy ảo đang mở, xem `flutter devices`
+     ```
+     Lệnh này build APK mới (kèm IP mới), cài đè lên bản cũ, rồi tự mở app.
+     Mất khoảng 30–60 giây cho lần build lại này.
+4. **Xác nhận backend sống** trước khi mở app, đỡ mất công đoán:
+   ```bash
+   curl http://<IP-vừa-lấy>:8000/api/v1/diseases   # kỳ vọng HTTP 200 kèm JSON
+   ```
+   Lỗi kết nối/timeout ở bước này nghĩa là do mạng/tường lửa/Docker, chưa liên
+   quan gì tới `app_config.dart`.
+5. **Mở máy ảo Android rồi `flutter run`.** Máy ảo và máy tính chạy Docker dùng
+   chung adapter mạng ảo qua NAT của Android Emulator nên vẫn gọi được IP LAN
+   của máy thật bình thường — không cần đổi `backendHost` thành `10.0.2.2` (giá
+   trị đó chỉ dùng khi backend chạy trực tiếp bằng `uvicorn` trên chính máy host,
+   không áp dụng ở đây vì hiện đã chuyển hẳn sang Docker Compose).
+
+### Checklist khi vẫn báo "không thể kết nối tới server"
+
+| Kiểm tra | Lệnh | Kỳ vọng |
+|---|---|---|
+| Container backend còn sống? | `docker ps` | `plantdx-backend` trạng thái `Up` |
+| Backend log có lỗi không? | `docker logs plantdx-backend --tail 50` | Không có traceback, thấy dòng `Uvicorn running` |
+| IP trong app có khớp máy hiện tại? | `ipconfig` so với `app_config.dart` | Trùng số |
+| Backend trả lời được từ máy tính? | `curl http://<IP>:8000/docs` | HTTP 200 |
+| Điện thoại/máy ảo cùng mạng với máy tính? | — | Cùng Wi-Fi/router; máy ảo Android thì không cần, luôn NAT được ra máy host |
+| Windows Firewall chặn cổng 8000? | Thử tắt tạm Firewall hoặc thêm rule cho `8000/tcp` | Kết nối được sau khi mở cổng |
+
+**Hai chỗ chắc chắn sẽ vướng khác:**
+
+**1. Điện thoại thật (không phải máy ảo) không gọi được `localhost`.** Trên điện
+thoại thật, `localhost` là chính nó chứ không phải máy tính chạy backend — luôn
+phải dùng IP LAN như quy trình ở trên, và điện thoại + máy tính phải cùng WiFi.
 
 **2. Ảnh chụp từ điện thoại thường rất nặng** (5–12 MB). Backend giới hạn 10 MB
 (`MAX_UPLOAD_MB`). Nên nén ảnh phía app trước khi gửi — vừa tránh lỗi, vừa nhanh
@@ -128,3 +184,22 @@ bước này nên app không cần lo.
 Blur là thao tác tốn GPU. Nếu danh sách dài bị rớt khung hình trên máy yếu, cho
 các hàng list dùng `GlassStyle.faint` / `softFlat` (bán trong suốt, **không** blur)
 thay cho `listRow`; chỉ giữ blur ở thẻ lớn và thanh tab. Nhìn gần như không khác.
+
+Không lưu vào DB. Ảnh được ghi ra đĩa (file thật trong backend/storage/), CSDL chỉ lưu đường dẫn dạng chuỗi (String(255) ở Diagnosis.image_path/overlay_path và DiagnosisImage), không phải BLOB. Đây là cách làm chuẩn — tránh đúng loại nghẽn mà bạn lo (BLOB lớn trong Postgres làm chậm backup/query/replication).
+
+Quy trình khi nhận ảnh (diagnoses.py → storage/local.py):
+1. Kiểm tra dung lượng — chặn ngay nếu vượt MAX_UPLOAD_MB = 10.
+2. Mở bằng Pillow, tự xoay theo EXIF, resize nếu cạnh lớn nhất > 1280px.
+3. Luôn nén lại thành JPEG quality 88, kể cả ảnh gốc là PNG/WEBP/HEIC.
+4. Ghi ra storage/uploads/YYYY/MM/<giờ-giây>-<uuid8>.jpg (và storage/overlays/YYYY/MM/... cho ảnh khoanh vùng XAI) — chia theo năm/tháng, không chia theo user/lô đất.
+5. Phục vụ lại qua StaticFiles mount thẳng ở /storage/... (không phải endpoint xử lý riêng, không presigned URL).
+
+Có nghẽn khi nhiều ảnh không?
+
+Không đáng lo ở quy mô đồ án. Ba quyết định thiết kế ở trên chính là thứ n
+- Resize + nén JPEG trước khi lưu → mỗi ảnh chỉ còn vài trăm KB dù điện thoại chụp ra 5–12 MB, giữ dung lượng đĩa và băng thông ổn định bất kể ảnh gốc nặng cỡ nào.
+- Chia thư mục theo năm/tháng → tránh kiểu nghẽn thật của filesystem khi mìn file (tra cứu chậm dần trên ext4/NTFS) — dù ở quy mô demo phải tới hàngchục nghìn ảnh/tháng mới chạm ngưỡng này.
+- CSDL chỉ giữ path (255 ký tự) nên bảng diagnoses/diagnosis_images luôn n
+
+Điểm cần biết, không phải bug: khi chẩn đoán nhanh không gắn lô đất (save= nhưng không có bản ghi DB trỏ tới — file "mồ côi", không có cơ chế dọn rác tự động. Đây là đánh đổi có chủ đích (ghi rõ trong code), chấp nhận được ở quy mô đồ án — chỉ là đĩa sẽ tăng dần theo thời gian nếu dùng lâu, không phải vấn đề tốc độ.           
+Giới hạn thật sự (nếu sau này mở rộng ngoài phạm vi đồ án): toàn bộ chạy trên một máy, một ổ đĩa — không phải kiến trúc scale-out nhiều server. Nhưng với mục tiêu "chạy trơn tru một mình, end-to-end" mà CLAUDE.md đã chốt phạm vi, cách làm hiện tại là h
