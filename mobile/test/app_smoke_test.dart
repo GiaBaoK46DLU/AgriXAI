@@ -8,6 +8,7 @@ import 'package:agrixai_farmer/services/api_client.dart';
 import 'package:agrixai_farmer/services/auth_service.dart';
 import 'package:agrixai_farmer/services/diagnosis_service.dart';
 import 'package:agrixai_farmer/services/disease_service.dart';
+import 'package:agrixai_farmer/services/forum_service.dart';
 import 'package:agrixai_farmer/services/session.dart' as session;
 import 'package:agrixai_farmer/services/token_store.dart';
 import 'package:agrixai_farmer/services/weather_service.dart';
@@ -38,6 +39,7 @@ class _FakeTokenStore implements TokenStore {
 final List<Map<String, dynamic>> _fakeDiagnoses = <Map<String, dynamic>>[
   <String, dynamic>{
     'id': 101,
+    'disease_key': 'late_blight',
     'disease_name': 'Mốc sương muộn',
     'severity': 'severe',
     'confidence': 0.94,
@@ -48,6 +50,7 @@ final List<Map<String, dynamic>> _fakeDiagnoses = <Map<String, dynamic>>[
   },
   <String, dynamic>{
     'id': 102,
+    'disease_key': 'septoria_leaf_spot',
     'disease_name': 'Đốm lá Septoria',
     'severity': 'mild',
     'confidence': 0.81,
@@ -58,6 +61,7 @@ final List<Map<String, dynamic>> _fakeDiagnoses = <Map<String, dynamic>>[
   },
   <String, dynamic>{
     'id': 103,
+    'disease_key': 'leaf_mold',
     'disease_name': 'Mốc lá',
     'severity': 'moderate',
     'confidence': 0.88,
@@ -68,6 +72,7 @@ final List<Map<String, dynamic>> _fakeDiagnoses = <Map<String, dynamic>>[
   },
   <String, dynamic>{
     'id': 104,
+    'disease_key': 'spider_mites',
     'disease_name': 'Nhện đỏ hai chấm',
     'severity': 'mild',
     'confidence': 0.87,
@@ -78,6 +83,7 @@ final List<Map<String, dynamic>> _fakeDiagnoses = <Map<String, dynamic>>[
   },
   <String, dynamic>{
     'id': 105,
+    'disease_key': 'healthy',
     'disease_name': 'Lá khoẻ mạnh',
     'severity': 'none',
     'confidence': 0.97,
@@ -88,6 +94,7 @@ final List<Map<String, dynamic>> _fakeDiagnoses = <Map<String, dynamic>>[
   },
   <String, dynamic>{
     'id': 106,
+    'disease_key': 'early_blight',
     'disease_name': 'Đốm vòng (đốm nâu)',
     'severity': 'moderate',
     'confidence': 0.90,
@@ -196,6 +203,7 @@ void _installFakeSession() {
   session.authService = AuthService(apiClient: fakeApi, tokenStore: _FakeTokenStore());
   session.diseaseService = DiseaseService(apiClient: fakeApi);
   session.diagnosisService = DiagnosisService(apiClient: fakeApi);
+  session.forumService = ForumService(apiClient: fakeApi);
   session.weatherService = WeatherService(apiClient: fakeApi);
   session.currentUser = null;
 }
@@ -233,8 +241,10 @@ void main() {
     // tên người Việt) — tài khoản giả `Nông dân thử nghiệm` -> "nghiệm".
     expect(find.text('Chào bác nghiệm'), findsOneWidget);
     expect(find.text('Lô đất của bạn'), findsOneWidget);
-    // Năm ô của thanh tab: bốn nhãn + nút camera ở giữa.
-    expect(find.text('Lô đất'), findsOneWidget);
+    // Năm nhãn của thanh tab — không còn nút camera nổi ở giữa (xem
+    // CLAUDE.md mục Diễn đàn nông dân).
+    expect(find.text('Diễn đàn'), findsOneWidget);
+    expect(find.text('Trang chủ'), findsOneWidget);
     expect(find.text('Danh mục'), findsOneWidget);
   });
 

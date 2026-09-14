@@ -24,6 +24,7 @@ from app.db.init_db import init_db
 from app.db.session import SessionLocal
 from app.models.medicine import DiseaseGuide, DiseaseMedicine, Medicine
 from app.models.plot import Plot, PlotStatus
+from app.models.forum import ForumPost, ForumComment, ForumPostType
 from app.models.user import User, UserRole
 from app.services import diagnosis_service
 
@@ -268,6 +269,58 @@ def seed_medicines(db) -> None:
     db.commit()
 
 
+def seed_forum(db, users: dict[str, User]) -> None:
+    logger.info("  Đang tạo dữ liệu diễn đàn...")
+    # Check if forum posts already exist
+    from sqlalchemy import select
+    if db.scalar(select(ForumPost).limit(1)) is not None:
+        logger.info("  · Đã có dữ liệu diễn đàn, bỏ qua.")
+        return
+
+    admin = users["admin"]
+    nongdan = users["nongdan"]
+    nongdan2 = users["nongdan2"]
+    
+    posts = [
+        ForumPost(
+            user_id=nongdan.id,
+            disease_key="late_blight",
+            type=ForumPostType.TIP,
+            content="Mọi người ơi, vườn cà chua nhà mình bị mốc sương. Mình đã dùng Metalaxyl kết hợp Mancozeb thấy rất hiệu quả.",
+            likes_count=5
+        ),
+        ForumPost(
+            user_id=nongdan2.id,
+            disease_key="spider_mites",
+            type=ForumPostType.MEDICINE_ISSUE,
+            content="Hôm trước hệ thống gợi ý dùng Dầu khoáng cho nhện đỏ, nhưng mình xịt không thấy bớt nhiều, có nên đổi sang Abamectin không?",
+            likes_count=2
+        ),
+        ForumPost(
+            user_id=admin.id,
+            disease_key="spider_mites",
+            type=ForumPostType.AGREE,
+            content="Chào bạn, Dầu khoáng an toàn nhưng nếu mật độ nhện cao thì bạn nên luân phiên dùng Abamectin để tăng hiệu quả nhé.",
+            likes_count=10
+        )
+    ]
+    
+    for p in posts:
+        db.add(p)
+    db.commit()
+
+    # Thêm comment
+    comments = [
+        ForumComment(post_id=posts[0].id, user_id=nongdan2.id, content="Tuyệt vời, mình sẽ thử!"),
+        ForumComment(post_id=posts[0].id, user_id=admin.id, content="Bạn nhớ chú ý liều lượng hướng dẫn trên bao bì nhé."),
+        ForumComment(post_id=posts[1].id, user_id=nongdan.id, content="Mình cũng gặp tình trạng tương tự. Abamectin rất mạnh, bạn thử xem.")
+    ]
+    for c in comments:
+        db.add(c)
+    db.commit()
+    logger.info("  + Đã thêm %d bài viết diễn đàn và %d bình luận.", len(posts), len(comments))
+
+
 def _fake_leaf_image(rng: random.Random) -> bytes:
     """Ảnh lá giả — vài mảng màu xanh có đốm nâu, đủ để chạy hết luồng."""
     size = 512
@@ -337,6 +390,9 @@ def main() -> None:
 
         logger.info("\nThuốc gợi ý + video hướng dẫn:")
         seed_medicines(db)
+
+        logger.info("\nDiễn đàn:")
+        seed_forum(db, users)
 
         if args.diagnoses:
             logger.info("\nLịch sử chẩn đoán:")

@@ -297,6 +297,7 @@ class WeatherSnapshot {
 class DiagnosisEntry {
   const DiagnosisEntry({
     required this.id,
+    required this.diseaseKey,
     required this.disease,
     required this.severity,
     required this.confidence,
@@ -324,6 +325,7 @@ class DiagnosisEntry {
 
     return DiagnosisEntry(
       id: json['id'] as int,
+      diseaseKey: json['disease_key'] as String,
       disease: json['disease_name'] as String,
       severity: severity,
       confidence: '${((json['confidence'] as num) * 100).round()}%',
@@ -334,6 +336,7 @@ class DiagnosisEntry {
   }
 
   final int id;
+  final String diseaseKey;
   final String disease;
   final Severity severity;
   final String confidence;
@@ -400,6 +403,7 @@ class WeatherDay {
 @immutable
 class DiagnosisCase {
   const DiagnosisCase({
+    this.id,
     required this.diseaseKey,
     required this.disease,
     required this.confidence,
@@ -456,6 +460,7 @@ class DiagnosisCase {
             .toList();
 
     return DiagnosisCase(
+      id: json['id'] as int?,
       diseaseKey: json['disease_key'] as String,
       disease: disease,
       confidence: _percent(confidence),
@@ -487,6 +492,10 @@ class DiagnosisCase {
     return puc == null ? name : '$name · $puc';
   }
 
+  /// `null` cho chẩn đoán ngoại tuyến hoặc chẩn đoán nhanh (`save = false`)
+  /// — những trường hợp không có bản ghi nào trong CSDL để đính kèm vào bài
+  /// viết diễn đàn. Xem `result_screen.dart` mục "Thêm thảo luận".
+  final int? id;
   final String diseaseKey;
   final Disease disease;
   final String confidence;
@@ -543,4 +552,113 @@ String formatIsoTimestamp(String isoTimestamp) {
       local.day == yesterday.day;
   if (wasYesterday) return 'Hôm qua $hm';
   return '${local.day.toString().padLeft(2, '0')}/${local.month.toString().padLeft(2, '0')} $hm';
+}
+
+/// Bốn loại phản hồi của một bài viết diễn đàn — khớp `ForumPostType` bên
+/// backend (`app/models/forum.py`).
+enum ForumPostKind { agree, disagree, medicineIssue, tip }
+
+/// `"agree"` <-> [ForumPostKind.agree] — giá trị thô gửi lên/nhận về từ CSDL.
+String forumPostKindToRaw(ForumPostKind kind) => switch (kind) {
+      ForumPostKind.agree => 'agree',
+      ForumPostKind.disagree => 'disagree',
+      ForumPostKind.medicineIssue => 'medicine_issue',
+      ForumPostKind.tip => 'tip',
+    };
+
+ForumPostKind forumPostKindFromRaw(String raw) => switch (raw) {
+      'disagree' => ForumPostKind.disagree,
+      'medicine_issue' => ForumPostKind.medicineIssue,
+      'tip' => ForumPostKind.tip,
+      _ => ForumPostKind.agree,
+    };
+
+/// Nhãn tiếng Việt hiện trên chip chọn loại phản hồi và trên mỗi bài viết.
+String forumPostKindLabel(ForumPostKind kind) => switch (kind) {
+      ForumPostKind.agree => 'Đồng ý với kết quả',
+      ForumPostKind.disagree => 'Nghĩ là bệnh khác',
+      ForumPostKind.medicineIssue => 'Thuốc gợi ý không phù hợp',
+      ForumPostKind.tip => 'Kinh nghiệm xử lý khác',
+    };
+
+/// Một bình luận trong bài viết diễn đàn — `ForumCommentOut` bên backend.
+@immutable
+class ForumComment {
+  const ForumComment({
+    required this.id,
+    required this.postId,
+    required this.userId,
+    required this.userFullName,
+    required this.content,
+    required this.createdAt,
+  });
+
+  factory ForumComment.fromJson(Map<String, dynamic> json) => ForumComment(
+        id: json['id'] as int,
+        postId: json['post_id'] as int,
+        userId: json['user_id'] as int,
+        userFullName: (json['user_full_name'] as String?) ?? '',
+        content: json['content'] as String,
+        createdAt: formatIsoTimestamp(json['created_at'] as String),
+      );
+
+  final int id;
+  final int postId;
+  final int userId;
+  final String userFullName;
+  final String content;
+  final String createdAt;
+}
+
+/// Một bài viết diễn đàn — `ForumPostOut`/`ForumPostDetail` bên backend.
+///
+/// [comments] rỗng khi dựng từ danh sách (`GET /forum/posts`, chỉ trả
+/// `ForumPostOut`) và chỉ có dữ liệu khi dựng từ chi tiết một bài
+/// (`GET /forum/posts/{id}`, trả `ForumPostDetail`).
+@immutable
+class ForumPost {
+  const ForumPost({
+    required this.id,
+    required this.userId,
+    required this.userFullName,
+    required this.diseaseKey,
+    required this.diseaseName,
+    required this.diagnosisId,
+    required this.diagnosisSummary,
+    required this.kind,
+    required this.content,
+    required this.likesCount,
+    required this.createdAt,
+    this.comments = const <ForumComment>[],
+  });
+
+  factory ForumPost.fromJson(Map<String, dynamic> json) => ForumPost(
+        id: json['id'] as int,
+        userId: json['user_id'] as int,
+        userFullName: (json['user_full_name'] as String?) ?? '',
+        diseaseKey: json['disease_key'] as String,
+        diseaseName: (json['disease_name'] as String?) ?? '',
+        diagnosisId: json['diagnosis_id'] as int?,
+        diagnosisSummary: json['diagnosis_summary'] as String?,
+        kind: forumPostKindFromRaw(json['type'] as String),
+        content: json['content'] as String,
+        likesCount: json['likes_count'] as int,
+        createdAt: formatIsoTimestamp(json['created_at'] as String),
+        comments: (json['comments'] as List<dynamic>? ?? const <dynamic>[])
+            .map((dynamic c) => ForumComment.fromJson(c as Map<String, dynamic>))
+            .toList(),
+      );
+
+  final int id;
+  final int userId;
+  final String userFullName;
+  final String diseaseKey;
+  final String diseaseName;
+  final int? diagnosisId;
+  final String? diagnosisSummary;
+  final ForumPostKind kind;
+  final String content;
+  final int likesCount;
+  final String createdAt;
+  final List<ForumComment> comments;
 }

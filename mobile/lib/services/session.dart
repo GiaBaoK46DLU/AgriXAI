@@ -2,6 +2,7 @@ import 'api_client.dart';
 import 'auth_service.dart';
 import 'diagnosis_service.dart';
 import 'disease_service.dart';
+import 'forum_service.dart';
 import 'weather_service.dart';
 
 /// Một `ApiClient` dùng chung cho cả app, để token đăng nhập một lần dùng
@@ -15,6 +16,7 @@ ApiClient apiClient = ApiClient();
 AuthService authService = AuthService(apiClient: apiClient);
 DiseaseService diseaseService = DiseaseService(apiClient: apiClient);
 DiagnosisService diagnosisService = DiagnosisService(apiClient: apiClient);
+ForumService forumService = ForumService(apiClient: apiClient);
 WeatherService weatherService = WeatherService(apiClient: apiClient);
 
 CurrentUser? currentUser;

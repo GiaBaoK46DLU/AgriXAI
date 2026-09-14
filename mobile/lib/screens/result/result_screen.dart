@@ -18,6 +18,7 @@ import '../../widgets/glass_card.dart';
 import '../../widgets/image_slot.dart';
 import '../../widgets/misc.dart';
 import '../capture/capture_screen.dart';
+import '../forum/forum_compose_screen.dart';
 import 'treatment_screen.dart';
 
 /// **05 Kết quả chẩn đoán** — UC-M8. Màn quan trọng nhất của đồ án: đây là
@@ -180,8 +181,14 @@ class _ResultScreenState extends State<ResultScreen> {
               children: <Widget>[
                 Expanded(
                   child: GlassPillButton(
-                    label: 'Thêm ghi chú',
-                    onPressed: () {},
+                    label: 'Thêm thảo luận',
+                    onPressed: () => AppNav.push(
+                      context,
+                      (_) => ForumComposeScreen(
+                        initialDiagnosisId: _case.id,
+                        initialDiseaseKey: _case.diseaseKey,
+                      ),
+                    ),
                     minHeight: 48,
                     fontSize: 14.5,
                     style: GlassStyle.field,

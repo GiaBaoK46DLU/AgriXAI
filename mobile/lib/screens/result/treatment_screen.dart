@@ -17,6 +17,7 @@ import '../../widgets/glass_bottom_bar.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/misc.dart';
 import '../../widgets/rows.dart';
+import '../forum/forum_compose_screen.dart';
 
 Future<void> _openUrl(BuildContext context, String url) async {
   final Uri uri = Uri.parse(url);
@@ -176,6 +177,21 @@ class TreatmentScreen extends StatelessWidget {
                 const SizedBox(height: 11),
             ],
             const SizedBox(height: 24),
+            GlassPillButton(
+              label: 'Phản hồi về gợi ý xử lý này',
+              onPressed: () => AppNav.push(
+                context,
+                (_) => ForumComposeScreen(
+                  initialDiagnosisId: diagnosisCase.id,
+                  initialDiseaseKey: diagnosisCase.diseaseKey,
+                  initialKind: ForumPostKind.medicineIssue,
+                ),
+              ),
+              minHeight: 50,
+              fontSize: 14.5,
+              style: GlassStyle.field,
+            ),
+            const SizedBox(height: 10),
             PrimarySolidButton(
               label: 'Đã hiểu, về trang chủ',
               onPressed: () => AppNav.toTab(context, AgriTab.plots),

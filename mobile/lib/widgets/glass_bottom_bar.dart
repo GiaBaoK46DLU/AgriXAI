@@ -6,71 +6,64 @@ import '../core/app_typography.dart';
 import 'agri_icons.dart';
 import 'glass_card.dart';
 
-/// Bốn tab của thanh dưới. Nút camera ở giữa không phải tab — nó mở màn 03.
-enum AgriTab { plots, history, catalog, profile }
+/// Năm tab của thanh dưới. `plots` giữ tên nội bộ cũ (khỏi phải sửa lại mọi
+/// nơi đang gọi `AppScope.read(context).select(AgriTab.plots)`) nhưng hiển
+/// thị label/icon "Trang chủ" — xem CLAUDE.md mục Diễn đàn nông dân.
+enum AgriTab { forum, history, plots, catalog, profile }
 
-/// Thanh tab kính mờ trôi nổi, chỉ hiện ở màn 02, 07, 10, 12.
+/// Thanh tab kính mờ trôi nổi, chỉ hiện ở các màn có tab.
+///
+/// Không còn nút camera nổi ở giữa — chụp ảnh chẩn đoán giờ chỉ vào được qua
+/// nút "Chẩn đoán bệnh" ở trang chủ, để nhường chỗ cho tab Diễn đàn.
 class GlassBottomBar extends StatelessWidget {
   const GlassBottomBar({
     required this.current,
     required this.onSelect,
-    required this.onCapture,
     super.key,
   });
 
   final AgriTab current;
   final ValueChanged<AgriTab> onSelect;
-  final VoidCallback onCapture;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 12, right: 12, bottom: 6),
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.bottomCenter,
-        children: <Widget>[
-          GlassCard(
-            style: GlassStyle.tabBar,
-            radius: 28,
-            shadows: AgriShadows.tabBar(),
-            padding: const EdgeInsets.fromLTRB(6, 7, 6, 6),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                _tab(
-                  tab: AgriTab.plots,
-                  label: 'Lô đất',
-                  builder: (Color c) => AgriIcons.tabPlots(
-                    23,
-                    c,
-                    current == AgriTab.plots
-                        ? AgriColors.olive
-                        : AgriColors.inkA(.45),
-                  ),
-                ),
-                _tab(
-                  tab: AgriTab.history,
-                  label: 'Lịch sử',
-                  builder: (Color c) => AgriIcons.tabHistory(23, c),
-                ),
-                // Chỗ trống cho nút camera nhô lên ở lớp trên.
-                const Expanded(child: SizedBox(height: 52)),
-                _tab(
-                  tab: AgriTab.catalog,
-                  label: 'Danh mục',
-                  builder: (Color c) => AgriIcons.tabCatalog(23, c),
-                ),
-                _tab(
-                  tab: AgriTab.profile,
-                  label: 'Tôi',
-                  builder: (Color c) => AgriIcons.tabProfile(23, c),
-                ),
-              ],
+      child: GlassCard(
+        style: GlassStyle.tabBar,
+        radius: 28,
+        shadows: AgriShadows.tabBar(),
+        padding: const EdgeInsets.fromLTRB(6, 7, 6, 6),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            _tab(
+              tab: AgriTab.forum,
+              label: 'Diễn đàn',
+              builder: (Color c) => AgriIcons.tabForum(23, c),
             ),
-          ),
-          Positioned(bottom: 7, child: _captureButton()),
-        ],
+            _tab(
+              tab: AgriTab.history,
+              label: 'Lịch sử',
+              builder: (Color c) => AgriIcons.tabHistory(23, c),
+            ),
+            _tab(
+              tab: AgriTab.plots,
+              label: 'Trang chủ',
+              builder: (Color c) => AgriIcons.tabHome(23, c),
+            ),
+            _tab(
+              tab: AgriTab.catalog,
+              label: 'Danh mục',
+              builder: (Color c) => AgriIcons.tabCatalog(23, c),
+            ),
+            _tab(
+              tab: AgriTab.profile,
+              label: 'Tôi',
+              builder: (Color c) => AgriIcons.tabProfile(23, c),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -107,40 +100,6 @@ class GlassBottomBar extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _captureButton() {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        boxShadow: AgriShadows.fab(),
-      ),
-      child: Material(
-        color: const Color(0x00000000),
-        shape: const CircleBorder(),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onCapture,
-          customBorder: const CircleBorder(),
-          child: Ink(
-            width: 62,
-            height: 62,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: agriPrimaryGradient,
-              border: Border.all(color: AgriColors.whiteA(.5), width: 3),
-            ),
-            child: Center(
-              child: AgriIcons.camera(
-                29,
-                body: AgriColors.cream,
-                lens: AgriColors.primary,
-              ),
             ),
           ),
         ),

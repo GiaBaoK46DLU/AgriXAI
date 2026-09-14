@@ -284,6 +284,58 @@ class AgriIcons {
           color,
         ),
       ]);
+
+  /// Ngôi nhà — tab "Trang chủ" (trước đây là "Lô đất", đổi label + icon
+  /// theo yêu cầu diễn đàn, giữ nguyên `AgriTab.plots` bên trong code).
+  static Widget tabHome(double size, Color color) => _icon(size, <_Layer>[
+        _Layer(
+          '<g fill="none" stroke="#000" stroke-width="2.2" stroke-linejoin="round" '
+          'stroke-linecap="round">'
+          '<path d="M4 11.4 12 4l8 7.4"/>'
+          '<path d="M6 10v9.4a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V10"/>'
+          '<path d="M10 20.4V14h4v6.4"/></g>',
+          color,
+        ),
+      ]);
+
+  /// Bong bóng chat — tab "Diễn đàn".
+  static Widget tabForum(double size, Color color) => _icon(size, <_Layer>[
+        _Layer(
+          '<path d="M4 5.6A1.6 1.6 0 0 1 5.6 4h12.8A1.6 1.6 0 0 1 20 5.6v9.6a1.6 '
+          '1.6 0 0 1-1.6 1.6H9.4L5 20.4v-3.6H5.6A1.6 1.6 0 0 1 4 15.2Z" '
+          'fill="none" stroke="#000" stroke-width="2.1" stroke-linejoin="round" '
+          'stroke-linecap="round"/>',
+          color,
+        ),
+      ]);
+
+  /// Trái tim — nút thích bài viết diễn đàn. `filled` tô đặc khi đã thích.
+  static Widget heart(double size, {required bool filled, required Color color}) {
+    const String path =
+        'M12 20.2 4.8 13.4a4.6 4.6 0 0 1 6.9-6 .5.5 0 0 0 .6 0 4.6 4.6 0 0 1 '
+        '6.9 6Z';
+    if (filled) {
+      return _icon(size, <_Layer>[_Layer('<path d="$path" fill="#000"/>', color)]);
+    }
+    return _stroke(size, '<path d="$path"/>', color, width: 2.1);
+  }
+
+  /// Máy bay giấy — nút gửi bình luận.
+  static Widget send(double size, Color color) => _icon(size, <_Layer>[
+        _Layer(
+          '<path d="m4 12 16-8-6.4 16-2.4-7.2Z" fill="none" stroke="#000" '
+          'stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>',
+          color,
+        ),
+      ]);
+
+  /// Dấu cộng trong vòng tròn — nút thêm bài viết ở góc màn Diễn đàn.
+  static Widget plus(double size, Color color) => _stroke(
+        size,
+        '<path d="M12 5v14"/><path d="M5 12h14"/>',
+        color,
+        width: 2.6,
+      );
 }
 
 /// Bốn góc chữ L của khung ngắm ở màn 03 — vẽ theo viewBox 370×312 và kéo
