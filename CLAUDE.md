@@ -453,7 +453,7 @@ mới nhất không tải nổi trên mạng lúc làm).
 |---|---|
 | Cấu trúc thư mục + README các cấp | Đã commit lên `main` |
 | `shared/data/tomato_diseases.json` | Đã commit |
-| `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `docx/bao-cao-huan-luyen-mo-hinh.md` cho số liệu đầy đủ. Từ 07/09/2026, **`model/checkpoints/` và `model/outputs/` đã theo Git** (quyết định của Bảo, đảo ngược quyết định ban đầu) — máy khác `pull` về là chạy được model thật ngay, không phải huấn luyện lại. Chỉ **dữ liệu PlantVillage `model/data/raw/` (18.160 ảnh / 10 lớp, ~275 MB) vẫn nằm ngoài Git** vì tải lại được từ Kaggle (nguồn ghi ở issue #11), không cần bắt repo gánh dung lượng đó |
+| `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `docx/bao-cao-huan-luyen-mo-hinh.md` cho số liệu đầy đủ. Từ 07/09/2026, **`model/checkpoints/` và `model/outputs/` đã theo Git** (quyết định của Bảo, đảo ngược quyết định ban đầu) — máy khác `pull` về là chạy được model thật ngay, không phải huấn luyện lại. Chỉ **dữ liệu PlantVillage `model/data/raw/` (18.160 ảnh / 10 lớp, ~275 MB) vẫn nằm ngoài Git** vì tải lại được từ Kaggle (nguồn ghi ở issue #11), không cần bắt repo gánh dung lượng đó. **Đã đo xong hai việc đánh giá lớn (15/09/2026):** #49 domain gap (**30,81 %** trên ảnh thật) và #17 kiểm Grad-CAM (**đủ tin trên PlantVillage, chưa đủ trên ảnh thật**) — xem hai báo cáo trong `docx/`. ⚠️ **Ảnh PlantDoc `model/data/field/plantdoc/` (746 ảnh / 231 MB) cũng ngoài Git**, tải lại từ `pratikkayal/PlantDoc-Dataset` |
 | `model/research/` | Đã commit — danh mục 46 bài báo chia 8 nhóm + bản tổng hợp đối chiếu kết quả với các công bố. Xem mục "Phần việc của Bảo" bên dưới |
 | `backend/` code | **Chạy mô hình thật** (không còn `DummyPredictor` mặc định) — 19/19 test pass, xem mục "Tích hợp mô hình thật" phía trên |
 | `mobile/` (Flutter) | Giao diện đã dựng xong từ trước; **luồng chính đã nối API thật** ngày 07/09/2026: đăng nhập/đăng ký → danh mục → chụp/chọn ảnh → chẩn đoán thật kèm khoanh vùng → gợi ý xử lý (thuốc + video). Có màn **Đăng ký** tự phục vụ (xem mục "Tự đăng ký tài khoản") và **chẩn đoán ngoại tuyến** khi mất mạng (xem mục "Nhận diện ngoại tuyến trên điện thoại"). Màn Lịch sử vẫn còn dữ liệu mẫu — chưa nối, để sau |
@@ -496,6 +496,39 @@ Mục này để mở repo trên **máy khác** là biết ngay đang ở đâu 
 **IN-01, IN-02 — đã nối mô hình thật vào backend và mobile** ngày 07/09/2026, kéo
 sớm hơn lịch mốc 4. Chi tiết ở mục "Tích hợp mô hình thật" phía trên.
 
+**#49 — đo domain gap.** Xong 15/09/2026: **99,60 % → 30,81 %** trên PlantDoc.
+Xem rủi ro số 1 bên dưới và `docx/bao-cao-domain-gap.md`.
+
+**#17 — kiểm Grad-CAM có rơi đúng vết bệnh không.** Xong 15/09/2026, khoanh lá
+**bằng tay** 56 ảnh trên cả hai bộ. Báo cáo: `docx/bao-cao-kiem-gradcam-vet-benh.md`.
+
+| | PlantVillage (n=30) | PlantDoc (n=26) |
+|---|--:|--:|
+| Khối lượng heatmap: **vết bệnh / lá lành / nền** | 31,7 / 36,9 / 31,4 % | 20,3 / 51,8 / 28,0 % |
+| Nâng chuẩn hoá vào lá *(0 = đoán mò, 1 = hoàn hảo)* | **0,41** (KTC 0,34–0,48) | **0,03** (KTC −0,12–0,17) |
+| Vùng app thật sự khoanh — phần nằm trên nền | 7,3 % | **25,4 %** |
+
+**Kết luận: đủ tin cậy để hiển thị với ảnh kiểu phòng thí nghiệm, CHƯA đủ với ảnh
+chụp ngoài đồng.** Trên ảnh thật khoảng tin cậy **chứa số 0**, tức không chứng minh
+được Grad-CAM ưu tiên lá hơn nền.
+
+Bốn điều không suy ra được từ code, phải nhớ:
+
+1. **Khả năng tìm VẾT BỆNH thì không tụt.** Nhóm lớp có vết khu trú được cho nâng
+   chuẩn hoá vào vết bệnh **0,098** (PlantVillage) so với **0,102** (PlantDoc), cả
+   hai khoảng tin cậy đều không chứa 0. Thứ hỏng trên ảnh thật là khả năng **không
+   nhìn ra ngoài lá**, không phải khả năng tìm triệu chứng.
+2. **#17 đính chính hai chỗ trong `docx/bao-cao-domain-gap.md` mục 5** — con số
+   "điểm nóng trong lá chỉ 42 %" là lỗi mặt nạ (khoanh tay ra **80,8 %**), và cơ chế
+   "mặt nạ phình ra" là ngược (mặt nạ **hụt** một phần ba vùng lá). Đã sửa tại chỗ.
+3. **Heatmap biết khi nào mô hình sai.** Ảnh PlantDoc đoán đúng có đỉnh trên vết bệnh
+   57,1 % / vùng khoanh trên nền 9,1 %; đoán sai là 15,8 % / 31,4 %. Mới là tương
+   quan (n=7 vs 19) nhưng kiểm chứng trên cả 742 ảnh **không tốn thêm công khoanh
+   tay** — tín hiệu tin cậy tốt hơn softmax, đầu vào cho #47 và #90.
+4. **Người khoanh là trợ lý AI, chưa ai soát lại.** Đã khoanh **mù** (phiếu không in
+   heatmap). Mặt nạ lưu dạng chữ trong `khoanh-tay.json`, sửa tay rồi chạy lại
+   `audit_score` là ra số mới.
+
 **Khảo sát tài liệu.** `model/research/` — 46 bài chia 8 nhóm, **7 bài đã đọc kỹ**,
 kèm `03-tong-hop-doi-chieu.md` đối chiếu kết quả của nhóm với các công bố.
 
@@ -520,21 +553,30 @@ tiến" chỗ này phải đọc E1 trước.
 > **thiếu hẳn ba việc cải thiện độ chính xác** #93/#50/#94 dù chúng là phần trả lời trực
 > tiếp cho kết quả #49.
 >
-> Số đo và lý lẽ: `docx/Plan_model.md` mục 5.4 và `docx/bao-cao-domain-gap.md`.
+> **Cập nhật lần hai, cũng ngày 15/09/2026 — #17 xong.** Hai dòng đầu bảng nay đều là
+> việc đã xong, và thứ tự 1–3 đã đổi: xem ghi chú ngay dưới bảng.
+>
+> Số đo và lý lẽ: `docx/bao-cao-kiem-gradcam-vet-benh.md` (mới nhất),
+> `docx/bao-cao-domain-gap.md`, `docx/Plan_model.md` mục 5.4.
 
 | Thứ tự | Việc | Vì sao thứ tự này |
 |---|---|---|
 | ~~—~~ | ~~**#49 — đo domain gap**~~ | ✅ **XONG 15/09/2026: 99,60 % → 30,81 %** trên bộ H2 PlantDoc (742 ảnh, 8/10 lớp). Xem `docx/bao-cao-domain-gap.md`. Đã mở chốt cho #93, #94, #50 |
-| **1** | **#17 — kiểm Grad-CAM có rơi đúng vết bệnh không**, khoanh lá **bằng tay**, trên **cả PlantVillage lẫn PlantDoc** | **Cổng kiểm soát của cả đề tài, và #49 đẩy nó lên đầu.** Nếu heatmap rơi vào nền thì toàn bộ phần XAI mất giá trị. Hai căn cứ: bài **A2** — có người huấn luyện **chỉ bằng 8 pixel nền** PlantVillage mà vẫn đạt 49 % (đoán mò 2,63 %); và #49 đo được **mức tập trung tụt 1,58× → 1,02 ×** trên ảnh thật, tức gần như không khác rải ngẫu nhiên, điểm nóng nhất trong lá chỉ 42 %. Chỗ đáng nghi đã biết trước: lớp `healthy` chỉ 42 % khối lượng heatmap trong lá. **Phạm vi rộng hơn bản 10/09: thêm bộ PlantDoc, và phải khoanh lá bằng tay** vì mặt nạ tự động bằng ngưỡng màu kém tin cậy trên nền thật |
-| **2** | **#90 — không khoanh vùng khi bản đồ nhiệt quá yếu** | Chặn ngay triệu chứng nặng nhất: app khoanh elip lên vật thể bất kỳ rồi khẳng định một loại bệnh. **1 giờ, không cần Học sửa gì** vì không đụng hợp đồng dùng chung |
-| **3** | **#91** thu bộ ảnh không phải lá → **#92** huấn luyện bộ 2 lớp | Cách chữa gốc cho lỗi trên. #91 làm được ngay tại nhà, **không cần nhà vườn**. #92 chặn bởi #91. Cũng là thứ #47 đang chờ để chốt ngưỡng bằng số liệu thật |
-| **4** | **#93 — cắt vùng lá trước khi phân loại** | **Việc cải thiện độ chính xác đáng làm trước nhất, vì không cần một tấm ảnh mới nào.** Xem 16 ca sai bằng mắt ở #49 thì một phần đáng kể là ảnh **chụp cả bụi cây** thay vì phiến lá cận cảnh — mô hình bị hỏi sai câu hỏi, và không augmentation nào sửa được việc đó. Phép thử che nền 10/09 chứng minh cắt nền không mất gì: bỏ hết viền nền vẫn đạt 97,3 % |
-| **5** | **#50 hướng 1 — tăng augmentation mô phỏng đồng ruộng** | Thay nền ngẫu nhiên, bóng đổ, mờ nhoè, nắng gắt. Rẻ nhất trong nhóm cải thiện: chỉ chỉnh config + huấn luyện lại ~30 phút, không cần dữ liệu mới |
-| 6 | **#98 — nâng Grad-CAM++** | Heatmap hiện thô vì tầng chập cuối B0 chỉ 7×7 — đo được 40,7 % khối lượng rơi ra ngoài lá. Làm **sau #17**, vì nét hơn mà sai chỗ thì vô nghĩa. ⚠️ **Bảng này trước ghi sai là "#16"** — #16 thật là MD-07 sinh lưới ảnh minh hoạ cho slide. Grad-CAM++ **trước 15/09/2026 không có issue nào**, nay đã tạo #98 |
-| 7 | **#50 hướng 2 — fine-tune bằng `train` của PlantDoc** | Hiệu quả nhất nhưng là hướng **duy nhất tiêu dữ liệu đo**, nên để sau. 674 ảnh `train` (đã bỏ `tomato_V8.jpg` vì nhãn mâu thuẫn), đo lại trên đúng 66 ảnh `test`. Mốc "trước" đã có: **28,79 %**. ⚠️ KTC rộng 21 điểm nên phải cải thiện hơn ~12 điểm mới kết luận được |
-| 8 | **#94 — test-time augmentation** | Rẻ, không huấn luyện lại gì. Làm **sau #93** để biết phần cải thiện đến từ đâu |
+| ~~—~~ | ~~**#17 — kiểm Grad-CAM có rơi đúng vết bệnh không**~~ | ✅ **XONG 15/09/2026.** Khoanh tay 56 ảnh, cả hai bộ. **Đủ tin cậy trên PlantVillage (nâng chuẩn hoá 0,41), CHƯA đủ trên ảnh thật (0,03, khoảng tin cậy chứa số 0).** Số liệu và bốn điều phải nhớ ở mục "Đã xong" phía trên. Báo cáo: `docx/bao-cao-kiem-gradcam-vet-benh.md` |
+| **1** | **#91** thu bộ ảnh không phải lá → **#92** huấn luyện bộ 2 lớp | **Lên số 1 vì #90 mất chỗ** (xem dòng dưới). Đây là việc `muc:chan` duy nhất còn lại, độc lập với mọi thứ khác, **làm được ngay tại nhà, không cần nhà vườn**. #92 chặn bởi #91. Cũng là thứ #47 đang chờ để chốt ngưỡng bằng số liệu thật. #17 nhặt thêm một ca mẫu: ảnh chụp màn hình một **slide thuyết trình** (có chữ, dưa chuột, rổ cà chua) được kết luận **mốc sương muộn 89 %** |
+| **2** | **#93 — cắt vùng lá trước khi phân loại** | **Nay còn mở khoá cho #90, không chỉ là việc cải thiện độ chính xác.** Lý do cũ: xem 16 ca sai của #49 bằng mắt thì phần đáng kể là ảnh **chụp cả bụi cây** thay vì phiến lá cận cảnh — mô hình bị hỏi sai câu hỏi, và không augmentation nào sửa được. Lý do mới từ #17: diện tích lá trung bình trên PlantDoc là **70 %** khung hình, và tiêu chí chặn của #90 phải dựa vào vùng lá. Vẫn là hướng **duy nhất không cần một tấm ảnh mới nào**; phép thử che nền 10/09 chứng minh cắt nền không mất gì (bỏ hết viền nền vẫn đạt 97,3 %) |
+| **3** | **#90 — không khoanh vùng khi bản đồ nhiệt quá yếu** | ⚠️ **#17 ĐỔI TIÊU CHÍ và ĐỔI THỨ TỰ việc này — đọc trước khi làm.** Bản cũ xếp số 2 và ghi "1 giờ, không cần Học sửa gì", với ý tưởng chặn khi CAM "quá yếu / quá phẳng". #17 đo độ phẳng CAM thô: **0,30 (PlantVillage) so với 0,32 (PlantDoc)** — **phẳng như nhau**, nên độ phẳng **không phân biệt được** ảnh phòng thí nghiệm với ảnh thật. Tiêu chí hứa hẹn hơn là **tỉ lệ khối lượng heatmap nằm trong vùng lá** → **phụ thuộc #93**. Vấn đề thì vẫn thật: **25,4 %** vùng app khoanh trên ảnh thật nằm ngoài lá |
+| **4** | **#50 hướng 1 — tăng augmentation mô phỏng đồng ruộng** | Thay nền ngẫu nhiên, bóng đổ, mờ nhoè, nắng gắt. Rẻ nhất trong nhóm cải thiện: chỉ chỉnh config + huấn luyện lại ~30 phút, không cần dữ liệu mới |
+| 5 | **#98 — nâng Grad-CAM++** | **Cổng #17 đã mở**, nhưng #17 chốt thứ tự là **sau #93**: nét hơn mà đặt sai vật thể thì vô nghĩa. #17 cho căn cứ định lượng: lớp `target_spot` (đốm chỉ chiếm 1,9 % ảnh) và `bacterial_spot` có **0/3 ảnh** điểm nóng trúng đốm — đúng vì heatmap 7×7 là **một khối tròn**, không thể chỉ vào nhiều đốm nhỏ rải rác. ⚠️ **Bảng này trước ghi sai là "#16"** — #16 thật là MD-07 sinh lưới ảnh minh hoạ cho slide |
+| 6 | **#50 hướng 2 — fine-tune bằng `train` của PlantDoc** | Hiệu quả nhất nhưng là hướng **duy nhất tiêu dữ liệu đo**, nên để sau. 674 ảnh `train` (đã bỏ `tomato_V8.jpg` vì nhãn mâu thuẫn), đo lại trên đúng 66 ảnh `test`. Mốc "trước" đã có: **28,79 %**. ⚠️ KTC rộng 21 điểm nên phải cải thiện hơn ~12 điểm mới kết luận được |
+| 7 | **#94 — test-time augmentation** | Rẻ, không huấn luyện lại gì. Làm **sau #93** để biết phần cải thiện đến từ đâu |
 | ~~—~~ | ~~#18 — đo tốc độ suy luận trên CPU~~ | **Đã có số 10/09/2026: 215 ms** (CPU 4 luồng) cho `predict()` đầy đủ ở 1280 px, so với **452 ms** khi để torch tự lấy 16 luồng — tranh chấp luồng. Rủi ro số 2 hạ mức. Chỉ còn phần đo lại trên máy demo khi #51 chốt máy |
-| 9 | **#19 — so ResNet18 / ResNet50 / B3** | ⚠️ **Hạ cấp 10/09/2026: làm để BÁO CÁO, không phải để sửa lỗi.** #49 xác nhận: điểm nghẽn là **68,8 điểm domain gap**, không phải 0,4 điểm còn lại trên PlantVillage. Đổi backbone không thu hẹp khoảng cách đó. `build.py` đã hỗ trợ sẵn, chỉ đổi `model.arch`. 4 lượt × 25 phút |
+| 8 | **#19 — so ResNet18 / ResNet50 / B3** | ⚠️ **Hạ cấp 10/09/2026: làm để BÁO CÁO, không phải để sửa lỗi.** #49 xác nhận: điểm nghẽn là **68,8 điểm domain gap**, không phải 0,4 điểm còn lại trên PlantVillage. Đổi backbone không thu hẹp khoảng cách đó. `build.py` đã hỗ trợ sẵn, chỉ đổi `model.arch`. 4 lượt × 25 phút |
+
+> ⚠️ **Thứ tự 1–3 vừa đổi ngày 15/09/2026 và Bảo CHƯA xác nhận.** Bản trước là #17 → #90
+> → #91. #17 xong, và số đo của nó làm #90 **không còn làm độc lập được** (phải có vùng
+> lá từ #93), nên #90 tụt từ số 2 xuống số 3 và #91 lên số 1. Nếu Bảo muốn giữ #90 ở
+> trên thì phải chọn tiêu chí chặn khác — và #17 đã bác bỏ tiêu chí "CAM phẳng".
 
 > **Ba việc cải thiện độ chính xác là #93, #50 và #94** — nếu cần tra nhanh thì đó là câu
 > trả lời. Riêng **#50 hướng 2 là chỗ duy nhất "học thêm bộ dữ liệu khác"**. #19 KHÔNG
@@ -653,13 +695,24 @@ tiến" chỗ này phải đọc E1 trước.
       ở ngưỡng 0,90 hệ thống từ chối 85,4 % ảnh thật mà accuracy phần còn lại vẫn chỉ
       56,5 %, đồng thời chặn oan 8,5 % ảnh PlantVillage. Vẫn làm #47, nhưng **chỉ để chặn
       ảnh không phải lá** — đừng kỳ vọng nó cải thiện accuracy.
-   2. **#17 nâng ưu tiên và mở rộng phạm vi.** Mức tập trung Grad-CAM tụt **1,58× → 1,02×**
-      trên ảnh thật, tức gần như không khác rải ngẫu nhiên; điểm nóng nhất nằm trong lá chỉ
-      42 %. Phép đo có hạn chế thật nên đây là **cảnh báo chưa phải kết luận** — #17 nay
-      phải kiểm **cả PlantVillage lẫn PlantDoc** và khoanh lá **bằng tay**.
-   3. **#93 nâng ưu tiên.** Xem 16 ca sai bằng mắt thì một phần đáng kể là ảnh **chụp cả
-      bụi cây**, không phải phiến lá cận cảnh — tức mô hình bị hỏi sai câu hỏi. Cắt vùng lá
-      trước khi phân loại đánh đúng chỗ đó, và là hướng duy nhất **không cần dữ liệu mới**.
+
+      ➕ **#17 bổ sung một tín hiệu tin cậy khác, có vẻ tốt hơn softmax:** *vị trí* của bản
+      đồ nhiệt. Trên PlantDoc, ảnh mô hình đoán **đúng** có đỉnh heatmap rơi trên vết bệnh
+      **57,1 %** và chỉ **9,1 %** vùng khoanh nằm trên nền; ảnh đoán **sai** là **15,8 %**
+      và **31,4 %**. Mới là tương quan (n=7 so với 19) và ảnh đoán đúng phần lớn là ảnh cận
+      cảnh vết bệnh lớn — nhưng **kiểm chứng trên cả 742 ảnh không tốn thêm công khoanh tay
+      nào**. Đáng thử trước khi chốt ngưỡng cho #47.
+   2. ~~**#17 nâng ưu tiên và mở rộng phạm vi.**~~ ✅ **#17 ĐÃ LÀM XONG cùng ngày, và
+      đính chính chính mục này.** Cảnh báo cũ ghi *"điểm nóng nhất nằm trong lá chỉ 42 %"* —
+      con số đó là **lỗi của mặt nạ Otsu**, khoanh tay ra **80,8 %**. Phần *mức tập trung*
+      thì đúng: khoanh tay ra **1,65× → 1,10×**. Kết luận cuối: **đủ tin cậy trên
+      PlantVillage, chưa đủ trên ảnh thật**. Số liệu đầy đủ ở mục "Đã xong" phía trên và
+      `docx/bao-cao-kiem-gradcam-vet-benh.md`.
+   3. **#93 nâng ưu tiên — nay lên số 1 trong nhóm cải thiện.** Xem 16 ca sai bằng mắt thì
+      một phần đáng kể là ảnh **chụp cả bụi cây**, không phải phiến lá cận cảnh — tức mô
+      hình bị hỏi sai câu hỏi. #17 đo thêm: diện tích lá trung bình trên PlantDoc là **70 %**
+      khung hình. Cắt vùng lá đánh đúng chỗ đó, là hướng duy nhất **không cần dữ liệu mới**,
+      và **nay còn mở khoá cho #90** vì tiêu chí chặn phải dựa vào vùng lá.
 
    **Hạn chế phải ghi vào báo cáo:** PlantDoc là ảnh **thu từ Internet**, không phải ảnh tự
    chụp ngoài đồng — vẫn là phép thử domain shift hợp lệ (nền lộn xộn, nhiều lá chồng, ánh
