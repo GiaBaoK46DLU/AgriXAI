@@ -7,6 +7,11 @@
 >
 > Mọi con số trong tài liệu này do nhóm tự đo, script và manifest đều trong repo nên
 > **chạy lại được**. Lệnh cụ thể ở mục 7.
+>
+> ⚠️ **Đã đính chính ngày 15/09/2026 bởi issue #17.** Toàn bộ **mục 5 (Grad-CAM)** có hai
+> chỗ sai — đã đánh dấu tại chỗ. Con số về accuracy, ma trận nhầm lẫn và ngưỡng tin cậy
+> (mục 2, 3, 4) **không bị ảnh hưởng**. Chỗ kết luận về Grad-CAM giờ là
+> `docx/bao-cao-kiem-gradcam-vet-benh.md`.
 
 ---
 
@@ -24,6 +29,8 @@ quả tốt cho đồ án, chứ không phải một thất bại:
    tượng mà tài liệu đã mô tả, trên mô hình của mình. Đó là bằng chứng phép đo đúng.
 2. **Nó chỉ ra đúng chỗ cần sửa**, chứ không chỉ nói "mô hình kém" — xem mục 3 (mô
    hình dồn 85 % dự đoán vào 3 lớp) và mục 5 (Grad-CAM suy biến về mức ngẫu nhiên).
+   ⚠️ **Mục 5 đã được #17 đính chính ngày 15/09/2026** — đọc khung đầu mục 5 trước khi
+   trích con số Grad-CAM nào từ tài liệu này.
 3. **Nó bác bỏ một hướng sửa sai.** Mục 4 chứng minh bằng số rằng ngưỡng tin cậy —
    hướng mà issue #47 đề xuất — **không cứu được** vấn đề này.
 
@@ -255,31 +262,84 @@ vá độ chính xác trên ảnh thật. Hai vấn đề khác nhau, đừng d�
 
 ## 5. Grad-CAM trên ảnh nền phức tạp — phần đáng lo nhất cho đề tài
 
+> ## ⚠️ MỤC NÀY ĐÃ ĐƯỢC ĐÍNH CHÍNH — đọc trước khi trích bất cứ con số nào
+>
+> Issue **#17** chạy xong **cùng ngày 15/09/2026**, khoanh lá **bằng tay** đúng như mục
+> này đề nghị, và sửa **hai chỗ** dưới đây. Báo cáo đầy đủ:
+> **`docx/bao-cao-kiem-gradcam-vet-benh.md`**.
+>
+> **Sai 1 — con số "điểm nóng nhất nằm trong lá chỉ 42 %".** Đây là **lỗi của mặt nạ**,
+> không phải của mô hình. Khoanh tay trên cùng tập ảnh cho **80,8 %**. Chênh 38 điểm.
+> **Không trích con số 42 % nữa.**
+>
+> **Sai 2 — cơ chế giải thích ở khung cảnh báo bên dưới bị ngược.** Mục này đoán mặt nạ
+> Otsu **phình ra** trên PlantDoc vì cỏ/đất/tay người bão hoà màu cao. Đo lại thì ngược:
+> Otsu cho diện tích lá 47,3 % trong khi **thật là 70,0 %** — mặt nạ **thiếu mất một phần
+> ba vùng lá**, chủ yếu là lá trong bóng râm, lá mất nét và lá ngả vàng (bão hoà thấp).
+>
+> **Còn đúng:** kết luận chính — mức tập trung trên PlantDoc **gần 1,00×** — đứng vững ở
+> **cả hai** cách khoanh (1,10× khoanh tay, 0,99× Otsu). Grad-CAM **thật sự** mất khả
+> năng phân biệt lá với nền trên ảnh thật. Cảnh báo được **hạ mức, không gỡ bỏ**.
+>
+> **Con số thay thế để trích** (khoanh tay, 30 ảnh PlantVillage + 26 ảnh PlantDoc):
+>
+> | | PlantDoc | PlantVillage |
+> |---|--:|--:|
+> | Khối lượng heatmap **trên vết bệnh** | 20,3 % | 31,7 % |
+> | Khối lượng heatmap **trên phiến lá lành** | 51,8 % | 36,9 % |
+> | Khối lượng heatmap **ra nền** | 28,0 % | 31,4 % |
+> | Diện tích lá thật | 70,0 % | 45,2 % |
+> | Mức tập trung vào lá | 1,10× | 1,65× |
+> | **Nâng chuẩn hoá vào lá** *(0 = đoán mò, 1 = hoàn hảo)* | **0,03** | **0,41** |
+> | Điểm nóng nhất nằm trong lá | **80,8 %** | 93,3 % |
+
 Đây là tiêu chí mà #49 đặt ra và cũng là chỗ liên quan trực tiếp tới đóng góp chính của
 đề tài: *heatmap có còn rơi đúng vết bệnh khi nền phức tạp không?*
 
 Đo trên 150 ảnh mỗi bộ, mặt nạ lá xấp xỉ bằng ngưỡng Otsu trên kênh bão hoà màu — **đúng
-cách đã dùng ở phiên 10/09** để so được với nhau:
+cách đã dùng ở phiên 10/09** để so được với nhau. **Giữ lại bảng gốc để đối chiếu; xem
+khung đính chính ở trên trước khi dùng:**
 
 | | PlantDoc (ảnh thật) | PlantVillage |
 |---|---|---|
 | Khối lượng heatmap trong lá | 46,3 % | 55,4 % |
 | Diện tích "lá" theo mặt nạ | 45,4 % | 35,1 % |
 | **Mức tập trung** | **1,02×** | **1,58×** |
-| Điểm nóng nhất nằm trong lá | **42 %** | 75 % |
+| Điểm nóng nhất nằm trong lá | ~~**42 %**~~ → **80,8 %** *(#17 sửa)* | ~~75 %~~ → 93,3 % |
 
 **Cách đọc "mức tập trung":** nếu heatmap rải đều khắp ảnh thì khối lượng trong lá bằng
 đúng diện tích lá, tức 1,00×. PlantVillage đo được 1,58× — Grad-CAM có ưu tiên phiến lá
 rõ rệt. PlantDoc đo được **1,02×**, tức **gần như không phân biệt được với rải ngẫu
-nhiên**. Điểm nóng nhất nằm trong lá chỉ 42 %, thấp hơn cả tung đồng xu.
+nhiên**. ~~Điểm nóng nhất nằm trong lá chỉ 42 %, thấp hơn cả tung đồng xu.~~ *(Câu này
+đã bị #17 bác bỏ — khoanh tay ra **80,8 %**. Xem khung đính chính đầu mục.)*
+
+Phần *mức tập trung* thì #17 xác nhận: khoanh tay ra **1,65× → 1,10×**, cùng hướng và
+gần cùng độ lớn. Nhưng #17 thêm một cảnh báo về cách đọc chính con số này: mức tập trung
+**có trần khác nhau tuỳ ảnh**. Vùng lá trên PlantDoc chiếm tới 70 % khung hình (phần lớn
+là ảnh chụp cả bụi cây), nên trần của nó chỉ là 1 ÷ 0,70 = **1,43×**, trong khi trần của
+PlantVillage là **2,21×**. **So thẳng hai con số tập trung giữa hai bộ là so sai** — phải
+dùng đại lượng chuẩn hoá theo trần, và đại lượng đó nói điều còn tệ hơn: **0,41 → 0,03**.
 
 > ⚠️ **Hạn chế của phép đo này, phải nói rõ.** Mặt nạ lá bằng ngưỡng màu **kém tin cậy
-> hẳn trên PlantDoc**: nền thật có cỏ, cây khác, đất, tay người — đều bão hoà màu cao,
-> nên bị tính là "lá" (diện tích mặt nạ 45,4 % so với 35,1 % của PlantVillage). Bản thân
-> việc mặt nạ phình ra đã đẩy mức tập trung về gần 1,00×. Vì vậy **một phần** mức tụt
-> 1,58× → 1,02× là hiện tượng của phép đo, không phải của mô hình. Con số này dùng để
-> **cảnh báo**, không dùng để kết luận dứt khoát — muốn kết luận thì phải khoanh lá bằng
-> tay, và đó là việc của **#17**.
+> hẳn trên PlantDoc**. Con số này dùng để **cảnh báo**, không dùng để kết luận dứt
+> khoát — muốn kết luận thì phải khoanh lá bằng tay, và đó là việc của **#17**.
+>
+> ~~Nền thật có cỏ, cây khác, đất, tay người — đều bão hoà màu cao, nên bị tính là "lá"
+> (diện tích mặt nạ 45,4 % so với 35,1 % của PlantVillage). Bản thân việc mặt nạ phình
+> ra đã đẩy mức tập trung về gần 1,00×.~~
+>
+> **↑ Đoạn gạch trên là SAI, #17 đo được ngày 15/09/2026 là ngược lại.** Mặt nạ Otsu
+> **hụt** chứ không phình: nó cho diện tích lá 47,3 % trong khi khoanh tay ra **70,0 %**.
+> Thứ bị bỏ sót là lá trong bóng râm, lá mất nét và lá ngả vàng — đều **bão hoà thấp**.
+> Mặt nạ hụt thì cả tử số lẫn mẫu số cùng hụt nên mức tập trung chỉ lệch chút; nhưng
+> "đỉnh nằm trong lá" thì sai thảm hại, vì đỉnh chỉ cần rơi vào **một ô lá bị bỏ sót**
+> là đã bị đếm thành "ngoài lá". Đó là toàn bộ chênh lệch 42 % → 80,8 %.
+>
+> Câu *"một phần mức tụt 1,58× → 1,02× là hiện tượng của phép đo"* thì **vẫn đúng về
+> hướng nhưng nhỏ hơn tưởng**: khoanh tay ra 1,65× → 1,10×, tức mức tụt gần như nguyên
+> vẹn. Xem `docx/bao-cao-kiem-gradcam-vet-benh.md` mục 4 — ở đó #17 cài lại chính mặt nạ
+> Otsu này rồi chạy trên **cùng một tập ảnh, cùng bản đồ nhiệt**, nên là phép so có kiểm
+> soát chứ không phải suy đoán.
 
 ### 5.1. Xem bằng mắt 16 ca đoán sai
 
@@ -310,8 +370,16 @@ Hai ca rõ nhất trong bảng:
   mắt thường, bị kết luận là mốc sương muộn.
 - `mosaic_virus` → `early_blight`, 61 % tin cậy, chỉ **29 %** trong lá.
 
+> ⚠️ **Ba con số 23 % / 45 % / 29 % ở trên tính bằng mặt nạ Otsu**, mà #17 đã chứng minh
+> mặt nạ đó **hụt khoảng một phần ba vùng lá** trên PlantDoc. Vậy nên đây là **cận
+> dưới** — tỉ lệ thật nằm trong lá cao hơn. Nhận định "nhìn chủ yếu vào nền" cho từng ca
+> cụ thể vì thế **phải bỏ**, trừ khi khoanh tay lại đúng ba ảnh đó. Phần *phân nhóm* ba
+> kiểu lỗi thì vẫn đứng — nó dựa vào việc xem ảnh bằng mắt, không dựa vào con số mặt nạ.
+
 Nhóm 3 là câu trả lời cho phần thứ hai của câu hỏi: **có, trên ảnh nền phức tạp thì
-heatmap chuyển sang bám vào nền ở một tỉ lệ đáng kể.** Và đúng như #49 dự đoán, đây là
+heatmap chuyển sang bám vào nền ở một tỉ lệ đáng kể.** (#17 đo được tỉ lệ đó bằng mặt nạ
+khoanh tay: **28,0 %** khối lượng heatmap ra nền trên PlantDoc, và **25,4 %** vùng mà app
+thật sự khoanh cho nông dân nằm ngoài lá.) Và đúng như #49 dự đoán, đây là
 **phát hiện đáng giá phải nói thẳng** — vì nó chứng minh một điều mạnh hơn cả con số
 accuracy: XAI của nhóm không chỉ để trình bày cho đẹp, mà **bắt được lỗi của chính mô
 hình**. Một hệ thống trả lời "mốc sương muộn 98 %" trong khi bản đồ nhiệt nằm 77 % ngoài
@@ -326,8 +394,8 @@ phiến lá là hệ thống đang nói một câu nó không có căn cứ đ�
 | **#93** cắt vùng lá trước khi phân loại | **Nâng ưu tiên.** Nhóm 1 ở mục 5.1 cho thấy một phần đáng kể lỗi đến từ việc ảnh chứa cả bụi cây thay vì một phiến lá. Đây là hướng duy nhất **không cần dữ liệu mới** |
 | **#50** hướng 2 fine-tune | Mốc "trước" đã có: **28,79 %** trên 66 ảnh `test` (69 trừ 3 ảnh rò rỉ). Huấn luyện **chỉ trên** `train` — 675 ảnh 8 lớp, nên bỏ thêm `tomato_V8.jpg` vì nhãn mâu thuẫn, còn **674**. Hai ảnh rò rỉ kia giữ được trong `train` vì đã bị loại khỏi `test`. Đo lại trên đúng 66 ảnh đó |
 | **#47** ngưỡng tin cậy | **Thu hẹp phạm vi.** Mục 4 chứng minh ngưỡng không vá được độ chính xác trên ảnh thật. Vẫn làm #47, nhưng để chặn ảnh không phải lá — đừng kỳ vọng nó cải thiện accuracy |
-| **#17** kiểm Grad-CAM bằng mắt | **Nâng ưu tiên, và mở rộng phạm vi.** Mục 5 đo được mức tập trung tụt về 1,02× nhưng phép đo tự nó có hạn chế. #17 nay phải kiểm **cả PlantVillage lẫn PlantDoc**, khoanh lá bằng tay |
-| **#98** Grad-CAM++ | Giữ nguyên thứ tự (sau #17). Nhưng lưu ý: nét hơn mà vẫn bám nền thì vô nghĩa — mục 5 làm lý lẽ này mạnh hơn trước. ⚠️ Bản đầu của báo cáo này ghi sai là #16; #16 thật là MD-07 sinh lưới ảnh minh hoạ, còn Grad-CAM++ **trước 15/09/2026 không có issue nào** — nay đã tạo **#98** |
+| ~~**#17** kiểm Grad-CAM bằng mắt~~ | ✅ **XONG cùng ngày 15/09/2026.** Khoanh tay 56 ảnh trên cả hai bộ. Kết luận: Grad-CAM **đủ tin cậy trên PlantVillage** (nâng chuẩn hoá 0,41), **chưa đủ trên ảnh thật** (0,03, khoảng tin cậy chứa số 0; 25,4 % vùng app khoanh nằm trên nền). Đính chính hai chỗ của mục 5 — xem khung đầu mục đó. Báo cáo: `docx/bao-cao-kiem-gradcam-vet-benh.md` |
+| **#98** Grad-CAM++ | **Cổng #17 đã mở** (xong 15/09/2026), nhưng #17 chốt thứ tự là **sau #93**: nét hơn mà đặt sai vật thể thì vô nghĩa. #17 cũng cho căn cứ định lượng cho #98 — lớp `target_spot` (đốm chỉ chiếm 1,9 % ảnh) và `bacterial_spot` có **0/3 ảnh** điểm nóng trúng đốm, đúng vì heatmap 7×7 là một khối tròn, không thể chỉ vào nhiều đốm nhỏ rải rác. ⚠️ Bản đầu của báo cáo này ghi sai là #16; #16 thật là MD-07 sinh lưới ảnh minh hoạ, còn Grad-CAM++ **trước 15/09/2026 không có issue nào** — nay đã tạo **#98** |
 | **#19** so kiến trúc | **Giữ nguyên mức hạ cấp.** Điểm nghẽn là 68,8 điểm domain gap, không phải 0,4 điểm còn lại trên PlantVillage. Đổi backbone không thu hẹp khoảng cách đó |
 | **#95** báo cáo GVHD | Tài liệu này là nội dung chính của phần "còn thiếu" thứ ba đã ghi ở `Plan_model.md` mục 3 |
 
@@ -407,9 +475,12 @@ Ghi lại đầy đủ để không trích quá điều đã đo:
   tụt 68,8 điểm đến từ nhãn sai của bộ đo, không phải từ mô hình. Chưa lượng hoá được
   phần đó — muốn lượng hoá thì phải kiểm nhãn 742 ảnh bằng mắt, và đó là công việc chưa
   làm.
-- **Mặt nạ lá ở mục 5 là xấp xỉ tự động** và kém tin cậy trên PlantDoc — xem cảnh báo
-  trong mục đó. Kết luận về Grad-CAM ở đây là **cảnh báo**, không phải kết luận dứt
-  khoát; #17 mới là chỗ kết luận.
+- ~~**Mặt nạ lá ở mục 5 là xấp xỉ tự động** và kém tin cậy trên PlantDoc.~~
+  ✅ **Hạn chế này đã được gỡ:** #17 khoanh tay 56 ảnh trên cả hai bộ ngày 15/09/2026,
+  đo được mặt nạ tự động lệch bao nhiêu (xem khung đầu mục 5), và đính chính hai chỗ
+  của mục đó. **Chỗ kết luận về Grad-CAM giờ là `docx/bao-cao-kiem-gradcam-vet-benh.md`,
+  không phải tài liệu này.** Hạn chế còn lại thuộc về #17: mẫu nhỏ (30 + 26 ảnh) và
+  người khoanh chưa có người thứ hai soát lại.
 - **Chỉ xem bằng mắt 16 ảnh** trong 514 ảnh bị đoán sai. Ba nhóm ở mục 5.1 là **mô tả
   định tính**, chưa có tỉ lệ. Muốn có tỉ lệ thì phải phân loại tay nhiều ảnh hơn.
 - **Đo trên máy Bảo**, GPU RTX 4060 Ti. Không liên quan tới độ chính xác nhưng liên quan
