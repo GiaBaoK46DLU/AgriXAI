@@ -94,7 +94,7 @@ Nhờ vậy hai người làm song song: Bảo thay đổi mô hình bên trong 
 
 ```
 AgriXAI/
-├── docx/            Tài liệu đồ án (đề cương, phân tích)
+├── docx/            Tài liệu đồ án: đề cương, phân tích, kế hoạch, báo cáo
 ├── model/           [Bảo]  PyTorch: dữ liệu, huấn luyện, đánh giá, Grad-CAM
 ├── backend/         [Học]  FastAPI + PostgreSQL + lưu trữ ảnh
 ├── mobile/          Flutter — app cho nông dân (4 màn hình)

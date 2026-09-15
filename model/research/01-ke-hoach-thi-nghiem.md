@@ -24,12 +24,16 @@ dựng một bảng so sánh thật, đo bằng chính máy mình, thay vì ché
 
 ## Bảng so sánh cần điền
 
-Đây là bảng trung tâm của chương thực nghiệm. Cột "PlantVillage test" và "H1 đồng
-ruộng" đo bằng cùng một checkpoint — chênh lệch giữa hai cột **chính là domain gap**.
+Đây là bảng trung tâm của chương thực nghiệm. Cột "PlantVillage test" và "PlantDoc"
+đo bằng cùng một checkpoint — chênh lệch giữa hai cột **chính là domain gap**.
 
-| # | Kiến trúc | Tham số | Thời gian/epoch | PlantVillage test acc | Macro-F1 | Recall `mosaic_virus` | H1 đồng ruộng acc | Ghi chú |
+> ⚠️ Cột cuối trước đây ghi "H1 đồng ruộng acc". **H1 đã bị loại ngày 15/09/2026** (nhãn
+> không tra được) và thay bằng **H2 — PlantDoc**, xem TN-2 dưới. Hai cột PlantVillage
+> phải **lọc còn đúng 8 lớp** mà PlantDoc có, nếu không là so 10 lớp với 8 lớp.
+
+| # | Kiến trúc | Tham số | Thời gian/epoch | PlantVillage test acc | Macro-F1 | Recall `mosaic_virus` | PlantDoc acc (8 lớp) | Ghi chú |
 |---|---|---|---|---|---|---|---|---|
-| 1 | EfficientNet-B0 *(baseline hiện tại)* | | | | | | | #14 |
+| 1 | EfficientNet-B0 *(baseline hiện tại)* | 4,0 M | 71 s | **99,60 %** | **0,9955** | **1,0000** | **30,81 %** | #14, #15, **#49** |
 | 2 | ResNet18 | | | | | | | |
 | 3 | ResNet50 | | | | | | | |
 | 4 | EfficientNet-B3 | | | | | | | |
@@ -57,22 +61,56 @@ tập một kiểu, số của họ so với nhau còn không công bằng.
 
 Liên quan: **B1**, **B6**, **B8**.
 
-### TN-2 · Đo trên bộ H1 (731 ảnh đồng ruộng Bangladesh) — **giá trị cao nhất**
+### TN-2 · Đo trên bộ H2 PlantDoc (744 ảnh, 8 lớp) — **giá trị cao nhất**
 
-Tải bộ **H1** từ Mendeley, ánh xạ 6 lớp trùng sang khoá bệnh trong
-`shared/data/tomato_diseases.json`, sinh manifest rồi chạy:
+> ⚠️ **Đã viết lại 15/09/2026.** Bản cũ dùng bộ **H1** và ước lượng *"mất nửa buổi"*. H1
+> đã bị **loại hẳn**: export Roboflow/YOLO không kèm `data.yaml` nên không biết class ID
+> nào là bệnh nào, và 230/689 ảnh có nhãn đa lớp. Nửa buổi đó đã tiêu vào việc phát hiện
+> điều này. Căn cứ đầy đủ ở `docx/Plan_model.md` mục 5.2; việc đang làm là issue **#49**.
 
-```bash
-python -m src.data.prepare --raw-dir data/field/bangladesh --out-dir data/processed/bangladesh --test-ratio 1.0 --val-ratio 0.0
-python -m src.evaluation.evaluate --checkpoint checkpoints/best.pt --manifest data/processed/bangladesh/split.csv
-```
+Tải phần cà chua của **PlantDoc** (GitHub `pratikkayal/PlantDoc-Dataset`), ánh xạ tên thư
+mục sang khoá bệnh trong `shared/data/tomato_diseases.json` theo bảng ở `docx/Plan_model.md`
+mục 5.2, sinh manifest rồi chạy `evaluate.py`.
 
-Mất nửa buổi. Đổi lại là **con số domain gap có nguồn trích dẫn được**, có ngay trong
-tháng 8 thay vì phải chờ đi chụp ảnh tháng 9. Bài **A3** cho con số đối chiếu: các
-công bố khác tụt từ 90,18% xuống 84,66%.
+**Ba chỗ code phải sửa trước, nếu không thì hai chỗ đầu cho ra số sai mà không báo lỗi:**
 
-Lưu ý: H1 có 7 lớp, mình có 10. Chỉ đánh giá trên **6 lớp giao nhau**, và phải nói rõ
-điều đó trong báo cáo — đừng giấu.
+1. `src/data/prepare.py` — `scan_images()` ánh xạ tên thư mục qua `dir_to_key()`, chỉ nhận
+   `Tomato___*` của PlantVillage. Tên thư mục PlantDoc rơi hết vào `unknown_dirs` →
+   **manifest rỗng**, im lặng.
+2. `src/evaluation/evaluate.py` — `classification_report()` thiếu `labels=` → sklearn tự suy
+   nhãn từ dữ liệu (8 lớp) rồi so với `target_names` (10 lớp) → `ValueError`. Đây là chỗ
+   **duy nhất báo lỗi**, nên cũng ít nguy hiểm nhất.
+3. Phải truyền `--out-dir` riêng. Mặc định ghi vào `outputs/` sẽ **ghi đè
+   `report-test.json` và `confusion-matrix-test.png` của PlantVillage đang nằm trong Git** —
+   mất số liệu gốc của #15.
+
+**Đo hai lần, và phải hiểu vì sao hai lần:**
+
+| Phép đo | Dữ liệu | Dùng để làm gì |
+|---|---|---|
+| Chính | **toàn bộ 744 ảnh** | Con số domain gap của đề tài. Hợp lệ vì checkpoint chưa từng thấy ảnh PlantDoc nào, nên **đúng vĩnh viễn** kể cả sau khi #50 fine-tune |
+| Phụ | riêng 69 ảnh `test` | Mốc "trước" cho phép so trước/sau ở #50, trên đúng những ảnh sẽ làm "sau" |
+| Đối chứng | test PlantVillage **lọc còn 8 lớp** | So 10 lớp với 8 lớp là so lệch |
+
+Bài **A3** cho con số đối chiếu: các công bố khác tụt từ 90,18% xuống 84,66%.
+
+**Bốn hạn chế phải nói rõ trong báo cáo, đừng giấu:**
+
+- PlantDoc có **8 trong 10 lớp** của nhóm. **Thiếu `target_spot`** hoàn toàn; `spider_mites`
+  chỉ có 2 ảnh nên loại khỏi phép đo. Macro-F1 phải tính trên 8 lớp có mặt — để nguyên 10
+  lớp thì hai lớp vắng đóng góp F1 = 0 và kéo macro-F1 xuống ~20 % một cách máy móc, con số
+  đó không nói gì về mô hình.
+- PlantDoc là ảnh **thu từ Internet**, không phải ảnh tác giả tự chụp ngoài đồng. Vẫn là
+  phép thử domain shift hợp lệ, nhưng **không được gọi là "ảnh đồng ruộng"**.
+- Phần `test` chỉ **69 ảnh** (6–11 ảnh/lớp) → sai số lớn, phải kèm khoảng tin cậy.
+- Bản chia `train`/`test` của chính PlantDoc **rò rỉ 3 ảnh trùng byte tuyệt đối**, và 1
+  trong 3 ảnh đó **mang hai nhãn khác nhau** nên bị loại hẳn. Việc lọc đã tự động hoá trong
+  `src/data/prepare_plantdoc.py`.
+
+> ✅ **TN-2 ĐÃ CHẠY XONG ngày 15/09/2026 — kết quả: 99,60 % → 30,81 % (tụt 68,79 điểm).**
+> Báo cáo đầy đủ ở `docx/bao-cao-domain-gap.md`. Con số này **gần trùng khớp bài
+> A1** (99,35 % → 31,40 %), lệch 0,6 điểm. Ba phát hiện kèm theo: mô hình dồn 85 % dự đoán
+> vào 3 lớp; ngưỡng tin cậy không vá được; mức tập trung Grad-CAM tụt 1,58× → 1,02×.
 
 ### TN-3 · Grad-CAM có khoanh trúng vết bệnh không
 

@@ -7,6 +7,12 @@
 >
 > Mục đích: trả lời bốn vấn đề Bảo nêu sau khi thử app thật, phân biệt cho rõ
 > **triệu chứng** với **nguyên nhân**, rồi xếp việc theo thứ tự đáng làm.
+>
+> ⚠️ **Đã sửa ngày 15/09/2026 — bộ H1 bị loại, thay bằng H2 (PlantDoc).** Bản ngày
+> 10/09 khẳng định *"#49 chạy trên bộ H1 là đường duy nhất, và vẫn đủ"*. Khi bắt tay
+> làm #49 thì phát hiện H1 **không gán nhãn phân loại được** và con số "731 ảnh" là
+> số đã bị nhân bản. Toàn bộ căn cứ ở **mục 5.2** (mới thêm). Các mục 1–4 đo trên
+> checkpoint và không bị ảnh hưởng, giữ nguyên.
 
 ---
 
@@ -293,17 +299,17 @@ không dùng làm cách sửa lỗi."*
 
 | Ưu tiên | Cách | Vì sao có tác dụng | Công sức |
 |---|---|---|---|
-| **1** | **Đo domain gap bằng bộ H1** — 731 ảnh đồng ruộng thật, Mendeley, 6/7 lớp trùng (**#49**) | Biến "khoảng 80 %" thành một con số có nguồn trích dẫn được. Mọi việc sau đều cần con số này làm mốc | Nửa buổi, không phải đi chụp |
+| **1** | **Đo domain gap bằng bộ H2 PlantDoc** — 744 ảnh, 8/10 lớp trùng (**#49**) | Biến "khoảng 80 %" thành một con số có nguồn trích dẫn được. Mọi việc sau đều cần con số này làm mốc. ⚠️ **Nguồn đã đổi từ H1 sang PlantDoc ngày 15/09** — xem mục 5.2 | Nửa buổi, không phải đi chụp |
 | **2** | **Cắt lá trước khi phân loại** (**#93**) | Tấn công đúng gốc: phần lệch giữa hai phân phối chủ yếu là **nền**. Bỏ nền đi thì hai phân phối gần nhau lại. Bảng 2.1 đã chứng minh: chỉ giữ tâm ảnh vẫn 97,3 %. Dùng chung hạ tầng với bộ phát hiện lá ở mục 1.5 | Trung bình |
 | **3** | **Tăng augmentation mô phỏng điều kiện đồng ruộng** — thay nền ngẫu nhiên, bóng đổ, mờ nhoè, nắng gắt (**#50** hướng 1) | Dạy mô hình bỏ qua nền ngay trong lúc học. Rẻ vì không cần dữ liệu mới | Thấp — chỉnh config + huấn luyện lại 30 phút |
 | **4** | **TTA — suy luận nhiều biến thể rồi lấy trung bình** (**#94**) | Thường được thêm vài phần trăm trên dữ liệu lệch phân phối, không cần huấn luyện lại gì | Thấp, nhưng đắt lên 3–4× thời gian suy luận |
-| **5** | **Tinh chỉnh (fine-tune) bằng bộ H2/H3** (**#50** hướng 2) | Cách trực tiếp nhất để kéo mô hình về phân phối thật. ⚠️ **Nguồn đã đổi** — xem mục 5.1: ảnh tự chụp ngoài đồng (#20) không thực hiện được, nên dùng bộ đồng ruộng công khai, và **giữ H1 làm tập test độc lập** | Cao |
+| **5** | **Tinh chỉnh (fine-tune) bằng phần `train` của PlantDoc, hoặc H3** (**#50** hướng 2) | Cách trực tiếp nhất để kéo mô hình về phân phối thật. ⚠️ **Nguồn đã đổi hai lần** — xem mục 5.1 (ảnh tự chụp #20 không thực hiện được) và mục 5.2 (H1 bị loại). Ranh giới phải giữ: huấn luyện chỉ trên `train`, đo trên `test`, và con số chính của #49 đo **trước** khi fine-tune nên vẫn đúng | Cao |
 | 6 | So sánh kiến trúc (**#19**) | **Để báo cáo, không phải để sửa lỗi.** Xem 2.3 | 4 lượt × 25 phút |
 
 ⚠️ **Thứ tự này đã đổi so với bản đầu của tài liệu.** Ban đầu "tinh chỉnh bằng ảnh thực
 địa" xếp thứ 3 vì là cách hiệu quả nhất. Sau ràng buộc ngày 10/09 (không liên hệ được nhà
-vườn, xem mục 5.1) nó tụt xuống thứ 5: không mất hẳn — vẫn làm được bằng bộ H2/H3 công
-khai — nhưng không còn là hướng rẻ nhất nữa. Ba việc phía trên nó đều **không cần một tấm
+vườn, xem mục 5.1) nó tụt xuống thứ 5: không mất hẳn — vẫn làm được bằng bộ công khai —
+nhưng không còn là hướng rẻ nhất nữa. Ba việc phía trên nó đều **không cần một tấm
 ảnh mới nào**, nên phải làm hết chúng trước.
 
 Về việc số 6, nhắc lại cái bẫy `CLAUDE.md` đã ghi: `configs/default.yaml` đặt
@@ -436,7 +442,7 @@ qua công cụ dòng lệnh, không phải từ app. **Không phải nguyên nh�
 ## 5. Kế hoạch xử lý — gắn theo issue GitHub
 
 > **Bản đầu của mục này (10/09/2026) tự đánh số A1–A4, B1–B6, C1–C6, D1–D3.** Cách đó
-> sai: `CLAUDE.md` ghi rõ *"Toàn bộ việc còn lại đã tạo thành 76 issue... Đây là nguồn
+> sai: `CLAUDE.md` ghi rõ *"Toàn bộ việc còn lại nằm trong issue GitHub... Đây là nguồn
 > duy nhất để biết còn phải làm gì — đừng lập bảng công việc song song ở chỗ khác."*
 > Một hệ đánh số thứ hai chồng lên số issue đúng là thứ bị cấm ở đó.
 >
@@ -445,7 +451,7 @@ qua công cụ dòng lệnh, không phải từ app. **Không phải nguyên nh�
 > chuyển hoàn toàn sang đánh số theo issue. **Số issue là danh tính duy nhất của một việc.**
 >
 > Giá trị của buổi rà soát vì vậy không phải "có kế hoạch mới", mà là **đổi thứ tự ưu
-> tiên của các issue đã có** — và số đo đổi thứ tự đó ở hai chỗ đáng kể, xem bảng 5.3.
+> tiên của các issue đã có** — và số đo đổi thứ tự đó ở hai chỗ đáng kể, xem bảng 5.4.
 
 ### 5.1. Ràng buộc mới: không chụp được ảnh đồng ruộng (chốt 10/09/2026)
 
@@ -459,31 +465,207 @@ Hệ quả trực tiếp lên bốn issue đang có:
 | **#20** FD-01 chụp 50–100 ảnh lá thật ngoài đồng | Việc chặn, làm trong tháng 9 | **Hoãn vô thời hạn** — không thực hiện được |
 | **#21** FD-02 gán nhãn ảnh thực địa | Chặn bởi #20 | **Hoãn theo #20** |
 | **#48** FD-03 xếp ảnh thực địa vào `data/field/` | Chặn bởi #21 | **Hoãn theo #20** |
-| **#49** FD-04 đánh giá mô hình trên ảnh thực địa | Dùng ảnh tự chụp **hoặc** bộ H1 | **Chỉ còn đường H1** — và vẫn làm được đầy đủ |
-| **#50** FD-05 cải thiện nếu accuracy rớt | Hướng 2 = fine-tune bằng ảnh tự chụp | Hướng 2 phải đổi nguồn: **H2 (PlantDoc) hoặc H3 (Taiwan)**, giữ H1 làm tập test độc lập |
+| **#49** FD-04 đánh giá mô hình trên ảnh thực địa | Dùng ảnh tự chụp **hoặc** bộ H1 | Chỉ còn đường bộ công khai. ⚠️ Ngày 15/09 **H1 bị loại**, chuyển sang **H2 (PlantDoc)** — xem mục 5.2 |
+| **#50** FD-05 cải thiện nếu accuracy rớt | Hướng 2 = fine-tune bằng ảnh tự chụp | Hướng 2 phải đổi nguồn: phần **`train` của PlantDoc** hoặc **H3 (Taiwan)**, tách khỏi phần dùng để đo (mục 5.2) |
 
 **Rủi ro số 1 trong `CLAUDE.md` (domain gap) KHÔNG bị bỏ trống.** Đây là điểm quan trọng
 nhất của mục này. Ba bộ dữ liệu đồng ruộng công khai trong `model/research/` thay thế được
 hoàn toàn phần ảnh tự chụp:
 
-| Mã | Bộ | Quy mô | Vai trò sau ràng buộc mới |
+| Mã | Bộ | Quy mô | Vai trò |
 |---|---|---|---|
-| **H1** | Imtiaz et al., Data in Brief 2025 (Mendeley) | **731 ảnh đồng ruộng thật**, 7 lớp, 6/7 trùng với 10 lớp của nhóm | **Tập test độc lập.** Giữ nguyên vai trò này, tuyệt đối không dùng để huấn luyện |
-| **H2** | PlantDoc, CoDS-COMAD 2020 | 2.598 ảnh, 17 lớp, có phần cà chua | **Nguồn fine-tune** thay cho ảnh tự chụp. Bài gốc báo cải thiện tới 31 % khi huấn luyện thêm trên bộ này |
-| **H3** | Taiwan tomato leaves | 622 ảnh, 6 lớp, 3 lớp trùng | Nguồn fine-tune bổ sung. Ảnh có bóng đổ, nhiều lá chồng, nền lộn xộn |
+| ~~**H1**~~ | ~~Imtiaz et al., Data in Brief 2025 (Mendeley)~~ | ~~731 ảnh, 7 lớp~~ | ❌ **ĐÃ LOẠI ngày 15/09/2026** — nhãn không tra được, ảnh bị nhân bản. Toàn bộ căn cứ ở mục 5.2 |
+| **H2** | PlantDoc, CoDS-COMAD 2020 (GitHub `pratikkayal/PlantDoc-Dataset`) | **744 ảnh cà chua dùng được / 8 lớp** — tự đếm 15/09, xem bảng ở mục 5.2 | **Tập đo chính.** Phần `test` (69 ảnh) để so trước/sau, phần `train` (675 ảnh) để fine-tune ở #50 |
+| **H3** | Taiwan tomato leaves | 622 ảnh, 6 lớp, 3 lớp trùng | Nguồn fine-tune bổ sung, nếu #50 cần thêm dữ liệu. Ảnh có bóng đổ, nhiều lá chồng, nền lộn xộn |
 
-Và cần nói rõ để không hiểu thành một lời xin lỗi: **H1 có 731 ảnh, gấp 7–14 lần con số
-50–100 ảnh tự chụp theo kế hoạch ban đầu**, do một nhóm độc lập thu thập và công bố trên
-tạp chí có phản biện, nên **trích dẫn được**. Về mặt phương pháp đây là **lựa chọn tốt hơn**
-kế hoạch cũ, không phải phương án chống cháy. Chỗ thật sự mất là tính địa phương: không có
-ảnh cà chua Đà Lạt, nên không kết luận được gì riêng cho điều kiện canh tác ở đây. Phải ghi
-hạn chế đó vào báo cáo, và đó là hạn chế duy nhất.
+Và cần nói rõ để không hiểu thành một lời xin lỗi: **PlantDoc cho 744 ảnh trên 8 lớp, gấp
+7–15 lần con số 50–100 ảnh tự chụp theo kế hoạch ban đầu**, do một nhóm độc lập thu thập và
+công bố tại hội nghị có phản biện, nên **trích dẫn được**. Về mặt quy mô đây là lựa chọn tốt
+hơn kế hoạch cũ. Hai chỗ thật sự mất:
+
+- **Tính địa phương** — không có ảnh cà chua Đà Lạt, nên không kết luận được gì riêng cho
+  điều kiện canh tác ở đây.
+- **PlantDoc là ảnh thu từ Internet**, không phải ảnh tác giả tự chụp ngoài đồng. Phép thử
+  domain shift vẫn hợp lệ, nhưng **không được gọi là "ảnh đồng ruộng"** trong báo cáo.
+
+> ⚠️ Đoạn trên ban đầu ghi H1 và nói "đó là hạn chế duy nhất". Sau ngày 15/09 thì cả nguồn
+> dữ liệu lẫn câu đó đều phải sửa — xem mục 5.2.
 
 Điều **không** bị ảnh hưởng: **#91** (thu ảnh không phải lá cà chua) hoàn toàn làm được —
 chụp bàn, ghế, tay, sàn nhà, lá cây khác tại nhà trong khoảng một giờ, không cần nhà vườn
 nào. Đừng để nó bị hoãn lây theo #20.
 
-### 5.2. Sáu issue mới tạo ngày 10/09/2026
+### 5.2. Bộ H1 đã bị LOẠI — kiểm chứng ngày 15/09/2026
+
+Mục 5.1 ở trên chốt rằng H1 là đường duy nhất còn lại để có số domain gap. **Câu đó
+nay đã sai.** Ngày 15/09 tôi tải bộ H1 về để bắt đầu #49 và phát hiện bộ này **không
+dùng được** cho mục đích của đề tài. Ghi lại đầy đủ vì đây là căn cứ cho việc đổi
+nguồn dữ liệu, và bản thân nó là nội dung đáng đưa vào báo cáo.
+
+Bộ tải từ Mendeley (DOI `10.17632/bpfd9cns5g.2`), 48,5 MB, 1.420 file `.jpg` và 689
+file `.txt`. Tên file có dạng `IMG_0210_JPG.rf.<băm>.jpg` — dấu hiệu của bản xuất
+Roboflow, tức bộ này là **dữ liệu phát hiện vật thể (object detection) theo định dạng
+YOLO**, không phải bộ phân loại chia thư mục theo lớp như PlantVillage.
+
+**Bốn phát hiện, xếp theo mức nghiêm trọng:**
+
+**(1) Không thể biết class ID nào là bệnh nào.** Bản xuất Roboflow bình thường luôn
+kèm `data.yaml` ghi tên lớp theo thứ tự. Bộ này **không có một file nào ngoài `.jpg`
+và `.txt`** — đã đếm, đúng 0 file khác. Vậy nên con số `0`…`6` ở đầu mỗi dòng nhãn
+không có nghĩa nào tra được. Đã thử khôi phục bằng cách đếm số hộp mỗi class ID rồi
+đối chiếu bảng phân bố lớp trong bài báo:
+
+| class ID | Số hộp đo được | Lớp thứ tương ứng trong bảng bài báo | Bài báo ghi |
+|---|---|---|---|
+| 0 | 84 | Early Blight | 325 |
+| **1** | **1.177** | Black Spot | 254 |
+| 2 | 179 | Late Blight | 202 |
+| 3 | 303 | Leaf Mold | 194 |
+| 4 | 93 | Bacterial Spot | 233 |
+| 5 | 47 | Target Spot | 213 |
+| 6 | 395 | Healthy | 200 |
+| **Tổng** | **2.278** | | **1.621** |
+
+Không khớp theo bất kỳ cách nào. Đã thử cả thứ tự bảng trong bài báo và thứ tự chữ
+cái (mặc định của Roboflow). Riêng class 1 chiếm **1.177 hộp, tức 51,7 %** toàn bộ, trong
+khi lớp đông nhất mà bài báo ghi chỉ có 325 hộp. Tổng cũng lệch: 2.278 so với 1.621.
+
+**(2) Không có nhãn phân loại cho từng ảnh.** Đề tài cần một nhãn/ảnh để chạy
+`evaluate.py`. Trong 689 ảnh có file nhãn: **230 ảnh chứa hộp của từ hai lớp khác
+nhau trở lên**, 19 ảnh không có hộp nào, chỉ 440 ảnh có đúng một lớp. Với 230 ảnh đa
+lớp thì không có cách gán một nhãn duy nhất mà không tự bịa ra quy tắc.
+
+**(3) Thư mục 731 ảnh không hề được chia theo lớp.** Bài báo viết *"organized into
+seven types"*, nhưng trên Mendeley cả 731 file nằm **phẳng trong một thư mục**, không
+có thư mục con nào.
+
+**(4) Con số "731 ảnh" mà tài liệu của nhóm đang trích là số đã bị nhân bản.** Trong
+1.420 file `.jpg` chỉ có **984 ảnh khác nhau về byte**, và truy theo tên ảnh gốc thì
+chỉ còn **308 ảnh gốc** — có 163 ảnh gốc xuất hiện tới 6 bản. Thư mục "731 ảnh" tương
+ứng đúng **302 ảnh gốc**. Nghĩa là quy mô thật của H1 nhỏ hơn con số công bố khoảng
+2,4 lần.
+
+> Nói cho chính xác, vì đây là chỗ dễ nói quá: **302 ảnh gốc vẫn nhiều hơn mốc 50–100 ảnh
+> tự chụp** của kế hoạch cũ — khoảng 3–6 lần. Bản ngày 10/09 của mục 5.1 ghi H1 "gấp 7–14
+> lần", tức con số đó bị thổi phồng khoảng hai lần vì đếm cả ảnh nhân bản. Nhưng **quy mô
+> không phải là lý do loại H1** — một bộ 302 ảnh có nhãn đúng thì vẫn dùng được. **Lý do
+> loại là phát hiện (1) và (2): nhãn không tra được.** Một bộ 731 ảnh mà không biết nhãn
+> nào là bệnh gì thì dù lớn đến đâu cũng không dùng được.
+
+**Vì sao phải loại thay vì đoán ánh xạ rồi chạy.** Nếu đoán thứ tự lớp rồi cứ chạy
+`evaluate.py`, kết quả sẽ ra một con số accuracy **trông hoàn toàn bình thường** —
+chẳng hạn 35 % — mà vô nghĩa, vì nhãn đối chiếu đã sai. Không có gì báo lỗi. Rồi con
+số đó thành số domain gap chính thức của đề tài, vào báo cáo, vào slide. Đây đúng loại
+lỗi mà `CLAUDE.md` cảnh báo ở cả hai chỗ: bất biến thứ tự lớp trong
+`shared/data/tomato_diseases.json`, và cái bẫy "không đo lại bằng trí nhớ".
+
+**Đây là nội dung đáng đưa vào báo cáo, không phải công toi.** Nhóm đã lấy một bộ dữ
+liệu công bố trên tạp chí có phản biện, tự kiểm nhãn thay vì tin con số in trong bài,
+và phát hiện bộ đó không dùng được cho bài toán phân loại. Đó là phần **đánh giá chất
+lượng dữ liệu** — trả lời trực tiếp cho câu phản biện "nhóm chọn dữ liệu thế nào". Chi
+phí thật: nửa ngày, đúng bằng ước lượng cũ cho #49.
+
+**Đã thay bằng H2 (PlantDoc) — số liệu tự đếm ngày 15/09/2026:**
+
+Đếm qua GitHub API trên repo `pratikkayal/PlantDoc-Dataset`, không trích lại từ bài
+báo. PlantDoc là bộ **phân loại chia thư mục theo lớp**, tên thư mục viết rõ bằng chữ
+nên **không phải đoán ánh xạ**:
+
+| Thư mục PlantDoc | Khoá bệnh của nhóm | `train` | `test` |
+|---|---|---|---|
+| `Tomato leaf bacterial spot` | `bacterial_spot` | 101 | 9 |
+| `Tomato Early blight leaf` | `early_blight` | 79 | 9 |
+| `Tomato leaf late blight` | `late_blight` | 101 | 10 |
+| `Tomato mold leaf` | `leaf_mold` | 85 | 6 |
+| `Tomato Septoria leaf spot` | `septoria_leaf_spot` | 140 | 11 |
+| `Tomato leaf yellow virus` | `yellow_leaf_curl_virus` | 70 | 6 |
+| `Tomato leaf mosaic virus` | `mosaic_virus` | 44 | 10 |
+| `Tomato leaf` | `healthy` | 55 | 8 |
+| | **8 lớp dùng được** | **675** | **69** |
+| `Tomato two spotted spider mites leaf` | `spider_mites` | **2** | **0** |
+| *(không có thư mục)* | `target_spot` | — | — |
+
+**Dùng được 8 trong 10 lớp, tổng 744 ảnh.** So với H1: 8 lớp thay vì 6, và nhãn tường
+minh thay vì không tra được.
+
+Ba điều phải ghi rõ, phát hiện trong lúc đếm:
+
+- **`spider_mites` chỉ có 2 ảnh** trong `train`, 0 trong `test` → **loại khỏi phép đo**,
+  không tính vào accuracy. Hai ảnh đó tên là `SpotSpeckBlightMite-1l4v879.jpg` và
+  `comparing-diseases-4-canker-tomato-1y51ejs.jpg` — tên thứ hai nói về bệnh loét
+  (canker), tức nhãn của chính nó cũng đáng nghi.
+- **`target_spot` không có trong PlantDoc.** Mô hình vẫn trả về 10 lớp, nên phải xử lý
+  bằng tham số `labels=` khi tính chỉ số, không được để sklearn tự suy ra (xem 5.5).
+- ⚠️ **Bản chia `train`/`test` của chính PlantDoc có rò rỉ: 3 ảnh trùng byte tuyệt đối**
+  (so bằng sha256 sau khi tải về, không phải bằng tên): `early-blight-septoria-ls-fig-3.jpg`,
+  `tylcv-seminar-1-638.jpg` và `tomato_V8.jpg` nằm đồng thời ở cả hai bên. Phải bỏ khỏi
+  `test` trước khi dùng cho phép so trước/sau ở #50.
+- ⚠️ **`tomato_V8.jpg` nặng hơn hai ca kia: cùng một ảnh nhưng mang HAI NHÃN khác nhau** —
+  `test/Tomato leaf bacterial spot` và `train/Tomato Septoria leaf spot`. Bản ghi lúc đầu
+  ngày 15/09 chưa xác nhận được (hết hạn mức GitHub API); sau khi tải về và băm thì **đã
+  xác nhận trùng byte tuyệt đối**. Không có cách biết nhãn nào đúng nên **loại hẳn** — giữ
+  lại thì dù mô hình trả lời gì cũng có một nhãn gọi nó là sai.
+
+**Cách dùng PlantDoc cho đúng — chỗ dễ sai nhất.** #50 hướng 2 định **fine-tune** bằng
+PlantDoc. Nếu đo và huấn luyện trên cùng dữ liệu thì lặp lại đúng cái sai mà mục 5.1 đã
+dặn về H1. Cách làm:
+
+| Phép đo | Dữ liệu | Vì sao |
+|---|---|---|
+| **#49 — số domain gap chính** | **Toàn bộ 744 ảnh** (8 lớp) | Checkpoint hiện tại **chưa từng thấy một ảnh PlantDoc nào**, nên đo trên toàn bộ là hợp lệ và cho thống kê tốt nhất. Con số này **đúng vĩnh viễn**, kể cả sau khi #50 fine-tune |
+| **#49 — mốc phụ** | Riêng 69 ảnh `test` | Để #50 có mốc "trước" trên **đúng những ảnh** sẽ dùng làm "sau" |
+| Mốc so công bằng | Tập test PlantVillage, **lọc còn đúng 8 lớp đó** | So 10 lớp với 8 lớp là so lệch. Phải có hai con số cạnh nhau |
+| **#50 hướng 2 — fine-tune** | 675 ảnh `train`, **đã bỏ 3 ảnh rò rỉ** | Đo lại trên 66 ảnh `test`, so với mốc phụ ở trên |
+
+⚠️ **69 ảnh là ít** (còn 66 sau khi bỏ ảnh rò rỉ). Mỗi lớp chỉ 5–10 ảnh, nên con số trên
+riêng tập `test` có sai số lớn — đo được khoảng tin cậy 95 % rộng tới **21 điểm**
+(19,27–40,64 %). Phải ghi khoảng tin cậy, đừng trình bày như một con số chính xác. Đây
+chính là lý do con số chính của #49 lấy trên cả 742 ảnh.
+
+**Hạn chế của PlantDoc, phải ghi vào báo cáo:** ảnh **thu từ Internet**, không phải
+ảnh tác giả tự chụp ngoài đồng. Vẫn là phép thử domain shift hợp lệ — nền lộn xộn,
+nhiều lá chồng nhau, ánh sáng tự nhiên, khác hẳn PlantVillage — nhưng **không được gọi
+là "ảnh đồng ruộng"**. PlantDoc cũng có tiếng là nhãn hơi nhiễu (hai ví dụ ở trên tự
+chứng minh điều đó), nên phải xem mẫu bằng mắt và ghi lại những ảnh đáng nghi.
+
+### ✅ Kết quả #49 — đã chạy xong ngày 15/09/2026
+
+> **Báo cáo đầy đủ: `bao-cao-domain-gap.md`** (cùng thư mục này). Mục này chỉ ghi con số
+> đầu và ba phát hiện đổi thứ tự việc; mọi bảng chi tiết, cách chạy lại và phần hạn
+> chế đều ở tài liệu kia.
+
+| Chỉ số | PlantVillage test (8 lớp, n=2.258) | **PlantDoc (8 lớp, n=740)** | Chênh |
+|---|---|---|---|
+| Accuracy | 99,60 % | **30,81 %** | **−68,79 điểm** |
+| KTC 95 % | 99,24 – 99,79 % | 27,59 – 34,23 % | *không chồng lấn* |
+| Macro-F1 | 0,9970 | 0,2331 | −0,7639 |
+| Top-3 | 100,00 % | 62,70 % | −37,30 điểm |
+
+**Vậy là con số "khoảng 80 %" ở mục 2.1 đã có câu trả lời, và nó thấp hơn nhiều: 30,81 %.**
+Cảm nhận 80 % khi dùng thử app cao hơn thực tế — dễ hiểu, vì ảnh Bảo tự chụp là lá cận
+cảnh trên nền phẳng, gần phân phối PlantVillage hơn PlantDoc nhiều.
+
+Kết quả gần như **trùng khớp bài A1** (chính tác giả PlantVillage: 99,35 % → 31,40 %,
+tụt 67,9 điểm — nhóm lệch 0,6 điểm). Đây là bằng chứng phép đo đúng, không phải một con
+số lạ.
+
+**Ba phát hiện đổi thứ tự việc — chi tiết ở `bao-cao-domain-gap.md` mục 3, 4, 5:**
+
+1. **Mô hình dồn 85 % dự đoán vào 3 lớp** (`early_blight` 35,6 %, `late_blight` 33,2 %,
+   `septoria_leaf_spot` 16,3 %). Không phải suy giảm đều mà **sụp về mấy lớp "tổng quát"**.
+   Đáng lo nhất về mặt sản phẩm: **52 % lá khoẻ bị gọi là mốc sương muộn** — đảo chiều so
+   với #15, nơi ca nguy hiểm là bỏ sót bệnh. Trên ảnh thật thì lỗi chủ yếu là **báo động giả**.
+2. **Ngưỡng tin cậy KHÔNG cứu được** (mục 1.3 đã nghi, nay có số). Ở ngưỡng 0,90 hệ
+   thống từ chối **85,4 %** ảnh thật, mà accuracy phần còn lại vẫn chỉ **56,5 %**, đồng
+   thời chặn oan 8,5 % ảnh PlantVillage. → **#47 phải thu hẹp phạm vi**: dùng ngưỡng để
+   chặn ảnh không phải lá, **đừng** kỳ vọng nó vá độ chính xác.
+3. **Grad-CAM suy biến gần về mức ngẫu nhiên trên ảnh nền phức tạp**: mức tập trung tụt
+   **1,58× → 1,02×**, điểm nóng nhất nằm trong lá chỉ **42 %** (PlantVillage 75 %). Đây
+   là phát hiện nặng nhất vì nó chạm vào đóng góp chính của đề tài. ⚠️ Nhưng phép đo có
+   hạn chế thật (mặt nạ lá bằng ngưỡng màu kém tin cậy trên nền thật) nên là **cảnh báo,
+   chưa phải kết luận** → **#17 nâng ưu tiên và mở rộng: kiểm cả hai bộ, khoanh lá bằng tay.**
+
+### 5.3. Sáu issue mới tạo ngày 10/09/2026
 
 | Issue | Việc | Mốc | Mức | Trạng thái |
 |---|---|---|---|---|
@@ -496,14 +678,14 @@ nào. Đừng để nó bị hoãn lây theo #20.
 
 Ưu tiên đã nằm trong nhãn `muc:*` của GitHub, không cần bảng ưu tiên riêng ở đây.
 
-### 5.3. Số đo hôm nay đổi thứ tự issue ở đâu
+### 5.4. Số đo hôm nay đổi thứ tự issue ở đâu
 
 `CLAUDE.md` mục *"Việc tiếp theo, xếp đúng thứ tự"* đang ghi 5 việc. Đối chiếu với số đo:
 
 | Thứ tự đang ghi | Issue | Số đo hôm nay nói gì |
 |---|---|---|
 | 1 | **#17** kiểm Grad-CAM bằng mắt | **Giữ nguyên.** Vẫn là cổng kiểm soát của cả đề tài. Mục 2.5 đã dựng số liệu định hướng và chỉ đúng chỗ đáng nghi (`healthy`, 14 % ảnh có điểm nóng ra ngoài lá) |
-| 2 | **#49** đo trên ảnh đồng ruộng | **Giữ nguyên, và nay là đường duy nhất** để có số domain gap (mục 5.1) |
+| 2 | **#49** đo trên ảnh đồng ruộng | **Giữ nguyên thứ tự, nhưng nguồn dữ liệu đã đổi** — H1 bị loại ngày 15/09, thay bằng PlantDoc (mục 5.2) |
 | 3 | **#16** nâng Grad-CAM++ | Giữ nguyên thứ tự. Nay có căn cứ định lượng: tầng chập cuối 7×7, 40,7 % khối lượng heatmap rơi ra ngoài lá |
 | 4 | **#18** đo tốc độ CPU | **Coi như đã có số** — 215 ms (4 luồng). Rút khỏi hàng chờ, chỉ còn phần đo lại trên máy demo khi #51 chốt máy |
 | 5 | **#19** so kiến trúc | **Hạ cấp** — từ "cách sửa lỗi" thành "phần đánh giá cho báo cáo". Xem mục 2.3 |
@@ -512,13 +694,17 @@ Hai dòng cuối là chỗ buổi rà soát tiết kiệm được công: nếu 
 năng cao sẽ chạy #19 (4 lượt × 25 phút) để mong tăng accuracy — mà số đo cho thấy việc đó
 **không giúp được gì** cho vấn đề đang gặp.
 
-### 5.4. Thứ tự làm, theo issue
+### 5.5. Thứ tự làm, theo issue
 
-**Tuần này (10/09 – 15/09), trước cổng go/no-go #64:**
+**Tuần 10/09 – 15/09, trước cổng go/no-go #64:**
+
+> **Trạng thái thật tính tới hết ngày 15/09/2026:** chỉ #49 được bắt tay làm, và nửa ngày
+> đầu tiên tiêu vào việc phát hiện bộ H1 không dùng được (mục 5.2). Ba việc #17, #90, #91
+> **chưa bắt đầu**. Bảng dưới vì vậy là việc *còn phải làm*, không phải việc đã xong.
 
 | Ưu tiên | Issue | Vì sao ở đây | Ước lượng |
 |---|---|---|---|
-| 1 | **#49** đo domain gap trên H1 | Việc duy nhất biến "khoảng 80 %" thành con số trích dẫn được. #93, #94, #50 đều chặn bởi nó. Không cần chụp ảnh | Nửa buổi |
+| 1 | **#49** đo domain gap trên **PlantDoc** | Việc duy nhất biến "khoảng 80 %" thành con số trích dẫn được. #93, #94, #50 đều chặn bởi nó. Không cần chụp ảnh. ⚠️ Cần ba sửa đổi code trước — xem ngay dưới bảng | Nửa buổi |
 | 2 | **#17** kiểm Grad-CAM bằng mắt, 5 ảnh × 10 lớp | Cổng kiểm soát của cả đề tài. Ưu tiên xem kỹ `healthy` và `spider_mites` | 2–3 giờ |
 | 3 | **#90** không khoanh vùng khi CAM quá yếu | Chặn ngay triệu chứng nặng nhất. Rẻ nhất trong mọi việc ở đây, không cần Học sửa gì | 1 giờ |
 | 4 | **#91** thu bộ ảnh không phải lá | Chặn #92 và chặn cả #47 trên thực tế. Làm được ngay | ~1 giờ |
@@ -527,6 +713,24 @@ năng cao sẽ chạy #19 (4 lượt × 25 phút) để mong tăng accuracy — 
 > **Khi chốt #64:** nhánh `khác` **đã tách ra** thành #92, độc lập với phạm vi quả (mục 6).
 > Phải ghi rõ điều này vào #64, để nếu kết quả là "bỏ phần quả" thì #71 bị bỏ mà #92 **không**
 > bị bỏ theo.
+
+**Ba chỗ trong code phải sửa trước khi #49 chạy được.** Cả ba đã xác định bằng cách đọc code
+ngày 15/09, không phải phỏng đoán. Rủi ro của chúng không đồng đều — chỉ một chỗ báo lỗi, hai
+chỗ còn lại **im lặng cho ra số sai**:
+
+| # | Chỗ | Chuyện gì xảy ra nếu không sửa | Cách sửa |
+|---|---|---|---|
+| 1 | [`prepare.py:27-44`](model/src/data/prepare.py#L27-L44) — `scan_images()` ánh xạ tên thư mục qua `dir_to_key()`, chỉ nhận các thư mục `Tomato___*` của PlantVillage | Tên thư mục PlantDoc (`Tomato leaf bacterial spot`…) rơi hết vào `unknown_dirs` → **manifest rỗng**, không báo lỗi | Thêm bảng ánh xạ cho PlantDoc, hoặc đổi tên thư mục lúc tải về. Bảng ánh xạ đã có ở mục 5.2 |
+| 2 | [`evaluate.py:114`](model/src/evaluation/evaluate.py#L114) — `classification_report()` **không** truyền `labels=` | sklearn tự suy nhãn từ `y_true ∪ y_pred` (8–10 lớp) rồi so với `target_names` (10 lớp) → **`ValueError`, sập thẳng**. Đây là chỗ duy nhất báo lỗi nên cũng là chỗ ít nguy hiểm nhất | Thêm `labels=list(range(len(keys)))`. Hai dòng ngay cạnh (`confusion_matrix`, `top_k_accuracy_score`) **đã** truyền `labels` — chỉ dòng này bị sót |
+| 3 | `evaluate.py` mặc định ghi vào `outputs/` | **Ghi đè `report-test.json` và `confusion-matrix-test.png` của PlantVillage đang nằm trong Git** — mất số liệu gốc của #15 mà không báo gì | Bắt buộc truyền `--out-dir outputs/plantdoc` |
+
+Kèm theo: macro-F1 phải tính **chỉ trên những lớp thật sự có mặt**. Để nguyên 10 lớp thì hai
+lớp vắng (`target_spot`, `spider_mites`) đóng góp F1 = 0 và kéo macro-F1 xuống khoảng 20 % một
+cách máy móc — con số đó không nói gì về mô hình. Phải báo cả hai: macro-F1 trên 8 lớp có mặt,
+và ghi rõ hai lớp kia **không đo được**, chứ không phải "đo được 0".
+
+⚠️ Sửa `evaluate.py` là **Bảo đã cho phép ngày 15/09/2026**. Sửa `prepare.py` nằm trong cùng
+phạm vi #49.
 
 **15/09 – 30/09 — xử lý vấn đề ảnh không phải lá cho tới gốc:**
 
@@ -545,7 +749,7 @@ năng cao sẽ chạy #19 (4 lượt × 25 phút) để mong tăng accuracy — 
 | **#50** hướng 1 | Tăng augmentation mô phỏng đồng ruộng (thay nền ngẫu nhiên, bóng đổ, nắng gắt) | Rẻ nhất, thử trước |
 | **#93** | Cắt vùng lá trước khi phân loại | Đánh đúng gốc domain gap. **Nay quan trọng hơn dự kiến** vì là hướng duy nhất không cần dữ liệu mới |
 | **#94** | Test-time augmentation | Rẻ, không huấn luyện lại. Làm sau #93 để biết cải thiện đến từ đâu |
-| **#50** hướng 2 | Fine-tune — **nguồn đổi thành H2/H3**, không phải ảnh tự chụp | ⚠️ Ảnh dùng huấn luyện **tuyệt đối không được** nằm trong H1. Vi phạm chỗ này thì con số báo cáo vô giá trị |
+| **#50** hướng 2 | Fine-tune — nguồn là phần **`train` của PlantDoc** (675 ảnh) hoặc **H3**, không phải ảnh tự chụp | ⚠️ Chỉ huấn luyện trên `train`, chỉ đo trên `test`, và **bỏ 3 ảnh trùng byte** mà chính PlantDoc để lẫn giữa hai bên (mục 5.2). Con số chính của #49 đo **trước** khi fine-tune nên không bị ảnh hưởng; nhưng phép so trước/sau thì phải đúng cùng 66 ảnh. **Mốc "trước" đã có: 28,79 %** |
 | **#19** | So kiến trúc B0 / ResNet18 / ResNet50 / B3 | **Làm để báo cáo, không phải để sửa lỗi** (mục 2.3). B3 phải chạy ở `image_size: 300` |
 | **#18** + **#51** | Đặt `torch.set_num_threads(4)` sau khi chốt máy demo | Rút một nửa độ trễ CPU. ⚠️ Đổi hành vi tiến trình uvicorn → phải bàn với Học |
 
@@ -577,17 +781,31 @@ năng cao sẽ chạy #19 (4 lượt × 25 phút) để mong tăng accuracy — 
      ghi lại thì phiên làm việc sau sẽ đọc `CLAUDE.md` rồi tưởng nó vẫn bị chặn.
    - ✅ **Đã tạo issue** — **#91** (thu ảnh không phải lá) và **#92** (huấn luyện bộ 2
      lớp), ngày 10/09/2026. Cần issue riêng vì #71 vẫn thuộc Mốc 6 và vẫn mang nhãn
-     `trang-thai:cho-cong-15-09`; `CLAUDE.md` dặn 76 issue là nguồn duy nhất để biết
-     còn phải làm gì, nên hai việc này phải có issue thật, không được chỉ nằm trong
-     tài liệu này.
+     `trang-thai:cho-cong-15-09`; `CLAUDE.md` dặn issue GitHub là nguồn duy nhất để
+     biết còn phải làm gì, nên hai việc này phải có issue thật, không được chỉ nằm
+     trong tài liệu này.
    - **Khi chốt #64 (cổng go/no-go)** phải ghi rõ: dù kết quả là "bỏ phần quả" thì
      #71 bị bỏ **không kéo theo** bộ 2 lớp, vì nó đã tách ra thành việc riêng.
 
+### Đã chốt ngày 15/09/2026
+
+3. ✅ **Đổi nguồn dữ liệu của #49 từ H1 sang H2 (PlantDoc).** Bảo duyệt sau khi xem bằng
+   chứng ở mục 5.2. H1 bị loại hẳn, không phải hoãn — nhãn của nó không tra được nên không
+   có cách nào dùng lại về sau, trừ khi tác giả công bố thêm file `data.yaml`.
+4. ✅ **Được phép sửa `evaluate.py`** (và `prepare.py` trong cùng phạm vi #49) — ba sửa đổi
+   cụ thể ở bảng cuối mục 5.5.
+
 ### Còn chờ chốt
 
-3. **Có xin phép Học** cho hai chỗ chạm vào `backend/` — nhánh hiển thị ca "không
+5. **Có sửa luôn bốn tài liệu trong `model/research/` không?** Chúng vẫn ghi H1 dùng được —
+   `00-danh-muc-bai-bao.md` (dòng 168, 173), `01-ke-hoach-thi-nghiem.md` (TN-2, và cột
+   "H1 đồng ruộng acc" của bảng trung tâm chương thực nghiệm), `02-cau-hoi-phan-bien.md`
+   (dòng 25–27), `03-tong-hop-doi-chieu.md` (dòng 65, 124, 155). Câu *"tải Mendeley về là
+   chạy `evaluate.py --manifest` được ngay, nửa buổi có số"* nay đã được chứng minh là sai.
+   Để nguyên thì tài liệu trong repo tự mâu thuẫn nhau.
+6. **Có xin phép Học** cho hai chỗ chạm vào `backend/` — nhánh hiển thị ca "không
    nhận ra lá" (#47, #26) và `torch.set_num_threads(4)` (#18, #51)?
-4. **Có đưa bốn script probe vào repo** (chẳng hạn `model/src/evaluation/probe_ood.py`)
+7. **Có đưa bốn script probe vào repo** (chẳng hạn `model/src/evaluation/probe_ood.py`)
    hay để nguyên ở thư mục tạm? Đưa vào thì mọi số liệu trong tài liệu này **chạy
    lại được** khi hội đồng hỏi "em đo thế nào" — đó là lý do nên đưa. Lý do ngược
    lại: `CLAUDE.md` dặn không thêm thứ chưa ai cần. Ý kiến của tôi là **nên đưa**,
@@ -606,10 +824,20 @@ Ghi lại cho minh bạch, để không trích quá điều đã đo:
 - **Phép thử ở bảng 2.1 là biến thể của A2, không phải tái hiện A2** — xem lưu ý ở
   mục 2.2.
 - **Độ trễ đo trên máy Bảo**, chưa phải máy demo (#51 chưa chốt).
-- **Chưa chạy `evaluate.py` trên bộ H1** — đó là việc **#49**, và sau ràng buộc ngày
-  10/09 thì đây là **đường duy nhất** để có số domain gap.
+- **Vẫn chưa có con số domain gap nào.** Đó là việc **#49**, tính tới hết 15/09 chưa chạy
+  được vì nửa ngày đầu tiêu vào việc loại bộ H1 (mục 5.2). Mọi câu trong tài liệu này về
+  "độ chính xác thực tế" vẫn là suy luận, chưa phải số đo.
+- **Số liệu PlantDoc ở mục 5.2 là đếm file, chưa phải xem ảnh.** Đếm qua GitHub API trên
+  danh sách thư mục — biết chắc mỗi lớp có bao nhiêu file và file nào trùng byte, nhưng
+  **chưa mở một tấm ảnh nào**. Nhãn có đúng hay không thì phải xem bằng mắt sau khi tải về;
+  PlantDoc có tiếng là nhãn nhiễu và hai ví dụ trong mục 5.2 đã gợi đúng điều đó.
+- **`tomato_V8.jpg` xuất hiện ở hai lớp khác nhau nhưng chưa đối chiếu được nội dung** (hết
+  hạn mức GitHub API lúc đếm). Phải kiểm sau khi tải về — nếu là cùng một ảnh thì đó là một
+  nhãn mâu thuẫn trong bộ đo, phải loại.
+- **Phần `test` của PlantDoc chỉ có 69 ảnh**, mỗi lớp 6–11 ảnh. Con số đo riêng trên nó có
+  sai số lớn; phải kèm khoảng tin cậy khi trích.
 - **Sẽ không có số đo trên ảnh cà chua Đà Lạt.** Nhóm không liên hệ được nhà vườn nên
-  #20/#21/#48 hoãn vô thời hạn (mục 5.1). Mọi con số domain gap của đề tài sẽ đến từ bộ
-  dữ liệu công khai chụp ở nơi khác — H1 chụp tại Bangladesh, H2 lấy từ Internet. Tính
-  địa phương là hạn chế thật và phải ghi rõ trong báo cáo: kết luận được về domain gap
-  nói chung, **không** kết luận được gì riêng cho điều kiện canh tác ở Đà Lạt.
+  #20/#21/#48 hoãn vô thời hạn (mục 5.1). Mọi con số domain gap của đề tài sẽ đến từ
+  **PlantDoc — ảnh thu từ Internet**. Hai hạn chế phải ghi rõ trong báo cáo: kết luận được
+  về domain gap nói chung nhưng **không** kết luận được gì riêng cho điều kiện canh tác ở
+  Đà Lạt, và **không được gọi PlantDoc là "ảnh đồng ruộng"**.
