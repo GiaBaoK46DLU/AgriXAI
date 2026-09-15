@@ -169,7 +169,11 @@ class GlassDropdownField<T> extends StatelessWidget {
   final String? sheetTitle;
 
   Future<void> _open(BuildContext context) async {
-    final T? picked = await showModalBottomSheet<T>(
+    // Bọc giá trị chọn trong record vì `T` có thể tự là `null` (lựa chọn
+    // "Tất cả ..."). Nếu trả thẳng `T?`, chọn "Tất cả" và đóng sheet không
+    // chọn gì (vuốt xuống / chạm ra ngoài) đều pop về `null`, không phân biệt
+    // được — khiến `onChanged` không bao giờ được gọi khi chọn lại "Tất cả".
+    final ({T value})? picked = await showModalBottomSheet<({T value})>(
       context: context,
       backgroundColor: const Color(0x00000000),
       isScrollControlled: true,
@@ -180,7 +184,7 @@ class GlassDropdownField<T> extends StatelessWidget {
         selected: value,
       ),
     );
-    if (picked != null) onChanged(picked);
+    if (picked != null) onChanged(picked.value);
   }
 
   @override
@@ -268,7 +272,7 @@ class _OptionSheet<T> extends StatelessWidget {
                     borderRadius: BorderRadius.circular(18),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(18),
-                      onTap: () => Navigator.of(context).pop(option),
+                      onTap: () => Navigator.of(context).pop((value: option)),
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                         child: Row(
