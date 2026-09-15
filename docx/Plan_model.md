@@ -355,7 +355,7 @@ Nhưng chưa thể gọi là đạt hẳn:
 
 Một phần nguyên nhân là độ phân giải: tầng chập cuối của B0 chỉ **7×7** ô cho ảnh
 224×224, mỗi ô phủ 32×32 pixel. Rìa lá chắc chắn bị "tràn" sang nền ở độ thô đó.
-Đây là căn cứ định lượng cho #16 (Grad-CAM++), và cũng khớp với thứ tự `CLAUDE.md`
+Đây là căn cứ định lượng cho **#98** (Grad-CAM++ — bản đầu ghi sai là #16), và cũng khớp với thứ tự `CLAUDE.md`
 đã chốt: **làm #17 trước #16**, vì nét hơn mà sai chỗ thì vô nghĩa.
 
 > Giới hạn của phép đo này, phải nói rõ khi trích: mặt nạ lá là **xấp xỉ tự động**
@@ -686,7 +686,7 @@ số lạ.
 |---|---|---|
 | 1 | **#17** kiểm Grad-CAM bằng mắt | **Giữ nguyên.** Vẫn là cổng kiểm soát của cả đề tài. Mục 2.5 đã dựng số liệu định hướng và chỉ đúng chỗ đáng nghi (`healthy`, 14 % ảnh có điểm nóng ra ngoài lá) |
 | 2 | **#49** đo trên ảnh đồng ruộng | **Giữ nguyên thứ tự, nhưng nguồn dữ liệu đã đổi** — H1 bị loại ngày 15/09, thay bằng PlantDoc (mục 5.2) |
-| 3 | **#16** nâng Grad-CAM++ | Giữ nguyên thứ tự. Nay có căn cứ định lượng: tầng chập cuối 7×7, 40,7 % khối lượng heatmap rơi ra ngoài lá |
+| 3 | **#98** nâng Grad-CAM++ | Giữ nguyên thứ tự. Nay có căn cứ định lượng: tầng chập cuối 7×7, 40,7 % khối lượng heatmap rơi ra ngoài lá. ⚠️ Bản 10/09 ghi sai số issue là #16 — việc đó là MD-07 sinh lưới ảnh minh hoạ; Grad-CAM++ tới 15/09/2026 mới có issue thật (**#98**) |
 | 4 | **#18** đo tốc độ CPU | **Coi như đã có số** — 215 ms (4 luồng). Rút khỏi hàng chờ, chỉ còn phần đo lại trên máy demo khi #51 chốt máy |
 | 5 | **#19** so kiến trúc | **Hạ cấp** — từ "cách sửa lỗi" thành "phần đánh giá cho báo cáo". Xem mục 2.3 |
 

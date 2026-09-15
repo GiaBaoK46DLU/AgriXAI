@@ -691,7 +691,7 @@ chỉ có **A1 và nhóm mình nêu rõ và kiểm chứng cách chia tập**.
 | 7 | Không vội thêm class weight / focal loss | E1 | **Đã quyết định không thêm** — có bằng chứng ngoài (E1) và trong (mosaic F1 = 1,0000) |
 | 8 | Lệch lớp là nguy cơ, không phải hậu quả tất yếu | E1 + kết quả nội bộ | **Đã ghi vào phân tích** — lý giải bằng đặc trưng thị giác riêng biệt của virus khảm |
 | 9 | Grad-CAM thô là hạn chế đã biết của phương pháp | D1 | **Trích dẫn khi bị hỏi**; ba lối ra đã liệt kê ở mục 3.4 |
-| 10 | Grad-CAM++ mạnh ở ca nhiều vết rời rạc | D2, D4 | **Sẽ nâng cấp ở #16** — sau khi #17 xong |
+| 10 | Grad-CAM++ mạnh ở ca nhiều vết rời rạc | D2, D4 | **Sẽ nâng cấp ở #98** — sau khi #17 xong |
 | 11 | Lấy tầng chập cuối là chuẩn mực, không tuỳ tiện | D1, D4 | **Đã áp dụng** — `model.features[-1]` |
 | 12 | Nông dân cần diễn giải kết quả, không cần hiểu mô hình | D9, D10 | **Là quyết định thiết kế cốt lõi** — vùng khoanh + câu tiếng Việt thay bản đồ nhiệt |
 | 13 | Nhu cầu giải thích không đồng nhất giữa người dùng | D9 | **Áp dụng qua top-3** — hiển thị 3 khả năng khi mô hình không chắc |
@@ -726,7 +726,7 @@ Từ đó nhóm rút ra hai nguyên tắc và đã áp dụng:
 |---|---|---|---|
 | **#17** | **Kiểm tra Grad-CAM có rơi đúng vết bệnh không** — 5 ảnh × 10 lớp | **A2** | **Cao nhất — cổng kiểm soát** |
 | #49 / TN-2 | Đánh giá trên bộ **H1** — 731 ảnh đồng ruộng thật, 6/7 lớp trùng, tải Mendeley | A1, A3 | Cao — có số domain gap mà không phải chờ chụp ảnh |
-| #16 | Nâng cấp **Grad-CAM++**, đối chiếu với `pytorch-grad-cam` | D2, D4 | Cao — làm sau #17 |
+| #98 | Nâng cấp **Grad-CAM++**, đối chiếu với `pytorch-grad-cam` | D2, D4 | Cao — làm sau #17. ⚠️ Bản đầu ghi số issue sai là #16 (việc đó là MD-07 sinh lưới ảnh minh hoạ); issue thật tạo ngày 15/09/2026 |
 | #18 | Đo tốc độ suy luận trên **CPU** máy demo | Rủi ro số 2 | Cao |
 | #19 | So EfficientNet-B0 với ResNet18 / ResNet50 / B3 | B1, B6 | Trung bình — 4 lượt × 25 phút, không cần sửa code |
 | — | **Đọc toàn văn D1 và D2** | D1, D2 | Trung bình — bắt buộc trước báo cáo cuối |

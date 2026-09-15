@@ -106,7 +106,7 @@ Báo cáo #14 nêu bản đồ nhiệt còn thô vì tầng chập cuối của 
 
 **Ba lối ra cho vấn đề 7×7, xếp theo công sức:**
 
-1. **Thêm Grad-CAM++** — rẻ nhất, có thư viện `pytorch-grad-cam` (D11) đối chiếu. Làm trong #16.
+1. **Thêm Grad-CAM++** — rẻ nhất, có thư viện `pytorch-grad-cam` (D11) đối chiếu. Làm trong **#98** (⚠️ trước 15/09/2026 ghi sai là #16). Phải làm **sau #17**: #49 đo được mức tập trung heatmap tụt 1,58× → 1,02× trên ảnh thật, nét hơn mà sai chỗ thì vô nghĩa.
 2. **Lấy đặc trưng ở tầng nông hơn** — độ phân giải cao hơn nhưng ngữ nghĩa lớp yếu hơn. Đúng như báo cáo #14 đã dự đoán.
 3. **Guided Grad-CAM** — theo đúng bài gốc D1, nhưng thêm việc.
 
@@ -156,7 +156,7 @@ Khoảng trống này **không phải nhóm tự nghĩ ra**. Bài **D9** khảo 
 
 | Ưu tiên | Mã | Vì sao bây giờ mới cần |
 |---|---|---|
-| 1 | **D2** đọc kỹ công thức | Chuẩn bị nâng cấp `gradcam.py` trong #16. Bản PDF arXiv không tự đọc được, phải mở tay |
+| 1 | **D2** đọc kỹ công thức | Chuẩn bị nâng cấp `gradcam.py` trong **#98**. Bản PDF arXiv không tự đọc được, phải mở tay |
 | 2 | **B1** benchmark đa bộ dữ liệu | Chuẩn bị #19 (so EfficientNet-B0 với ResNet18), lấy cách trình bày bảng |
 | ~~3~~ | ~~**H2** tải phần cà chua của PlantDoc~~ | ✅ **XONG 15/09/2026** — 99,60 % → 30,81 %, xem `docx/bao-cao-domain-gap.md` |
 | 4 | **A2** đọc lại phần biện pháp giảm thiểu | Sau khi #17 xong, đối chiếu heatmap của mình với mô tả thiên lệch của họ |

@@ -514,19 +514,31 @@ tiến" chỗ này phải đọc E1 trước.
 
 ### Việc tiếp theo, xếp đúng thứ tự
 
-> Cập nhật 10/09/2026 sau buổi rà soát bốn vấn đề phát hiện khi thử app với mô hình
-> thật. Số đo và lý lẽ đầy đủ ở `docx/Plan_model.md` mục 5.4.
+> Cập nhật **15/09/2026** sau khi #49 xong. Bản 10/09 (sau buổi rà soát bốn vấn đề khi
+> thử app với mô hình thật) có ba chỗ nay đã sửa: **#17 bị lặp hai dòng**, **Grad-CAM++
+> ghi sai số issue là #16** (nay là #98 — trước 15/09 việc đó không có issue nào), và
+> **thiếu hẳn ba việc cải thiện độ chính xác** #93/#50/#94 dù chúng là phần trả lời trực
+> tiếp cho kết quả #49.
+>
+> Số đo và lý lẽ: `docx/Plan_model.md` mục 5.4 và `docx/bao-cao-domain-gap.md`.
 
 | Thứ tự | Việc | Vì sao thứ tự này |
 |---|---|---|
-| ~~1~~ | ~~**#49 — đo domain gap**~~ | ✅ **XONG 15/09/2026: 99,60 % → 30,81 %** trên bộ H2 PlantDoc (742 ảnh, 8/10 lớp). Xem `docx/bao-cao-domain-gap.md`. Đã mở chốt cho #93, #94, #50 |
-| **1** | **#17 — kiểm Grad-CAM có rơi đúng vết bệnh không**, khoanh lá **bằng tay**, trên **cả PlantVillage lẫn PlantDoc** | **Nâng lên đầu sau kết quả #49.** Mức tập trung heatmap tụt 1,58× → 1,02× trên ảnh thật — gần như không khác rải ngẫu nhiên. Nếu điều đó đúng thì **toàn bộ phần XAI mất giá trị**, nên phải xác nhận hay bác bỏ trước mọi việc khác. Phạm vi rộng hơn bản cũ: thêm bộ PlantDoc |
-| **2** | **#17 — kiểm tra Grad-CAM có rơi đúng vết bệnh không** (5 ảnh × 10 lớp) | **Cổng kiểm soát của cả đề tài.** Nếu heatmap rơi vào nền thì toàn bộ phần XAI mất giá trị. Lý do là bài A2: có người huấn luyện **chỉ bằng 8 pixel nền** PlantVillage mà vẫn đạt 49 % (đoán mò 2,63 %). Tiền kiểm 10/09 đã chỉ chỗ đáng nghi: lớp `healthy` chỉ 42 % khối lượng heatmap nằm trong lá, và 14 % ảnh có điểm nóng nhất rơi ra nền |
-| **3** | **#90 — không khoanh vùng khi bản đồ nhiệt quá yếu** | Chặn ngay triệu chứng nặng nhất: app khoanh elip lên vật thể bất kỳ rồi khẳng định một loại bệnh. **1 giờ, không cần Học sửa gì** vì không đụng hợp đồng dùng chung |
-| **4** | **#91** thu bộ ảnh không phải lá → **#92** huấn luyện bộ 2 lớp | Cách chữa gốc cho lỗi trên. #91 làm được ngay tại nhà, **không cần nhà vườn**. #92 chặn bởi #91. Cũng là thứ #47 đang chờ để chốt ngưỡng bằng số liệu thật |
-| 5 | **#16 — nâng Grad-CAM++** | Heatmap hiện thô vì tầng chập cuối B0 chỉ 7×7 — đo được 40,7 % khối lượng rơi ra ngoài lá. Làm **sau #17**, vì nét hơn mà sai chỗ thì vô nghĩa |
-| ~~6~~ | ~~#18 — đo tốc độ suy luận trên CPU~~ | **Đã có số 10/09/2026: 215 ms** (CPU 4 luồng) cho `predict()` đầy đủ ở 1280 px, so với **452 ms** khi để torch tự lấy 16 luồng — tranh chấp luồng. Rủi ro số 2 hạ mức. Chỉ còn phần đo lại trên máy demo khi #51 chốt máy |
-| 7 | **#19 — so ResNet18 / ResNet50 / B3** | ⚠️ **Hạ cấp 10/09/2026: làm để BÁO CÁO, không phải để sửa lỗi.** Đã đo và kết luận đổi kiến trúc gần như không cải thiện được độ chính xác thực tế — accuracy PlantVillage đã 99,60 %, điểm nghẽn nằm ở domain gap. `build.py` đã hỗ trợ sẵn, chỉ đổi `model.arch`. 4 lượt × 25 phút |
+| ~~—~~ | ~~**#49 — đo domain gap**~~ | ✅ **XONG 15/09/2026: 99,60 % → 30,81 %** trên bộ H2 PlantDoc (742 ảnh, 8/10 lớp). Xem `docx/bao-cao-domain-gap.md`. Đã mở chốt cho #93, #94, #50 |
+| **1** | **#17 — kiểm Grad-CAM có rơi đúng vết bệnh không**, khoanh lá **bằng tay**, trên **cả PlantVillage lẫn PlantDoc** | **Cổng kiểm soát của cả đề tài, và #49 đẩy nó lên đầu.** Nếu heatmap rơi vào nền thì toàn bộ phần XAI mất giá trị. Hai căn cứ: bài **A2** — có người huấn luyện **chỉ bằng 8 pixel nền** PlantVillage mà vẫn đạt 49 % (đoán mò 2,63 %); và #49 đo được **mức tập trung tụt 1,58× → 1,02 ×** trên ảnh thật, tức gần như không khác rải ngẫu nhiên, điểm nóng nhất trong lá chỉ 42 %. Chỗ đáng nghi đã biết trước: lớp `healthy` chỉ 42 % khối lượng heatmap trong lá. **Phạm vi rộng hơn bản 10/09: thêm bộ PlantDoc, và phải khoanh lá bằng tay** vì mặt nạ tự động bằng ngưỡng màu kém tin cậy trên nền thật |
+| **2** | **#90 — không khoanh vùng khi bản đồ nhiệt quá yếu** | Chặn ngay triệu chứng nặng nhất: app khoanh elip lên vật thể bất kỳ rồi khẳng định một loại bệnh. **1 giờ, không cần Học sửa gì** vì không đụng hợp đồng dùng chung |
+| **3** | **#91** thu bộ ảnh không phải lá → **#92** huấn luyện bộ 2 lớp | Cách chữa gốc cho lỗi trên. #91 làm được ngay tại nhà, **không cần nhà vườn**. #92 chặn bởi #91. Cũng là thứ #47 đang chờ để chốt ngưỡng bằng số liệu thật |
+| **4** | **#93 — cắt vùng lá trước khi phân loại** | **Việc cải thiện độ chính xác đáng làm trước nhất, vì không cần một tấm ảnh mới nào.** Xem 16 ca sai bằng mắt ở #49 thì một phần đáng kể là ảnh **chụp cả bụi cây** thay vì phiến lá cận cảnh — mô hình bị hỏi sai câu hỏi, và không augmentation nào sửa được việc đó. Phép thử che nền 10/09 chứng minh cắt nền không mất gì: bỏ hết viền nền vẫn đạt 97,3 % |
+| **5** | **#50 hướng 1 — tăng augmentation mô phỏng đồng ruộng** | Thay nền ngẫu nhiên, bóng đổ, mờ nhoè, nắng gắt. Rẻ nhất trong nhóm cải thiện: chỉ chỉnh config + huấn luyện lại ~30 phút, không cần dữ liệu mới |
+| 6 | **#98 — nâng Grad-CAM++** | Heatmap hiện thô vì tầng chập cuối B0 chỉ 7×7 — đo được 40,7 % khối lượng rơi ra ngoài lá. Làm **sau #17**, vì nét hơn mà sai chỗ thì vô nghĩa. ⚠️ **Bảng này trước ghi sai là "#16"** — #16 thật là MD-07 sinh lưới ảnh minh hoạ cho slide. Grad-CAM++ **trước 15/09/2026 không có issue nào**, nay đã tạo #98 |
+| 7 | **#50 hướng 2 — fine-tune bằng `train` của PlantDoc** | Hiệu quả nhất nhưng là hướng **duy nhất tiêu dữ liệu đo**, nên để sau. 674 ảnh `train` (đã bỏ `tomato_V8.jpg` vì nhãn mâu thuẫn), đo lại trên đúng 66 ảnh `test`. Mốc "trước" đã có: **28,79 %**. ⚠️ KTC rộng 21 điểm nên phải cải thiện hơn ~12 điểm mới kết luận được |
+| 8 | **#94 — test-time augmentation** | Rẻ, không huấn luyện lại gì. Làm **sau #93** để biết phần cải thiện đến từ đâu |
+| ~~—~~ | ~~#18 — đo tốc độ suy luận trên CPU~~ | **Đã có số 10/09/2026: 215 ms** (CPU 4 luồng) cho `predict()` đầy đủ ở 1280 px, so với **452 ms** khi để torch tự lấy 16 luồng — tranh chấp luồng. Rủi ro số 2 hạ mức. Chỉ còn phần đo lại trên máy demo khi #51 chốt máy |
+| 9 | **#19 — so ResNet18 / ResNet50 / B3** | ⚠️ **Hạ cấp 10/09/2026: làm để BÁO CÁO, không phải để sửa lỗi.** #49 xác nhận: điểm nghẽn là **68,8 điểm domain gap**, không phải 0,4 điểm còn lại trên PlantVillage. Đổi backbone không thu hẹp khoảng cách đó. `build.py` đã hỗ trợ sẵn, chỉ đổi `model.arch`. 4 lượt × 25 phút |
+
+> **Ba việc cải thiện độ chính xác là #93, #50 và #94** — nếu cần tra nhanh thì đó là câu
+> trả lời. Riêng **#50 hướng 2 là chỗ duy nhất "học thêm bộ dữ liệu khác"**. #19 KHÔNG
+> thuộc nhóm này dù nghe giống: đã đo và bác bỏ.
 
 ### Bốn cái bẫy đã biết trước
 
