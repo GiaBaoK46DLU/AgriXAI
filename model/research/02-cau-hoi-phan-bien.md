@@ -21,10 +21,28 @@ khoanh vào lá hay vào nền.
 
 ### 2. "Ra đồng thật thì tụt bao nhiêu?"
 
-Có con số của người khác để đối chiếu: review 2024 đo được PlantVillage trung bình
-90,18% còn dữ liệu đồng ruộng tự thu 84,66%. Con số của mình đo trên bộ H1 để cạnh đó.
+**Đã đo được (15/09/2026, issue #49): tụt từ 99,60 % xuống 30,81 %, tức 68,79 điểm.**
+Đo trên bộ **H2 (PlantDoc)**, 742 ảnh, cả hai phía cùng 8 lớp. Báo cáo:
+`bao-cao-domain-gap.md`.
 
-→ **A3**, **H1**, **H2**
+Đặt cạnh tài liệu: con số của nhóm **gần trùng khớp A1** — chính tác giả PlantVillage báo
+99,35 % → 31,40 %, nhóm lệch 0,6 điểm. Còn A3 (review 2024) đo trung bình 90,18 % → 84,66 %,
+chỉ tụt 5,5 điểm, nhưng phần lớn công bố trong đó **đã fine-tune trên dữ liệu thực địa** —
+so với 68,8 điểm của nhóm là so hai trạng thái khác nhau, phải nói rõ chỗ này.
+
+Nếu bị hỏi vặn *"sao tụt nhiều thế"*, trả lời bằng ba phát hiện kèm theo chứ đừng chỉ nhận
+con số: mô hình **dồn 85 % dự đoán vào 3 lớp** (sụp về nhóm "lá có vết nâu"), **52 % lá khoẻ
+bị gọi là mốc sương muộn**, và **ngưỡng tin cậy không cứu được** (ở 0,90 thì từ chối 85,4 %
+ảnh mà accuracy còn lại vẫn chỉ 56,5 %). Biết mô hình sai *theo kiểu nào* mạnh hơn nhiều so
+với chỉ biết nó sai bao nhiêu.
+
+⚠️ Hai chữ phải cẩn thận khi trả lời câu này: PlantDoc là ảnh **thu từ Internet**, nên nói
+*"ảnh trong điều kiện tự nhiên"* chứ **đừng nói "ảnh đồng ruộng"** hay *"ảnh tự chụp"*.
+Nhóm **không** có ảnh cà chua Đà Lạt (không liên hệ được nhà vườn), nên cũng không kết
+luận được gì riêng cho điều kiện canh tác ở đây. Nói thẳng chỗ này, đừng để hội đồng tự
+phát hiện.
+
+→ **A3**, **H2**
 
 ### 3. "Sao chọn EfficientNet-B0 mà không phải ResNet/DenseNet/ViT?"
 
@@ -89,6 +107,35 @@ toán chứ không phải của mô hình**. Nói được điều đó cho th�
 trên thiết bị yếu.
 
 → **C1**, **C2**, **C5**, rủi ro số 2 trong `CLAUDE.md`
+
+### 11. "Nhóm chọn bộ dữ liệu để đánh giá thế nào? Sao tin được nhãn của nó?"
+
+Câu này trước đây nhóm **không có gì để trả lời** ngoài "lấy bộ đã công bố trên tạp chí
+có phản biện". Từ 15/09/2026 thì có một ca thật, và đây là câu trả lời mạnh nhất về
+phương pháp mà nhóm có.
+
+Nhóm định dùng bộ **H1** (Data in Brief 2025, công bố "731 ảnh đồng ruộng, 7 lớp"). Trước
+khi đo, nhóm **tự kiểm bộ dữ liệu thay vì tin con số in trong bài**, và phát hiện:
+
+- Bản phát hành **không kèm `data.yaml`** → không biết class ID nào ứng với bệnh nào.
+  Thử khôi phục bằng cách đếm hộp theo từng class ID rồi đối chiếu bảng trong bài báo:
+  **2.278 hộp đo được so với 1.621 bài báo ghi**, class 1 một mình chiếm 51,7 % số hộp
+  trong khi lớp đông nhất của bài báo chỉ có 325. Không khớp theo bất kỳ thứ tự nào.
+- **230 trong 689 ảnh có nhãn chứa hộp của nhiều lớp** → không gán được một nhãn/ảnh.
+- Con số **731 ảnh là số đã bị nhân bản**: truy theo tên ảnh gốc thì chỉ còn **308 ảnh**.
+
+Nên nhóm **loại bộ đó** và chuyển sang **H2 (PlantDoc)**, với số liệu **tự đếm**: 744 ảnh
+cà chua trên 8 lớp.
+
+Chỗ ăn điểm nằm ở câu tiếp theo, phải nói rõ: *"Nếu nhóm cứ đoán thứ tự lớp rồi chạy
+`evaluate.py`, kết quả sẽ ra một con số accuracy trông hoàn toàn bình thường mà vô nghĩa,
+và không có gì báo lỗi. Con số đó đã thành số domain gap chính thức trong báo cáo này."*
+
+Đây là **kết quả âm tính có đo đạc** — cùng loại với hai câu 1 và 2 ở mục dưới. Và nó cho
+thấy nhóm hiểu một điều mà bảng số liệu không bao giờ tự nói ra: **một phép đo sai không
+báo lỗi thì nguy hiểm hơn một phép đo không chạy được.**
+
+→ `Plan_model.md` mục 5.2 · cái bẫy số 4 trong `CLAUDE.md` · **H2**
 
 ---
 

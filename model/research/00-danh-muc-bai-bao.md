@@ -161,18 +161,38 @@ chứ không được trả về "Mốc lá 87%".
 
 ## H. Bộ dữ liệu để đo domain gap
 
-Cần cho **rủi ro số 1**. Ngoài ảnh tự chụp ở Đà Lạt, ba bộ dưới đây tải về đo được ngay.
+Cần cho **rủi ro số 1**.
+
+> ⚠️ **Cập nhật 15/09/2026 — mục này đã bị thực tế bác bỏ một phần. Đọc trước khi tin bảng dưới.**
+>
+> Ảnh tự chụp ở Đà Lạt: **hoãn vô thời hạn** (không liên hệ được nhà vườn, xem `CLAUDE.md`
+> rủi ro số 1). Và câu *"ba bộ dưới đây tải về đo được ngay"* **sai với H1**: đã tải về kiểm
+> thì H1 không gán nhãn phân loại được, đã **loại hẳn**. Bộ đo chính nay là **H2 (PlantDoc)**.
+> Căn cứ đầy đủ: `Plan_model.md` mục 5.2.
 
 | Mã | Bộ dữ liệu | Quy mô | Vì sao dùng | TT |
 |---|---|---|---|---|
-| **H1** | [Tomato leaf dataset: A dataset for multiclass disease detection and classification](https://pmc.ncbi.nlm.nih.gov/articles/PMC12008584/) — Imtiaz et al., Data in Brief 2025 · [Mendeley](https://doi.org/10.17632/bpfd9cns5g.2) | **731 ảnh đồng ruộng**, 7 lớp (Early Blight, Black Spot, Late Blight, Leaf Mold, Bacterial Spot, Target Spot, Healthy), chụp thật tại Bangladesh | **Dùng được ngay hôm nay.** 6/7 lớp trùng với 10 lớp của mình. Chạy `evaluate.py` lên bộ này là có ngay con số domain gap **mà không phải chờ đi chụp ảnh** | ✅ |
-| **H2** | [PlantDoc](https://github.com/pratikkayal/PlantDoc-Dataset) — Singh et al., CoDS-COMAD 2020 · [bài báo](https://dl.acm.org/doi/10.1145/3371158.3371196) | 2.598 ảnh, 13 loài, 17 lớp bệnh, ảnh lấy từ Internet | Bộ chuẩn để đo "trong tự nhiên", có phần cà chua. Bài gốc báo cải thiện tới 31% khi huấn luyện thêm trên bộ này | ⚪ |
+| ~~**H1**~~ | ~~[Tomato leaf dataset](https://pmc.ncbi.nlm.nih.gov/articles/PMC12008584/) — Imtiaz et al., Data in Brief 2025 · [Mendeley](https://doi.org/10.17632/bpfd9cns5g.2)~~ | Công bố "731 ảnh, 7 lớp, chụp tại Bangladesh". **Đếm thật: 308 ảnh gốc** (phần còn lại là bản nhân bản Roboflow) | ❌ **ĐÃ LOẠI 15/09/2026.** Bản trên Mendeley là export Roboflow/YOLO **không kèm `data.yaml`** → không biết class ID nào là bệnh nào; 230/689 ảnh có nhãn đa lớp → không gán được một nhãn/ảnh. Xem `Plan_model.md` mục 5.2 | ❌ |
+| **H2** | [PlantDoc](https://github.com/pratikkayal/PlantDoc-Dataset) — Singh et al., CoDS-COMAD 2020 · [bài báo](https://dl.acm.org/doi/10.1145/3371158.3371196) | Bài báo ghi 2.598 ảnh / 13 loài / 17 lớp. **Phần cà chua tự đếm 15/09: 744 ảnh dùng được trên 8 lớp** (675 `train` + 69 `test`) | **Bộ đo chính của đề tài.** Chia thư mục theo lớp, tên thư mục viết rõ bằng chữ nên **không phải đoán ánh xạ** — khác hẳn H1. Thiếu `target_spot`; `spider_mites` chỉ 2 ảnh nên loại khỏi phép đo | ✅ |
 | **H3** | Taiwan tomato leaves | 622 ảnh, 6 lớp (bacterial spot 100, black mold 67, gray spot 84, healthy 106, late blight 98, powdery mildew 157) | Ảnh có bóng đổ, nhiều lá chồng, nền lộn xộn. Chỉ trùng 3 lớp với mình. Xem cách dùng trong **B1** | ⚪ |
 | **H4** | [Benchmarking In-the-Wild Multimodal Plant Disease Recognition and A Versatile Baseline](https://arxiv.org/html/2408.03120v1) | — | Chuẩn đo mới cho ảnh ngoài tự nhiên | ⚪ |
 
-> **H1 là việc làm được ngay sau khi #14 xong.** Tải 731 ảnh, ánh xạ 6 lớp trùng sang
-> khoá bệnh của mình, chạy `evaluate.py --manifest`. Nửa buổi là có một con số domain
-> gap có nguồn trích dẫn — trong khi ảnh tự chụp phải chờ tới tháng 9.
+> **Bài học 15/09/2026, đáng ghi lại hơn cả bảng trên:** dòng H1 cũ ở đây từng viết
+> *"Dùng được ngay hôm nay… chạy `evaluate.py` lên bộ này là có ngay con số domain gap"*,
+> và được đánh dấu ✅ chỉ vì **đã mở được toàn văn bài báo** — chưa ai tải bộ dữ liệu về
+> kiểm. Khi tải về thì nhãn không tra được.
+>
+> Rút ra hai điều cho mọi dòng trong bảng này:
+>
+> 1. **Cột TT (✅/⚠️/⚪) nói về bài báo, không nói về bộ dữ liệu.** Một bộ ✅ vẫn có thể
+>    không dùng được. Với nhóm H, phải kiểm riêng: đếm file theo lớp, băm tìm ảnh trùng,
+>    đối chiếu ánh xạ nhãn — **trước khi** ghi số vào báo cáo.
+> 2. **Đừng trích quy mô từ bài báo.** H1 công bố 731 ảnh, thật ra 308. Số của H2 trong
+>    bảng trên là **tự đếm**, nên dùng được.
+>
+> Phần kiểm chứng này không phải công toi — nó là nội dung **đánh giá chất lượng dữ liệu**,
+> trả lời trực tiếp câu phản biện *"nhóm chọn dữ liệu thế nào"* (xem câu **11** trong
+> `02-cau-hoi-phan-bien.md`).
 
 ---
 

@@ -195,7 +195,7 @@ nhất để biết còn phải làm gì — đừng lập bảng công việc s
 | 1 | 17/08 – 31/08/2026 | Nền tảng song song: backend chạy trên máy Học, khởi tạo 2 dự án giao diện, dựng môi trường mô hình |
 | 2 | 01/09 – 30/09/2026 | Mô hình huấn luyện xong, có Grad-CAM, chặn được ảnh không phải lá cà chua |
 | 3 | 01/09 – 15/10/2026 | Giao diện dựng trên `DummyPredictor` — **chạy song song mốc 2** |
-| 4 | 01/10 – 31/10/2026 | Hợp nhất mô hình thật, tinh chỉnh XAI, đo domain gap trên bộ ảnh đồng ruộng **công khai** (H1) |
+| 4 | 01/10 – 31/10/2026 | Hợp nhất mô hình thật, tinh chỉnh XAI, đo domain gap trên bộ ảnh **công khai** (H2 — PlantDoc) |
 | 5 | 15/10 – 25/11/2026 | Báo cáo, slide, tập demo |
 | 6 | 15/09 – 05/11/2026 | Bệnh trên quả — **chỉ làm nếu qua cổng go/no-go 15/09** |
 
@@ -381,7 +381,7 @@ mới** ở backend trước khi web admin đụng vào được — theo đúng
 ## Nhận diện ngoại tuyến trên điện thoại (chốt 07/09/2026)
 
 Mobile giờ chạy được suy luận **ngay trên máy** khi không gọi được backend —
-nông dân ở vùng sóng yếu vẫn chẩn đoán được. Không phải hướng đi trong 76 issue
+nông dân ở vùng sóng yếu vẫn chẩn đoán được. Không phải hướng đi trong tập issue
 gốc, làm theo yêu cầu trực tiếp của Học.
 
 **Chế độ hybrid:** `AnalyzingScreen` luôn thử gọi `POST /diagnoses` trước; bất
@@ -515,11 +515,12 @@ tiến" chỗ này phải đọc E1 trước.
 ### Việc tiếp theo, xếp đúng thứ tự
 
 > Cập nhật 10/09/2026 sau buổi rà soát bốn vấn đề phát hiện khi thử app với mô hình
-> thật. Số đo và lý lẽ đầy đủ ở `Plan_model.md` mục 5.3.
+> thật. Số đo và lý lẽ đầy đủ ở `Plan_model.md` mục 5.4.
 
 | Thứ tự | Việc | Vì sao thứ tự này |
 |---|---|---|
-| **1** | **#49 — đo domain gap trên bộ H1** (731 ảnh đồng ruộng thật, 6/7 lớp trùng, tải từ Mendeley — xem `model/research/`) | **Nay là đường DUY NHẤT** để có số domain gap, vì #20 đã hoãn (xem rủi ro số 1). Chặn cả #93, #94, #50 — chúng không có mốc nào để so sánh nếu thiếu nó. Nửa buổi là xong, không phải đi chụp |
+| ~~1~~ | ~~**#49 — đo domain gap**~~ | ✅ **XONG 15/09/2026: 99,60 % → 30,81 %** trên bộ H2 PlantDoc (742 ảnh, 8/10 lớp). Xem `bao-cao-domain-gap.md`. Đã mở chốt cho #93, #94, #50 |
+| **1** | **#17 — kiểm Grad-CAM có rơi đúng vết bệnh không**, khoanh lá **bằng tay**, trên **cả PlantVillage lẫn PlantDoc** | **Nâng lên đầu sau kết quả #49.** Mức tập trung heatmap tụt 1,58× → 1,02× trên ảnh thật — gần như không khác rải ngẫu nhiên. Nếu điều đó đúng thì **toàn bộ phần XAI mất giá trị**, nên phải xác nhận hay bác bỏ trước mọi việc khác. Phạm vi rộng hơn bản cũ: thêm bộ PlantDoc |
 | **2** | **#17 — kiểm tra Grad-CAM có rơi đúng vết bệnh không** (5 ảnh × 10 lớp) | **Cổng kiểm soát của cả đề tài.** Nếu heatmap rơi vào nền thì toàn bộ phần XAI mất giá trị. Lý do là bài A2: có người huấn luyện **chỉ bằng 8 pixel nền** PlantVillage mà vẫn đạt 49 % (đoán mò 2,63 %). Tiền kiểm 10/09 đã chỉ chỗ đáng nghi: lớp `healthy` chỉ 42 % khối lượng heatmap nằm trong lá, và 14 % ảnh có điểm nóng nhất rơi ra nền |
 | **3** | **#90 — không khoanh vùng khi bản đồ nhiệt quá yếu** | Chặn ngay triệu chứng nặng nhất: app khoanh elip lên vật thể bất kỳ rồi khẳng định một loại bệnh. **1 giờ, không cần Học sửa gì** vì không đụng hợp đồng dùng chung |
 | **4** | **#91** thu bộ ảnh không phải lá → **#92** huấn luyện bộ 2 lớp | Cách chữa gốc cho lỗi trên. #91 làm được ngay tại nhà, **không cần nhà vườn**. #92 chặn bởi #91. Cũng là thứ #47 đang chờ để chốt ngưỡng bằng số liệu thật |
@@ -527,7 +528,7 @@ tiến" chỗ này phải đọc E1 trước.
 | ~~6~~ | ~~#18 — đo tốc độ suy luận trên CPU~~ | **Đã có số 10/09/2026: 215 ms** (CPU 4 luồng) cho `predict()` đầy đủ ở 1280 px, so với **452 ms** khi để torch tự lấy 16 luồng — tranh chấp luồng. Rủi ro số 2 hạ mức. Chỉ còn phần đo lại trên máy demo khi #51 chốt máy |
 | 7 | **#19 — so ResNet18 / ResNet50 / B3** | ⚠️ **Hạ cấp 10/09/2026: làm để BÁO CÁO, không phải để sửa lỗi.** Đã đo và kết luận đổi kiến trúc gần như không cải thiện được độ chính xác thực tế — accuracy PlantVillage đã 99,60 %, điểm nghẽn nằm ở domain gap. `build.py` đã hỗ trợ sẵn, chỉ đổi `model.arch`. 4 lượt × 25 phút |
 
-### Ba cái bẫy đã biết trước
+### Bốn cái bẫy đã biết trước
 
 1. **`configs/default.yaml` đặt `image_size: 224` dùng chung cho mọi kiến trúc.**
    Chạy EfficientNet-B3 ở 224 là dưới độ phân giải thiết kế của nó. Nếu #19 chạy vậy
@@ -540,6 +541,16 @@ tiến" chỗ này phải đọc E1 trước.
    đó hai file này nằm ngoài Git — đảo lại vì mục tiêu là máy khác `pull` về
    dùng được model ngay, không phải tự huấn luyện lại. `model/data/raw/` (ảnh
    gốc PlantVillage) vẫn ngoài Git — tải lại từ Kaggle theo issue #11.
+4. **Đừng tin con số ảnh in trong bài báo — tự đếm file.** Bài học thật ngày 15/09/2026:
+   bộ H1 công bố "731 ảnh, 7 lớp" trên một tạp chí có phản biện; tải về đếm thì chỉ có
+   **308 ảnh gốc** (phần còn lại là bản nhân bản của Roboflow) và **không có file nào
+   cho biết class ID nào là bệnh nào**. Nửa ngày mất vào đó, nhưng nếu cứ đoán ánh xạ rồi
+   chạy thì `evaluate.py` sẽ cho ra một con số accuracy **trông hoàn toàn bình thường mà
+   vô nghĩa**, không có gì báo lỗi, và con số đó đã thành số domain gap chính thức của đề
+   tài. Với **bất kỳ** bộ dữ liệu ngoài nào: đếm file theo lớp, băm để tìm ảnh trùng, và
+   kiểm ánh xạ nhãn **trước khi** chạy phép đo. Số liệu PlantDoc trong file này đã qua
+   đúng ba bước đó. Mặt tốt: phần kiểm chứng này là nội dung **đánh giá chất lượng dữ
+   liệu** đáng đưa vào báo cáo, trả lời trực tiếp câu "nhóm chọn dữ liệu thế nào".
 
 ### Quy ước về tài liệu trong `model/research/`
 
@@ -561,24 +572,97 @@ tiến" chỗ này phải đọc E1 trước.
    còn thời gian. Issue #20/#21/#48 để mở kèm nhãn `trang-thai:bi-chan`, mở lại nếu
    tình hình đổi. **`model/data/field/` sẽ vẫn rỗng.**
 
-   Rủi ro này **không** vì thế mà bỏ trống: **#49 chạy trên bộ H1 là đường duy nhất,
-   và vẫn đủ.** H1 có 731 ảnh đồng ruộng thật — gấp 7–14 lần con số 50–100 dự kiến —
-   do nhóm độc lập công bố trên tạp chí có phản biện nên **trích dẫn được**. Phần
-   fine-tune (#50 hướng 2) đổi nguồn sang **H2 (PlantDoc)** hoặc **H3 (Taiwan)**, và
-   **H1 phải giữ nguyên vẹn làm tập test độc lập** — để ảnh H1 lọt vào tập huấn luyện
-   thì con số domain gap của cả đề tài mất giá trị, mà lỗi đó không báo lỗi gì.
+   Rủi ro này **không** vì thế mà bỏ trống — nhưng bộ dữ liệu để đo **đã đổi một lần**,
+   và đó là chỗ dễ đọc sai nhất trong cả file này.
 
-   **Hạn chế phải ghi vào báo cáo:** H1 chụp tại Bangladesh, H2 lấy từ Internet. Đề
-   tài kết luận được về domain gap **nói chung**, **không** kết luận được gì riêng cho
-   điều kiện canh tác ở Đà Lạt. Đừng trình bày như thể đã đo trên ảnh địa phương.
+   #### ❌ Bộ H1 đã bị LOẠI (15/09/2026) — đừng tìm cách dùng lại
+
+   Bản trước của mục này ghi *"#49 chạy trên bộ H1 là đường duy nhất, và vẫn đủ"*, dựa
+   trên con số 731 ảnh mà bài báo công bố. Ngày 15/09 tải bộ về kiểm thì **cả hai câu
+   đều sai**:
+
+   - Bộ trên Mendeley là bản xuất **Roboflow định dạng YOLO** (phát hiện vật thể), và
+     **không kèm `data.yaml`** — đúng 0 file ngoài `.jpg`/`.txt`. Nên **không biết class
+     ID nào là bệnh nào.** Đã thử khôi phục bằng cách đếm hộp theo từng class ID rồi đối
+     chiếu bảng trong bài báo: **2.278 hộp đo được so với 1.621 bài báo ghi**, và class 1
+     một mình chiếm 51,7 % số hộp trong khi lớp đông nhất của bài báo chỉ có 325. Không
+     khớp theo thứ tự bảng, cũng không khớp theo thứ tự chữ cái.
+   - **230 trong 689 ảnh có nhãn chứa hộp của nhiều lớp khác nhau** → không gán được một
+     nhãn/ảnh để chạy `evaluate.py`.
+   - Con số **731 ảnh là số đã bị nhân bản**: 1.420 file `.jpg` chỉ ứng với **308 ảnh
+     gốc**, thư mục "731 ảnh" ứng đúng 302 ảnh gốc. Quy mô thật nhỏ hơn công bố ~2,4 lần.
+     (Dù vậy 302 ảnh vẫn nhiều hơn mốc 50–100 ảnh tự chụp — **quy mô không phải lý do
+     loại H1**, nhãn không tra được mới là lý do.)
+
+   Loại hẳn, không phải hoãn: nhãn không tra được thì không có cách dùng lại về sau, trừ
+   khi tác giả công bố thêm `data.yaml`. Căn cứ đầy đủ ở `Plan_model.md` **mục 5.2**.
+
+   #### ✅ Thay bằng H2 — PlantDoc (chốt 15/09/2026)
+
+   GitHub `pratikkayal/PlantDoc-Dataset`, bộ **phân loại chia thư mục theo lớp**, tên thư
+   mục viết rõ bằng chữ nên **không phải đoán ánh xạ**. Số liệu dưới đây **tự đếm**, không
+   trích lại từ bài báo:
+
+   - **744 ảnh cà chua dùng được trên 8 lớp** (675 `train` + 69 `test`) — nhiều hơn H1 hai
+     lớp, và gấp 7–15 lần con số 50–100 ảnh tự chụp theo kế hoạch ban đầu.
+   - `spider_mites` chỉ có **2 ảnh** (và một trong hai tên file nói về bệnh loét) →
+     **loại khỏi phép đo**. `target_spot` **không có** trong PlantDoc. Mô hình vẫn trả 10
+     lớp, nên phải truyền `labels=` khi tính chỉ số và báo macro-F1 trên 8 lớp có mặt.
+   - ⚠️ **Bản chia `train`/`test` của chính PlantDoc có rò rỉ 3 ảnh trùng byte tuyệt đối**
+     (so bằng sha256), và **1 trong 3 ảnh đó mang hai nhãn khác nhau** (`tomato_V8.jpg`:
+     `bacterial_spot` ở `test`, `septoria_leaf_spot` ở `train`) nên bị loại hẳn. Việc lọc
+     đã tự động hoá trong `src/data/prepare_plantdoc.py`, lý do từng ảnh bị bỏ ghi vào
+     `audit.json` — đừng lọc tay.
+
+   **Ranh giới phải giữ:** con số domain gap chính của #49 đo trên **toàn bộ 742 ảnh** (744
+   trừ ảnh rò rỉ/mâu thuẫn), hợp lệ vì checkpoint hiện tại chưa từng thấy một ảnh PlantDoc
+   nào — và con số đó **đúng vĩnh viễn**, kể cả sau khi #50 fine-tune. Phần fine-tune (#50
+   hướng 2) chỉ được dùng **`train`**, rồi đo lại trên **`test`**. Trộn hai phần thì con số
+   domain gap của cả đề tài mất giá trị, mà lỗi đó không báo lỗi gì.
+
+   #### ✅ #49 ĐÃ XONG (15/09/2026) — con số domain gap của nhóm
+
+   > **99,60 % → 30,81 %. Tụt 68,79 điểm.** Báo cáo đầy đủ: **`bao-cao-domain-gap.md`**
+   > (thư mục gốc). Số liệu máy sinh: `model/outputs/plantdoc-{all,8lop,official}/` và
+   > `model/outputs/plantvillage-8lop/`.
+
+   Cả hai con số đo trên **đúng 8 lớp** mà PlantDoc có (đã lọc tập test PlantVillage cho
+   khớp — so 10 lớp với 8 lớp là so lệch). Hai khoảng tin cậy 95 % **không chồng lấn**
+   (99,24–99,79 % so với 27,59–34,23 %).
+
+   Kết quả **gần trùng khớp bài A1** — chính tác giả PlantVillage báo 99,35 % → 31,40 %,
+   nhóm lệch 0,6 điểm ở con số cuối. Đó là bằng chứng phép đo đúng, và là câu trả lời mạnh
+   cho phản biện. **Rủi ro số 1 từ nay không còn là dự đoán mà là số đo.**
+
+   Ba hệ quả **đã đổi thứ tự việc**, đọc trước khi chọn việc tiếp theo:
+
+   1. **#47 thu hẹp phạm vi.** Ngưỡng tin cậy **không** vá được độ chính xác trên ảnh thật:
+      ở ngưỡng 0,90 hệ thống từ chối 85,4 % ảnh thật mà accuracy phần còn lại vẫn chỉ
+      56,5 %, đồng thời chặn oan 8,5 % ảnh PlantVillage. Vẫn làm #47, nhưng **chỉ để chặn
+      ảnh không phải lá** — đừng kỳ vọng nó cải thiện accuracy.
+   2. **#17 nâng ưu tiên và mở rộng phạm vi.** Mức tập trung Grad-CAM tụt **1,58× → 1,02×**
+      trên ảnh thật, tức gần như không khác rải ngẫu nhiên; điểm nóng nhất nằm trong lá chỉ
+      42 %. Phép đo có hạn chế thật nên đây là **cảnh báo chưa phải kết luận** — #17 nay
+      phải kiểm **cả PlantVillage lẫn PlantDoc** và khoanh lá **bằng tay**.
+   3. **#93 nâng ưu tiên.** Xem 16 ca sai bằng mắt thì một phần đáng kể là ảnh **chụp cả
+      bụi cây**, không phải phiến lá cận cảnh — tức mô hình bị hỏi sai câu hỏi. Cắt vùng lá
+      trước khi phân loại đánh đúng chỗ đó, và là hướng duy nhất **không cần dữ liệu mới**.
+
+   **Hạn chế phải ghi vào báo cáo:** PlantDoc là ảnh **thu từ Internet**, không phải ảnh tự
+   chụp ngoài đồng — vẫn là phép thử domain shift hợp lệ (nền lộn xộn, nhiều lá chồng, ánh
+   sáng tự nhiên) nhưng **đừng gọi là "ảnh đồng ruộng"**. Đề tài kết luận được về domain gap
+   **nói chung**, **không** kết luận được gì riêng cho điều kiện canh tác ở Đà Lạt. Đừng
+   trình bày như thể đã đo trên ảnh địa phương. PlantDoc cũng có tiếng nhãn hơi nhiễu nên
+   phải xem mẫu bằng mắt.
 
    Ba con số có nguồn trích dẫn được (chi tiết trong `model/research/`): chính tác
    giả PlantVillage báo cáo tụt từ 99,35% xuống **31,40%** trên ảnh điều kiện khác
    (bài A1); review 2024 đo trung bình **90,18% → 84,66%** (A3); và có người huấn
    luyện **chỉ bằng 8 pixel nền** vẫn đạt 49% (A2).
 
-   **Không cần chờ đi chụp ảnh mới có số của mình:** bộ **H1** (731 ảnh đồng ruộng
-   thật, 6/7 lớp trùng, tải từ Mendeley) chạy `evaluate.py --manifest` là ra.
+   ⚠️ **Bốn tài liệu trong `model/research/` vẫn ghi H1 dùng được** (`00-danh-muc-bai-bao.md`,
+   `01-ke-hoach-thi-nghiem.md` TN-2, `02-cau-hoi-phan-bien.md`, `03-tong-hop-doi-chieu.md`)
+   — chưa sửa, đang chờ Bảo quyết. Đọc mục này trước khi tin chúng.
 2. **Tốc độ suy luận** trên máy chạy backend lúc demo.
 3. **Kết nối mạng** giữa điện thoại và backend khi demo — cùng LAN, đúng IP, tường
    lửa mở cổng.
