@@ -1,0 +1,616 @@
+{
+ "bo_du_lieu": "PlantVillage (tap test cua data/processed/split.csv)",
+ "nguoi_khoanh": "Claude Opus 5 (phien lam viec 15/09/2026), Bao soat lai",
+ "ngay": "2026-09-15",
+ "luoi": 14,
+ "khoanh_mu": true,
+ "ghi_chu_phuong_phap": [
+  "Khoanh tren phieu KHONG co ban do nhiet (xem src/xai/audit_sheets.py). Bang heatmap chi duoc sinh SAU khi file nay da ghi xong.",
+  "V = o nhin thay ro trieu chung benh (dom hoai tu, vien chay nau, mang vang/bac mau do benh). Quy tac RONG RAI: thay trieu chung la tinh V, khong doi phai chiem het o -> con so 'heatmap trung vet benh' la CAN TREN.",
+  "L = o la phien la ca chua nhung khong thay trieu chung. Cuong la / cuong chinh cung tinh L.",
+  "N = o khong phai mo la ca chua (nen, dat, bong do, vat khac). O lan thi theo phan chiem uu the.",
+  "kieu_trieu_chung phan biet 3 nhom: 'cuc_bo' (vet benh khu tru duoc) / 'khuech_tan' (trieu chung trai deu ca phien la) / 'khong_co_vet' (lop healthy). Voi nhom khuech_tan thi V ~ ca phien la nen ti le V/L KHONG con y nghia, chi con la-vs-nen la doc duoc."
+ ],
+ "annotations": {
+  "pv-bacterial_spot-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vien la chay nau gan het chu vi + vai dom sam tren phien. Vet benh nam o RIA la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLVVVVNN",
+    "NNNNNLLLLLLVVN",
+    "NNNNLLLLLLLVVN",
+    "NNNVLLLLLLLVVN",
+    "NNVVLLLLLLLVVN",
+    "NNVLLLLLLLVVVN",
+    "NNVLLLLLLLVVVN",
+    "NNVLLLLLLLLVVN",
+    "NNVLLLLLLLLVVN",
+    "NNVLLLLLLLVVNN",
+    "NNNVVLLLLLVVNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNLLNNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La gan nhu xanh hoan toan, trieu chung RAT it: dau la chay nau, hai dom nho. Ca kho cho ca nguoi khoanh lan mo hinh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNVVLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLVN",
+    "NLLLLLLLVLLLLN",
+    "NVLLLLLLLLLLLN",
+    "NLLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNNNLLLLNNNNNN",
+    "NNNNNLLNNNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu dom hoai tu mau nau nhat rai deu tren phien la, thay ro. Day la ca ly tuong de kiem Grad-CAM.",
+   "luoi": [
+    "NNNNNNNLVVLNNN",
+    "NNNNNLLLVVLNNN",
+    "NNNNLVVLVVLLNN",
+    "NNNLLVVLVVLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNVLLLLLLLLLNN",
+    "NNLVVVLLLLLLNN",
+    "NNLLLLLVVLLLNN",
+    "NNLLLLLLLVLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLVVNN",
+    "NNNLLLLLLLVVNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNNLLLLNNNNN"
+   ]
+  },
+  "pv-early_blight-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu dom den dong tam co dien + quang vang quanh dom. Vet benh ro va phan bo khap phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLLVVLNNN",
+    "NNNNLVVLLLLLNN",
+    "NNNLLVVVLLLLLN",
+    "NNLVVLLLLLLLLN",
+    "NNLLVLLVVLLLVN",
+    "NLLLLVLLVVLVVN",
+    "NLLVLLLLVVVVVN",
+    "LLLLLLVVVLVVVN",
+    "LLLLLLVVLVVLNN",
+    "LLLLLLLLLNNNNN",
+    "LLLLLLLLLNNNNN",
+    "NNLLLLLLNNNNNN",
+    "NNNNNNLLNNNNNN"
+   ]
+  },
+  "pv-early_blight-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La chu yeu xanh, chi chay nau o ria phai. Nen xam chiem hon nua anh.",
+   "luoi": [
+    "NNNLLLLLNNNNNN",
+    "NNNLLLLVNNNNNN",
+    "NNLLLLVVNNNNNN",
+    "NNLLLLVVNNNNNN",
+    "NLLLLLLVVNNNNN",
+    "NLLLLLLLVNNNNN",
+    "NLLLLLLLLNNNNN",
+    "LLLLLLLLLNNNNN",
+    "NLLLLLLLVNNNNN",
+    "NLLLLLLLLNNNNN",
+    "NNLLLLLVNNNNNN",
+    "NNLLLLLVNNNNNN",
+    "NNNLLLLLNNNNNN",
+    "NNNNLLLLNNNNNN"
+   ]
+  },
+  "pv-early_blight-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vang la nang o nua duoi + dom den. Phan goc la (hang 12-14) gan nhu hoai tu het.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NLLLNNNNNNNNNN",
+    "NLVVLLLLLNNNNN",
+    "NLLLLLLLLLNNNN",
+    "NLLLVVLLLLLNNN",
+    "NLLLVLLLLVVVNN",
+    "NLLLLLLLLVVVNN",
+    "NLLLLLLLLVVVNN",
+    "NNLVVVLLLVVVNN",
+    "NNLVVVLLLVVVNN",
+    "NNLLLLLLLLLNNN",
+    "NNLVVVVLLLLNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNNVVVVVVNNNN"
+   ]
+  },
+  "pv-healthy-1": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe. KHONG co o V nao — theo dinh nghia. Bong do dam o goc duoi-trai tinh la nen.",
+   "luoi": [
+    "NNNNNNLLLNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NLLLLLLLLLLNNN",
+    "NLLLLLLLLLLNNN",
+    "NLLLLLLLLLLLNN",
+    "NLLLLLLLLLLLNN",
+    "NLLLLLLLLLLNNN",
+    "NLLLLLLLLLLNNN",
+    "NNNLLLNNNNNNNN",
+    "NNNLLNNNNNNNNN"
+   ]
+  },
+  "pv-healthy-2": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe, mot phien lon chiem giua anh, nen xam dong nhat.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-healthy-3": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NLLLLLLLLLLLNN",
+    "NLLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mang hoai tu nau den RAT LON chiem nua tren anh — dac trung moc suong muon. Nua duoi la mo xanh con lanh. Day la ca de nhat trong ca bo.",
+   "luoi": [
+    "NNNVVVNNNNNNNN",
+    "NNVVVVVVNNNNNN",
+    "NVVVVVVVVNNNNN",
+    "NNVVVVVVVNNNNN",
+    "NNVVVVVVVNNNNN",
+    "NNVVVVVVVLLNNN",
+    "NLVVVVVVVLLLNN",
+    "LLLLLVVVVLLLLN",
+    "LLLLVVLLLLLLLN",
+    "LLLLLLLLLLLLLN",
+    "LLLLLLLLLLLLNN",
+    "LLLLLLLLLLLNNN",
+    "LLLNNNLLNNNNNN",
+    "NNNNNNLNNNNNNN"
+   ]
+  },
+  "pv-late_blight-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mang hoai tu xam nau o nua tren-trai cua phien la, ranh gioi voi mo lanh kha ro.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NLLVNNNNNNNNNN",
+    "NLLVVVNNNNNNNN",
+    "NLLVVVVNNNNNNN",
+    "NLLVVVVVNNNNNN",
+    "NLLVVVVVLLNNNN",
+    "NLLVVVVVLLLNNN",
+    "NLLLVVVVLLLNNN",
+    "NNLLVVLLLLLNNN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLLLLNNN",
+    "NNNNNNNNNNLLNN",
+    "NNNNNNNNNNLLNN",
+    "NNNNNNNNNNNLNN"
+   ]
+  },
+  "pv-late_blight-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La nho, nhan nheo, vung hoai tu vang-nau o giua. La chiem rat it dien tich anh (~13%).",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNLLVLNNNNNNN",
+    "NNLLVVLLNNNNNN",
+    "NNLLVVVLNNNNNN",
+    "NNLLVVVVNNNNNN",
+    "NNLLVVVVNNNNNN",
+    "NNNVVVLNNNNNNN",
+    "NNNNVNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Phien la chinh bac mau vang-luc gan het (trieu chung moc la trai deu), doi lap voi hai la chet mau xanh dam o goc duoi-trai. V ~ ca phien -> ti le V/L khong doc duoc cho lop nay.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNVVVNN",
+    "NNNNNNNVVVVVNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNVVVVVVNNNN",
+    "NNLLVVVVVVNNNN",
+    "NNLLVVVVVVNNNN",
+    "NLLLVVVVVNNNNN",
+    "NLLLVVVVNNNNNN",
+    "NNLLVVVNNNNNNN",
+    "NNNLVVNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cac mang vang loang lo tren nen la xanh — o day trieu chung con khu tru duoc mot phan, khac pv-leaf_mold-1.",
+   "luoi": [
+    "NNNNLLVLNNNNNN",
+    "NNNNLLLLLNNNNN",
+    "NNNLVVLLLNNNNN",
+    "NNLLVVLVVLNNNN",
+    "NNLLVVLLLLNNNN",
+    "NLLLVVLLLLNNNN",
+    "NLLLLLVVVLLNNN",
+    "NLLLVVVVVLLNNN",
+    "LLLLLLVVVVLLNN",
+    "LLLLLLVVVVVLLN",
+    "LLLLNLNNNNNNNN",
+    "NNNNNLLNNNNNNN",
+    "NNNNNLLNNNNNNN",
+    "NNNNNLLNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Bang vang chay doc theo giua phien la, la nam cheo goc duoi-trai len goc tren-phai.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNVVV",
+    "NNNNNNNNLVVVVV",
+    "NNNNNNLLLVVVVN",
+    "NNNNLLLLVVVVNN",
+    "NNNLLLLVVVVLNN",
+    "NNLLLVVVLLLNNN",
+    "NNLLVVVLLLNNNN",
+    "NNLVVVLLLNNNNN",
+    "LLVVVVLLNNNNNN",
+    "NLLLLLLNNNNNNN",
+    "NNLLLLNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La xanh dam, kham nhe + ria la nhan nheo bien dang. Trieu chung o day RAT kho khu tru — danh dau ca phien la V, cuong la giu L.",
+   "luoi": [
+    "NNNNNVVNNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Kham vang-luc thay RO tren ca phien la, la hep va nhan.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNVVNNNNNNNNN",
+    "NNNVVVVNNNNNNN",
+    "NNNVVVVVNNNNNN",
+    "NNNVVVVVNNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNLLLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Kham + mat la phong rop (rugose) tren toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNVVVVVVVNNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu dom nau sam ro rang + vang la quanh dom. Nua tren la vang nang hon nua duoi.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVLLVVVNNN",
+    "NNNVVLLLLVVNNN",
+    "NNVVVVLVVVVVNN",
+    "NLLLLLLVVLLLNN",
+    "NLVVVVVLLLLLNN",
+    "NLLLLLLLLLLLLN",
+    "NNLLLLLLLVVLLN",
+    "NNNLLLLLNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La dai hep nam cheo. Vet benh it: mot mang hoai tu o dau la (goc tren-trai) va vai dom nho o giua.",
+   "luoi": [
+    "VVLNNNNNNNNNNN",
+    "VVLLLNNNNNNNNN",
+    "LLLLVVNNNNNNNN",
+    "NLLLVVVNNNNNNN",
+    "NLLLLLVVNNNNNN",
+    "NNLLLLVVNNNNNN",
+    "NNLLLLLLLNNNNN",
+    "NNLLLLLLLLNNNN",
+    "NNLLLVLLLLLNNN",
+    "NLLLLVVLLLLNNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLLLNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Cum dom nau sam tap trung o nua tren-phai phien la, phan con lai xanh. Ca tot de kiem Grad-CAM co bam dung cum dom khong.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNLLLVVVNNN",
+    "NNNNLLLLVVLNNN",
+    "NNNNLLLLVVLNNN",
+    "NNNLLLLLLVLNNN",
+    "NNLLLLLLVVLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLVVVLNN",
+    "NNNLLLLLLLLNNN",
+    "NNNNLLLNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "CANH BAO: cham li ti do nhen do gan nhu KHONG nhin thay o 224px. Danh dau ca phien la V vi trieu chung trai deu, nhung day la gioi han cua phep do chu khong phai do chinh xac.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Day la ca nhen do DUY NHAT trong ba ca ma trieu chung khu tru duoc: nua trai phien la bac mau xam-luc (bronzing) ro, nua phai van xanh dam.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNVVLLLNNNNN",
+    "NNNNVVLLLNNNNN",
+    "NNNNVVLLLNNNNN",
+    "NNNNVVLLLLNNNN",
+    "NNNNVVVLLLNNNN",
+    "NNNNVVVLLLNNNN",
+    "NNNNVVVLLLNNNN",
+    "NNNNVVVLLLNNNN",
+    "NNNNVVVLLLNNNN",
+    "NNNNVVVLLNNNNN",
+    "NNNNNVVLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Nhu pv-spider_mites-1: cham li ti khong phan giai duoc o 224px.",
+   "luoi": [
+    "NNNNNNVNNNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNLLLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-target_spot-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Chi 4-5 dom nau NHO tren mot phien la lon con xanh. Dien tich V rat be (~4% anh) — ca kho nhat cho Grad-CAM.",
+   "luoi": [
+    "NNNNLLNNNNNNNN",
+    "NNNNLLLNNNNNNN",
+    "NNNLLLLLNNNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNLLLLLLLNNNNN",
+    "NNLLVLLVLLNNNN",
+    "NNLVVLLLLLNNNN",
+    "NLLLLVLLLLLNNN",
+    "NLVVLLLLLLLLNN",
+    "NLLLLLLLLLLLNN",
+    "NLLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNNLLNNNNNNN"
+   ]
+  },
+  "pv-target_spot-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Chi 2 dom nau rat nho tren ca phien la. Gan nhu khong phan biet duoc voi la khoe bang mat thuong.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNLLLLLLLNNNN",
+    "NNNLLLLLLLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLLLVLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLLLLVLNNN",
+    "NNNNLLLLLNNNNN",
+    "NNNNNNLLNNNNNN"
+   ]
+  },
+  "pv-target_spot-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhu tren: 2 dom nho o nua duoi-phai. Phan con lai xanh.",
+   "luoi": [
+    "NNNNNLLNNNNNNN",
+    "NNNNLLLLLNNNNN",
+    "NNNLLLLLLLNNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLVLLNN",
+    "NNLLLLLLVLLNNN",
+    "NNNNLLLNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Vang ria la ro (cot 11-13 va 2-3), giua phien con xanh — o day trieu chung KHU TRU duoc vao ria la, khac hai ca YLCV con lai.",
+   "luoi": [
+    "NNNNNLLLNNNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNLLLLLLVNNN",
+    "NNNNLLLLLLVNNN",
+    "NNNLLLLLLLVVNN",
+    "NNNLLLLLLLVVNN",
+    "NNVLLLLLLLVVNN",
+    "NNVLLLLLLLVVVN",
+    "NVVLLLLLLLVVVN",
+    "NVVLLLLLLLVVVN",
+    "NNLLLLLLLLVVNN",
+    "NNNNLLLLLNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNLLNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La cuon quan lai, bien dang toan bo — trieu chung la HINH DANG chu khong phai mot vet cu the.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNVVVVVVNNNNNN",
+    "NNVVVVVNNNNNNN",
+    "NNNVVVNNNNNNNN",
+    "NNNNVNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Ca phien la vang ruc va cuon men — trieu chung phu kin la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNVVVNNNNNNN",
+    "NNNVVVVVNNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNVVVVVVVNNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNVVVVVVVVVNNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVNNN",
+    "NNVVVVVVVVVNNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNLLNNNNNNN",
+    "NNNNNLLNNNNNNN",
+    "NNNNNLLNNNNNNN"
+   ]
+  }
+ }
+}

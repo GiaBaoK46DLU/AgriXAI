@@ -1,0 +1,31 @@
+sample_id,dataset,label,path
+pv-bacterial_spot-1,pv,bacterial_spot,data/raw/Tomato___Bacterial_spot/0de30b71-8bd0-4270-a65b-7ae8befdd765___GCREC_Bact.Sp 6360.JPG
+pv-bacterial_spot-2,pv,bacterial_spot,data/raw/Tomato___Bacterial_spot/30dab838-d0e4-4028-9992-39a30009c167___GCREC_Bact.Sp 5829.JPG
+pv-bacterial_spot-3,pv,bacterial_spot,data/raw/Tomato___Bacterial_spot/83ecce4f-12d0-4d5a-8c65-8f0b2b24de73___GCREC_Bact.Sp 3259.JPG
+pv-early_blight-1,pv,early_blight,data/raw/Tomato___Early_blight/3dab5935-91ca-489d-b4f4-127300fc527e___RS_Erly.B 6342.JPG
+pv-early_blight-2,pv,early_blight,data/raw/Tomato___Early_blight/6485f47f-79cf-455f-9d6c-dbb04ddb580f___RS_Erly.B 7576.JPG
+pv-early_blight-3,pv,early_blight,data/raw/Tomato___Early_blight/676eb874-87e8-4f5d-bd38-013799c31996___RS_Erly.B 6458.JPG
+pv-healthy-1,pv,healthy,data/raw/Tomato___healthy/19e31197-5f6d-4925-975c-884bd4a94bfe___RS_HL 0291.JPG
+pv-healthy-2,pv,healthy,data/raw/Tomato___healthy/b7e3a280-a031-475d-95b2-a1d2f0f49e02___GH_HL Leaf 279.JPG
+pv-healthy-3,pv,healthy,data/raw/Tomato___healthy/c5db6d9e-4821-4b05-8b44-80ba702a8401___GH_HL Leaf 373.JPG
+pv-late_blight-1,pv,late_blight,data/raw/Tomato___Late_blight/24364b4f-3f9f-4166-860d-34a938d3d630___RS_Late.B 4986.JPG
+pv-late_blight-2,pv,late_blight,data/raw/Tomato___Late_blight/cd3a1b72-2538-4ed0-9b04-6485b4f0ab0c___RS_Late.B 7149.JPG
+pv-late_blight-3,pv,late_blight,data/raw/Tomato___Late_blight/fabba25a-e191-47c5-a468-6acf744312e1___GHLB2 Leaf 8835.JPG
+pv-leaf_mold-1,pv,leaf_mold,data/raw/Tomato___Leaf_Mold/0ae36892-5cb1-476e-8a51-b7fd8183a535___Crnl_L.Mold 6728.JPG
+pv-leaf_mold-2,pv,leaf_mold,data/raw/Tomato___Leaf_Mold/0eda4dc5-7f7b-4e27-9e53-1e0326eef88e___Crnl_L.Mold 8850.JPG
+pv-leaf_mold-3,pv,leaf_mold,data/raw/Tomato___Leaf_Mold/3a7f507d-76d7-4489-baf4-2e4dad468173___Crnl_L.Mold 8784.JPG
+pv-mosaic_virus-1,pv,mosaic_virus,data/raw/Tomato___Tomato_mosaic_virus/457f4e02-65b3-4e02-ba87-7f20ab44f89e___PSU_CG 2180.JPG
+pv-mosaic_virus-2,pv,mosaic_virus,data/raw/Tomato___Tomato_mosaic_virus/526f2f56-2290-422d-a454-d576aa72d466___PSU_CG 2057.JPG
+pv-mosaic_virus-3,pv,mosaic_virus,data/raw/Tomato___Tomato_mosaic_virus/9c96bbe3-5599-4e31-996f-ae37d75872f5___PSU_CG 2215.JPG
+pv-septoria_leaf_spot-1,pv,septoria_leaf_spot,data/raw/Tomato___Septoria_leaf_spot/0d12d6ee-bc90-413e-8638-e476cd8ba8ee___Keller.St_CG 1840.JPG
+pv-septoria_leaf_spot-2,pv,septoria_leaf_spot,data/raw/Tomato___Septoria_leaf_spot/689b643a-89fa-4a7f-93a3-edd9d2d5ac6a___Matt.S_CG 2517.JPG
+pv-septoria_leaf_spot-3,pv,septoria_leaf_spot,data/raw/Tomato___Septoria_leaf_spot/d67b224c-b089-430d-b185-dfae7b7a5a9e___Keller.St_CG 1950.JPG
+pv-spider_mites-1,pv,spider_mites,data/raw/Tomato___Spider_mites Two-spotted_spider_mite/3359d10c-2afd-4734-8a71-d19d25a041a6___Com.G_SpM_FL 9016.JPG
+pv-spider_mites-2,pv,spider_mites,data/raw/Tomato___Spider_mites Two-spotted_spider_mite/74433374-b410-426c-8752-c0e4ea7c9f71___Com.G_SpM_FL 8641.JPG
+pv-spider_mites-3,pv,spider_mites,data/raw/Tomato___Spider_mites Two-spotted_spider_mite/9e86198b-55c7-45b2-821f-42e0ca05312c___Com.G_SpM_FL 9417.JPG
+pv-target_spot-1,pv,target_spot,data/raw/Tomato___Target_Spot/02b891ad-b252-4f46-8618-89a0c36193c2___Com.G_TgS_FL 0038.JPG
+pv-target_spot-2,pv,target_spot,data/raw/Tomato___Target_Spot/65fc846a-ffd1-49ca-9f1e-1050ac94c196___Com.G_TgS_FL 8093.JPG
+pv-target_spot-3,pv,target_spot,data/raw/Tomato___Target_Spot/facfaefa-628d-4e71-8174-9aa24d43724d___Com.G_TgS_FL 9767.JPG
+pv-yellow_leaf_curl_virus-1,pv,yellow_leaf_curl_virus,data/raw/Tomato___Tomato_Yellow_Leaf_Curl_Virus/39543d85-1d1d-46a7-8f5e-558dab77f7f6___UF.GRC_YLCV_Lab 01450.JPG
+pv-yellow_leaf_curl_virus-2,pv,yellow_leaf_curl_virus,data/raw/Tomato___Tomato_Yellow_Leaf_Curl_Virus/e7793d98-ca6c-4030-8b4a-4bd506cde757___YLCV_NREC 2268.JPG
+pv-yellow_leaf_curl_virus-3,pv,yellow_leaf_curl_virus,data/raw/Tomato___Tomato_Yellow_Leaf_Curl_Virus/f8dfef7f-9548-4e77-b9d6-69854ed088ce___UF.GRC_YLCV_Lab 01856.JPG
