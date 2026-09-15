@@ -327,7 +327,7 @@ phiến lá là hệ thống đang nói một câu nó không có căn cứ đ�
 | **#50** hướng 2 fine-tune | Mốc "trước" đã có: **28,79 %** trên 66 ảnh `test` (69 trừ 3 ảnh rò rỉ). Huấn luyện **chỉ trên** `train` — 675 ảnh 8 lớp, nên bỏ thêm `tomato_V8.jpg` vì nhãn mâu thuẫn, còn **674**. Hai ảnh rò rỉ kia giữ được trong `train` vì đã bị loại khỏi `test`. Đo lại trên đúng 66 ảnh đó |
 | **#47** ngưỡng tin cậy | **Thu hẹp phạm vi.** Mục 4 chứng minh ngưỡng không vá được độ chính xác trên ảnh thật. Vẫn làm #47, nhưng để chặn ảnh không phải lá — đừng kỳ vọng nó cải thiện accuracy |
 | **#17** kiểm Grad-CAM bằng mắt | **Nâng ưu tiên, và mở rộng phạm vi.** Mục 5 đo được mức tập trung tụt về 1,02× nhưng phép đo tự nó có hạn chế. #17 nay phải kiểm **cả PlantVillage lẫn PlantDoc**, khoanh lá bằng tay |
-| **#16** Grad-CAM++ | Giữ nguyên thứ tự (sau #17). Nhưng lưu ý: nét hơn mà vẫn bám nền thì vô nghĩa — mục 5 làm lý lẽ này mạnh hơn trước |
+| **#98** Grad-CAM++ | Giữ nguyên thứ tự (sau #17). Nhưng lưu ý: nét hơn mà vẫn bám nền thì vô nghĩa — mục 5 làm lý lẽ này mạnh hơn trước. ⚠️ Bản đầu của báo cáo này ghi sai là #16; #16 thật là MD-07 sinh lưới ảnh minh hoạ, còn Grad-CAM++ **trước 15/09/2026 không có issue nào** — nay đã tạo **#98** |
 | **#19** so kiến trúc | **Giữ nguyên mức hạ cấp.** Điểm nghẽn là 68,8 điểm domain gap, không phải 0,4 điểm còn lại trên PlantVillage. Đổi backbone không thu hẹp khoảng cách đó |
 | **#95** báo cáo GVHD | Tài liệu này là nội dung chính của phần "còn thiếu" thứ ba đã ghi ở `Plan_model.md` mục 3 |
 
