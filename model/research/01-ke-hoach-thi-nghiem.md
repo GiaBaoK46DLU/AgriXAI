@@ -66,10 +66,10 @@ Liên quan: **B1**, **B6**, **B8**.
 > ⚠️ **Đã viết lại 15/09/2026.** Bản cũ dùng bộ **H1** và ước lượng *"mất nửa buổi"*. H1
 > đã bị **loại hẳn**: export Roboflow/YOLO không kèm `data.yaml` nên không biết class ID
 > nào là bệnh nào, và 230/689 ảnh có nhãn đa lớp. Nửa buổi đó đã tiêu vào việc phát hiện
-> điều này. Căn cứ đầy đủ ở `Plan_model.md` mục 5.2; việc đang làm là issue **#49**.
+> điều này. Căn cứ đầy đủ ở `docx/Plan_model.md` mục 5.2; việc đang làm là issue **#49**.
 
 Tải phần cà chua của **PlantDoc** (GitHub `pratikkayal/PlantDoc-Dataset`), ánh xạ tên thư
-mục sang khoá bệnh trong `shared/data/tomato_diseases.json` theo bảng ở `Plan_model.md`
+mục sang khoá bệnh trong `shared/data/tomato_diseases.json` theo bảng ở `docx/Plan_model.md`
 mục 5.2, sinh manifest rồi chạy `evaluate.py`.
 
 **Ba chỗ code phải sửa trước, nếu không thì hai chỗ đầu cho ra số sai mà không báo lỗi:**
@@ -108,7 +108,7 @@ Bài **A3** cho con số đối chiếu: các công bố khác tụt từ 90,18%
   `src/data/prepare_plantdoc.py`.
 
 > ✅ **TN-2 ĐÃ CHẠY XONG ngày 15/09/2026 — kết quả: 99,60 % → 30,81 % (tụt 68,79 điểm).**
-> Báo cáo đầy đủ ở `bao-cao-domain-gap.md` (thư mục gốc). Con số này **gần trùng khớp bài
+> Báo cáo đầy đủ ở `docx/bao-cao-domain-gap.md`. Con số này **gần trùng khớp bài
 > A1** (99,35 % → 31,40 %), lệch 0,6 điểm. Ba phát hiện kèm theo: mô hình dồn 85 % dự đoán
 > vào 3 lớp; ngưỡng tin cậy không vá được; mức tập trung Grad-CAM tụt 1,58× → 1,02×.
 

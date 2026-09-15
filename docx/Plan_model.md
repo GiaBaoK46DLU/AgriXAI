@@ -630,7 +630,7 @@ chứng minh điều đó), nên phải xem mẫu bằng mắt và ghi lại nh�
 
 ### ✅ Kết quả #49 — đã chạy xong ngày 15/09/2026
 
-> **Báo cáo đầy đủ: `bao-cao-domain-gap.md`** (thư mục gốc). Mục này chỉ ghi con số
+> **Báo cáo đầy đủ: `bao-cao-domain-gap.md`** (cùng thư mục này). Mục này chỉ ghi con số
 > đầu và ba phát hiện đổi thứ tự việc; mọi bảng chi tiết, cách chạy lại và phần hạn
 > chế đều ở tài liệu kia.
 

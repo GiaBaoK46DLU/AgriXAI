@@ -62,13 +62,13 @@ Chúng **không mâu thuẫn mà bổ sung cho nhau**, và ghép lại thành m�
 
 ### Hệ quả: việc phải làm
 
-✅ **Nhóm ĐÃ CÓ số domain gap của chính mình (15/09/2026, issue #49): 99,60 % → 30,81 %, tụt 68,79 điểm.** Đo trên **H2 — PlantDoc**, 742 ảnh cà chua trên 8 lớp, cả hai phía cùng một tập lớp. Báo cáo đầy đủ: `bao-cao-domain-gap.md` (thư mục gốc).
+✅ **Nhóm ĐÃ CÓ số domain gap của chính mình (15/09/2026, issue #49): 99,60 % → 30,81 %, tụt 68,79 điểm.** Đo trên **H2 — PlantDoc**, 742 ảnh cà chua trên 8 lớp, cả hai phía cùng một tập lớp. Báo cáo đầy đủ: `docx/bao-cao-domain-gap.md`.
 
 Đặt cạnh ba con số ở bảng trên thì kết quả của nhóm **gần trùng khớp A1** (99,35 % → 31,40 %), lệch 0,6 điểm ở con số cuối — tức nhóm tái hiện được đúng hiện tượng A1 mô tả, bằng phép đo độc lập trên mô hình của mình. Cách nói đúng khi bảo vệ nay đã đổi: không còn là *"nhóm chưa đo được của mình nên chưa dám nói"* mà là *"nhóm đo được 68,8 điểm, nằm đúng trong khoảng mà tài liệu mô tả, và gần nhất với A1."*
 
 Khoảng cách với A3 (chỉ tụt 5,5 điểm) phải giải thích, đừng bỏ qua: A3 là trung bình của nhiều công bố mà phần lớn **đã fine-tune trên dữ liệu thực địa** — đúng việc mà #50 sắp làm. 68,8 điểm của nhóm là mức tụt **khi chưa làm gì cả**.
 
-> ⚠️ Đoạn này trước ghi bộ **H1** — *"731 ảnh đồng ruộng thật, tải Mendeley về là chạy `evaluate.py --manifest` được ngay, nửa buổi có số"*. **Đã tải về kiểm và loại hẳn** ngày 15/09/2026: không kèm `data.yaml` nên không biết class ID nào là bệnh nào, 230/689 ảnh có nhãn đa lớp, và "731 ảnh" thật ra chỉ là 308 ảnh gốc bị nhân bản. Xem `Plan_model.md` mục 5.2.
+> ⚠️ Đoạn này trước ghi bộ **H1** — *"731 ảnh đồng ruộng thật, tải Mendeley về là chạy `evaluate.py --manifest` được ngay, nửa buổi có số"*. **Đã tải về kiểm và loại hẳn** ngày 15/09/2026: không kèm `data.yaml` nên không biết class ID nào là bệnh nào, 230/689 ảnh có nhãn đa lớp, và "731 ảnh" thật ra chỉ là 308 ảnh gốc bị nhân bản. Xem `docx/Plan_model.md` mục 5.2.
 
 ---
 
@@ -158,7 +158,7 @@ Khoảng trống này **không phải nhóm tự nghĩ ra**. Bài **D9** khảo 
 |---|---|---|
 | 1 | **D2** đọc kỹ công thức | Chuẩn bị nâng cấp `gradcam.py` trong #16. Bản PDF arXiv không tự đọc được, phải mở tay |
 | 2 | **B1** benchmark đa bộ dữ liệu | Chuẩn bị #19 (so EfficientNet-B0 với ResNet18), lấy cách trình bày bảng |
-| ~~3~~ | ~~**H2** tải phần cà chua của PlantDoc~~ | ✅ **XONG 15/09/2026** — 99,60 % → 30,81 %, xem `bao-cao-domain-gap.md` |
+| ~~3~~ | ~~**H2** tải phần cà chua của PlantDoc~~ | ✅ **XONG 15/09/2026** — 99,60 % → 30,81 %, xem `docx/bao-cao-domain-gap.md` |
 | 4 | **A2** đọc lại phần biện pháp giảm thiểu | Sau khi #17 xong, đối chiếu heatmap của mình với mô tả thiên lệch của họ |
 
 Nhóm C (mô hình nhẹ), E4–E8 (GAN), F (open-set), G (bệnh quả) **chưa cần đọc** — chưa tới lúc.

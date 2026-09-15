@@ -168,11 +168,11 @@ Cần cho **rủi ro số 1**.
 > Ảnh tự chụp ở Đà Lạt: **hoãn vô thời hạn** (không liên hệ được nhà vườn, xem `CLAUDE.md`
 > rủi ro số 1). Và câu *"ba bộ dưới đây tải về đo được ngay"* **sai với H1**: đã tải về kiểm
 > thì H1 không gán nhãn phân loại được, đã **loại hẳn**. Bộ đo chính nay là **H2 (PlantDoc)**.
-> Căn cứ đầy đủ: `Plan_model.md` mục 5.2.
+> Căn cứ đầy đủ: `docx/Plan_model.md` mục 5.2.
 
 | Mã | Bộ dữ liệu | Quy mô | Vì sao dùng | TT |
 |---|---|---|---|---|
-| ~~**H1**~~ | ~~[Tomato leaf dataset](https://pmc.ncbi.nlm.nih.gov/articles/PMC12008584/) — Imtiaz et al., Data in Brief 2025 · [Mendeley](https://doi.org/10.17632/bpfd9cns5g.2)~~ | Công bố "731 ảnh, 7 lớp, chụp tại Bangladesh". **Đếm thật: 308 ảnh gốc** (phần còn lại là bản nhân bản Roboflow) | ❌ **ĐÃ LOẠI 15/09/2026.** Bản trên Mendeley là export Roboflow/YOLO **không kèm `data.yaml`** → không biết class ID nào là bệnh nào; 230/689 ảnh có nhãn đa lớp → không gán được một nhãn/ảnh. Xem `Plan_model.md` mục 5.2 | ❌ |
+| ~~**H1**~~ | ~~[Tomato leaf dataset](https://pmc.ncbi.nlm.nih.gov/articles/PMC12008584/) — Imtiaz et al., Data in Brief 2025 · [Mendeley](https://doi.org/10.17632/bpfd9cns5g.2)~~ | Công bố "731 ảnh, 7 lớp, chụp tại Bangladesh". **Đếm thật: 308 ảnh gốc** (phần còn lại là bản nhân bản Roboflow) | ❌ **ĐÃ LOẠI 15/09/2026.** Bản trên Mendeley là export Roboflow/YOLO **không kèm `data.yaml`** → không biết class ID nào là bệnh nào; 230/689 ảnh có nhãn đa lớp → không gán được một nhãn/ảnh. Xem `docx/Plan_model.md` mục 5.2 | ❌ |
 | **H2** | [PlantDoc](https://github.com/pratikkayal/PlantDoc-Dataset) — Singh et al., CoDS-COMAD 2020 · [bài báo](https://dl.acm.org/doi/10.1145/3371158.3371196) | Bài báo ghi 2.598 ảnh / 13 loài / 17 lớp. **Phần cà chua tự đếm 15/09: 744 ảnh dùng được trên 8 lớp** (675 `train` + 69 `test`) | **Bộ đo chính của đề tài.** Chia thư mục theo lớp, tên thư mục viết rõ bằng chữ nên **không phải đoán ánh xạ** — khác hẳn H1. Thiếu `target_spot`; `spider_mites` chỉ 2 ảnh nên loại khỏi phép đo | ✅ |
 | **H3** | Taiwan tomato leaves | 622 ảnh, 6 lớp (bacterial spot 100, black mold 67, gray spot 84, healthy 106, late blight 98, powdery mildew 157) | Ảnh có bóng đổ, nhiều lá chồng, nền lộn xộn. Chỉ trùng 3 lớp với mình. Xem cách dùng trong **B1** | ⚪ |
 | **H4** | [Benchmarking In-the-Wild Multimodal Plant Disease Recognition and A Versatile Baseline](https://arxiv.org/html/2408.03120v1) | — | Chuẩn đo mới cho ảnh ngoài tự nhiên | ⚪ |

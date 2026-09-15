@@ -119,7 +119,7 @@ Vì vậy tách thành **bộ phân loại 2 lớp** (lá cà chua / không ph�
 - Nếu qua cổng, mở 2 lớp thành 3 lớp chỉ là **thêm dữ liệu**, không phải làm lại — #71
   kế thừa từ #92
 
-Số đo và lý lẽ đầy đủ: `Plan_model.md` mục 1 và 5.
+Số đo và lý lẽ đầy đủ: `docx/Plan_model.md` mục 1 và 5.
 
 ### Dữ liệu
 
@@ -453,7 +453,7 @@ mới nhất không tải nổi trên mạng lúc làm).
 |---|---|
 | Cấu trúc thư mục + README các cấp | Đã commit lên `main` |
 | `shared/data/tomato_diseases.json` | Đã commit |
-| `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `bao-cao-huan-luyen-mo-hinh.md` ở thư mục gốc cho số liệu đầy đủ. Từ 07/09/2026, **`model/checkpoints/` và `model/outputs/` đã theo Git** (quyết định của Bảo, đảo ngược quyết định ban đầu) — máy khác `pull` về là chạy được model thật ngay, không phải huấn luyện lại. Chỉ **dữ liệu PlantVillage `model/data/raw/` (18.160 ảnh / 10 lớp, ~275 MB) vẫn nằm ngoài Git** vì tải lại được từ Kaggle (nguồn ghi ở issue #11), không cần bắt repo gánh dung lượng đó |
+| `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `docx/bao-cao-huan-luyen-mo-hinh.md` cho số liệu đầy đủ. Từ 07/09/2026, **`model/checkpoints/` và `model/outputs/` đã theo Git** (quyết định của Bảo, đảo ngược quyết định ban đầu) — máy khác `pull` về là chạy được model thật ngay, không phải huấn luyện lại. Chỉ **dữ liệu PlantVillage `model/data/raw/` (18.160 ảnh / 10 lớp, ~275 MB) vẫn nằm ngoài Git** vì tải lại được từ Kaggle (nguồn ghi ở issue #11), không cần bắt repo gánh dung lượng đó |
 | `model/research/` | Đã commit — danh mục 46 bài báo chia 8 nhóm + bản tổng hợp đối chiếu kết quả với các công bố. Xem mục "Phần việc của Bảo" bên dưới |
 | `backend/` code | **Chạy mô hình thật** (không còn `DummyPredictor` mặc định) — 19/19 test pass, xem mục "Tích hợp mô hình thật" phía trên |
 | `mobile/` (Flutter) | Giao diện đã dựng xong từ trước; **luồng chính đã nối API thật** ngày 07/09/2026: đăng nhập/đăng ký → danh mục → chụp/chọn ảnh → chẩn đoán thật kèm khoanh vùng → gợi ý xử lý (thuốc + video). Có màn **Đăng ký** tự phục vụ (xem mục "Tự đăng ký tài khoản") và **chẩn đoán ngoại tuyến** khi mất mạng (xem mục "Nhận diện ngoại tuyến trên điện thoại"). Màn Lịch sử vẫn còn dữ liệu mẫu — chưa nối, để sau |
@@ -490,8 +490,8 @@ Mục này để mở repo trên **máy khác** là biết ngay đang ở đâu 
 | Suy luận | 31–34 ms trên GPU. **Chưa đo trên CPU** |
 | Chia tập | 70/15/15 theo từng lớp, seed 42, đã kiểm chứng không rò rỉ |
 
-**#15 — đánh giá tập test.** Kết quả đầy đủ trong `bao-cao-huan-luyen-mo-hinh.md`
-(thư mục gốc, đã commit).
+**#15 — đánh giá tập test.** Kết quả đầy đủ trong `docx/bao-cao-huan-luyen-mo-hinh.md`
+(đã commit).
 
 **IN-01, IN-02 — đã nối mô hình thật vào backend và mobile** ngày 07/09/2026, kéo
 sớm hơn lịch mốc 4. Chi tiết ở mục "Tích hợp mô hình thật" phía trên.
@@ -515,11 +515,11 @@ tiến" chỗ này phải đọc E1 trước.
 ### Việc tiếp theo, xếp đúng thứ tự
 
 > Cập nhật 10/09/2026 sau buổi rà soát bốn vấn đề phát hiện khi thử app với mô hình
-> thật. Số đo và lý lẽ đầy đủ ở `Plan_model.md` mục 5.4.
+> thật. Số đo và lý lẽ đầy đủ ở `docx/Plan_model.md` mục 5.4.
 
 | Thứ tự | Việc | Vì sao thứ tự này |
 |---|---|---|
-| ~~1~~ | ~~**#49 — đo domain gap**~~ | ✅ **XONG 15/09/2026: 99,60 % → 30,81 %** trên bộ H2 PlantDoc (742 ảnh, 8/10 lớp). Xem `bao-cao-domain-gap.md`. Đã mở chốt cho #93, #94, #50 |
+| ~~1~~ | ~~**#49 — đo domain gap**~~ | ✅ **XONG 15/09/2026: 99,60 % → 30,81 %** trên bộ H2 PlantDoc (742 ảnh, 8/10 lớp). Xem `docx/bao-cao-domain-gap.md`. Đã mở chốt cho #93, #94, #50 |
 | **1** | **#17 — kiểm Grad-CAM có rơi đúng vết bệnh không**, khoanh lá **bằng tay**, trên **cả PlantVillage lẫn PlantDoc** | **Nâng lên đầu sau kết quả #49.** Mức tập trung heatmap tụt 1,58× → 1,02× trên ảnh thật — gần như không khác rải ngẫu nhiên. Nếu điều đó đúng thì **toàn bộ phần XAI mất giá trị**, nên phải xác nhận hay bác bỏ trước mọi việc khác. Phạm vi rộng hơn bản cũ: thêm bộ PlantDoc |
 | **2** | **#17 — kiểm tra Grad-CAM có rơi đúng vết bệnh không** (5 ảnh × 10 lớp) | **Cổng kiểm soát của cả đề tài.** Nếu heatmap rơi vào nền thì toàn bộ phần XAI mất giá trị. Lý do là bài A2: có người huấn luyện **chỉ bằng 8 pixel nền** PlantVillage mà vẫn đạt 49 % (đoán mò 2,63 %). Tiền kiểm 10/09 đã chỉ chỗ đáng nghi: lớp `healthy` chỉ 42 % khối lượng heatmap nằm trong lá, và 14 % ảnh có điểm nóng nhất rơi ra nền |
 | **3** | **#90 — không khoanh vùng khi bản đồ nhiệt quá yếu** | Chặn ngay triệu chứng nặng nhất: app khoanh elip lên vật thể bất kỳ rồi khẳng định một loại bệnh. **1 giờ, không cần Học sửa gì** vì không đụng hợp đồng dùng chung |
@@ -534,7 +534,7 @@ tiến" chỗ này phải đọc E1 trước.
    Chạy EfficientNet-B3 ở 224 là dưới độ phân giải thiết kế của nó. Nếu #19 chạy vậy
    rồi kết luận "B3 không hơn B0" là **kết luận không công bằng** — phải ghi rõ.
 2. **Không đo lại bằng trí nhớ.** Bảng chia tập và smoke test nằm trong PR #78; kết
-   quả huấn luyện nằm trong `bao-cao-huan-luyen-mo-hinh.md`. Trích từ đó.
+   quả huấn luyện nằm trong `docx/bao-cao-huan-luyen-mo-hinh.md`. Trích từ đó.
 3. **Checkpoint đã theo Git từ 07/09/2026.** File đang dùng là
    `model/checkpoints/leaf_disease_detection_model.pt` (backend trỏ tới qua
    `MODEL_CHECKPOINT` trong `backend/.env`), commit thẳng cùng `best.pt`. Trước
@@ -595,7 +595,7 @@ tiến" chỗ này phải đọc E1 trước.
      loại H1**, nhãn không tra được mới là lý do.)
 
    Loại hẳn, không phải hoãn: nhãn không tra được thì không có cách dùng lại về sau, trừ
-   khi tác giả công bố thêm `data.yaml`. Căn cứ đầy đủ ở `Plan_model.md` **mục 5.2**.
+   khi tác giả công bố thêm `data.yaml`. Căn cứ đầy đủ ở `docx/Plan_model.md` **mục 5.2**.
 
    #### ✅ Thay bằng H2 — PlantDoc (chốt 15/09/2026)
 
@@ -622,8 +622,9 @@ tiến" chỗ này phải đọc E1 trước.
 
    #### ✅ #49 ĐÃ XONG (15/09/2026) — con số domain gap của nhóm
 
-   > **99,60 % → 30,81 %. Tụt 68,79 điểm.** Báo cáo đầy đủ: **`bao-cao-domain-gap.md`**
-   > (thư mục gốc). Số liệu máy sinh: `model/outputs/plantdoc-{all,8lop,official}/` và
+   > **99,60 % → 30,81 %. Tụt 68,79 điểm.** Báo cáo đầy đủ:
+   > **`docx/bao-cao-domain-gap.md`**. Số liệu máy sinh:
+   > `model/outputs/plantdoc-{all,8lop,official}/` và
    > `model/outputs/plantvillage-8lop/`.
 
    Cả hai con số đo trên **đúng 8 lớp** mà PlantDoc có (đã lọc tập test PlantVillage cho

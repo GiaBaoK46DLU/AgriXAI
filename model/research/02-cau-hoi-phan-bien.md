@@ -23,7 +23,7 @@ khoanh vào lá hay vào nền.
 
 **Đã đo được (15/09/2026, issue #49): tụt từ 99,60 % xuống 30,81 %, tức 68,79 điểm.**
 Đo trên bộ **H2 (PlantDoc)**, 742 ảnh, cả hai phía cùng 8 lớp. Báo cáo:
-`bao-cao-domain-gap.md`.
+`docx/bao-cao-domain-gap.md`.
 
 Đặt cạnh tài liệu: con số của nhóm **gần trùng khớp A1** — chính tác giả PlantVillage báo
 99,35 % → 31,40 %, nhóm lệch 0,6 điểm. Còn A3 (review 2024) đo trung bình 90,18 % → 84,66 %,
@@ -135,7 +135,7 @@ và không có gì báo lỗi. Con số đó đã thành số domain gap chính 
 thấy nhóm hiểu một điều mà bảng số liệu không bao giờ tự nói ra: **một phép đo sai không
 báo lỗi thì nguy hiểm hơn một phép đo không chạy được.**
 
-→ `Plan_model.md` mục 5.2 · cái bẫy số 4 trong `CLAUDE.md` · **H2**
+→ `docx/Plan_model.md` mục 5.2 · cái bẫy số 4 trong `CLAUDE.md` · **H2**
 
 ---
 
