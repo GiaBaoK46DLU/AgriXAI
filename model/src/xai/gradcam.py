@@ -48,15 +48,31 @@ class GradCAM:
         self.gradients = grad
 
     def __call__(self, input_tensor: torch.Tensor,
-                 class_idx: int | torch.Tensor | None = None) -> np.ndarray:
+                 class_idx: int | torch.Tensor | None = None,
+                 normalize: bool = True) -> np.ndarray:
         """Tính heatmap cho một batch ảnh đã chuẩn hoá.
 
         Args:
             input_tensor: (B, 3, H, W) — đã qua ``build_eval_transform``.
             class_idx: lớp cần giải thích. None = lớp mô hình dự đoán.
+            normalize: True (mặc định, giữ nguyên hành vi cũ của toàn hệ thống)
+                thì kéo giãn min-max từng ảnh về 0..1. False thì trả về giá trị
+                thô sau ReLU, **chưa** kéo giãn.
+
+                Tham số này thêm cho phép kiểm #17 và là *tuỳ chọn*: mọi chỗ gọi
+                sẵn có — ``DiseasePredictor``, ``visualize.py``, backend — không
+                truyền gì nên chạy y như trước. Lý do cần: phép kéo giãn min-max
+                biến một CAM gần như phẳng (mô hình không thật sự tập trung vào
+                đâu cả) thành đúng dải 0..1 giống hệt một CAM tập trung rõ, nên
+                nếu chỉ đo trên bản đã chuẩn hoá thì không phân biệt được hai
+                trường hợp đó. #17 phải đo cả hai bản rồi đối chiếu.
+
+                (Bản thân việc CAM phẳng vẫn bị kéo giãn là vấn đề cần xử lý ở
+                **#90** — không sửa ở đây, vì đổi hành vi mặc định là đổi thứ
+                người dùng app đang nhìn thấy.)
 
         Returns:
-            Mảng (B, H, W) float32, mỗi ảnh đã chuẩn hoá về 0..1.
+            Mảng (B, H, W) float32. Chuẩn hoá về 0..1 nếu ``normalize=True``.
         """
         self.model.zero_grad(set_to_none=True)
 
@@ -91,6 +107,9 @@ class GradCAM:
 
         cam = F.interpolate(cam, size=input_tensor.shape[-2:],
                             mode="bilinear", align_corners=False).squeeze(1)  # (B, H, W)
+
+        if not normalize:
+            return cam.cpu().numpy().astype(np.float32)
 
         # Chuẩn hoá từng ảnh về 0..1 để ngưỡng cắt có ý nghĩa nhất quán
         flat = cam.flatten(1)

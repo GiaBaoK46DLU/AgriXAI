@@ -13,14 +13,34 @@
 > làm #49 thì phát hiện H1 **không gán nhãn phân loại được** và con số "731 ảnh" là
 > số đã bị nhân bản. Toàn bộ căn cứ ở **mục 5.2** (mới thêm). Các mục 1–4 đo trên
 > checkpoint và không bị ảnh hưởng, giữ nguyên.
+>
+> ### ✅ Cập nhật cuối ngày 15/09/2026 — hai việc lớn nhất của kế hoạch này đã XONG
+>
+> | Issue | Kết quả | Báo cáo |
+> |---|---|---|
+> | **#49** đo domain gap | **99,60 % → 30,81 %** trên PlantDoc (742 ảnh, 8 lớp) | `docx/bao-cao-domain-gap.md` |
+> | **#17** kiểm Grad-CAM | Đủ tin cậy trên PlantVillage (**nâng chuẩn hoá 0,41**), **chưa đủ** trên ảnh thật (**0,03**, khoảng tin cậy chứa số 0) | `docx/bao-cao-kiem-gradcam-vet-benh.md` |
+>
+> **Hai mục của tài liệu này đã bị số thật vượt qua, đừng trích nữa:** **mục 2.1** (ước
+> lượng "khoảng 80 %" — thực tế 30,81 %) và **bảng 2.2 ở mục 2.5** (mặt nạ Otsu, #17 đo
+> được là hụt một phần ba vùng lá). Đã đánh dấu tại chỗ.
+>
+> **Một kết luận của tài liệu này thì được #17 xác nhận là đúng:** mục 2.2 — mô hình
+> **không** học tắt theo nền. Trên PlantVillage, 93,3 % số ảnh có điểm nóng nhất nằm
+> trong phiến lá.
 
 ---
 
 ## 0. Đã chạy những gì để kiểm chứng
 
 Bốn phép thử, chạy bằng `model/.venv`, GPU RTX 4060 Ti. Script đặt ở thư mục tạm
-của phiên làm việc (`scratchpad/probe_*.py`) — **chưa commit vào repo**, xem câu
-hỏi 4 ở mục 6.
+của phiên làm việc (`scratchpad/probe_*.py`) — **vẫn chưa commit vào repo**, xem việc
+chờ chốt số **7** ở mục 6.
+
+> ⚠️ **Cập nhật 15/09/2026 — chuyện này đã gây tốn công thật.** #17 phải **cài lại từ
+> đầu** mặt nạ Otsu mà `probe_gradcam.py` dùng, chỉ vì script gốc không có trong repo.
+> Và bảng 2.2 dưới đây thì **không cài lại được**, vì danh sách 200 ảnh nó chạy trên
+> cũng không được lưu. Từ #17 trở đi, mọi script đo **commit ngay** (chốt số 5 ở mục 6).
 
 | # | Phép thử | Câu hỏi cần trả lời |
 |---|---|---|
@@ -211,6 +231,16 @@ sau khi biết vì sao vấn đề 1 xảy ra.
 
 ### 2.1. Trước hết: con số 80 % hiện chưa đo được
 
+> ### ✅ Mục này đã hết hiệu lực — #49 đo xong ngày 15/09/2026
+>
+> Con số thật là **30,81 %**, không phải ~80 %. Lập luận bên dưới (*"chưa đo được thì
+> chưa sửa được"*) **đã dẫn đúng đường** — nó là lý do #49 được xếp làm việc số 1, và
+> làm xong thì thấy cảm nhận 80 % cao hơn thực tế **gấp 2,6 lần**. Nguyên nhân dễ hiểu:
+> ảnh Bảo tự chụp là lá cận cảnh trên nền phẳng, gần phân phối PlantVillage hơn PlantDoc
+> nhiều. Số liệu đầy đủ ở `docx/bao-cao-domain-gap.md`.
+>
+> **Giữ nguyên mục này làm lịch sử, nhưng đừng trích con số 80 %.**
+
 Cần nói thẳng điều này. Con số ~80 % là **cảm nhận khi dùng thử app**, không phải
 một phép đo. Hiện trong repo:
 
@@ -263,6 +293,17 @@ trong lúc huấn luyện. Đáng viết vào báo cáo như một quyết đị
 > huấn luyện rồi bịt/cắt ảnh đầu vào. Hai cách đo hai thứ khác nhau — A2 đo "nền có
 > mang thông tin nhãn không", còn cách ở đây đo "mô hình này có dùng nền không".
 > Phải ghi rõ khác biệt đó, đừng viết là đã lặp lại A2.
+
+> ✅ **#17 xác nhận kết luận này bằng một đường đo độc lập (15/09/2026).** Mục 2.2 đo
+> bằng cách *bịt ảnh đầu vào*; #17 đo bằng cách *xem bản đồ nhiệt rơi vào đâu*, mặt nạ
+> khoanh tay. Hai cách khác hẳn nhau nhưng cùng kết luận: trên PlantVillage, **93,3 %**
+> số ảnh có điểm nóng nhất nằm trong phiến lá, mức nâng so với rải ngẫu nhiên **0,41**
+> (khoảng tin cậy 0,34–0,48). Hai bằng chứng độc lập cùng chiều là lý lẽ mạnh cho phần
+> phản biện **#60** (*"làm sao biết mô hình không học theo nền"*).
+>
+> ⚠️ Nhưng **chỉ đúng với ảnh PlantVillage**. Trên ảnh thật, mức nâng đó tụt về **0,03**
+> với khoảng tin cậy chứa số 0. "Không học tắt theo nền" **không** kéo theo "nhìn đúng
+> chỗ trên ảnh thật".
 
 ### 2.3. Vậy nguyên nhân là gì — và vì sao đổi kiến trúc không giúp được
 
@@ -319,6 +360,32 @@ hoặc chạy B3 ở đúng 300.
 
 ### 2.5. Tiền kiểm cho #17 — Grad-CAM có rơi đúng lá không
 
+> ### ✅ #17 ĐÃ CHẠY XONG ngày 15/09/2026 — mục này nay chỉ còn giá trị lịch sử
+>
+> Báo cáo thật: **`docx/bao-cao-kiem-gradcam-vet-benh.md`**. Toàn bộ bảng 2.2 dưới đây
+> dùng **mặt nạ tự động**, mà #17 đã đo được là mặt nạ đó **hụt khoảng một phần ba vùng
+> lá**. **Đừng trích bảng 2.2 nữa** — trích bảng khoanh tay của #17.
+>
+> Hai chỗ bảng 2.2 chỉ sai nhưng #17 bác bỏ:
+>
+> - **Lớp `healthy` KHÔNG phải chỗ đáng lo.** Bảng dưới ghi 42,2 % khối lượng trong lá
+>   và điểm nóng trong lá chỉ 55 %. Khoanh tay: **66,7 %** khối lượng trong lá, **3/3
+>   ảnh** điểm nóng nằm trong lá, chỉ 4,8 % vùng app khoanh rơi ra nền. Lo ngại cũ là
+>   hệ quả của mặt nạ.
+> - **"40,7 % khối lượng rơi ra ngoài lá"** là cận trên. Khoanh tay trên PlantVillage:
+>   **31,4 %**.
+>
+> Hai chỗ #17 **xác nhận** bảng dưới đúng:
+>
+> - Mức tập trung tổng thể trên PlantVillage: bảng dưới 1,65×, khoanh tay **1,65×** —
+>   trùng khít (tình cờ, hai tập ảnh khác nhau, nhưng cùng kết luận).
+> - Độ phân giải 7×7 là nút thắt thật: lớp `target_spot` (đốm chỉ chiếm 1,9 % ảnh) và
+>   `bacterial_spot` có **0/3 ảnh** điểm nóng trúng đốm. Căn cứ định lượng cho **#98**.
+>
+> Và một chỗ #17 phát hiện thêm mà bảng dưới **không thể thấy được**: con số "trong lá"
+> gộp *rơi vào vết bệnh* với *rơi vào phiến lá chỗ lành*. Tách ra thì trên PlantVillage
+> là **31,7 % vết bệnh / 36,9 % lá lành / 31,4 % nền**.
+
 `CLAUDE.md` xếp **#17 là cổng kiểm soát của cả đề tài**, nên đã đo định lượng sơ bộ
 trước: 200 ảnh test (20 ảnh × 10 lớp), mặt nạ lá xấp xỉ bằng ngưỡng Otsu trên kênh
 độ bão hoà màu.
@@ -363,6 +430,10 @@ Một phần nguyên nhân là độ phân giải: tầng chập cuối của B0
 > #17, tuyệt đối không thay thế #17 — việc xem bằng mắt 5 ảnh × 10 lớp vẫn phải làm,
 > vì chỉ mắt người phân biệt được "rơi vào vết bệnh" với "rơi vào phiến lá nhưng chỗ
 > lành".
+>
+> ✅ **Cảnh báo này đã đúng, và #17 ngày 15/09/2026 chứng minh nó đáng giá.** Đúng hai
+> chuyện mà nó dự đoán đều xảy ra: mặt nạ tự động lệch thật (một phần ba vùng lá), và
+> việc tách "vết bệnh" khỏi "lá lành" cho ra kết luận khác hẳn con số gộp.
 
 ---
 
@@ -684,8 +755,8 @@ số lạ.
 
 | Thứ tự đang ghi | Issue | Số đo hôm nay nói gì |
 |---|---|---|
-| 1 | **#17** kiểm Grad-CAM bằng mắt | **Giữ nguyên.** Vẫn là cổng kiểm soát của cả đề tài. Mục 2.5 đã dựng số liệu định hướng và chỉ đúng chỗ đáng nghi (`healthy`, 14 % ảnh có điểm nóng ra ngoài lá) |
-| 2 | **#49** đo trên ảnh đồng ruộng | **Giữ nguyên thứ tự, nhưng nguồn dữ liệu đã đổi** — H1 bị loại ngày 15/09, thay bằng PlantDoc (mục 5.2) |
+| ~~1~~ | ~~**#17** kiểm Grad-CAM bằng mắt~~ | ✅ **XONG 15/09/2026.** Chỗ đáng nghi mà mục 2.5 chỉ ra (`healthy`) hoá ra **không đáng lo** — đó là lỗi mặt nạ. Chỗ đáng lo thật nằm ở nơi khác: ảnh thật, nâng chuẩn hoá **0,41 → 0,03** |
+| ~~2~~ | ~~**#49** đo trên ảnh đồng ruộng~~ | ✅ **XONG 15/09/2026.** 99,60 % → 30,81 %. Nguồn đã đổi từ H1 sang PlantDoc (mục 5.2) |
 | 3 | **#98** nâng Grad-CAM++ | Giữ nguyên thứ tự. Nay có căn cứ định lượng: tầng chập cuối 7×7, 40,7 % khối lượng heatmap rơi ra ngoài lá. ⚠️ Bản 10/09 ghi sai số issue là #16 — việc đó là MD-07 sinh lưới ảnh minh hoạ; Grad-CAM++ tới 15/09/2026 mới có issue thật (**#98**) |
 | 4 | **#18** đo tốc độ CPU | **Coi như đã có số** — 215 ms (4 luồng). Rút khỏi hàng chờ, chỉ còn phần đo lại trên máy demo khi #51 chốt máy |
 | 5 | **#19** so kiến trúc | **Hạ cấp** — từ "cách sửa lỗi" thành "phần đánh giá cho báo cáo". Xem mục 2.3 |
@@ -698,17 +769,25 @@ năng cao sẽ chạy #19 (4 lượt × 25 phút) để mong tăng accuracy — 
 
 **Tuần 10/09 – 15/09, trước cổng go/no-go #64:**
 
-> **Trạng thái thật tính tới hết ngày 15/09/2026:** chỉ #49 được bắt tay làm, và nửa ngày
-> đầu tiên tiêu vào việc phát hiện bộ H1 không dùng được (mục 5.2). Ba việc #17, #90, #91
-> **chưa bắt đầu**. Bảng dưới vì vậy là việc *còn phải làm*, không phải việc đã xong.
+> **Trạng thái tính tới hết ngày 15/09/2026:** **#49 và #17 đều XONG.** Nửa ngày đầu tiêu
+> vào việc phát hiện bộ H1 không dùng được (mục 5.2). Hai việc **#90 và #91 vẫn chưa bắt
+> đầu**, và **#64 chưa chốt**.
 
-| Ưu tiên | Issue | Vì sao ở đây | Ước lượng |
-|---|---|---|---|
-| 1 | **#49** đo domain gap trên **PlantDoc** | Việc duy nhất biến "khoảng 80 %" thành con số trích dẫn được. #93, #94, #50 đều chặn bởi nó. Không cần chụp ảnh. ⚠️ Cần ba sửa đổi code trước — xem ngay dưới bảng | Nửa buổi |
-| 2 | **#17** kiểm Grad-CAM bằng mắt, 5 ảnh × 10 lớp | Cổng kiểm soát của cả đề tài. Ưu tiên xem kỹ `healthy` và `spider_mites` | 2–3 giờ |
-| 3 | **#90** không khoanh vùng khi CAM quá yếu | Chặn ngay triệu chứng nặng nhất. Rẻ nhất trong mọi việc ở đây, không cần Học sửa gì | 1 giờ |
-| 4 | **#91** thu bộ ảnh không phải lá | Chặn #92 và chặn cả #47 trên thực tế. Làm được ngay | ~1 giờ |
-| 5 | **#64** chốt cổng go/no-go | Đến hạn 15/09 | — |
+| Ưu tiên | Issue | Vì sao ở đây | Ước lượng | Trạng thái |
+|---|---|---|---|---|
+| 1 | **#49** đo domain gap trên **PlantDoc** | Việc duy nhất biến "khoảng 80 %" thành con số trích dẫn được. #93, #94, #50 đều chặn bởi nó. Không cần chụp ảnh. ⚠️ Cần ba sửa đổi code trước — xem ngay dưới bảng | Nửa buổi | ✅ **XONG 15/09** — 99,60 % → 30,81 % |
+| 2 | **#17** kiểm Grad-CAM bằng mắt | Cổng kiểm soát của cả đề tài. Ưu tiên xem kỹ `healthy` và `spider_mites` | 2–3 giờ | ✅ **XONG 15/09** — khoanh tay 56 ảnh, **hết 1 buổi** chứ không phải 2–3 giờ (khoanh tay đắt hơn "xem bằng mắt" nhiều). Cả hai lớp được dặn xem kỹ đều có kết luận riêng, xem mục 5.1 và 5.3 của báo cáo |
+| 3 | **#90** không khoanh vùng khi CAM quá yếu | Chặn ngay triệu chứng nặng nhất. Rẻ nhất trong mọi việc ở đây, không cần Học sửa gì | 1 giờ | ⏳ **Chưa bắt đầu.** ⚠️ #17 **đổi tiêu chí** cho việc này — xem ngay dưới bảng |
+| 4 | **#91** thu bộ ảnh không phải lá | Chặn #92 và chặn cả #47 trên thực tế. Làm được ngay | ~1 giờ | ⏳ Chưa bắt đầu |
+| 5 | **#64** chốt cổng go/no-go | Đến hạn 15/09 | — | ⏳ Chưa chốt |
+
+> ⚠️ **#17 đổi tiêu chí của #90, đọc trước khi làm.** Ý tưởng ban đầu là chặn khi bản đồ
+> nhiệt "quá yếu / quá phẳng". #17 đo độ phẳng của CAM **thô** trên cả hai bộ và ra
+> **0,30 (PlantVillage) so với 0,32 (PlantDoc)** — **phẳng như nhau**, tức độ phẳng
+> **không** phân biệt được ảnh phòng thí nghiệm với ảnh thật, nên không dùng làm tiêu chí
+> chặn được. Tiêu chí hứa hẹn hơn: **tỉ lệ khối lượng heatmap nằm trong vùng lá** — nhưng
+> muốn có "vùng lá" thì cần **#93** làm trước. Nghĩa là #90 nay **phụ thuộc #93**, khác
+> với lúc đặt ra.
 
 > **Khi chốt #64:** nhánh `khác` **đã tách ra** thành #92, độc lập với phạm vi quả (mục 6).
 > Phải ghi rõ điều này vào #64, để nếu kết quả là "bỏ phần quả" thì #71 bị bỏ mà #92 **không**
@@ -794,6 +873,14 @@ phạm vi #49.
    có cách nào dùng lại về sau, trừ khi tác giả công bố thêm file `data.yaml`.
 4. ✅ **Được phép sửa `evaluate.py`** (và `prepare.py` trong cùng phạm vi #49) — ba sửa đổi
    cụ thể ở bảng cuối mục 5.5.
+5. ✅ **Script đo phải commit vào repo, không để ở thư mục tạm nữa.** Bốn module của #17
+   (`model/src/xai/audit_{sample,sheets,score,figure}.py`) vào repo ngay từ đầu, kèm cả
+   mặt nạ khoanh tay dạng chữ (`khoanh-tay.json`) để ai cũng sửa và chạy lại được. Lý do:
+   mọi con số của #17 sẽ vào báo cáo tốt nghiệp, mà hội đồng gần như chắc chắn hỏi "em đo
+   thế nào". Đây cũng là **tiền lệ trả lời cho việc chờ chốt số 7 bên dưới**.
+6. ✅ **Được phép sửa `docx/bao-cao-domain-gap.md` để đính chính mục 5** (Bảo duyệt
+   15/09/2026, sau khi xem kết quả #17). Đã sửa 6 chỗ trong tài liệu đó; phần accuracy /
+   ma trận nhầm lẫn / ngưỡng tin cậy không đụng tới.
 
 ### Còn chờ chốt
 
@@ -805,11 +892,18 @@ phạm vi #49.
    Để nguyên thì tài liệu trong repo tự mâu thuẫn nhau.
 6. **Có xin phép Học** cho hai chỗ chạm vào `backend/` — nhánh hiển thị ca "không
    nhận ra lá" (#47, #26) và `torch.set_num_threads(4)` (#18, #51)?
-7. **Có đưa bốn script probe vào repo** (chẳng hạn `model/src/evaluation/probe_ood.py`)
-   hay để nguyên ở thư mục tạm? Đưa vào thì mọi số liệu trong tài liệu này **chạy
-   lại được** khi hội đồng hỏi "em đo thế nào" — đó là lý do nên đưa. Lý do ngược
-   lại: `CLAUDE.md` dặn không thêm thứ chưa ai cần. Ý kiến của tôi là **nên đưa**,
-   vì bảng 1.3, 1.4 và 2.1 sẽ được trích vào báo cáo nên phải tái lập được.
+7. **Có đưa bốn script probe của phiên 10/09 vào repo** (chẳng hạn
+   `model/src/evaluation/probe_ood.py`) hay để nguyên ở thư mục tạm? Đưa vào thì bảng
+   1.3, 1.4 và 2.1 **chạy lại được** khi hội đồng hỏi "em đo thế nào" — đó là lý do nên
+   đưa. Lý do ngược lại: `CLAUDE.md` dặn không thêm thứ chưa ai cần.
+
+   ⚠️ **Cập nhật 15/09/2026: việc này nay cấp hơn, và đã có tiền lệ.** #17 vừa phải **cài
+   lại từ đầu** mặt nạ Otsu của #49 chỉ vì script gốc không được commit (mục 4 của
+   `bao-cao-kiem-gradcam-vet-benh.md`) — may là bản cài lại tái lập gần đúng số cũ, nhưng
+   đó là **may**, không phải đảm bảo. Và bảng 2.2 của chính tài liệu này thì **không cài
+   lại được** vì nó chạy trên 200 ảnh khác mà danh sách ảnh không được lưu. Quyết định số
+   5 ở trên đã chốt hướng cho #17; câu hỏi còn lại chỉ là **có làm ngược lại cho bốn
+   script cũ hay không**.
 
 ---
 
@@ -819,21 +913,35 @@ Ghi lại cho minh bạch, để không trích quá điều đã đo:
 
 - **Bộ ảnh không phải lá chỉ có 11–16 tấm**, phần lớn là ảnh tổng hợp. Mọi ngưỡng ở
   bảng 1.3, 1.4 là **định hướng, chưa phải hiệu chỉnh**. Phải làm lại sau **#91**.
-- **Con số ~80 % chưa xác nhận được** — chỉ có 2 ảnh thực địa riêng biệt.
-- **Mặt nạ lá ở bảng 2.2 là xấp xỉ tự động** bằng ngưỡng màu, không phải khoanh tay.
+- ~~**Con số ~80 % chưa xác nhận được** — chỉ có 2 ảnh thực địa riêng biệt.~~
+  ✅ **Đã có số thật: 30,81 %** (#49). Cảm nhận 80 % lúc dùng thử app **cao hơn thực tế
+  rất nhiều** — dễ hiểu, vì ảnh Bảo tự chụp là lá cận cảnh trên nền phẳng, gần phân phối
+  PlantVillage hơn PlantDoc. **Đừng trích con số 80 % ở bất cứ đâu nữa.**
+- ~~**Mặt nạ lá ở bảng 2.2 là xấp xỉ tự động** bằng ngưỡng màu, không phải khoanh tay.~~
+  ✅ **Đã kiểm chứng 15/09/2026 bởi #17, và kết quả là mặt nạ đó lệch thật** — hụt khoảng
+  một phần ba vùng lá trên PlantDoc. Bảng 2.2 vì vậy **không dùng được nữa**; con số thay
+  thế ở `docx/bao-cao-kiem-gradcam-vet-benh.md`. Hạn chế **mới** chuyển sang thuộc về
+  #17: mẫu nhỏ (30 + 26 ảnh, mỗi lớp 3 ảnh) và người khoanh chưa có người thứ hai soát
+  lại — nên **số từng lớp chỉ đọc định tính**, chỉ số gộp cả bộ mới trích được.
 - **Phép thử ở bảng 2.1 là biến thể của A2, không phải tái hiện A2** — xem lưu ý ở
   mục 2.2.
 - **Độ trễ đo trên máy Bảo**, chưa phải máy demo (#51 chưa chốt).
-- **Vẫn chưa có con số domain gap nào.** Đó là việc **#49**, tính tới hết 15/09 chưa chạy
-  được vì nửa ngày đầu tiêu vào việc loại bộ H1 (mục 5.2). Mọi câu trong tài liệu này về
-  "độ chính xác thực tế" vẫn là suy luận, chưa phải số đo.
-- **Số liệu PlantDoc ở mục 5.2 là đếm file, chưa phải xem ảnh.** Đếm qua GitHub API trên
-  danh sách thư mục — biết chắc mỗi lớp có bao nhiêu file và file nào trùng byte, nhưng
-  **chưa mở một tấm ảnh nào**. Nhãn có đúng hay không thì phải xem bằng mắt sau khi tải về;
-  PlantDoc có tiếng là nhãn nhiễu và hai ví dụ trong mục 5.2 đã gợi đúng điều đó.
-- **`tomato_V8.jpg` xuất hiện ở hai lớp khác nhau nhưng chưa đối chiếu được nội dung** (hết
-  hạn mức GitHub API lúc đếm). Phải kiểm sau khi tải về — nếu là cùng một ảnh thì đó là một
-  nhãn mâu thuẫn trong bộ đo, phải loại.
+- ~~**Vẫn chưa có con số domain gap nào.**~~ ✅ **Đã có: 99,60 % → 30,81 %** (#49, xong
+  cuối ngày 15/09/2026 — xem mục *Kết quả #49* ở 5.2). Mọi câu trong tài liệu này về "độ
+  chính xác thực tế khoảng 80 %" giờ **đã bị con số thật bác bỏ**: thực tế thấp hơn nhiều.
+- ~~**Số liệu PlantDoc ở mục 5.2 là đếm file, chưa phải xem ảnh.**~~ ✅ **Đã mở ảnh xem
+  bằng mắt** — #17 xem kỹ 26 ảnh PlantDoc ngày 15/09/2026 và **xác nhận nghi ngờ về nhãn
+  nhiễu là đúng**, nặng hơn dự kiến. Ba ca cụ thể (mục 6 của
+  `bao-cao-kiem-gradcam-vet-benh.md`): cả **hai** ảnh `spider_mites` đều là **ảnh ghép
+  2×2** có chữ ghi tên bốn bệnh khác nhau; một ảnh `mosaic_virus` là **ảnh chụp màn hình
+  slide thuyết trình** có cả dưa chuột và rổ cà chua; một ảnh `bacterial_spot` chủ thể
+  chính là **quả**, không phải lá. ⚠️ Mới xem 26 / 742 ảnh, nên **chưa lượng hoá được**
+  tỉ lệ nhãn nhiễu của cả bộ.
+- ~~**`tomato_V8.jpg` xuất hiện ở hai lớp khác nhau nhưng chưa đối chiếu được nội dung.**~~
+  ✅ **Đã kiểm 15/09/2026 khi chạy #49: đúng là cùng một ảnh** (trùng byte theo sha256),
+  mang hai nhãn mâu thuẫn `bacterial_spot` (`test`) và `septoria_leaf_spot` (`train`).
+  **Đã loại hẳn**, và việc lọc tự động hoá trong `src/data/prepare_plantdoc.py`, lý do
+  từng ảnh bị bỏ ghi vào `audit.json` — đừng lọc tay.
 - **Phần `test` của PlantDoc chỉ có 69 ảnh**, mỗi lớp 6–11 ảnh. Con số đo riêng trên nó có
   sai số lớn; phải kèm khoảng tin cậy khi trích.
 - **Sẽ không có số đo trên ảnh cà chua Đà Lạt.** Nhóm không liên hệ được nhà vườn nên

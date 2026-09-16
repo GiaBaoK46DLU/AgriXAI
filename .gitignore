@@ -33,6 +33,13 @@ model/data/field/**
 runs/
 wandb/
 
+# Phieu khoanh tay + ban doi chieu cua #17 (~70 MB, 56 anh x 2 ban).
+# Sinh lai duoc bang mot lenh — xem docx/bao-cao-kiem-gradcam-vet-benh.md muc 7.
+# MAT NA khoanh tay (khoanh-tay.json) va toan bo so lieu thi VAN theo Git,
+# vi do moi la thu khong tai tao duoc bang may.
+model/outputs/audit-gradcam-17/*/phieu/
+model/outputs/audit-gradcam-17/*/doi-chieu/
+
 # ─── Ảnh người dùng tải lên ─────────────────────────────
 backend/storage/uploads/**
 backend/storage/overlays/**

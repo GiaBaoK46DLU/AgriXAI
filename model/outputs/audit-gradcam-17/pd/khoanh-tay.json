@@ -1,0 +1,562 @@
+{
+ "bo_du_lieu": "PlantDoc (742 anh, manifest data/processed/plantdoc-all/split.csv)",
+ "nguoi_khoanh": "Claude Opus 5 (phien lam viec 15/09/2026), Bao soat lai",
+ "ngay": "2026-09-15",
+ "luoi": 14,
+ "khoanh_mu": true,
+ "ghi_chu_phuong_phap": [
+  "Quy tac giong het bo PlantVillage — xem outputs/audit-gradcam-17/pv/khoanh-tay.json.",
+  "Rieng PlantDoc co them hai quy uoc phai chot truoc vi anh nen phuc tap:",
+  "(a) La ca chua MO / ngoai tieu cu van tinh la L. Ly do: cau hoi dang do la 'heatmap co nam tren mo la khong', khong phai 'co nam tren la dang lay net khong'. Hau qua la ti le dien tich la o PlantDoc cao hon PlantVillage nhieu — do la dac diem THAT cua bo anh, khong phai loi khoanh.",
+  "(b) Qua ca chua, than go, tay nguoi, chu viet chen len anh -> N. Mo hinh nay chi hoc la.",
+  "co_van_de_du_lieu = true danh dau anh KHONG PHAI mot tam anh la ca chua binh thuong (anh ghep nhieu benh, anh chup slide, anh qua). Cac anh nay van duoc khoanh va van tinh vao bang chinh, nhung phai bao cao rieng va co con so khong tinh chung de doi chieu."
+ ],
+ "annotations": {
+  "pd-bacterial_spot-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": true,
+   "ghi_chu": "⚠️ Anh co MOT QUA ca chua bi dom vi khuan chiem gan het nua phai, cong mot chiec la kho quan lai o ben trai. Qua -> N vi mo hinh chi hoc la. Nen den tuyen. Day la anh trong lop 'la' cua PlantDoc nhung chu the chinh la QUA.",
+   "luoi": [
+    "NNVVNNNNNNNNNN",
+    "NNVVNNNNNNNNNN",
+    "NNLLNNNNNNNNNN",
+    "NNLLVNNNNNNNNN",
+    "NNLLLNNNNNNNNN",
+    "NNLLVNNNNNNNNN",
+    "NNLLLNNNNNNNNN",
+    "NNVLLNNNNNNNNN",
+    "NNLLNNNNNNNNNN",
+    "NNLLNNNNNNNNNN",
+    "NNVVNNNNNNNNNN",
+    "NNLLNNNNNNNNNN",
+    "NNLLNNNNNNNNNN",
+    "NNVVNNNNNNNNNN"
+   ]
+  },
+  "pd-bacterial_spot-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Anh kieu mau vat tieu ban: mot la tren nen xanh nhat dong nhat. Dom vi khuan mau xanh den day dac, thay RO. Day la anh PlantDoc GAN voi kieu PlantVillage nhat trong ca 26 anh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNNLVVVVNNNN",
+    "NNNNNLVVVVLNNN",
+    "NNNNNLVVVVVNNN",
+    "NNNNLVVVVVVNNN",
+    "NNNNLVVVVVVNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNLLNNNNN"
+   ]
+  },
+  "pd-bacterial_spot-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "La lon tren nen XANH DUONG (phong nen chup anh). Mang hoai tu nau lon rai khap phien. Nen xanh duong la thu chua bao gio xuat hien trong PlantVillage.",
+   "luoi": [
+    "NLLLLLNNNNLLLN",
+    "LLLVVLNNNNLVLN",
+    "LLLVVVLLLLVVLN",
+    "LLLVVVLNNNVVLN",
+    "LLLVVVLVVVVLLN",
+    "LLLLVVLLVVVLLN",
+    "LLLLLLLLVVVLNN",
+    "LLLLLLLLLVVVVN",
+    "NLLLVVLLVVVVLN",
+    "NNLLLVVLLVVVLN",
+    "NNNLVVLLLLLLNN",
+    "NNNNLVVLLLLLNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNNNLLLLLLNN"
+   ]
+  },
+  "pd-early_blight-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Anh chup CA BUI cay trong nha kinh — dung loai anh ma bao cao domain gap muc 5.1 goi la 'nhom 1'. La chiem ~78% dien tich anh, vet benh chi ~7%.",
+   "luoi": [
+    "NNNNLVLLLLLLLL",
+    "NNNNLVLLLLLLLL",
+    "NNNNLLLLLLLLLL",
+    "NNNNLLLLLVLLLL",
+    "NNNLLLVVLLLLLL",
+    "NNNLLLVVLLLLLL",
+    "NNNLLLLLLLLLLL",
+    "NNNLLLLLLLLLLL",
+    "NNLLLLLLLVLLLL",
+    "NNLLLLLLLLLLLL",
+    "NNVVLLLLLLLLLL",
+    "NNVVLLLLLLLLLL",
+    "NNLLLLVVVLLLLL",
+    "NNLLLLVVVLLLLL"
+   ]
+  },
+  "pd-early_blight-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Can canh mot la tren nen DAT CAT vang. Chi MOT vet hoai tu nau duy nhat o giua phien — ca ro rang nhat de kiem Grad-CAM co chi dung cho khong.",
+   "luoi": [
+    "NLLLLLLLLLLNNN",
+    "LLLLLLLLLLLNNN",
+    "LLLLLLLLLLLLNN",
+    "LLLLLLLLLLLLNN",
+    "NLLLLLLLLLLLNN",
+    "NLLLLLLLLLLLNN",
+    "NLLLLLVVLLLLLN",
+    "NLLLLLVVLLLLLN",
+    "NNNNLLVLLLLLLN",
+    "NNNNNNLLLLLLLL",
+    "NNNNNNNNLLLLLL",
+    "NNNNNNNNNLLLLL",
+    "NNNNNNNNNNLLLL",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-early_blight-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Tan la day dac, rat nhieu dom nau vien vang. Nen gan nhu khong co — 100% khung hinh la cay.",
+   "luoi": [
+    "LLLLLLLVLLNNNN",
+    "LLLVLLLVLLNNNN",
+    "LLLLLLLLLLNNNN",
+    "LLLLLLVVLLNNNN",
+    "LVLLVVVVVLNNNN",
+    "LVLLVVVVVLNNNN",
+    "LLLLVVVVLLNNNN",
+    "LLLLLVVVVLNNNN",
+    "LLLLLLVVVLNNNN",
+    "LLLLLLVVVLNNNN",
+    "LLLLLLVVLLNNNN",
+    "LLLLLLLVLLNNNN",
+    "LLLLLLVVVLNNNN",
+    "LLLLLLVVVLNNNN"
+   ]
+  },
+  "pd-healthy-1": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Can canh mot la khoe nguoc sang, nen la tan la toi mo. Khong co o V.",
+   "luoi": [
+    "LLLLLLLLLNNNNN",
+    "LLLLLLLLLNNNNN",
+    "LLLLLLLLLLNNNN",
+    "LLLLLLLLLLNNNN",
+    "LLLLLLLLLNNNNN",
+    "LLLLLLLLLNNNNN",
+    "LLLLLLLLLLLNNN",
+    "LLLLLLLLLLLNNN",
+    "NLLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNLLLLNNNNN"
+   ]
+  },
+  "pd-healthy-2": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Tan la khoe phu KIN khung hinh, chi lo dat o day anh. Ti le la ~84% — con so nay mot minh da du giai thich vi sao 'muc tap trung' tren PlantDoc tu no tut ve 1,00x.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "NNNNLLLLLLLLLL",
+    "NNNNNNNNLLLLLL",
+    "NNNNNNNNNLLLLL"
+   ]
+  },
+  "pd-healthy-3": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "La kep cat roi tren nen TRANG tinh (anh studio). Nen trang cung la thu PlantVillage khong co.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NLLLLLLLLLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-late_blight-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Can canh CUC GAN: mang hoai tu xam nau khong lo + vien bao tu trang, chiem ~60% khung hinh. KHONG co mot o nen nao — ca anh la mo la. Day la ca ma phep do 'trong la' mat het y nghia, chi con V-vs-L la doc duoc.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLVVLLLL",
+    "VVLLLLLLVVLLLL",
+    "VVVVVVLLVVVVLL",
+    "VVVVVVVVVVVVVL",
+    "VVVVVVVVVVVVVL",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "LVVVVVVVVVVVVV",
+    "LVVVVVVVVVVVVV",
+    "LLVVVVVVVVVVVL",
+    "LLLVVVVVVVVVLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL"
+   ]
+  },
+  "pd-late_blight-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "La to can canh, vet moc suong muon MO NHAT mau xam-nau o giua — kho thay hon han cac ca PlantVillage cung lop.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLVVVLLLLL",
+    "LLLLLLVVVLLLLL",
+    "LLLLLLVVVVLLLL",
+    "LLLLLLVVVVLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLNNLLLL",
+    "NNLLLLLLLLLLLL"
+   ]
+  },
+  "pd-late_blight-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Vet hoai tu nau tron lon o giua tan la day. Nen = la khac bi mo.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLVVVVLLLLLL",
+    "LLLVVVVVVLLLLL",
+    "LLLVVVVVVLLLLL",
+    "LLLVVVVVVLLVVL",
+    "LLLVVVVVVLLVVL",
+    "LLLLVVVVLLLVLL",
+    "LLLLVVVLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL"
+   ]
+  },
+  "pd-leaf_mold-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "⚠️ Co BAN TAY NGUOI chiem goc duoi-trai (~15% anh). Da thit nguoi bao hoa mau cao nen mat na Otsu cua #49 gan nhu chac chan tinh tay la 'la' — day dung la ca ma #17 sinh ra de bat. Trieu chung moc la chi nhan ra mo mo o ria phai phien la; anh mo, gan nhu nhin nhu la khoe.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNLLLLLL",
+    "NNNNLLLLLLLLLL",
+    "NNNLLLLLVLLLLL",
+    "NNNLLLLLVLLLLL",
+    "NNNLLLLLVLLLLL",
+    "NNLLLLLLVLLLLL",
+    "NLLLLLLLLNNLLL",
+    "NLLLLLLLNNNLLL",
+    "NNNNLLLLLLLLLL",
+    "NNNNNLLLLLLLLL",
+    "NNNNNNLLLLLLLL",
+    "NNNNNNLLLLLLLL"
+   ]
+  },
+  "pd-leaf_mold-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Cay chup tren nen GIAY KE DONG (vo hoc sinh). Cac mang vang moc la thay ro tren vai la chet.",
+   "luoi": [
+    "LLLLNNNNNNNNNN",
+    "LLLLLLLLNNNNNN",
+    "LLLLVVVLLNNNNN",
+    "LLLLVVVLVNNNNN",
+    "LLNNLLLLLNNNNN",
+    "LLNNLLLLLLNNNN",
+    "LLLLVVLVVLLLNN",
+    "LLLLVVLLLLLLNN",
+    "LLLLVVLLLLLNNN",
+    "LLLLVVLLLLLNNN",
+    "LLLLLLLLLNNNNN",
+    "LLLLLLLLLNNNNN",
+    "LLLLNNNNNNNNNN",
+    "LLLLNNNNNNLLLL"
+   ]
+  },
+  "pd-leaf_mold-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Can canh be mat la, cac o benh tron noi go mau nau — thuc ra trong giong RI hon la moc la dien hinh. Nhan PlantDoc o day dang ngo. Ca anh la mo la, khong co nen.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLVLVLLLL",
+    "LLLLLLLVLVLLLL",
+    "VVLLLLLLLLVVLL",
+    "VVLLLLLLLLVVLL",
+    "LLVLLLLLLLLLLL",
+    "LLVLLLLLLLLLLL",
+    "LLLLLVLLLLLLLL",
+    "LLLLLVLLLLLLLL",
+    "LLLLLLLLLLLVLL",
+    "LVLLVLVLLLLVLL",
+    "LVLLVLVLLLLLLL",
+    "LLLLLLLLLLLLLL"
+   ]
+  },
+  "pd-mosaic_virus-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "BA la cat roi xep canh nhau tren nen DEN, co dau ban quyen '(c) T.A. Zitter'. Kham vang thay ro o nua duoi moi la.",
+   "luoi": [
+    "NNLLNNNNNNNNNN",
+    "NLLLNNNLNNNNNN",
+    "NLLLNNLLNNNLNN",
+    "NLLLNNLLLNLLNN",
+    "LLLLNLLLLNLLLN",
+    "LLLLNLLLLNLLLN",
+    "VVLLNLLLLNVVLN",
+    "VVLLNLLLLNVVLN",
+    "VVLLNLVVLNVVLN",
+    "VVLLNLVVLNVVLN",
+    "VVLLNLVVVNVVLN",
+    "NLLLNLVVVNLLNN",
+    "NLLNNNLLLNNLNN",
+    "NNNNNNLLNNNNNN"
+   ]
+  },
+  "pd-mosaic_virus-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Anh can canh RAT MO (out of focus), kham vang-luc phu kin phien. Co chu trang chen o goc duoi-trai.",
+   "luoi": [
+    "VVVVVVVVVVNNLL",
+    "VVVVVVVVVVNNLL",
+    "VVVVVVVVVVVNNN",
+    "VVVVVVVVVVVNNN",
+    "VVVVVVVVVVVNNN",
+    "VVVVVVVVVVVNNN",
+    "VVVVVVVVVVVNNN",
+    "VVVVVVVVVVVNNN",
+    "VVVVVVVVVVNNNN",
+    "VVVVVVVVVVNNNN",
+    "NNVVVVVVVNNNNN",
+    "NNVVVVVVNNNNNN",
+    "NNVVVVVNNNNNNN",
+    "NNVVVVNNNNNNNN"
+   ]
+  },
+  "pd-mosaic_virus-3": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "co_van_de_du_lieu": true,
+   "ghi_chu": "⚠️ KHONG PHAI ANH CHUP LA. Day la anh chup mot SLIDE thuyet trinh tieng Tho Nhi Ky ('Mosaic virusleri'), gom: chu tieu de, mot anh la ca chua trong xanh khoe, mot anh DUA CHUOT, va mot anh RO CA CHUA CHIN. Khong nhin thay trieu chung kham o dau. Chi khoanh L cho o anh la ca chua; chu + dua chuot + qua -> N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "LLLLLLLLNNNNNN",
+    "LLLLLLLLNNNNNN",
+    "LLLLLLLLNNNNNN",
+    "LLLLLLLLNNNNNN",
+    "LLLLLLLLNNNNNN",
+    "LLLLLLLLNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-septoria_leaf_spot-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Cay con trong chau nhua den, chup trong nha, nen tuong be. Chi MOT la (goc giua-trai) vang va co dom den ro; cac la khac con xanh.",
+   "luoi": [
+    "LLLLLNLLNLLLLN",
+    "LLLLLNLLNLLLLN",
+    "LLLLNLLLNNLLLN",
+    "LLLLNLLLNNLLLN",
+    "LLLNNLLLNNLLLN",
+    "LLLNNLLLNNLLLN",
+    "LLVVVLLLNNLLLN",
+    "LLVVVLLLNNNLLN",
+    "LLVVVLLLNNNNNN",
+    "LLVVVNNNNNNNNN",
+    "LLVVNNNNNNNNNN",
+    "LLLLNNNNNNNNNN",
+    "LLLNNNNLLNNNNN",
+    "LLLNNNNLLNNNNN"
+   ]
+  },
+  "pd-septoria_leaf_spot-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Can canh la day dom septoria dien hinh (tam xam, vien nau sam), rat nhieu va rai deu. Ca tot nhat trong ca bo PlantDoc de kiem Grad-CAM co bam vao dom khong.",
+   "luoi": [
+    "NNNLLLLLLLLLLL",
+    "NNLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLVLLLLL",
+    "LLLLVLLLVVLLLL",
+    "LLLLVLLLLVVLLL",
+    "LLLLVVLVLLVVLV",
+    "LVLLLVLVVLVVNN",
+    "LLLLLLLLLLVVNN",
+    "LVLLLVLLLLVNNN",
+    "LLLLLLLLLNVVNN",
+    "LLLLLLLLNNVVNN",
+    "LLLLLLLNNNNVVN",
+    "LLLLLLNNNNNVNN"
+   ]
+  },
+  "pd-septoria_leaf_spot-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "La VANG RUC day dom den o giua khung, nen la tan la xanh bi mo. Doi lap mau manh nhat trong ca bo.",
+   "luoi": [
+    "LLLVVVVLLVVVVL",
+    "LLVVVVVLLVVVVL",
+    "LLVVVVVLLVVVVL",
+    "LLVVVVVLLVVVVL",
+    "LLLVVVVVLLLLLL",
+    "LLLVVVVVLLLLLL",
+    "NNLVVVVVLLLLLL",
+    "NNLVVVVVLLLLLL",
+    "NNLVVVVLLLLLLL",
+    "NNLVVVVLLLLLLL",
+    "NNLVVVVLLLLLLL",
+    "NNLVVVVLLLLLLL",
+    "NNLVVVVLLLLLLL",
+    "NNLLVVVLLLLLLL"
+   ]
+  },
+  "pd-spider_mites-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": true,
+   "ghi_chu": "⚠️ KHONG PHAI MOT TAM ANH. Day la anh GHEP 2x2 tu tai lieu khuyen nong, bon o co CHU trang de ten bon benh KHAC NHAU: 'Bacterial Spot', 'Bacterial Speck', 'Early Blight', 'Mite Damage'. Chi 1/4 anh la nhen do. Gan nhan spider_mites cho ca tam anh nay la sai ve ban chat. Hai anh spider_mites duy nhat cua PlantDoc DEU la bien the cua tam ghep nay.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLNNLLLLLLLLL",
+    "NNLNNLLLLVVVLL",
+    "NNLNNLLLLVVVLL",
+    "NNLLLLLLLVVLLL",
+    "NNLLLLLLLLLLLL",
+    "NNNNNNNNNNNNNN",
+    "LLLLLLLLLLLLLL",
+    "LLVVLLLLLLLLLL",
+    "LLVVLLLLLLLLLL",
+    "LLLLNNNLLLLLLL",
+    "LLLLNNNLLLLLLL",
+    "NNNLLLLLLLLLLL",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-spider_mites-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": true,
+   "ghi_chu": "⚠️ Cung tam anh ghep 2x2 nhu pd-spider_mites-1, chi khac o goc duoi-phai. Xem ghi chu anh kia.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLNNLLLLLLLLL",
+    "NNLNNLLLLVVVLL",
+    "NNLNNLLLLVVVLL",
+    "NNLLLLLLLVVLLL",
+    "NNLLLLLLLLLLLL",
+    "NNNNNNNNNNNNNN",
+    "LLLLLLLLLLLLLL",
+    "LLVVLLLLLLLLLL",
+    "LNVVLLLLLLLLLL",
+    "NNVVLLLLLLLLLL",
+    "NNVVLLLLLLLLLL",
+    "NNNNLLLLLLLLLL",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-yellow_leaf_curl_virus-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Cay trong chau DO tren nen tuong be, co bao nhua den ben phai. Nua phai tan la vang sang va cuon men — trieu chung ro; nua trai con xanh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "LLLLLLLLLNNNNN",
+    "LLLLLLLVVVVNNN",
+    "LLLLLLLVVVVNNN",
+    "LLLLLLLVVVVNNN",
+    "LLLLLLLVVVVNNN",
+    "LLLLLLLVVVVNNN",
+    "LLLLLLLVVVVNNN",
+    "LLLLLLLVVVVNNN",
+    "NNNLLLLVVVVNNN",
+    "NNNNLLLVVVLNNN",
+    "NNNNLLLLLNNNNN",
+    "NNNLLLLLNNNNLL",
+    "NNNLLLLLNNNNLL"
+   ]
+  },
+  "pd-yellow_leaf_curl_virus-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Anh stock co DAU CHIM 'alamy stock photo' giua khung va dai chu chan anh. La vang cuon o goc duoi-phai; phan con lai xanh tot.",
+   "luoi": [
+    "LLNLLNNNLLLLLL",
+    "LLNLLNNNLLLLLL",
+    "LLLLLLLNNNLLLL",
+    "LLLLLLLNNNLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLVVV",
+    "LLLLLLLLLLLVVV",
+    "LLLLLLLLLLLVVV",
+    "LLLLLLLLLLVVVV",
+    "NNNLLLLLLVVVVV",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-yellow_leaf_curl_virus-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": false,
+   "ghi_chu": "Ngon sinh truong vang sang va xoan lai o giua khung — trieu chung YLCV dien hinh. Tan la phu kin anh, khong co nen.",
+   "luoi": [
+    "LLLLVVVVLLLLLL",
+    "LLLLVVVVVLLLLL",
+    "LLLLVVVVVLLLLL",
+    "LLLLVVVVVLLLLL",
+    "LLLVVVVVVLLLLL",
+    "LLLVVVVVVLLLLL",
+    "LLLLVVVVVLLLLL",
+    "LLLLLVVVVLLLLL",
+    "LLLLLLLVVVVVLL",
+    "LLLLLLLVVVVVVL",
+    "LLLLLLLVVVVVVV",
+    "LLLLLLLVVVVVVV",
+    "LLLLLLLLVVVVLL",
+    "LLLLLLLLLLLLLL"
+   ]
+  }
+ }
+}
