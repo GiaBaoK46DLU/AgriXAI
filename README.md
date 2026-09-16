@@ -112,48 +112,64 @@ Mỗi thư mục con đều có README riêng hướng dẫn chi tiết.
 
 ## Khởi động nhanh
 
-### 1. Cơ sở dữ liệu
+### Cách 1 — Docker (khuyên dùng)
+
+Docker tự xử lý toàn bộ: PostgreSQL, backend, web admin. Không cần cài Python hay pip thủ công.
 
 ```bash
+# 1. Sao chép cấu hình backend
+cp backend/.env.example backend/.env   # Linux/Mac
+copy backend\.env.example backend\.env  # Windows
+
+# 2. Khởi động tất cả services
 docker compose up -d
+
+# 3. Kiểm tra — 4 container phải đều "Up"
+docker ps
 ```
 
-PostgreSQL chạy ở `localhost:5432`, database `plantdx`, user/pass `plantdx`/`plantdx`.
-(Nếu không dùng Docker: cài PostgreSQL thủ công rồi sửa `DATABASE_URL` trong `backend/.env`.)
+| Service | Địa chỉ |
+|---|---|
+| Backend API | http://localhost:8000/docs |
+| Adminer (DB viewer) | http://localhost:8080 |
+| Web Admin | http://localhost:5173 |
 
-### 2. Backend
+> **Lần đầu khởi động:** backend tự chạy migration và seed tài khoản mẫu.  
+> Tài khoản: `admin / admin123` (quản trị), `nongdan / nongdan123` (nông dân).
+
+### Cách 2 — Thủ công (không Docker)
 
 ```bash
+# PostgreSQL phải chạy trước; sửa DATABASE_URL trong backend/.env cho khớp
 cd backend
-python -m venv .venv && .venv\Scripts\activate      # Windows
+python -m venv .venv
+.venv\Scripts\activate        # Windows
 pip install -r requirements.txt
 copy .env.example .env
-alembic upgrade head
-python -m app.seed                                   # tạo tài khoản mẫu + lô đất mẫu
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload  # http://localhost:8000
 ```
 
-- API docs: http://localhost:8000/docs
-- Tài khoản mẫu: `admin / admin123` (quản trị), `nongdan / nongdan123` (nông dân)
-
-### 3. Web admin
-
-```bash
-cd web-admin
-npm install
-npm run dev          # http://localhost:5173
-```
-
-### 4. Mobile
+### Mobile (Flutter)
 
 ```bash
 cd mobile
-flutter create .     # sinh android/ ios/ — chỉ chạy lần đầu
+
+# Chỉ chạy lần đầu (nếu thư mục android/ chưa có):
+flutter create --project-name agrixai_farmer --platforms=android,ios .
+
 flutter pub get
 flutter run
 ```
 
-Xem [`mobile/README.md`](mobile/README.md) để biết cách trỏ app tới đúng địa chỉ IP của máy chạy backend.
+> ⚠️ **Quan trọng — sửa IP trước khi chạy:**  
+> Mở `mobile/lib/core/app_config.dart`, đổi `backendHost` thành IP LAN của máy chạy Docker:
+> ```powershell
+> ipconfig   # tìm dòng "IPv4 Address" ở adapter đang online (Wi-Fi/Ethernet)
+> ```
+> Sau khi đổi, phải build lại app (`flutter run`), không chỉ hot-reload.
+
+Xem [`mobile/README.md`](mobile/README.md) để biết chi tiết checklist khi gặp lỗi kết nối.
+
 
 ### 5. Huấn luyện mô hình (Bảo)
 
