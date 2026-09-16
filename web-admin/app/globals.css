@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* Bảng màu lấy nguyên từ mobile/lib/core/app_colors.dart ("AgriXAI Farmer v4")
+   để web admin cùng một ngôn ngữ thị giác với app di động — chỉ khác cách bố
+   trí (sidebar + bảng dữ liệu thay vì thẻ kính cuộn dọc), theo đúng tinh thần
+   "giữ màu/font/spacing/radius, đổi layout cho web admin". */
+@theme {
+  --font-sans: var(--font-open-sans), "Open Sans", system-ui, sans-serif;
+
+  --color-bg-top: #c9dcc0;
+  --color-bg-mid: #b0cba4;
+  --color-bg-bottom: #96bc87;
+
+  --color-ink: #12301d;
+  --color-ink-soft: #173a24;
+
+  --color-primary: #2e6f40;
+  --color-primary-dark: #1f5230;
+  --color-primary-light: #54a96a;
+
+  --color-olive: #c3d24a;
+  --color-accent: #f2a104;
+  --color-accent-ink: #7a4f00;
+
+  --color-severe: #c24a12;
+  --color-severe-bg: #fdece3;
+  --color-moderate: #b8860b;
+  --color-moderate-bg: #fbf1d6;
+  --color-mild: #2e6f40;
+  --color-mild-bg: #e5f3e1;
+  --color-none-bg: #eef2ea;
+
+  --color-surface: #ffffff;
+  --color-canvas: #f7f9f6;
+  --color-border: #e3eae0;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+/* Thanh cuộn mảnh, cùng tông với thiết kế mobile. */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #c7d6c2;
+  border-radius: 99px;
+}
+
+a {
+  color: var(--color-primary);
+}
+a:hover {
+  color: var(--color-primary-dark);
+}
