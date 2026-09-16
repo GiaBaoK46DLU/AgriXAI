@@ -38,6 +38,7 @@ def test_create_post_without_diagnosis(client, farmer_headers):
     # tên người dùng chung này qua `PATCH /auth/me` (fixture `seeded` dùng chung
     # phiên pytest). Chỉ cần xác nhận trường được điền, không rỗng.
     assert body["user_full_name"]
+    assert body["user_role"] == "farmer"
     assert body["likes_count"] == 0
 
 
@@ -130,7 +131,11 @@ def test_post_detail_includes_comments(client, farmer_headers):
     assert body["comments"][0]["content"] == "Bình luận đầu tiên"
 
 
-def test_like_post_increments_counter(client, farmer_headers):
+def test_like_post_toggles_like_and_unlike(client, farmer_headers):
+    """`POST .../like` là toggle qua bảng `forum_post_likes` (xem
+    `endpoints/forum.py::like_post`), không phải bộ đếm cộng dồn — bài test
+    này từng giả định cộng dồn (0→1→2) và luôn fail vì hành vi thật là
+    0→1→0. Sửa lại đúng theo thiết kế: `is_liked_by_me` cũng phải đổi theo."""
     created = client.post(
         f"{API}/forum/posts",
         headers=farmer_headers,
@@ -139,12 +144,111 @@ def test_like_post_increments_counter(client, farmer_headers):
 
     response = client.post(f"{API}/forum/posts/{created['id']}/like", headers=farmer_headers)
     assert response.status_code == 200, response.text
-    assert response.json()["likes_count"] == 1
+    body = response.json()
+    assert body["likes_count"] == 1
+    assert body["is_liked_by_me"] is True
 
     response2 = client.post(f"{API}/forum/posts/{created['id']}/like", headers=farmer_headers)
-    assert response2.json()["likes_count"] == 2
+    body2 = response2.json()
+    assert body2["likes_count"] == 0
+    assert body2["is_liked_by_me"] is False
+
+
+def test_admin_can_comment_and_comment_carries_role(client, farmer_headers, admin_headers):
+    """Quản trị không chỉ kiểm duyệt mà còn bình luận được như một người dùng
+    bình thường — endpoint bình luận vốn đã mở cho mọi `CurrentUser`, không
+    cần sửa gì ở backend. `user_role` trên mỗi bình luận để phía hiển thị
+    (web admin) tô nổi bật tên quản trị giữa các bình luận của nông dân."""
+    created = client.post(
+        f"{API}/forum/posts",
+        headers=farmer_headers,
+        json={"disease_key": "healthy", "type": "tip", "content": "Bài có admin tham gia"},
+    ).json()
+
+    farmer_comment = client.post(
+        f"{API}/forum/posts/{created['id']}/comments",
+        headers=farmer_headers,
+        json={"content": "Bình luận của nông dân"},
+    ).json()
+    assert farmer_comment["user_role"] == "farmer"
+
+    admin_comment = client.post(
+        f"{API}/forum/posts/{created['id']}/comments",
+        headers=admin_headers,
+        json={"content": "Bình luận của quản trị"},
+    )
+    assert admin_comment.status_code == 201, admin_comment.text
+    assert admin_comment.json()["user_role"] == "admin"
+
+    detail = client.get(f"{API}/forum/posts/{created['id']}", headers=farmer_headers).json()
+    roles = {c["content"]: c["user_role"] for c in detail["comments"]}
+    assert roles["Bình luận của nông dân"] == "farmer"
+    assert roles["Bình luận của quản trị"] == "admin"
 
 
 def test_forum_requires_authentication(client):
     response = client.get(f"{API}/forum/posts")
     assert response.status_code == 401
+
+
+def test_farmer_cannot_delete_post_or_comment(client, farmer_headers):
+    created = client.post(
+        f"{API}/forum/posts",
+        headers=farmer_headers,
+        json={"disease_key": "healthy", "type": "tip", "content": "Bài của nông dân"},
+    ).json()
+    comment = client.post(
+        f"{API}/forum/posts/{created['id']}/comments",
+        headers=farmer_headers,
+        json={"content": "Bình luận của nông dân"},
+    ).json()
+
+    assert client.delete(
+        f"{API}/forum/posts/{created['id']}", headers=farmer_headers
+    ).status_code == 403
+    assert client.delete(
+        f"{API}/forum/comments/{comment['id']}", headers=farmer_headers
+    ).status_code == 403
+
+
+def test_admin_deletes_post_cascades_comments(client, farmer_headers, admin_headers):
+    created = client.post(
+        f"{API}/forum/posts",
+        headers=farmer_headers,
+        json={"disease_key": "healthy", "type": "tip", "content": "Bài sẽ bị kiểm duyệt"},
+    ).json()
+    comment = client.post(
+        f"{API}/forum/posts/{created['id']}/comments",
+        headers=farmer_headers,
+        json={"content": "Bình luận sẽ mất theo"},
+    ).json()
+
+    response = client.delete(f"{API}/forum/posts/{created['id']}", headers=admin_headers)
+    assert response.status_code == 204
+
+    assert client.get(
+        f"{API}/forum/posts/{created['id']}", headers=admin_headers
+    ).status_code == 404
+    # Bình luận đã mất theo bài — xoá lần nữa phải báo không tìm thấy
+    assert client.delete(
+        f"{API}/forum/comments/{comment['id']}", headers=admin_headers
+    ).status_code == 404
+
+
+def test_admin_deletes_single_comment(client, farmer_headers, admin_headers):
+    created = client.post(
+        f"{API}/forum/posts",
+        headers=farmer_headers,
+        json={"disease_key": "healthy", "type": "tip", "content": "Bài giữ lại"},
+    ).json()
+    comment = client.post(
+        f"{API}/forum/posts/{created['id']}/comments",
+        headers=farmer_headers,
+        json={"content": "Bình luận bị xoá riêng"},
+    ).json()
+
+    response = client.delete(f"{API}/forum/comments/{comment['id']}", headers=admin_headers)
+    assert response.status_code == 204
+
+    detail = client.get(f"{API}/forum/posts/{created['id']}", headers=admin_headers).json()
+    assert detail["comments"] == []

@@ -55,10 +55,11 @@ class Settings(BaseSettings):
     # pydantic-settings mặc định chạy json.loads() trên giá trị đọc từ .env
     # TRƯỚC khi validator dưới đây được gọi, nên chuỗi ngăn cách bằng dấu phẩy
     # sẽ làm hỏng ngay lúc khởi động. NoDecode tắt bước đó đi.
-    CORS_ORIGINS: Annotated[list[str], NoDecode] = [
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ]
+    #
+    # Mặc định rỗng từ 16/09/2026: web-admin (Next.js) gọi backend qua kiến
+    # trúc BFF (phía server của Next.js, không phải trình duyệt) nên không
+    # cần khai origin nào ở đây nữa — xem web-admin/README.md.
+    CORS_ORIGINS: Annotated[list[str], NoDecode] = []
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod

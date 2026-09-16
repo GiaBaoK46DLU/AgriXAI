@@ -10,7 +10,7 @@ from fastapi import APIRouter, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import selectinload
 
-from app.api.deps import CurrentUser, DbSession
+from app.api.deps import AdminUser, CurrentUser, DbSession
 from app.models.diagnosis import Diagnosis
 from app.models.forum import ForumComment, ForumPost, ForumPostLike, ForumPostType
 from app.schemas.forum import (
@@ -35,6 +35,7 @@ def _diagnosis_summary(diagnosis: Diagnosis | None) -> str | None:
 def _to_out(post: ForumPost, current_user_id: int | None = None, db=None) -> ForumPostOut:
     out = ForumPostOut.model_validate(post)
     out.user_full_name = post.user.full_name if post.user else ""
+    out.user_role = post.user.role if post.user else ""
     out.disease_name = catalog.get_disease(post.disease_key)["name_vi"]
     out.diagnosis_summary = _diagnosis_summary(post.diagnosis)
     # Dùng relationship đã load sẵn nếu có; không thì query COUNT riêng.
@@ -58,6 +59,7 @@ def _to_out(post: ForumPost, current_user_id: int | None = None, db=None) -> For
 def _to_comment_out(comment: ForumComment) -> ForumCommentOut:
     out = ForumCommentOut.model_validate(comment)
     out.user_full_name = comment.user.full_name if comment.user else ""
+    out.user_role = comment.user.role if comment.user else ""
     return out
 
 
@@ -210,3 +212,27 @@ def like_post(post_id: int, db: DbSession, user: CurrentUser):
     db.commit()
     db.refresh(post)
     return _to_out(_get_post(db, post_id), current_user_id=user.id, db=db)
+
+
+@router.delete("/posts/{post_id}", status_code=status.HTTP_204_NO_CONTENT,
+               summary="Kiểm duyệt: xoá bài viết")
+def delete_post(post_id: int, db: DbSession, _: AdminUser):
+    """Chỉ quản trị mới xoá được — chưa có nút xoá cho tác giả tự gỡ bài của
+    mình (ngoài phạm vi hiện tại, xem `prompt-cli-forum-feature.md` mục 3).
+
+    Xoá theo tầng (``cascade="all, delete-orphan"`` trên ``ForumPost.comments``)
+    nên bình luận của bài cũng mất theo, không cần xoá tay riêng.
+    """
+    post = _get_post(db, post_id)
+    db.delete(post)
+    db.commit()
+
+
+@router.delete("/comments/{comment_id}", status_code=status.HTTP_204_NO_CONTENT,
+               summary="Kiểm duyệt: xoá một bình luận")
+def delete_comment(comment_id: int, db: DbSession, _: AdminUser):
+    comment = db.get(ForumComment, comment_id)
+    if comment is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Không tìm thấy bình luận")
+    db.delete(comment)
+    db.commit()
