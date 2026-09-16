@@ -11,8 +11,8 @@ class AppConfig {
   /// chạy app ngay trên máy chạy backend (web/desktop). Trên điện thoại thật
   /// (kể cả build ra APK cài trực tiếp) 'localhost' là chính điện thoại, luôn
   /// không kết nối được. IP LAN hiện tại của máy chạy backend (xem `ipconfig`,
-  /// đổi lại nếu máy đổi mạng): 192.168.1.3.
-  static const String backendHost = '192.168.1.3';
+  /// đổi lại nếu máy đổi mạng): 192.168.1.5.
+  static const String backendHost = '192.168.1.5';
   static const int backendPort = 8000;
 
   static String get baseUrl => 'http://$backendHost:$backendPort/api/v1';
