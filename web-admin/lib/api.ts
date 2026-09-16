@@ -76,10 +76,17 @@ export async function adminFetch<T>(
   return apiFetch<T>(path, { ...options, token: token ?? undefined });
 }
 
-/** Ghép URL ảnh tương đối (`/storage/...`) backend trả về thành URL đầy đủ
- * để trình duyệt tải trực tiếp từ backend (ảnh không yêu cầu xác thực). */
+/** Trước đây ghép thẳng `BACKEND_URL` vào trước đường dẫn để trình duyệt tải
+ * ảnh trực tiếp từ backend — vỡ hoàn toàn khi chạy trong docker-compose vì
+ * `BACKEND_URL=http://backend:8000` chỉ phân giải được TRONG mạng compose,
+ * trình duyệt (chạy trên máy host) không gọi nổi tên "backend" (bug thật
+ * 17/09/2026, ảnh trắng 100%). `next.config.mjs` giờ rewrite `/storage/...`
+ * sang backend ngay ở tầng server Next.js, nên đường dẫn tương đối này đã là
+ * URL dùng được thẳng — giữ hàm lại (không xoá, không inline) để mọi nơi gọi
+ * ảnh vẫn đi qua một điểm chung, đổi cách ghép URL sau này không phải sửa lại
+ * từng chỗ gọi. */
 export function storageUrl(relativePath: string): string {
-  return `${BACKEND_URL}${relativePath}`;
+  return relativePath;
 }
 
 export { BACKEND_URL };

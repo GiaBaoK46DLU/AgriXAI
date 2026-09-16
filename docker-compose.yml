@@ -78,6 +78,14 @@ services:
       - "3000:3000"
     environment:
       - BACKEND_URL=http://backend:8000
+      # Bắt buộc trên Windows: bind mount ./web-admin vào container đi qua 9p
+      # (WSL2 <-> Docker Desktop), filesystem này KHÔNG báo sự kiện inotify khi
+      # sửa file từ phía Windows — webpack watch của Next.js đứng im, sửa code
+      # không tự hot-reload dù nội dung file trong container đã đổi (đã kiểm
+      # chứng thật: sửa xong, đợi, gọi lại trang vẫn ra bản cũ). WATCHPACK_POLLING
+      # bắt Next.js tự polling thay vì chờ inotify — cái giá là dùng nhiều CPU hơn
+      # một chút lúc idle, chấp nhận được để đổi lấy hot-reload chạy đúng.
+      - WATCHPACK_POLLING=true
     command: sh -c "npm install && npm run dev -- -H 0.0.0.0"
     depends_on:
       - backend

@@ -9,7 +9,7 @@ export function MedicineFormModal({ medicine }: { medicine?: MedicineOut }) {
   const action = isEdit ? updateMedicineAction.bind(null, medicine!.id) : createMedicineAction;
 
   return (
-    <Modal title={isEdit ? "Sửa thuốc" : "Thêm thuốc"} closeHref="/admin/medicines">
+    <Modal title={isEdit ? "Sửa thuốc" : "Thêm thuốc"} closeHref="/admin/medicines?tab=list">
       <form action={action} className="grid gap-3">
         <div>
           <label className={ui.label}>Tên thuốc</label>
@@ -30,7 +30,7 @@ export function MedicineFormModal({ medicine }: { medicine?: MedicineOut }) {
         </div>
 
         <div className="mt-2 flex justify-end gap-2.5">
-          <a href="/admin/medicines" className={ui.btnGhost}>
+          <a href="/admin/medicines?tab=list" className={ui.btnGhost}>
             Huỷ
           </a>
           <button type="submit" className={ui.btnPrimary}>

@@ -9,7 +9,12 @@ import type { DiseaseMedicineOut, MedicineOut } from "@/lib/types";
 const BASE = "/admin/medicines";
 
 function errorRedirect(disease: string | undefined, message: string): never {
-  const suffix = disease ? `&disease=${encodeURIComponent(disease)}` : "";
+  // `disease` chỉ truyền vào từ các action của tab "Gán thuốc theo bệnh" —
+  // phải quay lại đúng tab đó kèm đúng bệnh, không phải rơi về tab danh sách
+  // mặc định (trang không có `tab` trong URL luôn hiểu là tab "list").
+  const suffix = disease
+    ? `&tab=assign&disease=${encodeURIComponent(disease)}`
+    : "&tab=list";
   redirect(`${BASE}?error=${encodeURIComponent(message)}${suffix}`);
 }
 
@@ -73,7 +78,7 @@ export async function createAssignmentAction(formData: FormData) {
   }
 
   revalidatePath(BASE);
-  redirect(`${BASE}?disease=${encodeURIComponent(diseaseKey)}`);
+  redirect(`${BASE}?tab=assign&disease=${encodeURIComponent(diseaseKey)}`);
 }
 
 export async function deleteAssignmentAction(assignmentId: number, diseaseKey: string) {
@@ -84,5 +89,5 @@ export async function deleteAssignmentAction(assignmentId: number, diseaseKey: s
   }
 
   revalidatePath(BASE);
-  redirect(`${BASE}?disease=${encodeURIComponent(diseaseKey)}`);
+  redirect(`${BASE}?tab=assign&disease=${encodeURIComponent(diseaseKey)}`);
 }

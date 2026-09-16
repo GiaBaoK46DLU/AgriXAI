@@ -2,40 +2,37 @@ import Link from "next/link";
 
 import { adminFetch } from "@/lib/api";
 import * as ui from "@/lib/ui";
+import { firstIntParam, firstStringParam } from "@/lib/params";
 import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 import type { DiseaseInfo, DiseaseMedicineOut, MedicineOut } from "@/lib/types";
 
-import {
-  createAssignmentAction,
-  deleteAssignmentAction,
-  deleteMedicineAction,
-} from "./actions";
+import { createAssignmentAction, deleteAssignmentAction, deleteMedicineAction } from "./actions";
+import { DiseaseSelect } from "./DiseaseSelect";
 import { MedicineFormModal } from "./MedicineFormModal";
 
 export const metadata = { title: "Thuốc gợi ý — AgriXAI Admin" };
 
+const TABS = [
+  { key: "list", label: "Danh sách thuốc" },
+  { key: "assign", label: "Gán thuốc theo bệnh" },
+] as const;
+
 export default async function MedicinesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ new?: string; edit?: string; disease?: string; error?: string }>;
+  searchParams: Promise<{ tab?: string; new?: string; edit?: string; disease?: string; error?: string }>;
 }) {
   const sp = await searchParams;
+  const tab = sp.tab === "assign" ? "assign" : "list";
 
   const [medicines, diseases] = await Promise.all([
     adminFetch<MedicineOut[]>("/medicines"),
     adminFetch<DiseaseInfo[]>("/diseases"),
   ]);
 
-  const selectedDisease = sp.disease || diseases[0]?.key || "";
-  const assignments = selectedDisease
-    ? await adminFetch<DiseaseMedicineOut[]>("/medicines/assignments", {
-        searchParams: { disease_key: selectedDisease },
-      })
-    : [];
-
-  const editingMedicine = sp.edit ? medicines.find((m) => m.id === Number(sp.edit)) : undefined;
-  const assignedIds = new Set(assignments.map((a) => a.medicine_id));
-  const availableForAssignment = medicines.filter((m) => !assignedIds.has(m.id));
+  const editId = firstIntParam(sp.edit);
+  const editingMedicine = editId !== undefined ? medicines.find((m) => m.id === editId) : undefined;
+  const selectedDisease = firstStringParam(sp.disease) || diseases[0]?.key || "";
 
   return (
     <div>
@@ -47,13 +44,44 @@ export default async function MedicinesPage({
         </div>
       )}
 
+      <div className="mb-5 flex gap-1 border-b border-border">
+        {TABS.map((t) => (
+          <Link
+            key={t.key}
+            href={`/admin/medicines?tab=${t.key}`}
+            className={`-mb-px border-b-2 px-4 py-2.5 text-[13px] font-bold transition ${
+              tab === t.key
+                ? "border-primary text-primary-dark"
+                : "border-transparent text-ink/55 hover:text-ink"
+            }`}
+          >
+            {t.label}
+          </Link>
+        ))}
+      </div>
+
+      {tab === "list" ? (
+        <MedicineListTab medicines={medicines} />
+      ) : (
+        <AssignTab medicines={medicines} diseases={diseases} selectedDisease={selectedDisease} />
+      )}
+
+      {sp.new === "1" && <MedicineFormModal />}
+      {editingMedicine && <MedicineFormModal medicine={editingMedicine} />}
+    </div>
+  );
+}
+
+function MedicineListTab({ medicines }: { medicines: MedicineOut[] }) {
+  return (
+    <div>
       <div className="mb-3.5 flex items-center justify-between">
         <div className="text-[15px] font-bold">Danh sách thuốc bảo vệ thực vật</div>
         <Link href="/admin/medicines?new=1" className={ui.btnPrimary}>
           + Thêm thuốc
         </Link>
       </div>
-      <div className={`${ui.card} mb-7`}>
+      <div className={ui.card}>
         <table className="w-full border-collapse text-[13px]">
           <thead>
             <tr className="bg-canvas">
@@ -106,21 +134,34 @@ export default async function MedicinesPage({
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
 
+async function AssignTab({
+  medicines,
+  diseases,
+  selectedDisease,
+}: {
+  medicines: MedicineOut[];
+  diseases: DiseaseInfo[];
+  selectedDisease: string;
+}) {
+  const assignments = selectedDisease
+    ? await adminFetch<DiseaseMedicineOut[]>("/medicines/assignments", {
+        searchParams: { disease_key: selectedDisease },
+      })
+    : [];
+  const assignedIds = new Set(assignments.map((a) => a.medicine_id));
+  const availableForAssignment = medicines.filter((m) => !assignedIds.has(m.id));
+
+  return (
+    <div>
       <div className="mb-3.5 text-[15px] font-bold">Gán thuốc theo bệnh</div>
       <div className={`${ui.card} p-5`}>
-        <form className="mb-4">
-          <select name="disease" defaultValue={selectedDisease} className={`${ui.select} w-auto`}>
-            {diseases.map((d) => (
-              <option key={d.key} value={d.key}>
-                {d.name_vi}
-              </option>
-            ))}
-          </select>
-          <button type="submit" className={`${ui.btnGhost} ml-2`}>
-            Xem
-          </button>
-        </form>
+        <div className="mb-4">
+          <DiseaseSelect diseases={diseases} value={selectedDisease} />
+        </div>
 
         <div className="mb-4 grid gap-2.5">
           {assignments.map((a) => (
@@ -150,7 +191,11 @@ export default async function MedicinesPage({
         </div>
 
         {availableForAssignment.length > 0 ? (
-          <form action={createAssignmentAction} className="flex flex-wrap items-end gap-2">
+          <form
+            key={selectedDisease}
+            action={createAssignmentAction}
+            className="flex flex-wrap items-end gap-2"
+          >
             <input type="hidden" name="disease_key" value={selectedDisease} />
             <select name="medicine_id" required className={`${ui.select} w-auto`}>
               {availableForAssignment.map((m) => (
@@ -174,9 +219,6 @@ export default async function MedicinesPage({
           )
         )}
       </div>
-
-      {sp.new === "1" && <MedicineFormModal />}
-      {editingMedicine && <MedicineFormModal medicine={editingMedicine} />}
     </div>
   );
 }

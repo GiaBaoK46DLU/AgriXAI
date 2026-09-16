@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { adminFetch, storageUrl } from "@/lib/api";
 import * as ui from "@/lib/ui";
+import { firstIntParam } from "@/lib/params";
 import { Tag, severityTone } from "@/components/Tag";
 import { Pagination } from "@/components/Pagination";
 import type { DiagnosisPage, DiseaseInfo, UserOut } from "@/lib/types";
@@ -34,7 +35,8 @@ export default async function DiagnosesPage({
   }>;
 }) {
   const sp = await searchParams;
-  const page = Math.max(1, Number(sp.page) || 1);
+  const page = Math.max(1, firstIntParam(sp.page) ?? 1);
+  const detailId = firstIntParam(sp.detail);
   const pageSize = 20;
 
   const [diagPage, farmers, diseases] = await Promise.all([
@@ -153,7 +155,7 @@ export default async function DiagnosesPage({
         />
       </div>
 
-      {sp.detail && <DiagnosisDetailModal diagnosisId={Number(sp.detail)} />}
+      {detailId !== undefined && <DiagnosisDetailModal diagnosisId={detailId} />}
     </div>
   );
 }

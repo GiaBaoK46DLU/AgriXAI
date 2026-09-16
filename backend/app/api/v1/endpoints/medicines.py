@@ -137,6 +137,15 @@ def delete_assignment(assignment_id: int, db: DbSession, _: AdminUser):
 
 # ── Video hướng dẫn ──
 
+@router.get("/guides", response_model=list[DiseaseGuideOut],
+            summary="Toàn bộ video hướng dẫn đã gán, theo mọi bệnh")
+def list_guides(db: DbSession, _: AdminUser):
+    """Đặt TRƯỚC ``/guides/{disease_key}`` — nếu đảo thứ tự, FastAPI sẽ khớp
+    ``/guides`` vào route có tham số trước và báo lỗi 422 (``disease_key`` nhận
+    giá trị rỗng), route này sẽ không bao giờ được gọi tới."""
+    return db.scalars(select(DiseaseGuide).order_by(DiseaseGuide.disease_key)).all()
+
+
 @router.get("/guides/{disease_key}", response_model=DiseaseGuideOut | None,
             summary="Video hướng dẫn hiện tại của một bệnh")
 def get_guide(disease_key: str, db: DbSession, _: AdminUser):

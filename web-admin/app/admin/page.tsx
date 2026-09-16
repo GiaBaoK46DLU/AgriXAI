@@ -7,6 +7,7 @@ import type {
   ForumPostPage,
   UserOut,
 } from "@/lib/types";
+import { firstIntParam } from "@/lib/params";
 import { RangeSelect } from "@/components/RangeSelect";
 import { StatCard } from "@/components/StatCard";
 import { Tag, severityTone } from "@/components/Tag";
@@ -37,7 +38,8 @@ export default async function DashboardPage({
   searchParams: Promise<{ days?: string }>;
 }) {
   const { days: daysParam } = await searchParams;
-  const days = RANGE_OPTIONS.includes(Number(daysParam)) ? Number(daysParam) : 30;
+  const parsedDays = firstIntParam(daysParam);
+  const days = parsedDays !== undefined && RANGE_OPTIONS.includes(parsedDays) ? parsedDays : 30;
 
   const [stats, recentDiagnoses, recentPosts, farmers] = await Promise.all([
     adminFetch<DashboardStats>("/stats/dashboard", { searchParams: { days } }),
