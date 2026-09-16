@@ -106,8 +106,14 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
     if (_liking || _post == null) return;
     setState(() => _liking = true);
     try {
-      await session.forumService.likePost(widget.postId);
-      await _load(silent: true);
+      final ForumPost serverPost = await session.forumService.likePost(widget.postId);
+      if (mounted) {
+        // Chỉ cập nhật like fields — giữ nguyên comments đã load từ GET /posts/{id}
+        setState(() => _post = _post!.copyWith(
+              likesCount: serverPost.likesCount,
+              isLikedByMe: serverPost.isLikedByMe,
+            ));
+      }
     } catch (_) {
       // Bấm thích thất bại thì im lặng — không phải thao tác quan trọng.
     } finally {
@@ -224,7 +230,11 @@ class _ForumDetailScreenState extends State<ForumDetailScreen> {
             size: 40,
             radius: 999,
             onPressed: _liking ? () {} : _like,
-            icon: AgriIcons.heart(17, filled: false, color: AgriColors.accentInk),
+            icon: AgriIcons.heart(
+              17,
+              filled: post.isLikedByMe,
+              color: post.isLikedByMe ? const Color(0xFFE53935) : AgriColors.accentInk,
+            ),
           ),
           const SizedBox(width: 8),
           Text(

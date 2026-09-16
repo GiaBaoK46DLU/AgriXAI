@@ -40,27 +40,27 @@ class GlassBottomBar extends StatelessWidget {
             _tab(
               tab: AgriTab.forum,
               label: 'Diễn đàn',
-              builder: (Color c) => AgriIcons.tabForum(23, c),
+              builder: (Color c, bool active) => AgriIcons.tabForum(active ? 26 : 22, c),
             ),
             _tab(
               tab: AgriTab.history,
               label: 'Lịch sử',
-              builder: (Color c) => AgriIcons.tabHistory(23, c),
+              builder: (Color c, bool active) => AgriIcons.tabHistory(active ? 26 : 22, c),
             ),
             _tab(
               tab: AgriTab.plots,
               label: 'Trang chủ',
-              builder: (Color c) => AgriIcons.tabHome(23, c),
+              builder: (Color c, bool active) => AgriIcons.tabHome(active ? 26 : 22, c),
             ),
             _tab(
               tab: AgriTab.catalog,
               label: 'Danh mục',
-              builder: (Color c) => AgriIcons.tabCatalog(23, c),
+              builder: (Color c, bool active) => AgriIcons.tabCatalog(active ? 26 : 22, c),
             ),
             _tab(
               tab: AgriTab.profile,
               label: 'Tôi',
-              builder: (Color c) => AgriIcons.tabProfile(23, c),
+              builder: (Color c, bool active) => AgriIcons.tabProfile(active ? 26 : 22, c),
             ),
           ],
         ),
@@ -71,32 +71,50 @@ class GlassBottomBar extends StatelessWidget {
   Widget _tab({
     required AgriTab tab,
     required String label,
-    required Widget Function(Color) builder,
+    required Widget Function(Color, bool) builder,
   }) {
     final bool active = current == tab;
-    final Color color = active ? AgriColors.primary : AgriColors.inkA(.62);
+    final Color iconColor = active ? Colors.white : AgriColors.inkA(.62);
+    final Color textColor = active ? AgriColors.primary : AgriColors.inkA(.62);
+
     return Expanded(
       child: Material(
         color: const Color(0x00000000),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
         child: InkWell(
           onTap: () => onSelect(tab),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(22),
           child: Container(
-            constraints: const BoxConstraints(minHeight: 52),
-            padding: const EdgeInsets.only(top: 7),
+            constraints: const BoxConstraints(minHeight: 56),
+            padding: const EdgeInsets.only(top: 4),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                builder(color),
-                const SizedBox(height: 3),
-                Text(
-                  label,
-                  style: agriStyle(
-                    size: 10.5,
-                    weight: FontWeight.w600,
-                    color: color,
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeOutBack,
+                  transform: Matrix4.translationValues(0, active ? -7 : 0, 0),
+                  width: active ? 46 : 38,
+                  height: active ? 46 : 38,
+                  decoration: BoxDecoration(
+                    color: active ? AgriColors.primary : Colors.transparent,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: Alignment.center,
+                  child: builder(iconColor, active),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeOutBack,
+                  transform: Matrix4.translationValues(0, active ? -5 : 0, 0),
+                  child: Text(
+                    label,
+                    style: agriStyle(
+                      size: active ? 11 : 10.5,
+                      weight: active ? FontWeight.w700 : FontWeight.w600,
+                      color: textColor,
+                    ),
                   ),
                 ),
               ],

@@ -19,6 +19,7 @@ import 'forum_detail_screen.dart';
 /// thể. Nút thêm bài là nút tròn ghim ở góc dưới phải, chỉ hiện ở màn này.
 ///
 /// API: `GET /forum/posts` — cần đăng nhập, giống mọi tab khác của app.
+/// Phân trang 10 bài/trang — chỉ tải trang hiện tại.
 class ForumScreen extends StatefulWidget {
   const ForumScreen({super.key});
 
@@ -27,6 +28,8 @@ class ForumScreen extends StatefulWidget {
 }
 
 class _ForumScreenState extends State<ForumScreen> {
+  static const int _pageSize = 10;
+
   /// `null` nghĩa là "Tất cả loại bệnh".
   String? _diseaseKey;
 
@@ -37,6 +40,8 @@ class _ForumScreenState extends State<ForumScreen> {
   String? _error;
   List<ForumPost> _posts = <ForumPost>[];
   List<Disease> _diseases = <Disease>[];
+  int _page = 1;
+  int _total = 0;
 
   @override
   void initState() {
@@ -44,7 +49,10 @@ class _ForumScreenState extends State<ForumScreen> {
     _load();
   }
 
-  Future<void> _load() async {
+  int get _totalPages => _total == 0 ? 1 : ((_total + _pageSize - 1) ~/ _pageSize);
+
+  Future<void> _load({int? page}) async {
+    final int targetPage = page ?? _page;
     setState(() {
       _loading = true;
       _error = null;
@@ -53,15 +61,18 @@ class _ForumScreenState extends State<ForumScreen> {
       final List<Disease> diseases = _diseases.isEmpty
           ? await session.diseaseService.fetchAll()
           : _diseases;
-      final ({List<ForumPost> items, int total}) page = await session.forumService.listPosts(
+      final ({List<ForumPost> items, int total}) result = await session.forumService.listPosts(
         diseaseKey: _diseaseKey,
         kind: _kind,
-        pageSize: 50,
+        page: targetPage,
+        pageSize: _pageSize,
       );
       if (!mounted) return;
       setState(() {
         _diseases = diseases;
-        _posts = page.items;
+        _posts = result.items;
+        _total = result.total;
+        _page = targetPage;
         _loading = false;
       });
     } on ApiException catch (e) {
@@ -81,7 +92,7 @@ class _ForumScreenState extends State<ForumScreen> {
       context,
       (_) => const ForumComposeScreen(),
     );
-    if (posted == true) _load();
+    if (posted == true) _load(page: 1);
   }
 
   Future<void> _openDetail(ForumPost post) async {
@@ -89,12 +100,22 @@ class _ForumScreenState extends State<ForumScreen> {
     _load();
   }
 
+  /// Cập nhật trạng thái like của một bài trong danh sách (optimistic update).
+  void _updatePostLike(ForumPost updated) {
+    setState(() {
+      final int idx = _posts.indexWhere((ForumPost p) => p.id == updated.id);
+      if (idx != -1) {
+        _posts = List<ForumPost>.of(_posts)..[idx] = updated;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         RefreshIndicator(
-          onRefresh: _load,
+          onRefresh: () => _load(page: 1),
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: EdgeInsets.fromLTRB(
@@ -136,7 +157,7 @@ class _ForumScreenState extends State<ForumScreen> {
                             : _diseases.firstWhere((Disease d) => d.key == key).name,
                         onChanged: (String? key) {
                           setState(() => _diseaseKey = key);
-                          _load();
+                          _load(page: 1);
                         },
                       ),
                     ),
@@ -157,7 +178,7 @@ class _ForumScreenState extends State<ForumScreen> {
                             k == null ? 'Tất cả loại phản hồi' : forumPostKindLabel(k),
                         onChanged: (ForumPostKind? k) {
                           setState(() => _kind = k);
-                          _load();
+                          _load(page: 1);
                         },
                       ),
                     ),
@@ -173,11 +194,24 @@ class _ForumScreenState extends State<ForumScreen> {
                   _errorState(_error!)
                 else if (_posts.isEmpty)
                   _emptyState()
-                else
+                else ...<Widget>[
                   for (int i = 0; i < _posts.length; i++) ...<Widget>[
-                    _ForumPostCard(post: _posts[i], onTap: () => _openDetail(_posts[i])),
+                    _ForumPostCard(
+                      post: _posts[i],
+                      onTap: () => _openDetail(_posts[i]),
+                      onLikeChanged: _updatePostLike,
+                    ),
                     if (i != _posts.length - 1) const SizedBox(height: 10),
                   ],
+                  const SizedBox(height: 16),
+                  _PaginationBar(
+                    page: _page,
+                    totalPages: _totalPages,
+                    total: _total,
+                    onPrev: _page > 1 ? () => _load(page: _page - 1) : null,
+                    onNext: _page < _totalPages ? () => _load(page: _page + 1) : null,
+                  ),
+                ],
               ],
             ),
           ),
@@ -232,6 +266,82 @@ class _ForumScreenState extends State<ForumScreen> {
   }
 }
 
+// ─── Nút phân trang ────────────────────────────────────────────────────────
+
+class _PaginationBar extends StatelessWidget {
+  const _PaginationBar({
+    required this.page,
+    required this.totalPages,
+    required this.total,
+    required this.onPrev,
+    required this.onNext,
+  });
+
+  final int page;
+  final int totalPages;
+  final int total;
+  final VoidCallback? onPrev;
+  final VoidCallback? onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        _PageButton(
+          label: '← Trước',
+          onTap: onPrev,
+        ),
+        const SizedBox(width: 12),
+        Text(
+          'Trang $page / $totalPages  ($total bài)',
+          style: agriStyle(size: 12.5, color: AgriColors.inkA(.65), weight: FontWeight.w600),
+        ),
+        const SizedBox(width: 12),
+        _PageButton(
+          label: 'Tiếp →',
+          onTap: onNext,
+        ),
+      ],
+    );
+  }
+}
+
+class _PageButton extends StatelessWidget {
+  const _PageButton({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool enabled = onTap != null;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        decoration: BoxDecoration(
+          color: enabled ? AgriColors.primary.withValues(alpha: .12) : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: enabled ? AgriColors.primary.withValues(alpha: .35) : AgriColors.inkA(.12),
+          ),
+        ),
+        child: Text(
+          label,
+          style: agriStyle(
+            size: 12.5,
+            weight: FontWeight.w700,
+            color: enabled ? AgriColors.primary : AgriColors.inkA(.35),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Nút soạn bài ──────────────────────────────────────────────────────────
+
 class _ComposeButton extends StatelessWidget {
   const _ComposeButton({required this.onPressed});
 
@@ -267,19 +377,86 @@ class _ComposeButton extends StatelessWidget {
   }
 }
 
-class _ForumPostCard extends StatelessWidget {
-  const _ForumPostCard({required this.post, required this.onTap});
+// ─── Card bài viết ─────────────────────────────────────────────────────────
+
+/// Card bài viết — StatefulWidget để quản lý trạng thái like cục bộ,
+/// cho phép optimistic update ngay khi nhấn (tim đỏ) mà không cần reload trang.
+class _ForumPostCard extends StatefulWidget {
+  const _ForumPostCard({
+    required this.post,
+    required this.onTap,
+    required this.onLikeChanged,
+  });
 
   final ForumPost post;
   final VoidCallback onTap;
 
+  /// Gọi lại khi server xác nhận thay đổi trạng thái like, truyền bài viết
+  /// đã cập nhật để ForumScreen đồng bộ danh sách.
+  final ValueChanged<ForumPost> onLikeChanged;
+
+  @override
+  State<_ForumPostCard> createState() => _ForumPostCardState();
+}
+
+class _ForumPostCardState extends State<_ForumPostCard> {
+  bool _liking = false;
+
+  /// Trạng thái like hiển thị cục bộ (optimistic) — khởi tạo từ dữ liệu server.
+  late bool _liked = widget.post.isLikedByMe;
+  late int _count = widget.post.likesCount;
+
+  @override
+  void didUpdateWidget(_ForumPostCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Đồng bộ khi bài viết từ parent được làm mới (ví dụ sau khi refresh trang).
+    if (oldWidget.post != widget.post) {
+      _liked = widget.post.isLikedByMe;
+      _count = widget.post.likesCount;
+    }
+  }
+
+  Future<void> _toggleLike() async {
+    if (_liking) return;
+
+    // Optimistic update — đổi UI ngay, không chờ API
+    setState(() {
+      _liking = true;
+      _liked = !_liked;
+      _count += _liked ? 1 : -1;
+      if (_count < 0) _count = 0;
+    });
+
+    try {
+      final ForumPost updated = await session.forumService.likePost(widget.post.id);
+      if (mounted) {
+        setState(() {
+          _liked = updated.isLikedByMe;
+          _count = updated.likesCount;
+        });
+        widget.onLikeChanged(updated);
+      }
+    } catch (_) {
+      // Rollback nếu API thất bại
+      if (mounted) {
+        setState(() {
+          _liked = widget.post.isLikedByMe;
+          _count = widget.post.likesCount;
+        });
+      }
+    } finally {
+      if (mounted) setState(() => _liking = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final ForumPost post = widget.post;
     return GlassCard(
       style: GlassStyle.listRow,
       radius: 24,
       shadows: AgriShadows.card(.1),
-      onTap: onTap,
+      onTap: widget.onTap,
       padding: const EdgeInsets.all(15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -337,17 +514,47 @@ class _ForumPostCard extends StatelessWidget {
                 style: agriStyle(size: 11.5, color: AgriColors.inkA(.6)),
               ),
               const Spacer(),
-              AgriIcons.heart(15, filled: false, color: AgriColors.inkA(.55)),
-              const SizedBox(width: 4),
-              Text(
-                '${post.likesCount}',
-                style: agriStyle(size: 11.5, weight: FontWeight.w600, color: AgriColors.inkA(.6)),
+              // Nút like với hiệu ứng animated
+              GestureDetector(
+                onTap: _toggleLike,
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  child: Row(
+                    children: <Widget>[
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        transitionBuilder: (Widget child, Animation<double> anim) =>
+                            ScaleTransition(scale: anim, child: child),
+                        child: SizedBox(
+                          key: ValueKey<bool>(_liked),
+                          width: 15,
+                          height: 15,
+                          child: AgriIcons.heart(
+                            15,
+                            filled: _liked,
+                            color: _liked ? const Color(0xFFE53935) : AgriColors.inkA(.55),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '$_count',
+                        style: agriStyle(
+                          size: 11.5,
+                          weight: FontWeight.w600,
+                          color: _liked ? const Color(0xFFE53935) : AgriColors.inkA(.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(width: 10),
               AgriIcons.tabForum(15, AgriColors.inkA(.55)),
               const SizedBox(width: 4),
               Text(
-                '${post.comments.length}',
+                '${post.displayCommentsCount}',
                 style: agriStyle(size: 11.5, weight: FontWeight.w600, color: AgriColors.inkA(.6)),
               ),
             ],

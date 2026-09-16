@@ -12,7 +12,7 @@ from sqlalchemy.orm import selectinload
 
 from app.api.deps import CurrentUser, DbSession
 from app.models.diagnosis import Diagnosis
-from app.models.forum import ForumComment, ForumPost, ForumPostType
+from app.models.forum import ForumComment, ForumPost, ForumPostLike, ForumPostType
 from app.schemas.forum import (
     ForumCommentCreate,
     ForumCommentOut,
@@ -32,11 +32,26 @@ def _diagnosis_summary(diagnosis: Diagnosis | None) -> str | None:
     return f"{diagnosis.disease_name} · {diagnosis.created_at:%d/%m/%Y %H:%M}"
 
 
-def _to_out(post: ForumPost) -> ForumPostOut:
+def _to_out(post: ForumPost, current_user_id: int | None = None, db=None) -> ForumPostOut:
     out = ForumPostOut.model_validate(post)
     out.user_full_name = post.user.full_name if post.user else ""
     out.disease_name = catalog.get_disease(post.disease_key)["name_vi"]
     out.diagnosis_summary = _diagnosis_summary(post.diagnosis)
+    # Dùng relationship đã load sẵn nếu có; không thì query COUNT riêng.
+    if "comments" in post.__dict__:
+        out.comments_count = len(post.__dict__["comments"])
+    elif db is not None:
+        out.comments_count = db.scalar(
+            select(func.count(ForumComment.id)).where(ForumComment.post_id == post.id)
+        ) or 0
+    if current_user_id is not None and db is not None:
+        like = db.scalar(
+            select(ForumPostLike).where(
+                ForumPostLike.post_id == post.id,
+                ForumPostLike.user_id == current_user_id,
+            )
+        )
+        out.is_liked_by_me = like is not None
     return out
 
 
@@ -50,7 +65,11 @@ def _get_post(db, post_id: int) -> ForumPost:
     post = db.get(
         ForumPost,
         post_id,
-        options=[selectinload(ForumPost.user), selectinload(ForumPost.diagnosis)],
+        options=[
+            selectinload(ForumPost.user),
+            selectinload(ForumPost.diagnosis),
+            selectinload(ForumPost.comments),
+        ],
     )
     if post is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Không tìm thấy bài viết")
@@ -66,10 +85,10 @@ def list_posts(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
 ):
-    del user  # chỉ dùng để bắt buộc đăng nhập, không lọc theo người viết
-
     stmt = select(ForumPost).options(
-        selectinload(ForumPost.user), selectinload(ForumPost.diagnosis)
+        selectinload(ForumPost.user),
+        selectinload(ForumPost.diagnosis),
+        selectinload(ForumPost.comments),  # để đếm comments_count không cần thêm query
     )
     count_stmt = select(func.count(ForumPost.id))
 
@@ -91,7 +110,7 @@ def list_posts(
     ).all()
 
     return ForumPostPage(
-        items=[_to_out(p) for p in posts],
+        items=[_to_out(p, current_user_id=user.id, db=db) for p in posts],
         total=total,
         page=page,
         page_size=page_size,
@@ -129,12 +148,11 @@ def create_post(payload: ForumPostCreate, db: DbSession, user: CurrentUser):
     db.add(post)
     db.commit()
     db.refresh(post)
-    return _to_out(_get_post(db, post.id))
+    return _to_out(_get_post(db, post.id), current_user_id=user.id, db=db)
 
 
 @router.get("/posts/{post_id}", response_model=ForumPostDetail, summary="Chi tiết bài viết")
 def get_post(post_id: int, db: DbSession, user: CurrentUser):
-    del user
     post = db.get(
         ForumPost,
         post_id,
@@ -147,7 +165,7 @@ def get_post(post_id: int, db: DbSession, user: CurrentUser):
     if post is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Không tìm thấy bài viết")
 
-    detail = ForumPostDetail(**_to_out(post).model_dump())
+    detail = ForumPostDetail(**_to_out(post, current_user_id=user.id, db=db).model_dump())
     detail.comments = [_to_comment_out(c) for c in post.comments]
     return detail
 
@@ -165,11 +183,30 @@ def create_comment(post_id: int, payload: ForumCommentCreate, db: DbSession, use
     return _to_comment_out(comment)
 
 
-@router.post("/posts/{post_id}/like", response_model=ForumPostOut, summary="Thích bài viết")
+@router.post("/posts/{post_id}/like", response_model=ForumPostOut, summary="Thích / bỏ thích bài viết")
 def like_post(post_id: int, db: DbSession, user: CurrentUser):
-    del user
+    """Toggle like: lần đầu nhấn → like (+1); nhấn lần nữa → unlike (-1).
+
+    Dùng bảng ``forum_post_likes`` để đảm bảo mỗi user chỉ đếm một lần.
+    """
     post = _get_post(db, post_id)
-    post.likes_count += 1
+
+    existing = db.scalar(
+        select(ForumPostLike).where(
+            ForumPostLike.post_id == post_id,
+            ForumPostLike.user_id == user.id,
+        )
+    )
+
+    if existing is None:
+        # Chưa like → thêm bản ghi + tăng đếm
+        db.add(ForumPostLike(post_id=post_id, user_id=user.id))
+        post.likes_count = max(0, post.likes_count + 1)
+    else:
+        # Đã like → xoá bản ghi + giảm đếm
+        db.delete(existing)
+        post.likes_count = max(0, post.likes_count - 1)
+
     db.commit()
     db.refresh(post)
-    return _to_out(_get_post(db, post_id))
+    return _to_out(_get_post(db, post_id), current_user_id=user.id, db=db)

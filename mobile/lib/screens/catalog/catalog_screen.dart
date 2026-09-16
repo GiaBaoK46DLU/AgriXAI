@@ -65,21 +65,39 @@ class _CatalogScreenState extends State<CatalogScreen> {
   }
 
   Widget _errorState(VoidCallback onRetry) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              'Không tải được danh mục bệnh. Kiểm tra kết nối mạng.',
-              textAlign: TextAlign.center,
-              style: agriStyle(size: 14, color: AgriColors.inkA(.72)),
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(
+        16,
+        AgriMetrics.screenTop(context),
+        16,
+        22,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            'Danh mục bệnh cây trồng',
+            style: agriStyle(size: 23, weight: FontWeight.w700, em: -0.02),
+          ),
+          const SizedBox(height: 60),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    'Không tải được danh mục bệnh. Kiểm tra kết nối mạng.',
+                    textAlign: TextAlign.center,
+                    style: agriStyle(size: 14, color: AgriColors.inkA(.72)),
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton(onPressed: onRetry, child: const Text('Thử lại')),
+                ],
+              ),
             ),
-            const SizedBox(height: 12),
-            TextButton(onPressed: onRetry, child: const Text('Thử lại')),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

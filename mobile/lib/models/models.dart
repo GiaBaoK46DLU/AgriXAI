@@ -628,7 +628,9 @@ class ForumPost {
     required this.kind,
     required this.content,
     required this.likesCount,
+    required this.isLikedByMe,
     required this.createdAt,
+    this.commentsCount = 0,
     this.comments = const <ForumComment>[],
   });
 
@@ -643,10 +645,39 @@ class ForumPost {
         kind: forumPostKindFromRaw(json['type'] as String),
         content: json['content'] as String,
         likesCount: json['likes_count'] as int,
+        isLikedByMe: (json['is_liked_by_me'] as bool?) ?? false,
         createdAt: formatIsoTimestamp(json['created_at'] as String),
+        commentsCount: (json['comments_count'] as int?) ?? 0,
         comments: (json['comments'] as List<dynamic>? ?? const <dynamic>[])
             .map((dynamic c) => ForumComment.fromJson(c as Map<String, dynamic>))
             .toList(),
+      );
+
+  /// Tạo bản sao với một số trường được thay thế.
+  ///
+  /// Dùng trong màn chi tiết khi nhấn like — chỉ cập nhật `likesCount` và
+  /// `isLikedByMe` từ server mà không làm mất `comments` đã load.
+  ForumPost copyWith({
+    int? likesCount,
+    bool? isLikedByMe,
+    int? commentsCount,
+    List<ForumComment>? comments,
+  }) =>
+      ForumPost(
+        id: id,
+        userId: userId,
+        userFullName: userFullName,
+        diseaseKey: diseaseKey,
+        diseaseName: diseaseName,
+        diagnosisId: diagnosisId,
+        diagnosisSummary: diagnosisSummary,
+        kind: kind,
+        content: content,
+        likesCount: likesCount ?? this.likesCount,
+        isLikedByMe: isLikedByMe ?? this.isLikedByMe,
+        createdAt: createdAt,
+        commentsCount: commentsCount ?? this.commentsCount,
+        comments: comments ?? this.comments,
       );
 
   final int id;
@@ -659,6 +690,22 @@ class ForumPost {
   final ForumPostKind kind;
   final String content;
   final int likesCount;
+
+  /// `true` nếu user đang đăng nhập đã thích bài này — trả về từ backend
+  /// qua trường `is_liked_by_me` trong `ForumPostOut`.\
+  final bool isLikedByMe;
+
   final String createdAt;
+
+  /// Số bình luận — lấy từ `comments_count` trong `ForumPostOut` (danh sách)
+  /// hoặc tính từ `comments.length` khi đã có đầy đủ dữ liệu chi tiết.
+  final int commentsCount;
+
+  /// Danh sách bình luận đầy đủ — chỉ có dữ liệu khi load từ `GET /forum/posts/{id}`.
   final List<ForumComment> comments;
+
+  /// Số bình luận hiển thị — ưu tiên `comments.length` nếu đã load chi tiết,
+  /// fallback về `commentsCount` từ danh sách.
+  int get displayCommentsCount =>
+      comments.isNotEmpty ? comments.length : commentsCount;
 }
