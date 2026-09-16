@@ -15,7 +15,7 @@ export default async function AccountPage({
   const me = await adminFetch<UserOut>("/auth/me");
 
   return (
-    <div className="max-w-[560px]">
+    <div className="max-w-[1100px]">
       <h1 className="mb-5 text-xl font-extrabold tracking-[-0.01em]">Tài khoản của tôi</h1>
 
       {sp.error && (
@@ -29,7 +29,8 @@ export default async function AccountPage({
         </div>
       )}
 
-      <div className={`${ui.card} mb-6 p-6`}>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-start">
+      <div className={`${ui.card} p-6`}>
         <div className="mb-4 text-[15px] font-bold">Hồ sơ</div>
         <form action={updateProfileAction} className="grid gap-3">
           <div>
@@ -96,6 +97,7 @@ export default async function AccountPage({
             </button>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );

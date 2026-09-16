@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { adminFetch } from "@/lib/api";
 import * as ui from "@/lib/ui";
+import { firstIntParam } from "@/lib/params";
 import { Tag, roleTone, statusTone } from "@/components/Tag";
 import { ConfirmSubmitButton } from "@/components/ConfirmSubmitButton";
 import type { UserOut } from "@/lib/types";
@@ -28,7 +29,8 @@ export default async function UsersPage({
     searchParams: { q: q || undefined, role: role === "all" ? undefined : role },
   });
 
-  const editingUser = sp.edit ? users.find((u) => u.id === Number(sp.edit)) : undefined;
+  const editId = firstIntParam(sp.edit);
+  const editingUser = editId !== undefined ? users.find((u) => u.id === editId) : undefined;
 
   return (
     <div>

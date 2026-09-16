@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { adminFetch } from "@/lib/api";
 import * as ui from "@/lib/ui";
+import { firstIntParam } from "@/lib/params";
 import { Tag } from "@/components/Tag";
 import { Pagination } from "@/components/Pagination";
 import type { DiseaseInfo, ForumPostPage, ForumPostType } from "@/lib/types";
@@ -23,7 +24,8 @@ export default async function ForumPage({
   }>;
 }) {
   const sp = await searchParams;
-  const page = Math.max(1, Number(sp.page) || 1);
+  const page = Math.max(1, firstIntParam(sp.page) ?? 1);
+  const detailId = firstIntParam(sp.detail);
   const pageSize = 20;
 
   const [postPage, diseases] = await Promise.all([
@@ -132,7 +134,7 @@ export default async function ForumPage({
         />
       </div>
 
-      {sp.detail && <PostDetailModal postId={Number(sp.detail)} />}
+      {detailId !== undefined && <PostDetailModal postId={detailId} />}
     </div>
   );
 }

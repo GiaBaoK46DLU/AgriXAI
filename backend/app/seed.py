@@ -22,6 +22,7 @@ from sqlalchemy import func, select
 from app.core.security import hash_password
 from app.db.init_db import init_db
 from app.db.session import SessionLocal
+from app.models.diagnosis import Diagnosis
 from app.models.medicine import DiseaseGuide, DiseaseMedicine, Medicine
 from app.models.plot import Plot, PlotStatus
 from app.models.forum import ForumPost, ForumComment, ForumPostType
@@ -168,16 +169,27 @@ DISEASE_MEDICINES: dict[str, list[tuple[str, str | None]]] = {
 }
 
 # disease_key -> link YouTube hướng dẫn xử lý (tìm tay 07/09/2026, tiếng Việt)
+
+# Mỗi bệnh MỘT video riêng — bản trước lặp `GwAlAz8io3Y` cho cả `leaf_mold` lẫn
+# `target_spot`, và `Q0UGegDx-bQ` cho cả `septoria_leaf_spot` lẫn `spider_mites`,
+# khiến 4/9 bệnh trông như "dùng chung 1 link" khi xem qua web admin (đúng lỗi
+# 16/09/2026 báo lại). `mosaic_virus` bản trước (`gL8Ja3gWLBQ`) còn sai hẳn cây
+# trồng — video đó nói về bầu/bí/dưa leo/ớt/khoai mì/bưởi, không phải cà chua.
+# Danh mục chưa có video tiếng Việt CHUYÊN cho `leaf_mold` (mốc lá nhà kính,
+# Cladosporium) và `target_spot` (đốm mắt cua trên CÀ CHUA — kết quả tìm kiếm
+# tiếng Việt cho "đốm mắt cua" chỉ ra cà phê/sầu riêng) nên hai bệnh này tạm
+# dùng video tổng quan "các bệnh trên cây cà chua" — vẫn đúng cây trồng, chỉ
+# không đặc trị riêng bệnh đó. Đổi ngay khi tìm được video chuyên hơn.
 DISEASE_GUIDES = {
-    "late_blight": "https://www.youtube.com/watch?v=aHN9bwgL3qo",
-    "early_blight": "https://www.youtube.com/watch?v=X-qsSbxv288",
     "bacterial_spot": "https://www.youtube.com/watch?v=w8V3EVL48H8",
-    "septoria_leaf_spot": "https://www.youtube.com/watch?v=Q0UGegDx-bQ",
-    "leaf_mold": "https://www.youtube.com/watch?v=GwAlAz8io3Y",
+    "early_blight": "https://www.youtube.com/watch?v=X-qsSbxv288",
+    "late_blight": "https://www.youtube.com/watch?v=aHN9bwgL3qo",
+    "leaf_mold": "https://www.youtube.com/watch?v=Q0UGegDx-bQ",
+    "septoria_leaf_spot": "https://www.youtube.com/watch?v=C5YxoCWAlNc",
+    "spider_mites": "https://www.youtube.com/watch?v=CrY8_9IWysM",
     "target_spot": "https://www.youtube.com/watch?v=GwAlAz8io3Y",
-    "spider_mites": "https://www.youtube.com/watch?v=Q0UGegDx-bQ",
-    "yellow_leaf_curl_virus": "https://www.youtube.com/watch?v=9P6A0I8Sf80",
-    "mosaic_virus": "https://www.youtube.com/watch?v=gL8Ja3gWLBQ",
+    "yellow_leaf_curl_virus": "https://www.youtube.com/watch?v=ON_Ex0y6EIo",
+    "mosaic_virus": "https://www.youtube.com/watch?v=tSX8n7XP1Yo",
 }
 
 
@@ -269,11 +281,17 @@ def seed_medicines(db) -> None:
     db.commit()
 
 
-def seed_forum(db, users: dict[str, User]) -> None:
+def seed_forum(db, users: dict[str, User], plots: list[Plot]) -> None:
     logger.info("  Đang tạo dữ liệu diễn đàn...")
     existing_count = db.scalar(select(func.count(ForumPost.id))) or 0
     if existing_count >= 15:
-        logger.info("  · Đã có đủ dữ liệu diễn đàn (%d bài), bỏ qua.", existing_count)
+        logger.info("  · Đã có đủ dữ liệu diễn đàn (%d bài), bỏ qua tạo mới.", existing_count)
+        # Vẫn chạy bước gán chẩn đoán bên dưới dù bỏ qua tạo bài mới — DB đã
+        # tồn tại từ trước (như lúc phát hiện lỗi này) có thể có đủ 15 bài
+        # nhưng KHÔNG có bài nào từng được gán `diagnosis_id` (bug thật
+        # 17/09/2026: `seed_forum` chưa từng gán trường này), nên tách hẳn
+        # bước gán ra khỏi guard "đủ 15 bài thì bỏ qua" phía trên.
+        _attach_diagnoses_to_posts(db, users, plots)
         return
 
     admin = users["admin"]
@@ -516,6 +534,8 @@ def seed_forum(db, users: dict[str, User]) -> None:
         len(post_objs), len(comments_data),
     )
 
+    _attach_diagnoses_to_posts(db, users, plots)
+
 
 def _fake_leaf_image(rng: random.Random) -> bytes:
     """Ảnh lá giả — vài mảng màu xanh có đốm nâu, đủ để chạy hết luồng."""
@@ -533,6 +553,72 @@ def _fake_leaf_image(rng: random.Random) -> bytes:
     buffer = io.BytesIO()
     image.save(buffer, format="JPEG")
     return buffer.getvalue()
+
+
+# Bài viết diễn đàn nào đọc như đang kể về MỘT lần chẩn đoán cụ thể của chính
+# người viết (nhắc "hệ thống chẩn đoán", "app gợi ý", hoặc mở đầu bằng chuyện
+# vườn nhà mình) thì gán `diagnosis_id` cho nó — khớp với 8/15 bài dùng
+# `disease_key` còn nằm trong danh mục 10 lớp hiện tại (late_blight,
+# spider_mites, early_blight). 7 bài còn lại dùng `disease_key` đã lỗi thời
+# (`fruit_borer`, `fusarium_wilt`, `leaf_curl_virus`, `bacterial_canker` —
+# dữ liệu demo cũ trước khi chốt phạm vi 10 bệnh, xem CLAUDE.md) nên KHÔNG
+# gán được: không mô hình nào phân loại ra các nhãn đó để có một chẩn đoán
+# thật đứng sau. Nhận diện bài viết bằng cách so khớp một đoạn `content` cố
+# định — không dùng index vì thứ tự `post_specs` có thể đổi mà không báo lỗi.
+_POST_DIAGNOSIS_MARKERS = [
+    "vườn cà chua 500m² nhà mình bị mốc sương nặng",
+    "Hệ thống chẩn đoán bảo cây mình bị mốc sương",
+    "gợi ý dùng Dầu khoáng cho nhện đỏ",
+    "Dầu khoáng đúng là kém hiệu quả hơn",
+    "trị nhện đỏ bằng cách phun nước áp lực cao",
+    "Đốm vòng thường xuất hiện ở lá già trước",
+    "Tỉa lá là bước quan trọng nhất",
+]
+
+
+def _attach_diagnoses_to_posts(db, users: dict[str, User], plots: list[Plot]) -> None:
+    """Gán `ForumPost.diagnosis_id` cho các bài đủ điều kiện ở trên.
+
+    Ưu tiên TÁI SỬ DỤNG một `Diagnosis` có sẵn của đúng người dùng + đúng
+    `disease_key` (ví dụ các bản ghi tạo ra lúc thử app thật) — chỉ sinh mới
+    bằng `diagnosis_service.run_diagnosis()` (chạy qua đúng mô hình thật/giả,
+    không phải chèn thẳng vào CSDL) khi chưa có bản nào để tái dùng. Idempotent:
+    gọi lại nhiều lần không tạo thêm chẩn đoán thừa, vì bài đã có
+    `diagnosis_id` thì bỏ qua ngay từ đầu.
+    """
+    plot_by_owner: dict[int, list[Plot]] = {}
+    for p in plots:
+        plot_by_owner.setdefault(p.owner_id, []).append(p)
+    rng = random.Random(43)
+
+    attached = 0
+    for marker in _POST_DIAGNOSIS_MARKERS:
+        post = db.scalar(select(ForumPost).where(ForumPost.content.contains(marker)))
+        if post is None or post.diagnosis_id is not None:
+            continue
+
+        existing = db.scalar(
+            select(Diagnosis)
+            .where(Diagnosis.user_id == post.user_id, Diagnosis.disease_key == post.disease_key)
+            .order_by(Diagnosis.id.desc())
+        )
+        if existing is not None:
+            post.diagnosis_id = existing.id
+            attached += 1
+            continue
+
+        owner_plots = plot_by_owner.get(post.user_id, [])
+        plot_id = owner_plots[0].id if owner_plots else None
+        record = diagnosis_service.run_diagnosis(
+            db, user_id=post.user_id, plot_id=plot_id,
+            images=[_fake_leaf_image(rng) for _ in range(3)],
+        )
+        post.diagnosis_id = record.id
+        attached += 1
+
+    db.commit()
+    if attached:
+        logger.info("  + Đã gán lịch sử chẩn đoán cho %d bài viết diễn đàn.", attached)
 
 
 def seed_diagnoses(db, users: dict[str, User], plots: list[Plot], count: int = 40) -> None:
@@ -588,7 +674,7 @@ def main() -> None:
         seed_medicines(db)
 
         logger.info("\nDiễn đàn:")
-        seed_forum(db, users)
+        seed_forum(db, users, plots)
 
         if args.diagnoses:
             logger.info("\nLịch sử chẩn đoán:")

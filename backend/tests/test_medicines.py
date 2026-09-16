@@ -115,3 +115,24 @@ def test_upsert_and_delete_disease_guide(client, admin_headers):
     deleted = client.delete(f"{API}/medicines/guides/healthy", headers=admin_headers)
     assert deleted.status_code == 204
     assert client.delete(f"{API}/medicines/guides/healthy", headers=admin_headers).status_code == 404
+
+
+def test_list_guides_returns_every_assigned_disease_independently(client, admin_headers):
+    """Bug thật 16/09/2026: web admin gán video cho `early_blight` rồi
+    `late_blight` nhưng cả hai lại hiện cùng một link — nguyên nhân là trang
+    dùng chung một state `selectedDisease` cũ. Test này khoá lại đúng bất biến
+    bị vỡ: mỗi bệnh trả về ĐÚNG link của chính nó, không lẫn sang bệnh khác."""
+    client.put(
+        f"{API}/medicines/guides/early_blight", headers=admin_headers,
+        json={"video_url": "https://www.youtube.com/watch?v=aaa111"},
+    )
+    client.put(
+        f"{API}/medicines/guides/late_blight", headers=admin_headers,
+        json={"video_url": "https://www.youtube.com/watch?v=bbb222"},
+    )
+
+    listed = client.get(f"{API}/medicines/guides", headers=admin_headers)
+    assert listed.status_code == 200, listed.text
+    by_key = {g["disease_key"]: g["video_url"] for g in listed.json()}
+    assert by_key["early_blight"] == "https://www.youtube.com/watch?v=aaa111"
+    assert by_key["late_blight"] == "https://www.youtube.com/watch?v=bbb222"

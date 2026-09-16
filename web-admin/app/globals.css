@@ -50,9 +50,15 @@ body {
   border-radius: 99px;
 }
 
-a {
-  color: var(--color-primary);
-}
-a:hover {
-  color: var(--color-primary-dark);
+/* @layer base để rule này nằm trong hệ thống layer của Tailwind — nếu để trần
+   (không @layer) thì CSS "không layer" luôn thắng CSS có layer bất kể specificity,
+   nghĩa là mọi Link/`<a>` dùng class `text-white` (nút "+ Thêm thuốc", mục đang chọn
+   trên sidebar...) vẫn bị tô màu xanh `--color-primary` đè lên, chữ chìm vào nền xanh. */
+@layer base {
+  a {
+    color: var(--color-primary);
+  }
+  a:hover {
+    color: var(--color-primary-dark);
+  }
 }
