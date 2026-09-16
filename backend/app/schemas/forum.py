@@ -31,6 +31,9 @@ class ForumCommentOut(BaseModel):
     content: str
     created_at: datetime
     user_full_name: str = ""
+    # Để mobile/web tô nổi bật tên quản trị khi họ tham gia bình luận — không
+    # phải khoá ngoại gì thêm, chỉ đọc từ `user.role` đã join sẵn.
+    user_role: str = ""
 
 
 class ForumPostOut(BaseModel):
@@ -46,6 +49,7 @@ class ForumPostOut(BaseModel):
     created_at: datetime
 
     user_full_name: str = ""
+    user_role: str = ""
     # Ghép sẵn tên bệnh + thời gian của lần chẩn đoán đính kèm (nếu có), để
     # mobile không phải gọi thêm API — xem `forum.py._diagnosis_summary`.
     diagnosis_summary: str | None = None

@@ -57,6 +57,11 @@ services:
       db:
         condition: service_healthy
 
+  # Next.js (App Router) — xem web-admin/README.md. Đổi từ Vite/5173 sang
+  # Next.js/3000 ngày 16/09/2026; kiến trúc BFF nên chỉ cần một biến môi
+  # trường BACKEND_URL trỏ tới service "backend" trong cùng mạng compose,
+  # không cần thêm origin này vào CORS_ORIGINS của backend (mọi lệnh gọi
+  # chạy phía server của Next.js, không phải trình duyệt — xem CLAUDE.md).
   web-admin:
     image: node:20-alpine
     container_name: plantdx-web-admin
@@ -64,11 +69,20 @@ services:
     working_dir: /app
     volumes:
       - ./web-admin:/app
+      # node_modules/.next cài riêng cho Linux trong container — không để bind
+      # mount từ host (thường là Windows) đè lên, ngược lại cũng không để
+      # container ghi ngược ra thư mục host.
+      - web-admin-node-modules:/app/node_modules
+      - web-admin-next-cache:/app/.next
     ports:
-      - "5173:5173"
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+      - "3000:3000"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    command: sh -c "npm install && npm run dev -- -H 0.0.0.0"
     depends_on:
       - backend
 
 volumes:
   plantdx-pgdata:
+  web-admin-node-modules:
+  web-admin-next-cache:

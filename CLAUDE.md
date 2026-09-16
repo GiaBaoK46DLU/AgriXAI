@@ -354,27 +354,162 @@ theo `disease_key`, đọc đè lên JSON — JSON vẫn giữ quyền quyết k
 
 ---
 
-## Phạm vi tương lai: web admin (chốt hướng 07/09/2026 — CHƯA LÀM)
+## Web admin: kiến trúc và tiến độ (chốt 16/09/2026 — thay thế kế hoạch Vite)
 
-`web-admin/` hiện chỉ là khung Vite trống (xem bảng Trạng thái hiện tại bên dưới).
-Mục này **chỉ ghi lại hướng đi** để phiên làm việc sau không phải suy nghĩ lại từ
-đầu — không phải việc cần làm ngay, và không có issue GitHub nào cho phần này.
+`web-admin/` trước đây chỉ là khung Vite trống, dựng theo 4 trang mô tả trong
+`README.md` cũ (Tổng quan · Lô đất & nông dân · Lịch sử · Tài khoản). Ngày
+16/09/2026 đổi hẳn hướng, theo yêu cầu trực tiếp của Học: viết lại bằng
+**Next.js (App Router) + TypeScript + Tailwind CSS v4**, dự định deploy
+**Vercel**, và mở rộng thành **8 trang** (thêm Danh mục bệnh, Thuốc gợi ý,
+Video hướng dẫn tách riêng, và **Diễn đàn** — trang kiểm duyệt mới, chưa từng
+có trong bất kỳ kế hoạch nào trước đó).
 
-| Chức năng | Bảng/endpoint đã có sẵn | Việc còn thiếu |
+⚠️ **Hệ quả: các issue `WA-01`…`WA-10` trên GitHub (mốc 3, nhãn
+`mang:web-admin`) mô tả kế hoạch Vite/4-trang cũ, nay lỗi thời.** CLI không tự
+sửa/đóng issue GitHub — Học cần tự rà lại các issue đó, việc build thực tế đã
+vượt qua phạm vi chúng mô tả.
+
+### Vì sao Next.js trên Vercel mà không phá vỡ kiến trúc 3 phần tách biệt
+
+Dự án vẫn giữ nguyên `backend/` (FastAPI), `web-admin/`, `mobile/` là ba phần
+triển khai độc lập — Next.js chỉ đóng vai trò **BFF (backend-for-frontend)**
+cho riêng web admin, không thay thế `backend/`:
+
+- Mọi lệnh gọi `backend/` chạy ở **phía server** của Next.js (Server Component,
+  Server Action, Route Handler) — trình duyệt không bao giờ gọi thẳng backend
+  và không bao giờ thấy token. Xem `web-admin/lib/session.ts`, `lib/api.ts`.
+- Token JWT do backend cấp được cất trong cookie **httpOnly** (`lib/session.ts`),
+  khác cách mobile lưu token (đọc `AppConfig`/local storage phía app) — web
+  chạy trong trình duyệt nên localStorage lộ ra cho mọi đoạn JS kể cả từ lỗ
+  hổng XSS, cookie httpOnly thì không.
+- `BACKEND_URL` trong `web-admin/.env.local` **cố ý không có tiền tố
+  `NEXT_PUBLIC_`** — biến này chỉ cần ở phía server. Ảnh chẩn đoán vẫn hiển thị
+  được vì `/storage/...` là static file công khai, không cần token.
+- CSDL: **chưa đụng Supabase.** Ý định "đẩy DB lên Supabase" nêu trong yêu cầu
+  ban đầu chưa triển khai — `backend/` vẫn nói chuyện với PostgreSQL qua
+  `docker-compose.yml` như hiện tại. Nếu sau này đổi, đó là việc của
+  `backend/`; `web-admin/` chỉ gọi qua API nên không phải đổi gì.
+
+### Phong cách thiết kế: theo đúng bảng màu/font mobile, đổi layout cho web
+
+Bản thiết kế tham khảo ban đầu (`AgriXAI Admin - Web v1.dc.html`, do Học tải
+về từ claude.ai/design) dùng đúng bảng màu chốt của mobile
+(`mobile/lib/core/app_colors.dart`, xanh `#2E6F40`/`#54A96A`, vàng cảnh báo
+`#F2A104`, Open Sans) nhưng đổi bố cục sang sidebar + bảng dữ liệu — **không**
+phải glassmorphism cuộn dọc như mobile. Bản build thật giữ đúng tinh thần đó:
+`web-admin/app/globals.css` định nghĩa lại các token màu này bằng Tailwind v4
+`@theme`, kính mờ (`backdrop-blur`) chỉ dùng ở màn đăng nhập và banner tổng
+quan — nơi mobile cũng dùng kính mờ — còn bảng dữ liệu là nền trắng phẳng, mật
+độ cao, đúng yêu cầu "chuyên nghiệp hơn app mobile" trong
+`prompt-cli-forum-feature.md`/`PROMPT_WEB_ADMIN.md` (thư mục thiết kế do Học
+cung cấp, không nằm trong Git).
+
+### Tám module đã dựng
+
+| Trang | Route | Ghi chú |
 |---|---|---|
-| CRUD thuốc (`medicines`) | Model đã có (`app/models/medicine.py`) | Chưa có endpoint ghi — hiện chỉ đọc qua `GET /diseases/{key}` |
-| Gán thuốc theo bệnh, sửa link mua (`disease_medicines`) | Model đã có, seed mẫu trong `app/seed.py` | Chưa có endpoint ghi |
-| CRUD video hướng dẫn theo bệnh (`disease_guides`) | Model đã có | Chưa có endpoint ghi |
-| CRUD bệnh cây (triệu chứng, cách xử lý) | — | Chưa có gì. Hướng làm: bảng `disease_overrides` khoá theo `disease_key`, đọc đè lên `shared/data/tomato_diseases.json` ở `services/catalog.py` (xem mục ngay phía trên) — **không** biến `Disease` thành bảng chính vì phá vỡ bất biến thứ tự lớp = thứ tự output mô hình |
-| CRUD người dùng | `GET/POST /users`, `GET/PATCH /users/{id}` đã có, chỉ quản trị mới gọi được | Đã đủ cho CRUD cơ bản — web admin chỉ cần dựng giao diện |
-| Quản lý lô đất theo người dùng (biết lô nào đang bệnh gì) | `GET /plots` (admin xem được lô của mọi người dùng), `PlotWithStats` đã kèm `last_disease_name`/`last_severity` | Đã đủ — chỉ cần giao diện bảng/lọc |
-| Xem lịch sử chẩn đoán toàn hệ thống | `GET /diagnoses` đã hỗ trợ lọc `user_id` (chỉ admin), `plot_id`, `disease_key`, `severity`, khoảng ngày, phân trang | Đã đủ — chỉ cần giao diện bảng |
+| Tổng quan | `/admin` | 4 ô số liệu + biểu đồ đường (SVG tay, không dùng thư viện chart) + phân bố theo bệnh/mức độ, dải cảnh báo khi `using_real_model=false` |
+| Người dùng | `/admin/users` | CRUD đầy đủ qua `GET/POST/PATCH /users` đã có sẵn |
+| Lô đất | `/admin/plots` | Chỉ đọc + xem chi tiết lịch sử — **không** có form sửa/xoá lô đất (lô đất là dữ liệu của nông dân, admin chỉ xem, đúng theo bản thiết kế gốc) |
+| Lịch sử chẩn đoán | `/admin/diagnoses` | Lọc theo nông dân/bệnh/mức độ, phân trang, modal chi tiết kèm ảnh gốc + ảnh khoanh vùng Grad-CAM |
+| Danh mục bệnh | `/admin/diseases` | Chỉ đọc, có banner nhắc thứ tự lớp gắn với output mô hình — **không** có CRUD (đúng quyết định "không biến `Disease` thành bảng CSDL" đã chốt trước đó) |
+| Thuốc gợi ý | `/admin/medicines` | CRUD `Medicine` + gán/gỡ theo bệnh — **endpoint mới**, xem mục dưới |
+| Video hướng dẫn | `/admin/guides` | Đặt/đổi/gỡ video YouTube theo bệnh — **endpoint mới** |
+| Diễn đàn | `/admin/forum` | **Module mới, không có trong bất kỳ bản thiết kế nào trước đó** — kiểm duyệt bài viết/bình luận (lọc theo bệnh/loại phản hồi, xem chi tiết, xoá) |
 
-Ba dòng đầu (thuốc/gán thuốc/video) là phần duy nhất thật sự cần viết **endpoint
-mới** ở backend trước khi web admin đụng vào được — theo đúng pattern CRUD chuẩn
-(`router.post`/`patch`/`delete` trong `app/api/v1/endpoints/`, tương tự
-`plots.py` đã có), chỉ khác đối tượng thao tác là `Medicine`/`DiseaseMedicine`/
-`DiseaseGuide` thay vì `Plot`.
+### Backend bổ sung để web admin có endpoint ghi thật (không còn "CHƯA LÀM")
+
+Bảng "việc còn thiếu" ở bản trước của mục này nay đã làm xong:
+
+- **`backend/app/api/v1/endpoints/medicines.py`** (mới, đăng ký prefix
+  `/medicines`) — CRUD `Medicine`, gán/gỡ `DiseaseMedicine` theo
+  `disease_key` (validate khoá tồn tại trong danh mục JSON trước khi gán),
+  và `PUT`/`DELETE` `DiseaseGuide` theo từng bệnh (tối đa một video/bệnh, đặt
+  lại là ghi đè). Toàn bộ chỉ `AdminUser` gọi được.
+- **`backend/app/api/v1/endpoints/forum.py`** — thêm `DELETE /forum/posts/{id}`
+  và `DELETE /forum/comments/{id}`, admin-only. Đây chính là phần
+  "chưa cần kiểm duyệt — để dành cho lúc làm web admin" mà
+  `prompt-cli-forum-feature.md` mục 3 đã nói trước — nay đến lúc làm.
+- Test tương ứng: `backend/tests/test_medicines.py` (mới),
+  `backend/tests/test_forum.py` (bổ sung 3 test kiểm duyệt).
+
+⚠️ **Phát hiện khi chạy lại bộ test đầy đủ:** `test_like_post_increments_counter`
+thất bại từ trước khi có thay đổi này (endpoint like đã đổi sang toggle
+like/unlike qua bảng `forum_post_likes` ở một thời điểm nào đó, nhưng test cũ
+vẫn giả định đếm dồn 1→2). Không liên quan gì tới web admin, chưa sửa — để lại
+cho ai đụng tới `like_post` tiếp theo.
+
+### Đã kiểm thử thật, không chỉ build qua
+
+`npm run build` qua strict TypeScript sạch cho cả 10 route. Ngoài ra đã chạy
+backend thật (SQLite tạm + `python -m app.seed --diagnoses`) song song
+`npm run dev`, đăng nhập bằng token thật, và xác nhận cả 8 trang + modal chi
+tiết (chẩn đoán/lô đất/bài diễn đàn) + panel theo bệnh (gán thuốc/video) render
+đúng dữ liệu thật, không lỗi. Chưa test được luồng bấm nút thật qua trình duyệt
+(Chrome MCP không kết nối được trong phiên chạy nền) — các Server Action tạo/
+sửa/xoá mới chỉ được xác nhận qua build type-check + test backend, chưa qua
+click thật.
+
+### Vòng sửa lỗi + mở rộng thứ hai (16/09/2026, cùng ngày)
+
+Sau khi xem bản dựng đầu, Học yêu cầu một loạt sửa/thêm trong cùng phiên:
+
+- **Logo**: thay ô màu giữ chỗ (sidebar, màn đăng nhập, favicon) bằng đúng
+  glyph "lá hai tông" của app mobile (`AgriIcons.leaf` trong
+  `mobile/lib/widgets/agri_icons.dart`) — chép path SVG nguyên văn vào
+  `web-admin/components/Logo.tsx`, không vẽ icon mới.
+- **Tương phản màu**: nhiều chip trạng thái gần như vô hình hoặc chữ chìm vào
+  nền. Đo thử bằng công thức WCAG thì `moderate`/`neutral` tone cũ trong
+  `components/Tag.tsx` chỉ đạt ~2.9:1 (dưới cả ngưỡng AA-large 3:1) — nền
+  pastel quá nhạt so với nền trắng/canvas xung quanh. Đổi `severe`/`moderate`
+  sang nền đặc màu + chữ trắng (~4.3–4.9:1, giống cách mobile tô nhãn "Nặng"),
+  `neutral` đổi nền xám nhẹ có độ tương phản thật (`bg-ink/10`) thay vì gần
+  trùng màu trang. Đồng thời rà toàn bộ `text-ink/45` và `text-ink/50` (đo
+  được ~2.7–3.1:1, đều fail AA) nâng lên tối thiểu `/60`, và `hover:bg-canvas`
+  (gần như không thấy hover trên nền trắng) đổi sang `hover:bg-ink/8`.
+- **Tài khoản quản trị**: thêm trang tự phục vụ "Tài khoản của tôi"
+  (`/admin/account`) — sửa hồ sơ qua `PATCH /auth/me` (chỉ `full_name`/`phone`,
+  đúng như backend đã giới hạn từ trước — **không** thêm khả năng đổi email
+  qua đường này) và đổi mật khẩu qua `POST /auth/change-password`. Trước đó
+  admin không có cách nào tự sửa hồ sơ/đổi mật khẩu của chính mình qua web.
+- **Dashboard**: bản đầu chỉ có một đường SVG tay không nhãn trục — Học phản
+  hồi "không hiểu gì cả". Viết lại bằng `recharts` (`components/charts/`):
+  biểu đồ vùng có trục ngày/tooltip, biểu đồ cột ngang cho phân bố bệnh,
+  biểu đồ tròn (donut) cho mức độ nặng, cộng thêm khối "Hoạt động gần đây"
+  (5 chẩn đoán + 5 bài diễn đàn mới nhất, bấm vào mở thẳng modal chi tiết) —
+  biến trang tổng quan từ một biểu đồ trừu tượng thành thứ đọc được ngay.
+- **Diễn đàn — admin bình luận được**: `POST /forum/posts/{id}/comments` vốn
+  đã mở cho mọi `CurrentUser` nên không cần sửa quyền ở backend, chỉ thiếu ô
+  nhập ở web admin (`PostDetailModal.tsx` thêm form). Thêm `user_role` vào
+  `ForumCommentOut`/`ForumPostOut` (schema, không phải khoá ngoại — đọc từ
+  `comment.user.role`/`post.user.role` đã join sẵn) để tên quản trị tô đậm +
+  nhãn "Quản trị" nổi bật giữa các bình luận của nông dân.
+- **Bug: liên kết "Xem lần chẩn đoán liên kết" từ bài diễn đàn**. Modal chi
+  tiết chẩn đoán trước đó tìm bản ghi bằng cách `.find()` trong danh sách ĐÃ
+  PHÂN TRANG/LỌC của trang `/admin/diagnoses` — mở từ diễn đàn tới một chẩn
+  đoán không nằm trong 20 bản ghi trang 1 thì modal không hiện gì, không báo
+  lỗi. Sửa: modal tự `GET /diagnoses/{id}` và `GET /users/{user_id}` trực
+  tiếp theo id, không phụ thuộc danh sách gọi nó vào. Đã kiểm bằng cách gọi
+  API tạo một chẩn đoán + bài viết đính kèm, lọc nó ra khỏi danh sách bằng
+  `severity=severe` (bản ghi thật là `mild`), xác nhận modal vẫn mở đúng.
+- **docker-compose.yml**: service `web-admin` đổi cổng 5173→3000, lệnh
+  `npm run dev -- -H 0.0.0.0`, thêm `BACKEND_URL=http://backend:8000` (gọi
+  qua tên service trong mạng compose). Thêm volume riêng cho
+  `node_modules`/`.next` để không bị bind mount từ host (thường là Windows)
+  đè lên bản cài cho Linux trong container. `db`/`adminer` giữ nguyên —
+  **không đổi ORM sang Prisma** dù có đề xuất ban đầu: Supabase chỉ là
+  PostgreSQL có host sẵn, SQLAlchemy hiện tại đã dùng được ngay bằng cách đổi
+  `DATABASE_URL`, không cần viết lại tầng dữ liệu (quyết định của Học sau khi
+  cân nhắc rủi ro, xem lịch sử trao đổi nếu cần chi tiết).
+- ⚠️ **Docker chưa kiểm thử chạy thật được trong phiên này** — Docker Desktop
+  trên máy chạy phiên nền không lên engine kịp (WSL `docker-desktop` đã
+  `Running` nhưng pipe engine không mở, có thể cần thao tác tay như một hộp
+  thoại đang chờ). `docker-compose.yml` đã kiểm cú pháp bằng
+  `docker compose config` (parse thành công, không cần daemon) nhưng **chưa**
+  chạy `docker compose up --build` thật để xác nhận cả bốn service lên đúng.
+  Việc còn lại: ai đó chạy `docker compose up --build` và báo lại nếu có gì
+  sai — nhiều khả năng nhất là quên biến `MODEL_CHECKPOINT` cần file thật
+  trong `model/checkpoints/` như phần "Tích hợp mô hình thật" đã nói.
 
 ---
 
@@ -457,7 +592,7 @@ mới nhất không tải nổi trên mạng lúc làm).
 | `model/research/` | Đã commit — danh mục 46 bài báo chia 8 nhóm + bản tổng hợp đối chiếu kết quả với các công bố. Xem mục "Phần việc của Bảo" bên dưới |
 | `backend/` code | **Chạy mô hình thật** (không còn `DummyPredictor` mặc định) — 19/19 test pass, xem mục "Tích hợp mô hình thật" phía trên |
 | `mobile/` (Flutter) | Giao diện đã dựng xong từ trước; **luồng chính đã nối API thật** ngày 07/09/2026: đăng nhập/đăng ký → danh mục → chụp/chọn ảnh → chẩn đoán thật kèm khoanh vùng → gợi ý xử lý (thuốc + video). Có màn **Đăng ký** tự phục vụ (xem mục "Tự đăng ký tài khoản") và **chẩn đoán ngoại tuyến** khi mất mạng (xem mục "Nhận diện ngoại tuyến trên điện thoại"). Màn Lịch sử vẫn còn dữ liệu mẫu — chưa nối, để sau |
-| `web-admin/` (React) | Chưa bắt đầu — theo đề cương làm từ 01/10/2026, xem "Phạm vi tương lai: web admin" phía trên |
+| `web-admin/` (Next.js) | **Dựng xong 8 module** ngày 16/09/2026, kéo sớm hơn nhiều so với đề cương (dự kiến 01/10/2026) — theo yêu cầu trực tiếp của Học. Đổi từ kế hoạch Vite/4-trang sang Next.js App Router + TypeScript + Tailwind, xem "Web admin: kiến trúc và tiến độ" phía trên. Đã kiểm thử với backend thật + dữ liệu mẫu, **chưa** kiểm thử bằng cách bấm nút thật qua trình duyệt |
 
 Backend đã chạy được thật: đăng nhập, tạo lô đất, tải ảnh lên, chẩn đoán bằng
 `DummyPredictor`, sinh ảnh khoanh vùng, xem lịch sử, dashboard quản trị. Lần chạy
