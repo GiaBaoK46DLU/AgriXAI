@@ -5,9 +5,8 @@ import 'app_colors.dart';
 /// Font của thiết kế: Open Sans (400/500/600/700/800).
 const String kAgriFontFamily = 'Open Sans';
 
-/// `FontWeight.w400.index == 3` → 400. Tự tính thay vì dùng `FontWeight.value`
-/// để chạy được trên cả các bản Flutter cũ hơn.
-int _wghtOf(FontWeight w) => (w.index + 1) * 100;
+/// Trả về weight number (400, 700, ...) của `FontWeight`.
+int _wghtOf(FontWeight w) => w.value;
 
 /// Tạo `TextStyle` theo đúng cách thiết kế mô tả: cỡ chữ px, weight, và
 /// `letter-spacing` tính bằng **em** như trong CSS (Flutter tính bằng px nên

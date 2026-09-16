@@ -17,7 +17,7 @@ import random
 from datetime import datetime, timedelta, timezone
 
 from PIL import Image
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from app.core.security import hash_password
 from app.db.init_db import init_db
@@ -271,54 +271,250 @@ def seed_medicines(db) -> None:
 
 def seed_forum(db, users: dict[str, User]) -> None:
     logger.info("  Đang tạo dữ liệu diễn đàn...")
-    # Check if forum posts already exist
-    from sqlalchemy import select
-    if db.scalar(select(ForumPost).limit(1)) is not None:
-        logger.info("  · Đã có dữ liệu diễn đàn, bỏ qua.")
+    existing_count = db.scalar(select(func.count(ForumPost.id))) or 0
+    if existing_count >= 15:
+        logger.info("  · Đã có đủ dữ liệu diễn đàn (%d bài), bỏ qua.", existing_count)
         return
 
     admin = users["admin"]
     nongdan = users["nongdan"]
     nongdan2 = users["nongdan2"]
-    
-    posts = [
-        ForumPost(
-            user_id=nongdan.id,
-            disease_key="late_blight",
-            type=ForumPostType.TIP,
-            content="Mọi người ơi, vườn cà chua nhà mình bị mốc sương. Mình đã dùng Metalaxyl kết hợp Mancozeb thấy rất hiệu quả.",
-            likes_count=5
+    now = datetime.now(timezone.utc)
+
+    # ── 15 bài viết trải đều các loại bệnh và loại phản hồi ──────────────────
+    post_specs = [
+        # --- Mốc sương (late_blight) ---
+        dict(
+            user=nongdan, disease_key="late_blight", type=ForumPostType.TIP,
+            content=(
+                "Mọi người ơi, vườn cà chua 500m² nhà mình bị mốc sương nặng sau đợt mưa kéo dài 3 ngày. "
+                "Mình đã dùng Metalaxyl kết hợp Mancozeb phun 2 lần cách nhau 5 ngày, thấy lá mới ra sạch hơn nhiều. "
+                "Quan trọng là phun đều cả mặt dưới lá và phun lúc trời mát sáng sớm nhé."
+            ),
+            likes_count=18, days_ago=2,
         ),
-        ForumPost(
-            user_id=nongdan2.id,
-            disease_key="spider_mites",
-            type=ForumPostType.MEDICINE_ISSUE,
-            content="Hôm trước hệ thống gợi ý dùng Dầu khoáng cho nhện đỏ, nhưng mình xịt không thấy bớt nhiều, có nên đổi sang Abamectin không?",
-            likes_count=2
+        dict(
+            user=nongdan2, disease_key="late_blight", type=ForumPostType.DISAGREE,
+            content=(
+                "Hệ thống chẩn đoán bảo cây mình bị mốc sương nhưng mình thấy đốm trên lá khác lắm — "
+                "đốm vàng lan rộng không có viền nước như mốc sương thật. Hay là bệnh héo vàng? "
+                "Có ai từng gặp triệu chứng tương tự không ạ?"
+            ),
+            likes_count=7, days_ago=5,
         ),
-        ForumPost(
-            user_id=admin.id,
-            disease_key="spider_mites",
-            type=ForumPostType.AGREE,
-            content="Chào bạn, Dầu khoáng an toàn nhưng nếu mật độ nhện cao thì bạn nên luân phiên dùng Abamectin để tăng hiệu quả nhé.",
-            likes_count=10
-        )
+        dict(
+            user=admin, disease_key="late_blight", type=ForumPostType.TIP,
+            content=(
+                "Phòng mốc sương hiệu quả nhất là quản lý độ ẩm: tưới nhỏ giọt thay vì tưới phun, "
+                "dọn lá bệnh ngay khi phát hiện, và dùng lưới che mưa nếu có điều kiện. "
+                "Thuốc chỉ là biện pháp hỗ trợ, không thể thay thế quản lý tốt."
+            ),
+            likes_count=24, days_ago=8,
+        ),
+        # --- Nhện đỏ (spider_mites) ---
+        dict(
+            user=nongdan2, disease_key="spider_mites", type=ForumPostType.MEDICINE_ISSUE,
+            content=(
+                "Hôm trước hệ thống gợi ý dùng Dầu khoáng cho nhện đỏ, nhưng mình xịt 3 lần không thấy bớt nhiều, "
+                "nhện vẫn bò đầy mặt dưới lá. Nhà mình trồng trong nhà kính nên nhiệt độ cao, "
+                "có phải vì vậy dầu khoáng kém hiệu quả hơn không? Có nên đổi sang Abamectin không ạ?"
+            ),
+            likes_count=12, days_ago=3,
+        ),
+        dict(
+            user=admin, disease_key="spider_mites", type=ForumPostType.AGREE,
+            content=(
+                "Chào bạn! Dầu khoáng đúng là kém hiệu quả hơn khi nhiệt độ trên 35°C vì bay hơi nhanh. "
+                "Trong nhà kính bạn nên dùng Abamectin hoặc Bifenazate. Nhớ luân phiên thuốc vì nhện đỏ "
+                "kháng thuốc rất nhanh — cùng một hoạt chất dùng quá 3 lần liên tiếp là giảm hiệu lực rõ rệt."
+            ),
+            likes_count=31, days_ago=3,
+        ),
+        dict(
+            user=nongdan, disease_key="spider_mites", type=ForumPostType.TIP,
+            content=(
+                "Mình trị nhện đỏ bằng cách phun nước áp lực cao mặt dưới lá mỗi sáng trước khi trời nóng, "
+                "kết hợp thả bọ rùa thiên địch. Chi phí thấp, an toàn, nhưng cần kiên nhẫn 2-3 tuần. "
+                "Vườn mình giảm 80% nhện đỏ mà không dùng thuốc hóa học."
+            ),
+            likes_count=15, days_ago=10,
+        ),
+        # --- Sâu đục quả (fruit_borer) ---
+        dict(
+            user=nongdan, disease_key="fruit_borer", type=ForumPostType.TIP,
+            content=(
+                "Vụ này sâu đục quả phá nặng lắm, cứ 2-3 quả lại có 1 quả bị đục. "
+                "Mình đặt bẫy pheromone 10 bẫy/1000m², cộng với phun Spinosad lúc bướm đẻ trứng nhiều nhất "
+                "(chiều tối). Sau 2 tuần tỉ lệ quả bị hại giảm từ 30% xuống còn khoảng 8%."
+            ),
+            likes_count=9, days_ago=1,
+        ),
+        dict(
+            user=nongdan2, disease_key="fruit_borer", type=ForumPostType.AGREE,
+            content=(
+                "Bẫy pheromone thật sự rất hiệu quả! Mình dùng từ 2 vụ nay rồi. "
+                "Lưu ý là phải thay mồi 4-6 tuần/lần và đặt bẫy trước khi cây ra hoa để bắt bướm sớm. "
+                "Kết hợp với bao quả thì gần như không cần phun thuốc."
+            ),
+            likes_count=6, days_ago=1,
+        ),
+        # --- Héo fusarium (fusarium_wilt) ---
+        dict(
+            user=admin, disease_key="fusarium_wilt", type=ForumPostType.TIP,
+            content=(
+                "Fusarium không có thuốc trị dứt điểm — phòng bệnh quan trọng hơn trị. "
+                "Ba việc quan trọng nhất: (1) dùng giống kháng bệnh, (2) khử trùng đất trước khi trồng "
+                "bằng Trichoderma hoặc phơi nắng, (3) tưới nước đúng lượng, không để đất quá ẩm."
+            ),
+            likes_count=42, days_ago=15,
+        ),
+        dict(
+            user=nongdan, disease_key="fusarium_wilt", type=ForumPostType.MEDICINE_ISSUE,
+            content=(
+                "App gợi ý dùng Carbendazim cho cây héo fusarium nhà mình. Mình đã tưới vào gốc 3 lần "
+                "nhưng cây vẫn héo dần rồi chết. Nghe nói nấm này đã kháng Carbendazim nhiều nơi rồi. "
+                "Hiện có thuốc nào hiệu quả hơn không ạ?"
+            ),
+            likes_count=5, days_ago=6,
+        ),
+        # --- Đốm vòng (early_blight) ---
+        dict(
+            user=nongdan2, disease_key="early_blight", type=ForumPostType.TIP,
+            content=(
+                "Đốm vòng thường xuất hiện ở lá già trước, từ dưới lên trên. "
+                "Bí quyết của mình: tỉa bỏ tất cả lá già, lá sát mặt đất, kể cả lá chưa bệnh "
+                "để thông thoáng gốc. Kết hợp phun Chlorothalonil 2 tuần/lần. Hiệu quả và rẻ hơn nhiều "
+                "so với để bệnh nặng rồi mới xử lý."
+            ),
+            likes_count=20, days_ago=4,
+        ),
+        dict(
+            user=nongdan, disease_key="early_blight", type=ForumPostType.AGREE,
+            content=(
+                "Đúng vậy! Tỉa lá là bước quan trọng nhất. Mình thêm một bước nữa là bón Canxi "
+                "và Kali đều đặn — cây khỏe thì đề kháng tốt hơn nhiều. "
+                "Vụ trước dùng cách này, cây mình gần như không bị đốm vòng dù vườn xung quanh bị nặng."
+            ),
+            likes_count=13, days_ago=4,
+        ),
+        # --- Virus xoăn lá (leaf_curl_virus) ---
+        dict(
+            user=admin, disease_key="leaf_curl_virus", type=ForumPostType.TIP,
+            content=(
+                "Virus xoăn vàng lá cà chua (TYLCV) lây qua bọ phấn — không có thuốc trị virus, "
+                "chỉ có thể diệt vector. Mình dùng lưới 50 mesh bao kín nhà lưới + vàng bẫy bọ phấn "
+                "+ phun Imidacloprid. Quan trọng: nhổ ngay cây bệnh, bao túi nilon trước khi mang ra "
+                "khỏi vườn để không lây lan."
+            ),
+            likes_count=35, days_ago=12,
+        ),
+        # --- Xì mủ thân (bacterial_canker) ---
+        dict(
+            user=nongdan2, disease_key="bacterial_canker", type=ForumPostType.DISAGREE,
+            content=(
+                "Hệ thống chẩn đoán cây mình bị xì mủ thân do vi khuẩn nhưng mình thấy vết thương "
+                "trên thân khô và nứt nẻ chứ không có mủ chảy. Sau mưa lớn cây bị tương tự — "
+                "hay là do vết thương cơ học khi buộc dây? Mình không chắc lắm."
+            ),
+            likes_count=3, days_ago=7,
+        ),
+        dict(
+            user=nongdan, disease_key="bacterial_canker", type=ForumPostType.MEDICINE_ISSUE,
+            content=(
+                "Mình dùng Copper Oxychloride phun lên vết bệnh theo hướng dẫn app nhưng thấy lá "
+                "bị cháy viền sau khi phun. Có phải do pha nồng độ sai không? "
+                "Hay là do phun lúc trời nắng gắt 12 giờ trưa? Mọi người có kinh nghiệm không?"
+            ),
+            likes_count=8, days_ago=9,
+        ),
     ]
-    
-    for p in posts:
-        db.add(p)
+
+    posts = []
+    for i, spec in enumerate(post_specs):
+        days_ago = spec.get("days_ago", 0)
+        post = ForumPost(
+            user_id=spec["user"].id,
+            disease_key=spec["disease_key"],
+            type=spec["type"],
+            content=spec["content"],
+            likes_count=spec.get("likes_count", 0),
+        )
+        db.add(post)
+        posts.append((post, days_ago))
+
     db.commit()
 
-    # Thêm comment
-    comments = [
-        ForumComment(post_id=posts[0].id, user_id=nongdan2.id, content="Tuyệt vời, mình sẽ thử!"),
-        ForumComment(post_id=posts[0].id, user_id=admin.id, content="Bạn nhớ chú ý liều lượng hướng dẫn trên bao bì nhé."),
-        ForumComment(post_id=posts[1].id, user_id=nongdan.id, content="Mình cũng gặp tình trạng tương tự. Abamectin rất mạnh, bạn thử xem.")
-    ]
-    for c in comments:
-        db.add(c)
+    # Rải ngược thời gian
+    for post, days_ago in posts:
+        db.refresh(post)
+        post.created_at = now - timedelta(days=days_ago, hours=random.randint(0, 8))
     db.commit()
-    logger.info("  + Đã thêm %d bài viết diễn đàn và %d bình luận.", len(posts), len(comments))
+
+    # ── Bình luận phong phú ────────────────────────────────────────────────────
+    post_objs = [p for p, _ in posts]
+    comments_data = [
+        # Bài 0 - late_blight TIP
+        (post_objs[0], nongdan2, "Tuyệt vời, mình sẽ thử ngay vụ này! Tỷ lệ pha Metalaxyl : Mancozeb là bao nhiêu vậy bạn?", 2),
+        (post_objs[0], admin, "Bạn nhớ chú ý PHI (Pre-Harvest Interval) trên bao bì nhé, đặc biệt khi quả sắp chín.", 2),
+        (post_objs[0], nongdan2, "À, mình hiểu rồi. Vậy trước thu hoạch 14 ngày thì ngưng phun đúng không?", 1),
+
+        # Bài 1 - late_blight DISAGREE
+        (post_objs[1], admin, "Triệu chứng bạn mô tả — đốm vàng lan rộng không có viền nước — có thể là bệnh héo vàng (Fusarium) hoặc thiếu Magiê. Bạn thử kiểm tra rễ xem có thâm đen không?", 5),
+        (post_objs[1], nongdan, "Mình cũng từng nhầm lẫn tương tự. Mốc sương thật sự có mảng trắng xám ở mặt dưới lá khi trời ẩm — bạn kiểm tra xem có không.", 4),
+
+        # Bài 3 - spider_mites MEDICINE_ISSUE
+        (post_objs[3], admin, "Nhiệt độ cao làm dầu khoáng kém hiệu quả đúng rồi. Trong nhà kính trên 32°C, bạn dùng Abamectin hoặc Spirodiclofen sẽ tốt hơn nhiều.", 3),
+        (post_objs[3], nongdan, "Mình cũng gặp tình trạng tương tự trong nhà kính. Abamectin 3 lần cách nhau 7 ngày giải quyết được vấn đề.", 2),
+        (post_objs[3], nongdan2, "Cảm ơn mọi người nhiều! Mình sẽ đổi sang Abamectin thử.", 1),
+
+        # Bài 4 - spider_mites AGREE (admin)
+        (post_objs[4], nongdan2, "Cảm ơn anh/chị admin! Vậy mình nên luân phiên Abamectin → Bifenazate → Spiromesifen phải không?", 2),
+        (post_objs[4], admin, "Đúng vậy! Luân phiên 3 hoạt chất khác nhau là tốt nhất. Mỗi đợt chỉ dùng cùng hoạt chất tối đa 2 lần.", 2),
+
+        # Bài 5 - spider_mites TIP (thiên địch)
+        (post_objs[5], nongdan2, "Hay quá! Bọ rùa mua ở đâu vậy bạn? Tìm trên mạng hay có đại lý riêng?", 9),
+        (post_objs[5], nongdan, "Mình mua qua hợp tác xã bảo vệ thực vật địa phương. Giá khoảng 150k/túi 500 con.", 9),
+
+        # Bài 6 - fruit_borer TIP
+        (post_objs[6], nongdan2, "Bẫy pheromone loại nào hiệu quả? Bạn dùng của hãng nào?", 1),
+        (post_objs[6], nongdan, "Mình dùng của Hợp Trí, giá ổn và mồi bền. Đặt bẫy ở độ cao ngang đầu người là tốt nhất.", 0),
+
+        # Bài 8 - fusarium TIP (admin)
+        (post_objs[8], nongdan, "Mình đã dùng Trichoderma trộn vào đất trước khi trồng 2 vụ nay. Tỉ lệ cây bị héo giảm rõ rệt. Cần bao nhiêu lượng Trichoderma cho 1000m² ạ?", 14),
+        (post_objs[8], admin, "Khoảng 2-3 kg chế phẩm Trichoderma (10^8 CFU/g) trộn đều vào đất 2-3 tuần trước khi trồng. Đất ẩm vừa phải để nấm phát triển tốt.", 14),
+        (post_objs[8], nongdan2, "Ngoài Trichoderma, bón phân hữu cơ hoai mục cũng giúp ích rất nhiều — vi sinh vật có lợi trong phân cạnh tranh với Fusarium.", 12),
+
+        # Bài 9 - fusarium MEDICINE_ISSUE
+        (post_objs[9], admin, "Bạn nói đúng, Carbendazim đã bị kháng nhiều nơi. Hiện tại Fludioxonil + Metalaxyl M hoặc Thiophanate-methyl + Tebuconazole hiệu quả hơn. Nhưng quan trọng nhất vẫn là nhổ cây bệnh sớm.", 5),
+
+        # Bài 10 - early_blight TIP
+        (post_objs[10], admin, "Bổ sung thêm: nên phun Chlorothalonil buổi chiều mát, không phun lúc trời nắng gắt. Và đừng quên phun cả mặt dưới lá — đó là nơi bào tử phát triển nhiều nhất.", 3),
+        (post_objs[10], nongdan, "Mình thêm một bước: sau khi tỉa lá, rắc vôi bột xung quanh gốc để sát khuẩn đất. Đơn giản mà hiệu quả.", 3),
+
+        # Bài 11 - early_blight AGREE
+        (post_objs[11], nongdan2, "Canxi qua lá hay qua gốc bạn? Mình nghe nói Canxi qua lá hiệu quả hơn cho cà chua.", 3),
+        (post_objs[11], nongdan, "Mình dùng cả hai: Canxi + Boron qua lá mỗi 10 ngày, kết hợp bón phân NPK + CaO vào đất mỗi vụ.", 3),
+
+        # Bài 12 - virus TIP
+        (post_objs[12], nongdan, "Lưới 50 mesh có làm giảm thông gió nhiều không ạ? Mình lo cây bị ngột ngạt trong nhà kính.", 10),
+        (post_objs[12], admin, "Có giảm thông gió chút nhưng không đáng kể nếu thiết kế nhà kính đúng. Ưu tiên cửa thông gió 2 đầu hồi rộng và mái có khe thoáng.", 10),
+
+        # Bài 14 - bacterial_canker MEDICINE_ISSUE
+        (post_objs[14], admin, "Copper Oxychloride bị phytotoxic (cháy lá) khi phun lúc trời nắng trên 30°C hoặc pha quá đặc. Nên phun sáng sớm hoặc chiều mát, nồng độ 0.25-0.3% (pha đúng theo bao bì).", 8),
+        (post_objs[14], nongdan2, "Mình cũng bị vậy một lần. Sau đó học được bài: không bao giờ phun thuốc đồng lúc 11 giờ-15 giờ.", 7),
+    ]
+
+    for (post, user, content, days_ago_c) in comments_data:
+        comment = ForumComment(post_id=post.id, user_id=user.id, content=content)
+        db.add(comment)
+        db.flush()
+        comment.created_at = now - timedelta(days=days_ago_c, hours=random.randint(0, 5))
+
+    db.commit()
+    logger.info(
+        "  + Đã thêm %d bài viết diễn đàn và %d bình luận.",
+        len(post_objs), len(comments_data),
+    )
 
 
 def _fake_leaf_image(rng: random.Random) -> bytes:

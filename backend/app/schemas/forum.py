@@ -50,6 +50,11 @@ class ForumPostOut(BaseModel):
     # mobile không phải gọi thêm API — xem `forum.py._diagnosis_summary`.
     diagnosis_summary: str | None = None
     disease_name: str = ""
+    # True nếu user hiện tại đã thích bài này — tính ngoài ORM bởi endpoint,
+    # mặc định False để tương thích ngược khi không truyền vào.
+    is_liked_by_me: bool = False
+    # Số bình luận — tính sẵn ở server để list không cần load toàn bộ objects.
+    comments_count: int = 0
 
 
 class ForumPostDetail(ForumPostOut):

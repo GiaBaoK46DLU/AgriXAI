@@ -17,7 +17,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, ForeignKey, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, String, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
@@ -83,3 +83,25 @@ class ForumComment(Base):
 
     post: Mapped["ForumPost"] = relationship(back_populates="comments")
     user: Mapped["User"] = relationship()
+
+
+class ForumPostLike(Base):
+    """Lượt thích bài viết — mỗi cặp (user_id, post_id) chỉ xuất hiện một lần.
+
+    Khi user thả like lần 2 vào cùng bài, backend sẽ **xoá** bản ghi này (unlike)
+    và giảm ``ForumPost.likes_count`` đi 1, thay vì tạo thêm bản ghi mới.
+    """
+
+    __tablename__ = "forum_post_likes"
+    __table_args__ = (UniqueConstraint("user_id", "post_id", name="uq_forum_post_likes"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    post_id: Mapped[int] = mapped_column(
+        ForeignKey("forum_posts.id", ondelete="CASCADE"), index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
