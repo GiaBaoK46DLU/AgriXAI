@@ -138,6 +138,10 @@ luôn rủi ro domain gap vì đó là ảnh thật ngoài đồng ngay từ đ�
 > Roboflow/Kaggle thì phần quả mất hẳn phần ảnh thật, và cùng lúc mất luôn lý lẽ "ảnh
 > tự chụp xử lý luôn domain gap" ghi ở đoạn trên. Phải cân nhắc rõ khi chốt cổng, đừng
 > để sót.
+>
+> ✅ **Đã tính vào quyết định #64 (17/09/2026).** Rào cản không được gỡ — vẫn chấp
+> nhận `fruit_anthracnose`/`fruit_blossom_end_rot` dựng hoàn toàn từ Roboflow/Kaggle.
+> Xem mục "Cổng go/no-go ngày 15/09/2026" bên dưới.
 
 ### ⚠️ Cổng go/no-go ngày 15/09/2026
 
@@ -157,6 +161,37 @@ quả + bộ định tuyến, 25/10–05/11 tích hợp và kiểm thử.
    tách thành #91 → #92, thuộc Mốc 2. Nghĩa là **bỏ phần quả không còn kéo theo việc mất
    bộ chặn ảnh rác** — trước đây đó là một lý do để cố giữ phần quả, nay không phải nữa.
    Quyết định về phần quả vì vậy được xét độc lập, gọn hơn trước.
+
+#### ✅ QUYẾT ĐỊNH (17/09/2026, trễ 2 ngày so với mốc — xem #64)
+
+**GO có điều kiện: vẫn làm phần quả, nhưng dời thời điểm bắt đầu sang tuần 2 tháng
+10/2026** (thay vì 15/09). Từ 17/09 tới 30/09 chỉ dọn gọn luồng lá. Soát đủ 5 tiêu
+chí trong #64 thì 2/5 không đạt (#20 và "không issue Mốc 1/2 còn treo") và 1/5 chỉ
+đạt một phần (#17) — theo đúng chữ của ticket #64 đó là NO-GO, nhưng nhóm ghi đè vì
+lý do cổng được đặt ra ban đầu ("luồng lá trục trặc thì bỏ") không xảy ra: luồng lá
+thực tế vượt kỳ vọng (model xong sớm, backend+mobile+web-admin đã chạy thật). #20
+fail vì rào cản ngoại cảnh (không liên hệ được nhà vườn), không phải vì nhóm chậm.
+Toàn bộ lý lẽ, đối chiếu 5 tiêu chí và rủi ro chấp nhận: xem comment quyết định trên
+issue #64 (đã đóng).
+
+Rủi ro chấp nhận quan trọng nhất: **`fruit_anthracnose` và `fruit_blossom_end_rot`
+— hai lớp giá trị nhất của phần quả — gần như chắc chắn không có ảnh tự chụp**, vì
+rào cản nhà vườn ở đầu vào 1 phía trên vẫn treo. Chấp nhận dựng hai lớp này hoàn
+toàn từ Roboflow/Kaggle.
+
+**Lịch mới (thay lịch gốc 15/09–10/10–25/10–05/11 ở trên):**
+
+| Giai đoạn | Thời gian | Việc |
+|---|---|---|
+| Dọn luồng lá | 17/09–30/09 | Đóng issue treo Mốc 1/2, xong #91→#92, #93 nếu kịp |
+| Thu thập + kiểm ảnh quả | ~12/10–26/10 | FR-01, FR-02, FR-03 |
+| Huấn luyện mô hình quả + bộ định tuyến | 26/10–09/11 | FR-05…FR-08, FR-11 |
+| Tích hợp + kiểm thử | 09/11–16/11 | FR-09 (sửa hợp đồng `Prediction`, báo Học trước), FR-10 |
+| Đệm trước bảo vệ | 16/11–25/11 | ~1,5 tuần — hẹp hơn nhiều so với 3 tuần đệm của lịch gốc |
+
+⚠️ **Đệm trước bảo vệ co từ 3 tuần xuống còn ~1,5 tuần** vì lịch bắt đầu trễ hơn một
+tháng so với dự kiến ban đầu. Nếu tới **26/10** mà chưa thu thập xong ảnh quả, coi đó
+là điểm chốt phụ để cân nhắc bỏ hẳn — đừng đợi tới sát 16/11 mới quyết.
 
 ---
 
@@ -197,7 +232,7 @@ nhất để biết còn phải làm gì — đừng lập bảng công việc s
 | 3 | 01/09 – 15/10/2026 | Giao diện dựng trên `DummyPredictor` — **chạy song song mốc 2** |
 | 4 | 01/10 – 31/10/2026 | Hợp nhất mô hình thật, tinh chỉnh XAI, đo domain gap trên bộ ảnh **công khai** (H2 — PlantDoc) |
 | 5 | 15/10 – 25/11/2026 | Báo cáo, slide, tập demo |
-| 6 | 15/09 – 05/11/2026 | Bệnh trên quả — **chỉ làm nếu qua cổng go/no-go 15/09** |
+| 6 | 17/09 – 25/11/2026 | Bệnh trên quả — **GO có điều kiện, dời lịch (chốt #64 ngày 17/09)**: dọn luồng lá tới 30/09, phần quả bắt đầu thật ~12/10. Xem mục "Cổng go/no-go ngày 15/09/2026" |
 
 ⚠️ **Mốc 2 và Mốc 4 đã sửa mục tiêu ngày 10/09/2026.** Trước đó Mốc 2 ghi "bắt đầu
 chụp ảnh thực địa" và Mốc 4 ghi "đo trên ảnh thực địa" — cả hai đều giả định nhóm tự
@@ -751,15 +786,74 @@ tiến" chỗ này phải đọc E1 trước.
 
 ---
 
+## #91 — bộ ảnh âm dựng từ Internet (chốt 17/09/2026 — lệch hướng có chủ đích so với ticket)
+
+Ticket #91 (mục "Gợi ý triển khai") ghi thẳng: **"Không lấy ảnh từ Internet cho bộ
+này"** — lý do kỹ thuật: ảnh mạng đã qua nén/chỉnh màu, phân phối khác ảnh điện thoại
+chụp thật, và bộ phân loại 2 lớp #92 có nguy cơ học nhầm "ảnh nén web" so với "ảnh
+điện thoại" thay vì "không phải lá cà chua" so với "lá cà chua".
+
+**Quyết định:** dùng ảnh Internet thay vì tự chụp, vì Bảo xác nhận trực tiếp không
+tự chụp được ảnh vào lúc này. Rủi ro phân phối nêu trên **vẫn còn nguyên**, không bị
+gỡ bỏ chỉ vì đổi nguồn ảnh — khi báo cáo #91/#92 hoặc bảo vệ phải nói rõ bộ âm dựng
+từ ảnh Internet, không phải ảnh điện thoại thật.
+
+**Cách làm:** script `model/src/data/fetch_negative_images.py`, tải qua API Wikimedia
+Commons (không đoán URL — mọi ảnh có giấy phép tái sử dụng rõ ràng, ghi lại trong
+`model/data/negative/manifest.csv` cùng nguồn/license). Nhóm "ảnh mờ/tối/rung" không
+tìm bằng từ khoá như 5 nhóm kia — thử rồi kiểm bằng mắt thấy Commons gần như không có
+kho ảnh chụp hỏng thật (kết quả toàn ảnh nét dùng "blur" làm hiệu ứng nghệ thuật) — nên
+nhóm này **tổng hợp** bằng cách lấy ảnh thật đã tải từ 5 nhóm kia rồi làm méo bằng
+PIL/numpy (mờ nét, mờ chuyển động, thiếu sáng).
+
+**Kết quả (17/09/2026):** 342 ảnh, 6/6 nhóm đều vượt tối thiểu 25 ảnh/nhóm:
+
+| Nhóm | Số ảnh |
+|---|--:|
+| `indoor_objects` | 60 |
+| `hand_face_clothing` | 61 |
+| `other_plant_leaves` | 60 |
+| `soil_ground` | 55 |
+| `screenshot_document` | 52 |
+| `blur_dark_shake` | 54 |
+
+Hai vòng soát thủ công đã loại các loại ảnh lọt lưới do tìm từ khoá trên Commons
+trúng nhầm (giữ lại làm bài học cho ai chạy lại script hoặc thêm nhóm mới):
+trang scan sách/tạp chí cũ (Internet Archive Book Images, Biodiversity Heritage
+Library — khớp từ khoá qua caption OCR dù ảnh thật là trang giấy), tranh khắc/thạch
+bản/minh hoạ y khoa cổ và chữ cái trang trí bản thảo Phúc Âm trung cổ (Wellcome
+Collection, Walters Manuscript — khớp "hand"/"face" nhưng là tranh vẽ, không phải
+ảnh chụp), và một loạt ảnh phong cảnh/hoa/kiến trúc không liên quan lọt vào nhóm
+`screenshot_document` do một bug đếm file (đếm `*.jpg` bỏ sót `*.png` đã tải, khiến
+vòng lặp tưởng chưa đủ target và tải dư bằng từ khoá cuối cùng — kém liên quan nhất
+trong danh sách truy vấn). Bug đã sửa trong script; ai chạy lại vẫn nên kiểm bằng mắt
+vì tìm từ khoá trên Commons không ổn định 100%.
+
+`model/data/negative/` nằm trong `.gitignore` như `data/raw/` — nhưng khác `data/raw/`
+(tải lại được từ Kaggle), bộ này **không tải lại được từ đâu** vì đã qua chọn lọc thủ
+công, nên **phải backup riêng**. `manifest.csv` có ngoại lệ giữ trong Git (nhẹ, chỉ
+đường dẫn + nguồn + license, không phải ảnh) để biết ảnh đến từ đâu ngay cả khi chưa
+backup xong.
+
+**Việc ticket #91 còn thiếu, chưa làm trong lượt này** (phạm vi lúc đó chỉ là "lấy ảnh
+và lưu đúng thư mục"):
+- Ghi bảng thống kê vào chính issue #91 trên GitHub (bảng trên đã có sẵn, chỉ cần đăng)
+- Bước 3 "Cách kiểm tra" của ticket: chạy checkpoint hiện tại lên toàn bộ 342 ảnh, ghi
+  lại phân bố độ tin cậy + energy — đây là số liệu #47 đang chờ để hiệu chỉnh ngưỡng
+  go/no-go ảnh không phải lá cà chua
+
+---
+
 ## Ba rủi ro đã nhận diện
 
 1. **Domain gap.** PlantVillage chụp lá đơn trên nền đồng nhất trong phòng; mô hình
    thường đạt >99% trên tập test nhưng rớt mạnh với ảnh chụp thật ngoài đồng.
 
-   ⚠️ **Kế hoạch "thu thập 50–100 ảnh thật vào `model/data/field/`" đã HOÃN VÔ THỜI
-   HẠN (10/09/2026)** — nhóm không liên hệ được nhà vườn để xin phép chụp và không
-   còn thời gian. Issue #20/#21/#48 để mở kèm nhãn `trang-thai:bi-chan`, mở lại nếu
-   tình hình đổi. **`model/data/field/` sẽ vẫn rỗng.**
+   ⚠️ **Kế hoạch "thu thập 50–100 ảnh thật vào `model/data/field/`" đã BỎ HẲN
+   (chốt 17/09/2026, trước đó hoãn vô thời hạn từ 10/09)** — nhóm không liên hệ được
+   nhà vườn để xin phép chụp. Issue #20/#21/#48 **đã đóng** (không phải "not planned"
+   để mở chờ nữa) — mở lại nếu tình hình đổi thật sự. **`model/data/field/` sẽ vẫn
+   rỗng.**
 
    Rủi ro này **không** vì thế mà bỏ trống — nhưng bộ dữ liệu để đo **đã đổi một lần**,
    và đó là chỗ dễ đọc sai nhất trong cả file này.

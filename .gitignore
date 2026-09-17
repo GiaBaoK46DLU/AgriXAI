@@ -27,6 +27,12 @@ model/data/processed/**
 model/data/field/**
 !model/data/**/.gitkeep
 
+# model/data/negative/ (#91) KHÔNG tải lại được từ đâu (ảnh Internet đã qua chọn lọc
+# thủ công + lọc trùng) — phải backup riêng, đừng coi giống data/raw/.
+model/data/negative/**
+!model/data/negative/.gitkeep
+!model/data/negative/manifest.csv
+
 # checkpoints/ và outputs/ ĐÃ THEO GIT từ 07/09/2026 (quyết định của Bảo) để máy
 # khác pull về là chạy được model thật ngay, không phải huấn luyện lại ~30 phút.
 # Không thêm lại *.pt/*.pth/*.onnx vào đây — sẽ chặn ngược checkpoint.
