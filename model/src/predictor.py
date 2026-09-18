@@ -31,13 +31,19 @@ from src.models.build import load_checkpoint, target_layer_for_gradcam
 from src.xai.gradcam import GradCAM
 
 
+NOT_LEAF_KEY = "not_tomato_leaf"
+
+
 @dataclass
 class Prediction:
     """Kết quả chẩn đoán một ảnh.
 
     Attributes:
         disease_key: khoá lớp bệnh, ví dụ ``"early_blight"``. Luôn nằm trong
-            danh mục ``shared/data/tomato_diseases.json``.
+            danh mục ``shared/data/tomato_diseases.json`` — **trừ** giá trị
+            đặc biệt ``"not_tomato_leaf"`` khi bộ chặn của #92 kết luận ảnh
+            không phải lá cà chua. Khoá đó **không** có trong danh mục JSON,
+            nên backend phải xử lý riêng trước khi tra danh mục (xem #47).
         confidence: xác suất của lớp được chọn, 0..1.
         probabilities: xác suất của TẤT CẢ các lớp, ``{khoá: xác suất}``.
         heatmap: mảng (H, W) float32 trong khoảng 0..1, ĐÚNG kích thước ảnh
@@ -57,9 +63,22 @@ class Prediction:
 
 
 class DiseasePredictor:
-    """Nạp checkpoint và chạy suy luận + Grad-CAM trên ảnh đơn lẻ."""
+    """Nạp checkpoint và chạy suy luận + Grad-CAM trên ảnh đơn lẻ.
 
-    def __init__(self, checkpoint_path: str | Path, device: str | None = None) -> None:
+    ``gate_checkpoint`` (#92) bật bộ chặn 2 lớp chạy **trước** mô hình bệnh: ảnh
+    không phải lá cà chua thì trả thẳng ``disease_key="not_tomato_leaf"`` kèm
+    ``heatmap=None``, không chạy mô hình bệnh nữa.
+
+    ⚠️ **Mặc định TẮT, và phải bàn với Học trước khi bật.** Bật lên là backend
+    nhận được một ``disease_key`` không có trong ``shared/data/tomato_diseases.json``,
+    nên ``catalog.get_disease()`` sẽ lỗi nếu chưa có nhánh xử lý riêng — đây đúng
+    là điểm #92 dặn phải thống nhất trước, theo dõi ở #47. Gói bộ chặn vào trong
+    lớp này (thay vì thêm trường ``organ`` vào ``Prediction``) là cố ý: hợp đồng
+    dùng chung giữa hai phần hệ thống không đổi.
+    """
+
+    def __init__(self, checkpoint_path: str | Path, device: str | None = None,
+                 gate_checkpoint: str | Path | None = None) -> None:
         path = Path(checkpoint_path)
         if not path.exists():
             raise FileNotFoundError(
@@ -76,12 +95,44 @@ class DiseasePredictor:
         self.transform = build_infer_transform(self.image_size)
         self._cam = GradCAM(self.model, target_layer_for_gradcam(self.model, ckpt["arch"]))
 
+        self._gate = None
+        if gate_checkpoint is not None:
+            gate_path = Path(gate_checkpoint)
+            if not gate_path.exists():
+                raise FileNotFoundError(
+                    f"Không tìm thấy checkpoint bộ chặn '{gate_path}'. Huấn luyện "
+                    "trước bằng 'python -m src.training.train_gate'."
+                )
+            self._gate, gate_ckpt = load_checkpoint(str(gate_path), self.device)
+            self._gate_keys: list[str] = gate_ckpt["class_keys"]
+            self._gate_transform = build_infer_transform(gate_ckpt.get("image_size", 224))
+            self.gate_version: str = gate_ckpt.get("model_version", gate_path.stem)
+
     def predict(self, image: Image.Image, with_heatmap: bool = True) -> Prediction:
         """Chẩn đoán một ảnh PIL. Ảnh vào kích thước bất kỳ, mọi chế độ màu."""
         started = time.perf_counter()
 
         image = image.convert("RGB")
         orig_w, orig_h = image.size
+
+        if self._gate is not None:
+            gate_tensor = self._gate_transform(image).unsqueeze(0).to(self.device)
+            with torch.no_grad():
+                gate_probs = torch.softmax(self._gate(gate_tensor), dim=1)[0]
+            gate_idx = int(gate_probs.argmax().item())
+            if self._gate_keys[gate_idx] == NOT_LEAF_KEY:
+                # probabilities để rỗng có chủ đích: mô hình bệnh chưa hề chạy nên
+                # không có xác suất bệnh nào để trả. model_version là của bộ chặn
+                # vì chính nó ra quyết định này.
+                return Prediction(
+                    disease_key=NOT_LEAF_KEY,
+                    confidence=float(gate_probs[gate_idx].item()),
+                    probabilities={},
+                    heatmap=None,
+                    model_version=self.gate_version,
+                    latency_ms=(time.perf_counter() - started) * 1000,
+                )
+
         tensor = self.transform(image).unsqueeze(0).to(self.device)
 
         with torch.no_grad():

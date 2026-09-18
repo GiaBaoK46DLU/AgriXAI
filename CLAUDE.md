@@ -998,6 +998,101 @@ và lưu đúng thư mục"):
 
 ---
 
+## #92 — bộ chặn 2 lớp lá / không phải lá (chốt 18/09/2026)
+
+`checkpoints/organ_gate.pt`, EfficientNet-B0 2 lớp `tomato_leaf` / `not_tomato_leaf`,
+đứng **trước** mô hình bệnh. Code: `src/data/prepare_gate.py` (chia tập),
+`src/data/gate_augment.py` (phá lối tắt), `src/training/train_gate.py`,
+`src/evaluation/evaluate_gate.py`. Số liệu máy sinh: `outputs/gate/report.json`.
+
+### ⚠️ Bài học lớn nhất: tiêu chí của chính ticket cho qua một bộ chặn hỏng
+
+Bản huấn luyện đầu (lớp dương chỉ PlantVillage, lớp âm chỉ ảnh Internet của #91)
+**đạt đủ mọi tiêu chí #92**: recall lá 1,0000 trên tập test của chính nó, 0,9993 trên
+2.719 ảnh test PlantVillage, chặn 342/342 ảnh âm. Nếu chỉ chạy đúng ba phép đo ticket
+yêu cầu thì #92 đã "xong" và lỗi đi thẳng vào bản demo.
+
+Thực tế nó **chặn oan 92,0 % ảnh lá cà chua thật** (PlantDoc). Nó không học "lá / không
+phải lá" mà học **"ảnh phòng thí nghiệm / ảnh Internet"** — hai lớp tách được bằng phong
+cách ảnh nên mạng không cần nhìn cái lá. Nông dân chụp ngoài vườn thì ảnh giống PlantDoc
+chứ không giống PlantVillage, tức app sẽ từ chối gần như mọi lần chụp.
+
+**Lý do phép đo của ticket không bắt được:** cả ba đều lấy ảnh dương từ PlantVillage, nên
+đo đúng cái miền mà lối tắt hoạt động. Bất kỳ bộ phân loại nào có **lớp dương và lớp âm
+đến từ hai nguồn ảnh khác nhau** đều dính bẫy này — phải có một tập đánh giá lấy lớp
+dương từ nguồn thứ ba. Ghi lại để #71 (mở 2 lớp thành 3 lớp lá/quả/khác) không lặp lại:
+ảnh quả mà lấy từ Roboflow/Kaggle còn ảnh lá từ PlantVillage thì y hệt tình huống này.
+
+### Ba bản đã chạy, đo trên cùng 68 ảnh PlantDoc test
+
+| Bản | Recall lá thật (PlantDoc test) | Recall lá PlantVillage | Recall lớp âm |
+|---|--:|--:|--:|
+| 1. Lớp dương chỉ PlantVillage | **0,0882** | 0,9993 | 1,0000 |
+| 2. + phá lối tắt bằng augmentation | ~0,35 \* | 0,9978 | 0,9912 |
+| 3. + 674 ảnh PlantDoc `train` (bản đang dùng) | **0,9118** | 0,9989 | 0,9678 |
+
+\* Bản 2 đo trên cả 742 ảnh (lúc đó PlantDoc còn sạch hoàn toàn) chứ không đo riêng 68
+ảnh, và checkpoint của nó đã bị ghi đè. Bản 1 thì **còn nguyên**:
+`checkpoints/organ_gate_shortcut_baseline.pt` — giữ lại chính vì nó là bằng chứng trực
+tiếp của bài học ở trên, đừng xoá. Dựng lại bản 1 hoặc bản 2 từ đầu:
+
+```bash
+# bản 1: bỏ PlantDoc khỏi lớp dương, tắt luôn phá lối tắt
+python -m src.data.prepare_gate --plantdoc-manifest /khong/ton/tai --out data/processed/gate-v1.csv
+python -m src.training.train_gate --manifest data/processed/gate-v1.csv \
+       --no-domain-augment --out checkpoints/gate-v1.pt
+# bản 2: như trên nhưng BỎ cờ --no-domain-augment
+```
+
+Đọc bảng cho đúng: **augmentation một mình không đủ** (0,09 → ~0,35, vẫn hai phần ba ảnh
+thật bị chặn oan). Nó chỉ xoá được manh mối *nền*; phiến lá vẫn cắt rời, nét, nằm giữa
+khung. Phải cho bộ chặn nhìn lá thật ngoài đồng mới xong. Giá phải trả là recall lớp âm
+tụt 1,0000 → 0,9678 — **đúng chiều mong muốn**, vì #92 nói rõ chặn oan lá thật tệ hơn để
+lọt ảnh rác.
+
+### ⚠️ Ranh giới PlantDoc đã đổi — đọc trước khi đo bất cứ thứ gì trên PlantDoc
+
+Bộ chặn **đã học 674 ảnh PlantDoc thuộc thư mục `train` gốc**. Đúng ranh giới `CLAUDE.md`
+đặt sẵn cho #50 hướng 2, nhưng từ nay:
+
+- **68 ảnh thư mục `test` là thước đo sạch DUY NHẤT còn lại cho bộ chặn.** Không được
+  đưa vào huấn luyện dưới bất kỳ hình thức nào.
+- Con số domain gap của #49 (**99,60 % → 30,81 %** trên cả 742 ảnh) **vẫn đúng**, vì nó
+  đo checkpoint *mô hình bệnh* — mô hình đó chưa từng thấy PlantDoc.
+- Nhưng **mọi phép đo cả pipeline (bộ chặn + mô hình bệnh) trên toàn bộ 742 ảnh từ nay là
+  nhiễm.** `evaluate_gate.py` in riêng hai dòng D1 (sạch, 68 ảnh) và D2 (nhiễm, 742 ảnh)
+  kèm cảnh báo, đừng trích nhầm D2.
+
+### Điểm yếu thật, phải nói khi bảo vệ
+
+Nhóm **`other_plant_leaves`** (lá cây khác, ưu tiên họ Cà: khoai tây, cà tím, *Solanum
+torvum*) là chỗ lọt nhiều nhất: **8/60 ảnh toàn nhóm, 2/9 ảnh phần test**. Đúng như #92
+dự đoán đây là ca khó nhất. Năm nhóm còn lại gần như không lọt (0–2 ảnh mỗi nhóm).
+
+Và giới hạn bản chất, ticket bắt ghi rõ: đây là **bộ phân loại nhị phân trên một bộ âm
+hữu hạn**, không phải bộ phát hiện ngoài phân phối tổng quát. Nó chặn được thứ *giống*
+342 ảnh âm đã học, không bảo đảm chặn được mọi thứ trên đời.
+
+### Cách nối vào hệ thống: MẶC ĐỊNH TẮT, phải bàn với Học trước khi bật
+
+`DiseasePredictor(checkpoint, gate_checkpoint=...)` — không truyền `gate_checkpoint` thì
+hành vi cũ y nguyên, không nạp gì thêm. Bật lên thì ảnh bị chặn trả
+`disease_key="not_tomato_leaf"`, `heatmap=None`, `probabilities={}`.
+
+Gói bộ chặn *vào trong* `DiseasePredictor` là cố ý: **hợp đồng dùng chung không đổi**,
+không phải thêm trường `organ` vào `Prediction`, backend không cần biết có mô hình thứ
+hai. Chưa bật ở `backend/.env`; theo dõi phần nối vào ở **#47**.
+
+⚠️ **Đính chính (18/09/2026): ticket #92 — và bản đầu của chính mục này — viết rằng
+`catalog.get_disease()` sẽ LỖI với khoá `not_tomato_leaf`. Sai.** Đọc
+`backend/app/services/catalog.py:37` thì nó trả về một **bản ghi rỗng an toàn** với
+`name_vi = key`. Nghĩa là bật bộ chặn mà quên xử lý thì **không có exception nào**,
+nông dân chỉ thấy tên bệnh là dòng chữ `not_tomato_leaf` — sai âm thầm, không hiện
+trong log, tệ hơn là sập hẳn. Phần overlay thì đã an toàn sẵn:
+`diagnosis_service.py:70` có kiểm `heatmap is not None` nên không vẽ elip bừa.
+
+---
+
 ## Ba rủi ro đã nhận diện
 
 1. **Domain gap.** PlantVillage chụp lá đơn trên nền đồng nhất trong phòng; mô hình

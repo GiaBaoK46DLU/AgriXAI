@@ -1,0 +1,140 @@
+{
+  "checkpoint": "checkpoints\\organ_gate.pt",
+  "model_version": "gate-efficientnet_b0-20260918-1936",
+  "A_gate_test": {
+    "n": 262,
+    "accuracy": 1.0,
+    "tomato_leaf": {
+      "n": 210,
+      "recall": 1.0,
+      "precision": 1.0,
+      "bi_chan_oan": 0
+    },
+    "not_tomato_leaf": {
+      "n": 52,
+      "recall": 1.0,
+      "precision": 1.0,
+      "lot_luoi": 0
+    },
+    "confusion": {
+      "tp": 210,
+      "fn": 0,
+      "tn": 52,
+      "fp": 0
+    }
+  },
+  "B_plantvillage_test": {
+    "n": 2719,
+    "bi_chan_oan": 2,
+    "ty_le_chan_oan": 0.000735564545788893,
+    "recall_tomato_leaf": 0.9992644354542111,
+    "theo_lop_benh": {
+      "late_blight": 1,
+      "yellow_leaf_curl_virus": 1
+    },
+    "vi_du_bi_chan": [
+      "data/raw/Tomato___Late_blight/b657dc7a-df76-40e1-bc87-2d61b81040a8___GHLB Leaf 27.1 Day 12.JPG",
+      "data/raw/Tomato___Tomato_Yellow_Leaf_Curl_Virus/97c12f01-9f88-4895-b0da-90c882f3f79a___UF.GRC_YLCV_Lab 01588.JPG"
+    ]
+  },
+  "C_bo_am": {
+    "n": 342,
+    "lot_luoi": 0,
+    "recall_not_tomato_leaf_toan_bo": 1.0,
+    "theo_nhom": {
+      "blur_dark_shake": {
+        "n": 54,
+        "lot": 0,
+        "n_test": 8,
+        "lot_test": 0,
+        "ty_le_lot": 0.0,
+        "ty_le_lot_test": 0.0
+      },
+      "hand_face_clothing": {
+        "n": 61,
+        "lot": 0,
+        "n_test": 9,
+        "lot_test": 0,
+        "ty_le_lot": 0.0,
+        "ty_le_lot_test": 0.0
+      },
+      "indoor_objects": {
+        "n": 60,
+        "lot": 0,
+        "n_test": 9,
+        "lot_test": 0,
+        "ty_le_lot": 0.0,
+        "ty_le_lot_test": 0.0
+      },
+      "other_plant_leaves": {
+        "n": 60,
+        "lot": 0,
+        "n_test": 9,
+        "lot_test": 0,
+        "ty_le_lot": 0.0,
+        "ty_le_lot_test": 0.0
+      },
+      "screenshot_document": {
+        "n": 52,
+        "lot": 0,
+        "n_test": 8,
+        "lot_test": 0,
+        "ty_le_lot": 0.0,
+        "ty_le_lot_test": 0.0
+      },
+      "soil_ground": {
+        "n": 55,
+        "lot": 0,
+        "n_test": 9,
+        "lot_test": 0,
+        "ty_le_lot": 0.0,
+        "ty_le_lot_test": 0.0
+      }
+    },
+    "vi_du_lot_luoi": []
+  },
+  "D_plantdoc_lá_thật": {
+    "n": 742,
+    "bi_chan_oan": 683,
+    "ty_le_chan_oan": 0.9204851752021563,
+    "recall_tomato_leaf": 0.07951482479784366,
+    "theo_lop_benh": {
+      "bacterial_spot": {
+        "n": 109,
+        "bi_chan": 104
+      },
+      "early_blight": {
+        "n": 88,
+        "bi_chan": 83
+      },
+      "healthy": {
+        "n": 63,
+        "bi_chan": 61
+      },
+      "late_blight": {
+        "n": 111,
+        "bi_chan": 91
+      },
+      "leaf_mold": {
+        "n": 91,
+        "bi_chan": 78
+      },
+      "mosaic_virus": {
+        "n": 54,
+        "bi_chan": 50
+      },
+      "septoria_leaf_spot": {
+        "n": 149,
+        "bi_chan": 139
+      },
+      "spider_mites": {
+        "n": 2,
+        "bi_chan": 2
+      },
+      "yellow_leaf_curl_virus": {
+        "n": 75,
+        "bi_chan": 75
+      }
+    }
+  }
+}
