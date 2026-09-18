@@ -779,7 +779,7 @@ rõ hơn, màu sắc nhấn mạnh nội dung".
 | `shared/data/tomato_diseases.json` | Đã commit |
 | `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `docx/bao-cao-huan-luyen-mo-hinh.md` cho số liệu đầy đủ. Từ 07/09/2026, **`model/checkpoints/` và `model/outputs/` đã theo Git** (quyết định của Bảo, đảo ngược quyết định ban đầu) — máy khác `pull` về là chạy được model thật ngay, không phải huấn luyện lại. Chỉ **dữ liệu PlantVillage `model/data/raw/` (18.160 ảnh / 10 lớp, ~275 MB) vẫn nằm ngoài Git** vì tải lại được từ Kaggle (nguồn ghi ở issue #11), không cần bắt repo gánh dung lượng đó. **Đã đo xong hai việc đánh giá lớn (15/09/2026):** #49 domain gap (**30,81 %** trên ảnh thật) và #17 kiểm Grad-CAM (**đủ tin trên PlantVillage, chưa đủ trên ảnh thật**) — xem hai báo cáo trong `docx/`. **Từ 18/09/2026 có thêm mô hình thứ hai: bộ chặn 2 lớp `checkpoints/organ_gate.pt`** (#92, mặc định TẮT — xem mục riêng bên dưới). ⚠️ **Ảnh PlantDoc `model/data/field/plantdoc/` (746 ảnh / 231 MB) cũng ngoài Git**, tải lại từ `pratikkayal/PlantDoc-Dataset`; **bộ ảnh âm `model/data/negative/` (342 ảnh) cũng ngoài Git và KHÔNG tải lại được** — phải sao lưu riêng |
 | `model/research/` | Đã commit — danh mục 46 bài báo chia 8 nhóm + bản tổng hợp đối chiếu kết quả với các công bố. Xem mục "Phần việc của Bảo" bên dưới |
-| `backend/` code | **Chạy mô hình thật** (không còn `DummyPredictor` mặc định) — 52/52 test pass (tính tới 18/09/2026, thêm bộ `test_auth.py` cho refresh token), xem mục "Tích hợp mô hình thật" phía trên |
+| `backend/` code | **Chạy mô hình thật** (không còn `DummyPredictor` mặc định) — 59/59 test pass (tính tới 18/09/2026, thêm `test_leaf_gate.py`/`test_overlay.py` cho #47), xem mục "Tích hợp mô hình thật" phía trên. **Từ 18/09/2026, bộ chặn #92 cũng đã bật** (`MODEL_GATE_CHECKPOINT`) — xem mục "#47" |
 | `mobile/` (Flutter) | Giao diện đã dựng xong từ trước; **luồng chính đã nối API thật** ngày 07/09/2026: đăng nhập/đăng ký → danh mục → chụp/chọn ảnh → chẩn đoán thật kèm khoanh vùng → gợi ý xử lý (thuốc + video). Có màn **Đăng ký** tự phục vụ (xem mục "Tự đăng ký tài khoản") và **chẩn đoán ngoại tuyến** khi mất mạng (xem mục "Nhận diện ngoại tuyến trên điện thoại"). Màn **Lịch sử đã nối `GET /diagnoses` thật** từ trước — dòng cũ ghi "còn dữ liệu mẫu, chưa nối" ở đây đã lỗi thời, xoá (xem mục "Dọn 9 issue mobile cũ" bên dưới) |
 | `web-admin/` (Next.js) | **Dựng xong 8 module** ngày 16/09/2026, kéo sớm hơn nhiều so với đề cương (dự kiến 01/10/2026) — theo yêu cầu trực tiếp của Học. Đổi từ kế hoạch Vite/4-trang sang Next.js App Router + TypeScript + Tailwind, xem "Web admin: kiến trúc và tiến độ" phía trên. Đã kiểm thử với backend thật + dữ liệu mẫu, **chưa** kiểm thử bằng cách bấm nút thật qua trình duyệt |
 
@@ -1097,7 +1097,7 @@ hành vi cũ y nguyên, không nạp gì thêm. Bật lên thì ảnh bị chặ
 
 Gói bộ chặn *vào trong* `DiseasePredictor` là cố ý: **hợp đồng dùng chung không đổi**,
 không phải thêm trường `organ` vào `Prediction`, backend không cần biết có mô hình thứ
-hai. Chưa bật ở `backend/.env`; theo dõi phần nối vào ở **#47**.
+hai. Đã bật ở `backend/.env` (18/09/2026) — chi tiết cách nối vào ở mục **#47** ngay dưới.
 
 ⚠️ **Đính chính (18/09/2026): ticket #92 — và bản đầu của chính mục này — viết rằng
 `catalog.get_disease()` sẽ LỖI với khoá `not_tomato_leaf`. Sai.** Đọc
@@ -1109,7 +1109,70 @@ trong log, tệ hơn là sập hẳn. Phần overlay thì đã an toàn sẵn:
 
 ---
 
-## Ba rủi ro đã nhận diện
+## #47 — nối bộ chặn #92 vào backend/app, đổi vùng khoanh từ elip sang contour thật (chốt 18/09/2026)
+
+**Bộ chặn.** `MODEL_GATE_CHECKPOINT` (mới, `backend/app/core/config.py`) — để trống thì
+tắt hẳn, y hệt trước #47. Bật bằng cách trỏ tới
+`../model/checkpoints/organ_gate.pt` trong `.env` (đã bật trên máy này, xem
+`backend/.env.example`). `services/inference/loader.py` kiểm file checkpoint bộ chặn
+tồn tại **trước khi** đưa vào `DiseasePredictor` — thiếu/lỗi checkpoint bộ chặn chỉ log
+lỗi rồi bỏ qua bộ chặn, KHÔNG kéo cả mô hình bệnh thật rơi về `DummyPredictor` (bộ chặn
+là phụ, mô hình bệnh mới là chính).
+
+**Ba quyết định "phải có ý thức" mà ticket #47 yêu cầu ghi lại:**
+
+1. **Không lưu `Diagnosis` khi CẢ LÔ ảnh đều bị chặn.** `diagnosis_service.py` thêm
+   `NotTomatoLeafError`; `_run_and_aggregate` loại các ảnh có
+   `disease_key == "not_tomato_leaf"` ra khỏi phần tổng hợp bệnh, và nếu **không còn ảnh
+   lá nào** thì raise lỗi này thay vì để `ranked[0]` sập vì rỗng. Endpoint bắt lỗi, trả
+   `422` kèm câu tiếng Việt — không tạo bản ghi CSDL nào, giữ Lịch sử/bộ lọc `disease_key`
+   của web admin/thống kê dashboard sạch, đúng lo ngại chính ticket #92 nêu ra.
+2. **Lô ảnh hỗn hợp (một phần bị chặn) thì loại phần bị chặn khỏi việc tính bệnh/mức độ
+   chung, nhưng vẫn lưu một dòng `DiagnosisImage` riêng cho ảnh đó** (đúng
+   `disease_key="not_tomato_leaf"`) — nông dân thấy đúng ảnh nào trong lô bị từ chối,
+   ảnh đó không kéo tụt xác suất trung bình của các ảnh lá thật còn lại.
+3. **`catalog.get_disease()` xử lý riêng `NOT_TOMATO_LEAF_KEY`**, trả
+   `name_vi = "Ảnh chưa rõ lá cà chua, bạn chụp lại giúp mình nhé"` — không rơi vào nhánh
+   "khoá lạ" (vốn trả nguyên văn khoá, đúng cái bẫy mục #92 cảnh báo). Hằng số khoá chép
+   lại thành `NOT_TOMATO_LEAF_KEY` trong `backend/app/services/inference/base.py` (không
+   import từ `model/`, đúng ranh giới kiến trúc) thay vì import trực tiếp từ
+   `model/src/predictor.py`.
+
+**Bug thật phát hiện khi nối vào mobile — không nằm trong phạm vi ticket gốc nhưng phải
+sửa để #47 có tác dụng:** `AnalyzingScreen._run()` (mobile) trước đó bắt `catch (_)`
+**mọi** lỗi từ `POST /diagnoses` rồi tự động rơi xuống `OfflineInferenceService` — kể cả
+`ApiException` (backend đã trả lời, không phải mất mạng). Nghĩa là ảnh bị bộ chặn #92 từ
+chối ở luồng online sẽ bị **âm thầm chạy lại ở luồng ngoại tuyến, nơi không hề có bộ
+chặn** (xem mục "Nhận diện ngoại tuyến trên điện thoại" — offline vốn đã ghi rõ ngoài
+phạm vi #47), và có thể vẫn ra một tên bệnh cho ảnh cái bàn. Sửa: chỉ bắt `on
+NetworkException` để rơi xuống offline; `ApiException` (bao gồm cả lỗi 422 của #47) rơi
+xuống nhánh `on ApiException` đã có sẵn, hiện đúng thông báo tiếng Việt.
+
+**Màn hiển thị khi bị chặn:** dùng lại màn lỗi có sẵn của `AnalyzingScreen` (không phải
+màn `ResultScreen` — nên tự động không có elip/độ tin cậy/gợi ý thuốc, đúng tiêu chí
+ticket), chỉ đổi icon (máy ảnh thay vì tam giác cảnh báo) và tiêu đề khi thông báo khớp
+đúng câu của bộ chặn — phân biệt "hệ thống đang làm đúng việc" với "có lỗi thật sự".
+Câu thông báo chép tay sang Dart (`_notTomatoLeafMessage`), same lý do/cùng kiểu với
+`tomato_diseases.json` chép tay ở mục ngoại tuyến — hai bên khác ngôn ngữ, không import
+chung được.
+
+⚠️ **Chưa làm — cần Học/Bảo tự kiểm trên máy thật trước khi coi #47 là xong hẳn:** ticket
+yêu cầu "kiểm thủ công 2 ca: chụp cái bàn → màn chưa nhận ra lá; chụp lá bệnh nặng → vẫn
+chẩn đoán bình thường". Phiên làm việc này chỉ kiểm bằng test tự động (predictor giả lập
+gate, không phải checkpoint thật — máy chạy phiên này không có torch/GPU) và
+`dart analyze` (không lỗi). Chưa chạy được `organ_gate.pt` thật lẫn app thật trên thiết
+bị. Việc còn thiếu: bấm thử trên điện thoại/máy ảo thật với backend chạy mô hình thật.
+
+**Đổi cách vẽ vùng khoanh: contour thật thay vì elip khớp.** `backend/app/services/xai/overlay.py`
+trước đó dùng `cv2.fitEllipse` quanh contour lớn nhất — với vết bệnh không lồi (hình chữ
+L, dải dài, nhiều nhánh...) elip sẽ bao trùm cả phần lá lành nằm giữa các "nhánh" của vết
+bệnh, không phải lỗi code mà là giới hạn hình học của chính việc dùng elip. Đổi sang vẽ
+đúng contour (làm mượt bằng Gaussian blur + `approxPolyDP` để bỏ răng cưa do CAM gốc chỉ
+7×7 phóng to, không phải để đổi hình dạng), kèm tô nhẹ 22% alpha bên trong (không phải
+overlay đặc như heatmap cầu vồng) để vùng khoanh "rõ hơn" mà vẫn nhìn xuyên thấy lá bên
+dưới. Test khoá hành vi: `backend/tests/test_overlay.py` — dựng một heatmap hình chữ L,
+xác nhận điểm nằm trong "hốc" của chữ L (nằm trong bounding box/elip nhưng ngoài vùng
+thật) không bị tô.
 
 1. **Domain gap.** PlantVillage chụp lá đơn trên nền đồng nhất trong phòng; mô hình
    thường đạt >99% trên tập test nhưng rớt mạnh với ảnh chụp thật ngoài đồng.
