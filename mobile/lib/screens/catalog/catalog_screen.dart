@@ -12,9 +12,14 @@ import '../../widgets/inputs.dart';
 import '../../widgets/rows.dart';
 import 'disease_detail_screen.dart';
 
-/// **10 Danh mục bệnh** — UC-M13. Tra cứu được khi chưa đăng nhập.
+/// **10 Danh mục bệnh** — UC-M13.
 ///
-/// API: `GET /diseases` — public, không cần token.
+/// API: `GET /diseases` — bản thân endpoint backend không đòi token (xem
+/// `backend/app/api/v1/endpoints/diseases.py`), nhưng `main.dart` bắt đăng
+/// nhập cho TOÀN BỘ app từ trước khi tới màn này, nên trên thực tế không có
+/// đường nào vào được `CatalogScreen` mà chưa đăng nhập — đã từng có comment
+/// ở đây ghi ngược lại ("tra cứu được khi chưa đăng nhập"), là hồi quy từ
+/// lúc thêm yêu cầu đăng nhập bắt buộc, nay xoá bỏ chủ đích.
 class CatalogScreen extends StatefulWidget {
   const CatalogScreen({super.key});
 
@@ -59,7 +64,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                 _future = session.diseaseService.fetchAll();
               }));
         }
-        return _list(context, _filter(snapshot.data!));
+        return _list(context, _filter(snapshot.data!), snapshot.data!.length);
       },
     );
   }
@@ -102,7 +107,10 @@ class _CatalogScreenState extends State<CatalogScreen> {
     );
   }
 
-  Widget _list(BuildContext context, List<Disease> rows) {
+  Widget _list(BuildContext context, List<Disease> rows, int totalCount) {
+    final String countLabel = rows.length == totalCount
+        ? '$totalCount loại'
+        : '${rows.length}/$totalCount loại khớp tìm kiếm';
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(
         16,
@@ -119,7 +127,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
           ),
           const SizedBox(height: 3),
           Text(
-            '10 loại — tra cứu được khi chưa đăng nhập',
+            countLabel,
             style: agriStyle(size: 13, color: AgriColors.inkA(.7)),
           ),
           const SizedBox(height: 16),

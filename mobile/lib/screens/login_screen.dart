@@ -33,6 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _password = TextEditingController();
 
   bool _loading = false;
+  bool _obscurePassword = true;
   String? _error;
 
   @override
@@ -61,6 +62,8 @@ class _LoginScreenState extends State<LoginScreen> {
       AppScope.read(context).select(AgriTab.plots);
       AppNav.reset(context, (_) => const AppShell());
     } on ApiException catch (e) {
+      setState(() => _error = e.message);
+    } on NetworkException catch (e) {
       setState(() => _error = e.message);
     } catch (_) {
       setState(() => _error = 'Không kết nối được tới máy chủ');
@@ -196,9 +199,17 @@ class _LoginScreenState extends State<LoginScreen> {
               _fieldLabel('Mật khẩu'),
               GlassField(
                 controller: _password,
-                obscureText: true,
+                obscureText: _obscurePassword,
                 fontWeight: FontWeight.w600,
                 style: GlassStyle.fieldOnFloating,
+                suffix: GestureDetector(
+                  onTap: () => setState(() => _obscurePassword = !_obscurePassword),
+                  child: Icon(
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    size: 20,
+                    color: AgriColors.inkA(.62),
+                  ),
+                ),
               ),
               if (_error != null) ...<Widget>[
                 const SizedBox(height: 12),

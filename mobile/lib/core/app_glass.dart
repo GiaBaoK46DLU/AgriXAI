@@ -18,8 +18,19 @@ class CssGradientAxis {
 /// Flutter dùng hệ toạ độ có trục y hướng xuống.
 CssGradientAxis cssGradient(double degrees) {
   final double rad = degrees * math.pi / 180.0;
-  final double dx = math.sin(rad);
-  final double dy = -math.cos(rad);
+  final double rawDx = math.sin(rad);
+  final double rawDy = -math.cos(rad);
+  // `Alignment` của Flutter đo theo CẠNH hộp bao quanh (góc hộp là
+  // `Alignment(±1,±1)`), còn CSS `linear-gradient` cũng cần điểm đầu/cuối
+  // chạm đúng viền hộp đó — tức chuẩn hoá theo HÌNH VUÔNG đơn vị
+  // (`max(|dx|,|dy|) == 1`), không phải theo hình TRÒN đơn vị (dx²+dy²==1)
+  // như bản cũ. Chuẩn hoá sai khiến các góc chéo (135° ở `agriPrimaryGradient`/
+  // `agriBigActionGradient`, 165° mặc định của `GlassStyle`/`agriExplainGradient`)
+  // có điểm đầu/cuối nằm lọt vào trong hộp thay vì chạm đúng góc/cạnh, làm
+  // dải màu ngắn và tập trung hơn ý CSS gốc.
+  final double scale = math.max(rawDx.abs(), rawDy.abs());
+  final double dx = scale == 0 ? 0.0 : rawDx / scale;
+  final double dy = scale == 0 ? 0.0 : rawDy / scale;
   return CssGradientAxis(Alignment(-dx, -dy), Alignment(dx, dy));
 }
 

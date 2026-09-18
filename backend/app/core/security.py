@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
@@ -42,3 +44,15 @@ def decode_access_token(token: str) -> dict[str, Any] | None:
         return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
     except jwt.PyJWTError:
         return None
+
+
+def new_refresh_token_value() -> str:
+    """Chuỗi ngẫu nhiên (không phải JWT) — refresh token phải thu hồi được
+    theo từng bản ghi trong CSDL, JWT tự chứng thực (stateless) thì không."""
+    return secrets.token_urlsafe(48)
+
+
+def hash_refresh_token(token: str) -> str:
+    """SHA-256 đủ dùng để tra cứu — token thô đã có entropy cao (48 byte
+    ngẫu nhiên), không cần chi phí băm chậm như bcrypt cho mật khẩu."""
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()

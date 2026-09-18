@@ -107,3 +107,6 @@ desktop.ini
 
 # ─── File tạm của Word ──────────────────────────────────
 ~$*.docx
+
+# ─── Cấu hình MCP cục bộ (project_ref Supabase riêng máy) ──
+.mcp.json

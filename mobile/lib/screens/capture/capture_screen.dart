@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart' show openAppSettings;
 
 import '../../core/app_colors.dart';
 import '../../core/app_glass.dart';
@@ -14,11 +16,13 @@ import '../../widgets/buttons.dart';
 import '../../widgets/chips.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/image_slot.dart';
+import '../../widgets/inputs.dart';
 import '../../widgets/misc.dart';
 import 'analyzing_screen.dart';
 
 const int _minImages = 3;
 const int _maxImages = 5;
+const int _maxNoteLength = 500;
 
 /// **03 Chụp ảnh** — UC-M7.
 ///
@@ -42,24 +46,71 @@ class CaptureScreen extends StatefulWidget {
 
 class _CaptureScreenState extends State<CaptureScreen> {
   final List<File> _images = <File>[];
+  final TextEditingController _note = TextEditingController();
   int _viewerPage = 0;
 
   bool get _hasPlot => widget.initialPlotId != null;
 
   int get _remainingSlots => _maxImages - _images.length;
 
+  @override
+  void dispose() {
+    _note.dispose();
+    super.dispose();
+  }
+
   Future<void> _pickFromCamera() async {
     if (_remainingSlots <= 0) return;
-    final XFile? picked = await ImagePicker().pickImage(
-      source: ImageSource.camera,
-      maxWidth: 1600,
-      imageQuality: 90,
+    try {
+      final XFile? picked = await ImagePicker().pickImage(
+        source: ImageSource.camera,
+        maxWidth: 1600,
+        imageQuality: 90,
+      );
+      if (picked == null) return;
+      setState(() {
+        _images.add(File(picked.path));
+        _viewerPage = _images.length - 1;
+      });
+    } on PlatformException catch (e) {
+      // `image_picker` gộp chung mọi nền tảng thành mã lỗi này khi người
+      // dùng từ chối quyền Máy ảnh — không tự mở lại được hộp thoại xin
+      // quyền lần hai (cả Android lẫn iOS đều chặn xin lại sau khi từ chối),
+      // nên chỉ còn cách hướng dẫn người dùng tự vào Cài đặt.
+      if (e.code == 'camera_access_denied' && mounted) {
+        await _showCameraPermissionDeniedDialog();
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Không mở được máy ảnh, thử lại nhé')),
+        );
+      }
+    }
+  }
+
+  Future<void> _showCameraPermissionDeniedDialog() {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Cần quyền truy cập máy ảnh'),
+        content: const Text(
+          'AgriXAI cần quyền Máy ảnh để chụp ảnh lá bệnh. Mở Cài đặt > Ứng '
+          'dụng > AgriXAI > Quyền rồi bật lại quyền Máy ảnh.',
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Để sau'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              openAppSettings();
+            },
+            child: const Text('Mở Cài đặt'),
+          ),
+        ],
+      ),
     );
-    if (picked == null) return;
-    setState(() {
-      _images.add(File(picked.path));
-      _viewerPage = _images.length - 1;
-    });
   }
 
   Future<void> _pickFromGallery() async {
@@ -88,6 +139,7 @@ class _CaptureScreenState extends State<CaptureScreen> {
 
   void _analyze() {
     if (_images.length < _minImages) return;
+    final String note = _note.text.trim();
     AppNav.replace(
       context,
       (_) => AnalyzingScreen(
@@ -95,6 +147,7 @@ class _CaptureScreenState extends State<CaptureScreen> {
         plotId: widget.initialPlotId,
         plotName: widget.initialPlotName,
         save: _hasPlot,
+        note: note.isEmpty ? null : note,
       ),
     );
   }
@@ -158,6 +211,24 @@ class _CaptureScreenState extends State<CaptureScreen> {
               ],
             ),
             const SizedBox(height: 20),
+            Text('Ghi chú (không bắt buộc)', style: AgriTextStyles.fieldLabel),
+            const SizedBox(height: 6),
+            GlassTextArea(
+              controller: _note,
+              hintText: 'Ví dụ: cây trồng gần 3 tuần, mới tưới đẫm hôm qua…',
+              minLines: 2,
+              maxLength: _maxNoteLength,
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 4),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                '${_note.text.length}/$_maxNoteLength',
+                style: agriStyle(size: 11.5, color: AgriColors.inkA(.55)),
+              ),
+            ),
+            const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(

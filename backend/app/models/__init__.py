@@ -8,6 +8,7 @@ from app.models.diagnosis import Diagnosis, DiagnosisImage
 from app.models.forum import ForumComment, ForumPost, ForumPostLike, ForumPostType
 from app.models.medicine import DiseaseGuide, DiseaseMedicine, Medicine
 from app.models.plot import Plot, PlotStatus
+from app.models.refresh_token import RefreshToken
 from app.models.user import User, UserRole
 
 __all__ = [
@@ -22,6 +23,7 @@ __all__ = [
     "Medicine",
     "Plot",
     "PlotStatus",
+    "RefreshToken",
     "User",
     "UserRole",
 ]

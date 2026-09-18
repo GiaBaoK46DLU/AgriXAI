@@ -97,9 +97,18 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /// Chỉ tính "cần xử lý" khi lần chẩn đoán Nặng gần nhất còn trong 24 giờ —
+  /// theo yêu cầu của Học: qua khỏi 24 giờ thì banner tự biến mất, không hiện
+  /// mãi mãi dù lô đất chưa từng chẩn đoán lại.
   Plot? get _urgentPlot {
+    final DateTime now = DateTime.now();
     for (final Plot plot in _plots) {
-      if (plot.lastSeverity == Severity.severe) return plot;
+      final DateTime? at = plot.lastDiagnosisAt;
+      if (plot.lastSeverity == Severity.severe &&
+          at != null &&
+          now.difference(at) < const Duration(hours: 24)) {
+        return plot;
+      }
     }
     return null;
   }

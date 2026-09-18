@@ -94,15 +94,12 @@ class _ResultScreenState extends State<ResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            // Nút "Chia sẻ kết quả" đã bỏ hẳn (từ #85 MB-16) — trước đây
+            // `onPressed: () {}` không làm gì, để một nút chết trên màn còn
+            // tệ hơn là không có nút.
             ScreenHeader(
               title: 'Kết quả chẩn đoán',
               onBack: () => Navigator.of(context).pop(),
-              expandTitle: true,
-              trailing: GlassIconButton(
-                icon: AgriIcons.share(20, AgriColors.primary),
-                onPressed: () {},
-                tooltip: 'Chia sẻ kết quả',
-              ),
             ),
             const SizedBox(height: 16),
             _imageFrame(),
@@ -291,6 +288,7 @@ class _ResultScreenState extends State<ResultScreen> {
     final File? shownFile = showOverlay ? overlayFile : imageFile;
     final String? shownUrl =
         shownFile != null ? null : (showOverlay ? overlayUrl : imageUrl);
+    final bool zoomable = shownFile != null || shownUrl != null;
 
     return Container(
       decoration: BoxDecoration(
@@ -304,13 +302,40 @@ class _ResultScreenState extends State<ResultScreen> {
         child: Stack(
           children: <Widget>[
             Positioned.fill(
-              child: ImageSlot(
-                placeholder: 'Kéo ảnh lá bệnh vào đây',
-                onDark: true,
-                file: shownFile,
-                imageUrl: shownUrl,
+              child: GestureDetector(
+                onTap: zoomable
+                    ? () => AppNav.push(
+                          context,
+                          (_) => _FullScreenImageViewer(
+                            file: shownFile,
+                            url: shownUrl,
+                          ),
+                        )
+                    : null,
+                child: ImageSlot(
+                  placeholder: 'Kéo ảnh lá bệnh vào đây',
+                  onDark: true,
+                  file: shownFile,
+                  imageUrl: shownUrl,
+                ),
               ),
             ),
+            if (zoomable)
+              const Positioned(
+                right: 14,
+                bottom: 14,
+                child: GlassCard(
+                  style: GlassStyle.overImage,
+                  blurSigma: 26,
+                  radius: 999,
+                  padding: EdgeInsets.all(8),
+                  child: Icon(
+                    Icons.zoom_in,
+                    size: 18,
+                    color: AgriColors.ink,
+                  ),
+                ),
+              ),
             if (badge != null)
               Positioned(
                 left: 14,
@@ -598,6 +623,37 @@ class _ResultScreenState extends State<ResultScreen> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Xem ảnh khoanh vùng/ảnh gốc toàn màn hình, phóng to được bằng
+/// `InteractiveViewer` (kéo giãn hai ngón/double-tap) — trước đây ảnh chỉ
+/// hiện cố định 272px, không xem chi tiết được vùng khoanh nhỏ.
+class _FullScreenImageViewer extends StatelessWidget {
+  const _FullScreenImageViewer({this.file, this.url});
+
+  final File? file;
+  final String? url;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF000000),
+      appBar: AppBar(
+        backgroundColor: const Color(0x00000000),
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xFFFFFFFF)),
+      ),
+      body: Center(
+        child: InteractiveViewer(
+          minScale: 1,
+          maxScale: 5,
+          child: file != null
+              ? Image.file(file!, fit: BoxFit.contain)
+              : Image.network(url!, fit: BoxFit.contain),
+        ),
+      ),
     );
   }
 }

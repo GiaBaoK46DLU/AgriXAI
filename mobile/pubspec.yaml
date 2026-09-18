@@ -32,8 +32,12 @@ dependencies:
   path_provider: ^2.1.4
   # Đọc số phiên bản thật từ pubspec.yaml cho dòng "Về ứng dụng" ở màn Hồ sơ.
   package_info_plus: ^9.0.1
-  # Nhúng video YouTube hướng dẫn xử lý ngay trong app, không nhảy qua app YouTube.
-  youtube_player_flutter: ^9.1.1
+  # Mở thẳng màn Cài đặt ứng dụng khi người dùng từ chối quyền camera ở màn 03.
+  permission_handler: ^11.3.1
+  # Phát video YouTube ngay trong app ở màn 06 — dùng IFrame Player API qua
+  # webview_flutter chính chủ Flutter team (postMessage, không phải hai lớp
+  # bắt cử chỉ chồng nhau như youtube_player_flutter cũ).
+  youtube_player_iframe: ^5.2.1
 
 dev_dependencies:
   flutter_test:

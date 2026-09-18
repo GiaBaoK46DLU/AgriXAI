@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
@@ -37,6 +38,7 @@ class AnalyzingScreen extends StatefulWidget {
     this.plotId,
     this.plotName,
     this.save = true,
+    this.note,
     super.key,
   });
 
@@ -46,6 +48,10 @@ class AnalyzingScreen extends StatefulWidget {
   /// Tên lô đất để hiện trên kết quả nếu phải rơi về suy luận ngoại tuyến —
   /// lúc đó không gọi được `GET /plots` nên phải mang theo từ màn Chụp ảnh.
   final String? plotName;
+
+  /// Ghi chú tự do, tối đa 500 ký tự — chỉ gửi lên backend, suy luận ngoại
+  /// tuyến không dùng tới (không có gì lưu để gắn ghi chú vào).
+  final String? note;
 
   /// `false` khi vào từ nút chụp ảnh chung (không qua một lô đất cụ thể) —
   /// backend không lưu kết quả này vào CSDL (xem CLAUDE.md mục quản lý lô
@@ -92,14 +98,40 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
     setState(() => _step = value);
   }
 
+  static const int _maxCompressedBytes = 2 * 1024 * 1024; // 2 MB
+
+  /// Nén tới khi dưới 2 MB hoặc hết nước — mỗi lượt nén lại từ file GỐC
+  /// (không nén chồng lên ảnh đã nén) với quality/kích thước thấp hơn, để
+  /// không mất chất lượng oan do nén JPEG nhiều lớp chồng nhau. `quality: 82,
+  /// minWidth/minHeight: 1280` một lượt duy nhất (cách cũ) không đủ với ảnh
+  /// gốc rất nặng — camera hiện đại dễ ra ảnh 8–12 MB.
   Future<({List<int> bytes, String filename})> _compress(File file) async {
-    final Uint8List? compressed = await FlutterImageCompress.compressWithFile(
-      file.path,
-      quality: 82,
-      minWidth: 1280,
-      minHeight: 1280,
-    );
-    final List<int> bytes = compressed ?? await file.readAsBytes();
+    final int originalSize = await file.length();
+    int quality = 82;
+    int dimension = 1280;
+    List<int> bytes = <int>[];
+
+    for (int attempt = 0; attempt < 5; attempt++) {
+      final Uint8List? result = await FlutterImageCompress.compressWithFile(
+        file.path,
+        quality: quality,
+        minWidth: dimension,
+        minHeight: dimension,
+      );
+      bytes = result ?? await file.readAsBytes();
+      if (bytes.length <= _maxCompressedBytes || quality <= 35) break;
+      quality = (quality - 15).clamp(35, 100);
+      dimension = (dimension * 0.85).round();
+    }
+
+    if (kDebugMode) {
+      debugPrint(
+        'Nén ảnh ${file.uri.pathSegments.last}: '
+        '${(originalSize / 1024).round()} KB → ${(bytes.length / 1024).round()} KB '
+        '(quality=$quality, cạnh tối thiểu=${dimension}px)',
+      );
+    }
+
     return (bytes: bytes, filename: file.uri.pathSegments.last);
   }
 
@@ -113,6 +145,7 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
         result = await session.diagnosisService.diagnose(
           images: images,
           plotId: widget.plotId,
+          note: widget.note,
           save: widget.save,
         );
       } catch (_) {

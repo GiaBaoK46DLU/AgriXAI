@@ -23,6 +23,7 @@ import 'package:http/testing.dart';
 /// `flutter test`, chỉ có trên thiết bị thật).
 class _FakeTokenStore implements TokenStore {
   String? _token;
+  String? _refreshToken;
 
   @override
   Future<void> delete() async => _token = null;
@@ -32,6 +33,15 @@ class _FakeTokenStore implements TokenStore {
 
   @override
   Future<void> write(String token) async => _token = token;
+
+  @override
+  Future<void> deleteRefresh() async => _refreshToken = null;
+
+  @override
+  Future<String?> readRefresh() async => _refreshToken;
+
+  @override
+  Future<void> writeRefresh(String token) async => _refreshToken = token;
 }
 
 /// Sáu bản ghi chẩn đoán giả — đủ để kiểm được cả tổng số lẫn lọc theo mức độ
@@ -159,6 +169,7 @@ http.Client _fakeBackend() {
     if (path.endsWith('/auth/login')) {
       return _jsonResponse(<String, dynamic>{
         'access_token': 'fake-token',
+        'refresh_token': 'fake-refresh-token',
         'user': user,
       });
     }
