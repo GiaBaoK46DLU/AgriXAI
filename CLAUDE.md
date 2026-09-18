@@ -400,9 +400,29 @@ Video hướng dẫn tách riêng, và **Diễn đàn** — trang kiểm duyệt
 có trong bất kỳ kế hoạch nào trước đó).
 
 ⚠️ **Hệ quả: các issue `WA-01`…`WA-10` trên GitHub (mốc 3, nhãn
-`mang:web-admin`) mô tả kế hoạch Vite/4-trang cũ, nay lỗi thời.** CLI không tự
-sửa/đóng issue GitHub — Học cần tự rà lại các issue đó, việc build thực tế đã
-vượt qua phạm vi chúng mô tả.
+`mang:web-admin`) mô tả kế hoạch Vite/4-trang cũ, nay lỗi thời.**
+
+✅ **Đã rà và đóng (18/09/2026).** Đối chiếu từng tiêu chí gốc của
+`WA-01`…`WA-10` với bản build Next.js thật, không chỉ đóng vì "đã đổi kiến
+trúc". `WA-01`/`WA-02` (khởi tạo Vite, lớp gọi API + localStorage) đóng vì
+**siêu việt/thay thế hoàn toàn** — Next.js không cần khởi tạo Vite, và BFF +
+cookie httpOnly (`lib/api.ts`/`lib/session.ts`) làm đúng việc lớp gọi API
+localStorage định làm, an toàn hơn. `WA-03`/`WA-04`/`WA-05`/`WA-10` đóng vì
+**đã đạt đủ tiêu chí** khi soát lại (đăng nhập chặn theo `role`, layout +
+sidebar, 4 ô số liệu, trang người dùng có khoá tự-khoá-chính-mình chặn ở
+backend). Bốn ticket còn lại có **lỗ hổng thật** khi soát kỹ, đã vá trước khi
+đóng — xem nhánh `hoc/task-31-web-admin-close-out-old-tickets`:
+
+- `WA-04` (#31): sidebar chưa thu gọn được ở màn hẹp — thêm nút thu/mở.
+- `WA-06` (#33): biểu đồ xu hướng vẽ thẳng `timeseries` thưa của backend vào
+  recharts — đúng lỗi ticket cảnh báo trước ("ngày trống bị nén lại, biểu đồ
+  sai lệch"). Thêm `fillTimeseriesGaps()`.
+- `WA-07` (#34): dải cảnh báo mô hình giả chỉ hiện ở trang tổng quan, ticket
+  yêu cầu **mọi trang có số liệu**. Chuyển vào `AdminLayout`, dùng `GET
+  /health` (công khai, rẻ) thay vì gọi `/stats/dashboard` trên từng trang.
+- `WA-08`/`WA-09` (#35/#36): thiếu lọc theo khu vực (lô đất) và lọc theo lô
+  đất + khoảng ngày (lịch sử chẩn đoán) — cả hai backend đã hỗ trợ sẵn tham
+  số, chỉ thiếu UI. Thêm cả hai, cùng tô màu nền cho dòng mức "Nặng".
 
 ### Vì sao Next.js trên Vercel mà không phá vỡ kiến trúc 3 phần tách biệt
 
