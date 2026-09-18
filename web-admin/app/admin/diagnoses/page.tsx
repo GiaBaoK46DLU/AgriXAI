@@ -5,7 +5,7 @@ import * as ui from "@/lib/ui";
 import { firstIntParam } from "@/lib/params";
 import { Tag, severityTone } from "@/components/Tag";
 import { Pagination } from "@/components/Pagination";
-import type { DiagnosisPage, DiseaseInfo, UserOut } from "@/lib/types";
+import type { DiagnosisPage, DiseaseInfo, PlotWithStats, UserOut } from "@/lib/types";
 
 import { DiagnosisDetailModal } from "./DiagnosisDetailModal";
 
@@ -28,8 +28,11 @@ export default async function DiagnosesPage({
 }: {
   searchParams: Promise<{
     user_id?: string;
+    plot_id?: string;
     disease_key?: string;
     severity?: string;
+    date_from?: string;
+    date_to?: string;
     page?: string;
     detail?: string;
   }>;
@@ -39,18 +42,25 @@ export default async function DiagnosesPage({
   const detailId = firstIntParam(sp.detail);
   const pageSize = 20;
 
-  const [diagPage, farmers, diseases] = await Promise.all([
+  // Giữ nguyên các tham số lọc hiện có (trừ `page`/`detail`) để dùng lại ở
+  // link phân trang, link "Xem" và form — một chỗ duy nhất, không lặp lại
+  // việc liệt kê từng trường lọc ở nhiều nơi.
+  const filterParams = {
+    user_id: sp.user_id || undefined,
+    plot_id: sp.plot_id || undefined,
+    disease_key: sp.disease_key || undefined,
+    severity: sp.severity || undefined,
+    date_from: sp.date_from || undefined,
+    date_to: sp.date_to || undefined,
+  };
+
+  const [diagPage, farmers, diseases, plots] = await Promise.all([
     adminFetch<DiagnosisPage>("/diagnoses", {
-      searchParams: {
-        user_id: sp.user_id || undefined,
-        disease_key: sp.disease_key || undefined,
-        severity: sp.severity || undefined,
-        page,
-        page_size: pageSize,
-      },
+      searchParams: { ...filterParams, page, page_size: pageSize },
     }),
     adminFetch<UserOut[]>("/users", { searchParams: { role: "farmer", limit: 500 } }),
     adminFetch<DiseaseInfo[]>("/diseases"),
+    adminFetch<PlotWithStats[]>("/plots", {}),
   ]);
 
   const userNameById = new Map(farmers.map((u) => [u.id, u.full_name]));
@@ -76,6 +86,14 @@ export default async function DiagnosesPage({
             </option>
           ))}
         </select>
+        <select name="plot_id" defaultValue={sp.plot_id ?? ""} className={`${ui.select} w-auto`}>
+          <option value="">Tất cả lô đất</option>
+          {plots.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.puc} · {p.name}
+            </option>
+          ))}
+        </select>
         <select name="severity" defaultValue={sp.severity ?? ""} className={`${ui.select} w-auto`}>
           {SEVERITY_OPTIONS.map((s) => (
             <option key={s.value} value={s.value}>
@@ -83,6 +101,20 @@ export default async function DiagnosesPage({
             </option>
           ))}
         </select>
+        <input
+          type="date"
+          name="date_from"
+          defaultValue={sp.date_from ?? ""}
+          aria-label="Từ ngày"
+          className={`${ui.input} w-auto`}
+        />
+        <input
+          type="date"
+          name="date_to"
+          defaultValue={sp.date_to ?? ""}
+          aria-label="Đến ngày"
+          className={`${ui.input} w-auto`}
+        />
         <button type="submit" className={ui.btnGhost}>
           Lọc
         </button>
@@ -104,7 +136,10 @@ export default async function DiagnosesPage({
           </thead>
           <tbody>
             {diagPage.items.map((d) => (
-              <tr key={d.id} className={ui.tr}>
+              <tr
+                key={d.id}
+                className={d.severity === "severe" ? `${ui.tr} bg-severe-bg/60` : ui.tr}
+              >
                 <td className="py-2 pl-4">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -124,9 +159,9 @@ export default async function DiagnosesPage({
                 <td className={`${ui.td} text-right`}>
                   <Link
                     href={`/admin/diagnoses?${new URLSearchParams({
-                      ...(sp.user_id ? { user_id: sp.user_id } : {}),
-                      ...(sp.disease_key ? { disease_key: sp.disease_key } : {}),
-                      ...(sp.severity ? { severity: sp.severity } : {}),
+                      ...Object.fromEntries(
+                        Object.entries(filterParams).filter(([, v]) => v !== undefined),
+                      ),
                       page: String(page),
                       detail: String(d.id),
                     }).toString()}`}
@@ -151,7 +186,7 @@ export default async function DiagnosesPage({
           pageSize={diagPage.page_size}
           total={diagPage.total}
           basePath="/admin/diagnoses"
-          searchParams={{ user_id: sp.user_id, disease_key: sp.disease_key, severity: sp.severity }}
+          searchParams={filterParams}
         />
       </div>
 
