@@ -17,6 +17,7 @@ class GlassField extends StatelessWidget {
     this.fontSize = 16,
     this.style = GlassStyle.field,
     this.prefix,
+    this.suffix,
     this.onChanged,
   });
 
@@ -30,6 +31,9 @@ class GlassField extends StatelessWidget {
 
   /// Icon nằm bên trái, ví dụ kính lúp ở màn 10.
   final Widget? prefix;
+
+  /// Icon/nút nằm bên phải, ví dụ nút ẩn/hiện mật khẩu ở màn Đăng nhập.
+  final Widget? suffix;
   final ValueChanged<String>? onChanged;
 
   @override
@@ -79,6 +83,10 @@ class GlassField extends StatelessWidget {
               ),
             ),
           ),
+          if (suffix != null) ...<Widget>[
+            suffix!,
+            const SizedBox(width: 6),
+          ],
         ],
       ),
     );
@@ -101,11 +109,18 @@ class GlassTextArea extends StatelessWidget {
     this.controller,
     this.hintText,
     this.minLines = 3,
+    this.maxLength,
+    this.onChanged,
   });
 
   final TextEditingController? controller;
   final String? hintText;
   final int minLines;
+
+  /// Giới hạn ký tự — ví dụ ô ghi chú 500 ký tự ở màn Chụp ảnh. `null` thì
+  /// không giới hạn.
+  final int? maxLength;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +135,8 @@ class GlassTextArea extends StatelessWidget {
         controller: controller,
         minLines: minLines,
         maxLines: null,
+        maxLength: maxLength,
+        onChanged: onChanged,
         keyboardType: TextInputType.multiline,
         cursorColor: AgriColors.primary,
         style: agriStyle(size: 15, color: AgriColors.ink, height: 1.5),
@@ -128,6 +145,7 @@ class GlassTextArea extends StatelessWidget {
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
+          counterText: '',
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 18,
             vertical: 14,

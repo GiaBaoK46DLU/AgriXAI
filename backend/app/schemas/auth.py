@@ -20,6 +20,18 @@ class Token(BaseModel):
     expires_in: int  # giây
 
 
+class TokenPair(Token):
+    """`Token` + refresh token — trả về từ `/auth/login`, `/auth/register`,
+    `/auth/refresh`. Tách khỏi `Token` vì `POST /auth/token` (dạng form,
+    riêng cho nút Authorize của Swagger) không cần refresh token."""
+
+    refresh_token: str
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
 class UserBase(BaseModel):
     username: str = Field(min_length=3, max_length=50)
     full_name: str = Field(min_length=1, max_length=120)
@@ -75,7 +87,7 @@ class UserOut(UserBase):
     created_at: datetime
 
 
-class LoginResponse(Token):
+class LoginResponse(TokenPair):
     user: UserOut
 
 

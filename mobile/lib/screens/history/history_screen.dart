@@ -10,6 +10,7 @@ import '../../services/api_client.dart';
 import '../../services/session.dart' as session;
 import '../../widgets/buttons.dart';
 import '../../widgets/chips.dart';
+import '../../widgets/inputs.dart';
 import '../../widgets/rows.dart';
 import '../result/result_screen.dart';
 
@@ -24,13 +25,20 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+  static const int _pageSize = 10;
+
   /// `null` nghĩa là "Tất cả".
-  Severity? _filter;
+  Severity? _severity;
+
+  /// `null` nghĩa là "Tất cả lô đất".
+  int? _plotId;
 
   bool _loading = true;
   String? _error;
   List<DiagnosisEntry> _rows = <DiagnosisEntry>[];
+  List<Plot> _plots = <Plot>[];
   int _total = 0;
+  int _page = 1;
 
   /// Bản ghi đang gọi `GET /diagnoses/{id}` để mở màn kết quả — chặn double-tap.
   int? _openingId;
@@ -43,24 +51,35 @@ class _HistoryScreenState extends State<HistoryScreen> {
     (Severity.none, 'Khoẻ mạnh'),
   ];
 
+  int get _totalPages => _total == 0 ? 1 : ((_total + _pageSize - 1) ~/ _pageSize);
+
   @override
   void initState() {
     super.initState();
-    _load();
+    _load(page: 1);
   }
 
-  Future<void> _load() async {
+  Future<void> _load({int? page}) async {
+    final int targetPage = page ?? _page;
     setState(() {
       _loading = true;
       _error = null;
     });
     try {
-      final ({List<DiagnosisEntry> items, int total}) page =
-          await session.diagnosisService.list(pageSize: 50, severity: _filter);
+      final List<Plot> plots = _plots.isEmpty ? await _fetchPlots() : _plots;
+      final ({List<DiagnosisEntry> items, int total}) result =
+          await session.diagnosisService.list(
+        page: targetPage,
+        pageSize: _pageSize,
+        severity: _severity,
+        plotId: _plotId,
+      );
       if (!mounted) return;
       setState(() {
-        _rows = page.items;
-        _total = page.total;
+        _plots = plots;
+        _rows = result.items;
+        _total = result.total;
+        _page = targetPage;
         _loading = false;
       });
     } on ApiException catch (e) {
@@ -75,9 +94,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
   }
 
-  void _selectFilter(Severity? severity) {
-    setState(() => _filter = severity);
-    _load();
+  Future<List<Plot>> _fetchPlots() async {
+    final List<dynamic> body =
+        await session.apiClient.get('/plots') as List<dynamic>;
+    return body.map((dynamic p) => Plot.fromJson(p as Map<String, dynamic>)).toList();
+  }
+
+  void _selectSeverity(Severity? severity) {
+    setState(() => _severity = severity);
+    _load(page: 1);
+  }
+
+  void _selectPlot(int? plotId) {
+    setState(() => _plotId = plotId);
+    _load(page: 1);
   }
 
   Future<void> _open(DiagnosisEntry entry) async {
@@ -99,16 +129,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   String get _countLabel {
-    final String suffix = _filter == null
+    final String suffix = _severity == null
         ? ''
-        : ' ở mức ${DemoData.sev(_filter!).name.toLowerCase()}';
+        : ' ở mức ${DemoData.sev(_severity!).name.toLowerCase()}';
     return '$_total lần chẩn đoán$suffix';
   }
+
+  String get _plotLabel => _plotId == null
+      ? 'Tất cả lô đất'
+      : _plots
+          .firstWhere((Plot p) => p.id == _plotId, orElse: () => _plots.first)
+          .name;
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: _load,
+      onRefresh: () => _load(page: 1),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.fromLTRB(
@@ -130,6 +166,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
               style: agriStyle(size: 13, color: AgriColors.inkA(.7)),
             ),
             const SizedBox(height: 16),
+            GlassDropdownField<int?>(
+              label: _plotLabel,
+              value: _plotId,
+              sheetTitle: 'Lọc theo lô đất',
+              options: <int?>[null, ..._plots.map((Plot p) => p.id)],
+              optionLabel: (int? id) => id == null
+                  ? 'Tất cả lô đất'
+                  : _plots.firstWhere((Plot p) => p.id == id).name,
+              onChanged: _selectPlot,
+            ),
+            const SizedBox(height: 10),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.only(bottom: 16),
@@ -138,8 +185,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   for (final (Severity?, String) chip in _chips) ...<Widget>[
                     SelectableChip(
                       label: chip.$2,
-                      selected: _filter == chip.$1,
-                      onPressed: () => _selectFilter(chip.$1),
+                      selected: _severity == chip.$1,
+                      onPressed: () => _selectSeverity(chip.$1),
                       minHeight: 44,
                       fontSize: 13,
                       horizontalPadding: 17,
@@ -159,7 +206,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               _errorState(_error!)
             else if (_rows.isEmpty)
               _emptyState()
-            else
+            else ...<Widget>[
               for (int i = 0; i < _rows.length; i++) ...<Widget>[
                 DiagnosisCard(
                   entry: _rows[i],
@@ -167,6 +214,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ),
                 if (i != _rows.length - 1) const SizedBox(height: 10),
               ],
+              const SizedBox(height: 16),
+              _PaginationBar(
+                page: _page,
+                totalPages: _totalPages,
+                total: _total,
+                onPrev: _page > 1 ? () => _load(page: _page - 1) : null,
+                onNext: _page < _totalPages ? () => _load(page: _page + 1) : null,
+              ),
+            ],
           ],
         ),
       ),
@@ -184,9 +240,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ),
           const SizedBox(height: 6),
           Text(
-            _filter == null
+            _severity == null && _plotId == null
                 ? 'Chưa có lần chẩn đoán nào — chụp ảnh lá ở tab Chẩn đoán để bắt đầu.'
-                : 'Chưa có lần chẩn đoán nào ở mức độ này.',
+                : 'Chưa có lần chẩn đoán nào khớp bộ lọc này.',
             textAlign: TextAlign.center,
             style: agriStyle(size: 14, color: AgriColors.inkA(.68)),
           ),
@@ -208,11 +264,79 @@ class _HistoryScreenState extends State<HistoryScreen> {
           const SizedBox(height: 14),
           GlassPillButton(
             label: 'Thử lại',
-            onPressed: _load,
+            onPressed: () => _load(page: 1),
             minHeight: 44,
             fontSize: 14,
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Cùng hình dạng với `_PaginationBar` của `forum_screen.dart` — không tách
+/// chung ra `widgets/` vì mỗi màn tự quản lý widget hiển thị danh sách riêng
+/// của mình (xem `_ThumbnailStrip` ở `capture_screen.dart` cho quy ước
+/// tương tự trong dự án).
+class _PaginationBar extends StatelessWidget {
+  const _PaginationBar({
+    required this.page,
+    required this.totalPages,
+    required this.total,
+    required this.onPrev,
+    required this.onNext,
+  });
+
+  final int page;
+  final int totalPages;
+  final int total;
+  final VoidCallback? onPrev;
+  final VoidCallback? onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        _PageButton(label: '← Trước', onTap: onPrev),
+        const SizedBox(width: 12),
+        Text(
+          'Trang $page / $totalPages  ($total kết quả)',
+          style: agriStyle(size: 12.5, color: AgriColors.inkA(.65), weight: FontWeight.w600),
+        ),
+        const SizedBox(width: 12),
+        _PageButton(label: 'Tiếp →', onTap: onNext),
+      ],
+    );
+  }
+}
+
+class _PageButton extends StatelessWidget {
+  const _PageButton({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool enabled = onTap != null;
+    return Material(
+      color: const Color(0x00000000),
+      borderRadius: BorderRadius.circular(999),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(999),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          child: Text(
+            label,
+            style: agriStyle(
+              size: 12.5,
+              weight: FontWeight.w700,
+              color: enabled ? AgriColors.primary : AgriColors.inkA(.3),
+            ),
+          ),
+        ),
       ),
     );
   }

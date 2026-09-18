@@ -83,6 +83,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       AppNav.reset(context, (_) => const AppShell());
     } on ApiException catch (e) {
       setState(() => _error = e.message);
+    } on NetworkException catch (e) {
+      setState(() => _error = e.message);
     } catch (_) {
       setState(() => _error = 'Không kết nối được tới máy chủ');
     } finally {

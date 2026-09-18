@@ -30,7 +30,13 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str = "doi-khoa-nay-truoc-khi-trien-khai-that"
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
+    # Ngắn hạn có chủ đích (trước đây 7 ngày, không có refresh token nào cả)
+    # — từ khi có `/auth/refresh` (07/09/2026... cập nhật 18/09/2026), access
+    # token chỉ cần sống đủ ngắn để giảm thiệt hại nếu bị lộ; phiên đăng nhập
+    # thật sự kéo dài nhờ REFRESH_TOKEN_EXPIRE_DAYS bên dưới, mobile tự làm
+    # mới token nền khi gặp 401 (xem `mobile/lib/services/api_client.dart`).
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
     # Để trống -> dùng DummyPredictor
     MODEL_CHECKPOINT: str = ""

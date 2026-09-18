@@ -94,6 +94,7 @@ class Disease {
     this.products = const <ProductLink>[],
     this.noProductText,
     this.videoUrl,
+    this.referenceUrl,
   });
 
   /// Parse `DiseaseInfo` trả về từ `GET /diseases` hoặc `GET /diseases/{key}`.
@@ -130,6 +131,7 @@ class Disease {
               : 'Chưa có thuốc trị trực tiếp — làm theo các bước "Cần làm ngay" ở trên.')
           : null,
       videoUrl: json['video_url'] as String?,
+      referenceUrl: json['reference_url'] as String?,
     );
   }
 
@@ -162,6 +164,9 @@ class Disease {
 
   /// Link video YouTube hướng dẫn xử lý, `null` nếu chưa có.
   final String? videoUrl;
+
+  /// Link tham khảo học thuật/kỹ thuật, `null` nếu chưa có.
+  final String? referenceUrl;
 }
 
 /// `"active"/"fallow"/"archived"` (giá trị CSDL) <-> nhãn tiếng Việt hiện
@@ -202,6 +207,7 @@ class Plot {
     required this.statusRaw,
     required this.count,
     required this.last,
+    this.lastDiagnosisAt,
     required this.lastDisease,
     required this.lastSeverity,
   });
@@ -230,6 +236,7 @@ class Plot {
       statusRaw: statusRaw,
       count: (json['diagnosis_count'] as int?) ?? 0,
       last: lastIso == null ? 'Chưa chẩn đoán' : formatIsoTimestamp(lastIso),
+      lastDiagnosisAt: lastIso == null ? null : DateTime.parse(lastIso),
       lastDisease: (json['last_disease_name'] as String?) ?? 'Chưa chẩn đoán',
       lastSeverity: lastSeverity,
     );
@@ -250,6 +257,11 @@ class Plot {
   final String statusRaw;
   final int count;
   final String last;
+
+  /// Giá trị thô (không định dạng) của [last] — dùng để tính "còn trong 24
+  /// giờ hay không" cho banner cảnh báo ở trang chủ (`home_screen.dart`).
+  /// `null` khi chưa từng chẩn đoán.
+  final DateTime? lastDiagnosisAt;
   final String lastDisease;
   final Severity lastSeverity;
 }

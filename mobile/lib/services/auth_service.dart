@@ -38,7 +38,16 @@ class CurrentUser {
 class AuthService {
   AuthService({ApiClient? apiClient, TokenStore? tokenStore})
       : _api = apiClient ?? ApiClient(),
-        _tokenStore = tokenStore ?? SecureTokenStore();
+        _tokenStore = tokenStore ?? SecureTokenStore() {
+    // ApiClient tự làm mới access token khi gặp 401 hết phiên (xem
+    // `api_client.dart`) — mỗi lần làm mới thành công phải ghi đè lại
+    // `TokenStore` để lần mở app kế tiếp không dùng phải refresh token cũ
+    // (đã bị thu hồi do cơ chế xoay vòng).
+    _api.onTokensRefreshed = (String accessToken, String refreshToken) {
+      _tokenStore.write(accessToken);
+      _tokenStore.writeRefresh(refreshToken);
+    };
+  }
 
   final ApiClient _api;
   final TokenStore _tokenStore;
@@ -74,21 +83,40 @@ class AuthService {
 
   Future<CurrentUser> _applyToken(Map<String, dynamic> body) async {
     final String token = body['access_token'] as String;
+    final String refreshToken = body['refresh_token'] as String;
     _api.setToken(token);
+    _api.setRefreshToken(refreshToken);
     await _tokenStore.write(token);
+    await _tokenStore.writeRefresh(refreshToken);
     return CurrentUser.fromJson(body['user'] as Map<String, dynamic>);
   }
 
   /// Gọi lúc app khởi động — nếu có token đã lưu thì nạp lại và xác nhận
-  /// còn hiệu lực. Trả về `null` nếu chưa đăng nhập hoặc token đã hết hạn.
+  /// còn hiệu lực. Trả về `null` nếu chưa đăng nhập hoặc cả access lẫn
+  /// refresh token đều đã hết hạn.
+  ///
+  /// Nạp cả refresh token vào [ApiClient] trước khi gọi [me] — access token
+  /// đã lưu có thể đã hết hạn (chỉ sống 30 phút) trong lúc app đóng, lúc đó
+  /// [ApiClient] tự làm mới token ở nền (xem `api_client.dart`) nên người
+  /// dùng vẫn vào thẳng app, không phải đăng nhập lại mỗi khi mở app sau một
+  /// lúc lâu.
   Future<CurrentUser?> tryRestore() async {
     final String? token = await _tokenStore.read();
-    if (token == null) return null;
+    final String? refreshToken = await _tokenStore.readRefresh();
+    if (token == null || refreshToken == null) return null;
     _api.setToken(token);
+    _api.setRefreshToken(refreshToken);
     try {
       return await me();
     } on ApiException {
       await logout();
+      return null;
+    } on SessionExpiredException {
+      // ApiClient đã tự dọn token trong bộ nhớ khi refresh thất bại — chỉ
+      // còn phải dọn nốt TokenStore, không gọi lại `/auth/logout` (refresh
+      // token lúc này chắc chắn đã không còn hợp lệ để thu hồi).
+      await _tokenStore.delete();
+      await _tokenStore.deleteRefresh();
       return null;
     }
   }
@@ -120,8 +148,26 @@ class AuthService {
     });
   }
 
+  /// Thu hồi refresh token phía server (`POST /auth/logout`) trước khi xoá
+  /// khỏi máy — chỉ xoá cục bộ thì token thô vẫn dùng làm mới access token
+  /// được nếu ai đó có được nó. Không chặn đăng xuất nếu gọi backend thất
+  /// bại (mất mạng...) — với người dùng, đăng xuất trên máy phải luôn thành
+  /// công; token hết hạn tự nhiên sau `REFRESH_TOKEN_EXPIRE_DAYS` dù không
+  /// thu hồi được ngay.
   Future<void> logout() async {
+    final String? refreshToken = await _tokenStore.readRefresh();
+    if (refreshToken != null) {
+      try {
+        await _api.postJson('/auth/logout', <String, dynamic>{
+          'refresh_token': refreshToken,
+        });
+      } catch (_) {
+        // Xem ghi chú ở trên — bỏ qua, vẫn xoá cục bộ.
+      }
+    }
     _api.setToken(null);
+    _api.setRefreshToken(null);
     await _tokenStore.delete();
+    await _tokenStore.deleteRefresh();
   }
 }

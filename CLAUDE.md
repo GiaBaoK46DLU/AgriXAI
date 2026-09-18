@@ -385,10 +385,47 @@ cho riêng web admin, không thay thế `backend/`:
 - `BACKEND_URL` trong `web-admin/.env.local` **cố ý không có tiền tố
   `NEXT_PUBLIC_`** — biến này chỉ cần ở phía server. Ảnh chẩn đoán vẫn hiển thị
   được vì `/storage/...` là static file công khai, không cần token.
-- CSDL: **chưa đụng Supabase.** Ý định "đẩy DB lên Supabase" nêu trong yêu cầu
-  ban đầu chưa triển khai — `backend/` vẫn nói chuyện với PostgreSQL qua
-  `docker-compose.yml` như hiện tại. Nếu sau này đổi, đó là việc của
-  `backend/`; `web-admin/` chỉ gọi qua API nên không phải đổi gì.
+- CSDL: **đã đẩy một bản lên Supabase (17/09/2026)** để chuẩn bị sẵn cho lúc
+  deploy — xem mục "Supabase: đẩy DB chuẩn bị deploy" ngay dưới đây. Luồng chạy
+  **hiện tại vẫn dùng PostgreSQL local qua `docker-compose.yml`**, chưa đổi gì
+  ở `backend/`. `web-admin/` chỉ gọi qua API nên không phải đổi gì khi nào thật
+  sự cutover.
+
+### Supabase: đẩy DB chuẩn bị deploy, chưa đổi luồng chạy (chốt 17/09/2026)
+
+Project Supabase đã tồn tại sẵn (`project_ref=zdksrzpldizpcmxzqyph`, cấu hình
+trong `.mcp.json` — file này **không nằm trong Git**, chứa tham chiếu riêng của
+máy). Ngày 17/09/2026 đẩy **toàn bộ schema (11 bảng, qua `pg_dump
+--schema-only`) và toàn bộ dữ liệu hiện có** (seed + dữ liệu thử nghiệm: 3
+user, 4 lô đất, 18 chẩn đoán, 15 bài diễn đàn...) từ container `plantdx-db`
+lên project đó, đã đối chiếu số dòng từng bảng khớp 100% giữa hai bên.
+
+**Đây chỉ là chuẩn bị trước, KHÔNG phải cutover:**
+
+- `backend/.env` / `docker-compose.yml` **chưa đổi** — `DATABASE_URL` vẫn trỏ
+  `db:5432` (container local). Muốn chạy thật trên Supabase thì phải tự đổi
+  `DATABASE_URL` sang connection string của Supabase, việc đó chưa làm.
+- Bản trên Supabase là **ảnh chụp một lần** (point-in-time), **không tự đồng
+  bộ**. Local DB đổi tiếp (thêm chẩn đoán, bài diễn đàn mới...) sẽ không tự
+  cập nhật lên Supabase — cần đẩy lại thủ công (lặp lại `pg_dump` rồi
+  `execute_sql`/`apply_migration` qua Supabase MCP) khi nào cần bản mới hơn.
+- **File ảnh KHÔNG được đẩy theo.** `diagnoses.image_path`/`overlay_path` chỉ
+  là đường dẫn text (`uploads/...`, `overlays/...`); ảnh thật nằm trong
+  `backend/storage/` trên máy local, không nằm trong Postgres nên `pg_dump`
+  không thấy. Khi nào cutover thật, ảnh phải đồng bộ riêng (Supabase Storage
+  hoặc cách khác) — không tự suy ra được từ việc DB đã lên Supabase.
+
+⚠️ **RLS (Row Level Security) chưa bật trên bất kỳ bảng nào trong 11 bảng** —
+`get_advisors` báo lỗi `rls_disabled_in_public` cho cả 11. Chấp nhận được ở
+trạng thái hiện tại vì chưa có gì đọc project Supabase này qua PostgREST/anon
+key, nó chỉ đứng đó chờ. **Nhưng đây là việc bắt buộc phải làm trước khi thật
+sự chuyển `backend/` sang trỏ vào Supabase** — bảng `users` chứa
+`hashed_password`, không bật RLS nghĩa là bất kỳ ai có anon key đều đọc được
+qua PostgREST. Vì `backend/` (FastAPI + SQLAlchemy) luôn nói chuyện thẳng với
+Postgres bằng vai trò có toàn quyền (giống cách nó nói chuyện với container
+local hiện nay), hướng đúng lúc cutover là dùng connection string trực tiếp
+(giữ nguyên cách SQLAlchemy đang làm) hoặc `service_role` key — **không** phải
+`anon` key — và bật RLS chặn truy cập qua PostgREST công khai.
 
 ### Phong cách thiết kế: theo đúng bảng màu/font mobile, đổi layout cho web
 
@@ -582,6 +619,123 @@ mới nhất không tải nổi trên mạng lúc làm).
 
 ---
 
+## Dọn 9 issue mobile cũ còn sót (chốt 18/09/2026)
+
+9 issue `#22, #24, #25, #26, #27, #28, #29, #81, #85` đã đóng từ trước (phần
+lớn tiêu chí đạt) nhưng mỗi issue còn sót vài mục nhỏ — dọn gộp một lượt thay
+vì để treo. Chi tiết đáng nhớ, không suy ra được từ diff:
+
+- **Refresh token (từ #22 MB-03) — quyết định làm backend thật, không chỉ vá
+  phía mobile.** Trước đó hệ thống chỉ có một access token JWT sống 7 ngày
+  (`ACCESS_TOKEN_EXPIRE_MINUTES = 60*24*7`), không hề có khái niệm refresh
+  token nào. Hỏi trực tiếp Học và chọn hướng làm đúng nghĩa: access token hạ
+  xuống **30 phút**, thêm bảng `refresh_tokens` (băm SHA-256, không lưu token
+  thô), `POST /auth/refresh` (xoay vòng — token cũ bị thu hồi ngay sau khi
+  dùng, chỉ dùng được một lần) và `POST /auth/logout` (thu hồi phía server).
+  `LoginResponse`/`RegisterRequest` nay trả thêm `refresh_token`.
+  - Mobile (`ApiClient`) tự bắt 401 rồi làm mới token ở nền, **chỉ khi response
+    có header `WWW-Authenticate`** — header này CHỈ `get_current_user`
+    (`backend/app/api/deps.py`) gắn. Đây là cách phân biệt "401 vì hết phiên"
+    với "401 nghiệp vụ" (ví dụ sai mật khẩu hiện tại ở
+    `POST /auth/change-password`) mà không cần đổi mã lỗi phía backend — nếu
+    không phân biệt, đổi mật khẩu sai sẽ bị hiểu nhầm thành hết phiên và tự
+    gọi refresh.
+  - Refresh/session hết hạn thật sự (refresh token cũng không còn dùng được)
+    thì `ApiClient.onSessionExpired` được gọi — `main.dart` gán callback này
+    để dọn `session.currentUser` và điều hướng thẳng về `LoginScreen` qua một
+    `GlobalKey<NavigatorState>` toàn cục (`appNavigatorKey`), vì lúc đó không
+    có `BuildContext` nào để dùng `Navigator.of(context)`.
+  - `backend/.env`/`backend/.env.example` đã sửa `ACCESS_TOKEN_EXPIRE_MINUTES`
+    xuống `30` và thêm `REFRESH_TOKEN_EXPIRE_DAYS=30` — **máy khác đã có
+    `.env` từ trước phải tự sửa tay**, giá trị cũ (`10080`) không tự mất vì
+    `.env` không nằm trong Git (giống bài học ở mục "Tự đăng ký tài khoản").
+    Bảng `refresh_tokens` đã tạo trên DB dev của Học bằng
+    `docker exec plantdx-backend python -m app.db.init_db` (an toàn, chỉ tạo
+    bảng thiếu, không đụng bảng có sẵn) — máy khác `pull` code mới rồi dựng
+    container mới hoàn toàn thì `create_all` tự lo, chỉ DB **đã tồn tại** từ
+    trước mới cần tự chạy lệnh này một lần, cùng kiểu với cột `email` trước đó.
+- **Nén ảnh (#25):** vòng lặp giảm `quality`/kích thước tối đa 5 lần, mỗi lần
+  nén lại từ **file gốc** (không nén chồng lên ảnh đã nén — tránh mất chất
+  lượng oan do nén JPEG nhiều lớp).
+- **Quyền camera bị từ chối (#24):** thêm gói `permission_handler` chỉ để gọi
+  `openAppSettings()` — không dùng để tự xin quyền (`image_picker` đã tự lo
+  phần đó), chỉ dùng khi đã bị từ chối và cần mở thẳng màn Cài đặt hệ thống.
+- **Danh mục bệnh (#81):** xác nhận **không có** đường nào vào được
+  `CatalogScreen` khi chưa đăng nhập — `main.dart` đã bắt đăng nhập cho toàn
+  bộ app từ trước, comment cũ trong `catalog_screen.dart` ghi ngược lại
+  ("tra cứu được khi chưa đăng nhập") là hồi quy, đã xoá.
+- **Không làm:** phần "chưa rõ các màn khác có phân biệt được lỗi mất mạng
+  hay không" (#29) được giải quyết ở tầng `ApiClient` (mọi `SocketException`/
+  `TimeoutException` gộp thành `NetworkException` dùng chung), nhưng KHÔNG đi
+  sửa lại từng dòng thông báo lỗi hiện có ở các màn khác ngoài
+  login/register — thông báo cũ ("kiểm tra kết nối mạng rồi thử lại") vẫn
+  đúng ngữ cảnh vì `ApiException` (backend trả lỗi) đã luôn tách riêng từ
+  trước, không lẫn với lỗi mạng.
+
+### Video YouTube ở màn Gợi ý xử lý — bỏ WebView rồi phục hồi bằng gói khác (18/09/2026)
+
+Hai quyết định trái ngược nhau trong cùng một ngày, đọc theo đúng thứ tự xảy ra:
+
+**Vòng 1 — bỏ hẳn WebView.** Kiểm thử thật trên máy ảo Android phát hiện
+`youtube_player_flutter` (dùng từ trước) không ổn định: phải nhấn hai lần mới
+dừng được video (WebView có lớp bắt cử chỉ riêng chồng lên nút play/pause của
+app), có lúc vòng xoay tải mãi không phát được gì, và **một lần crash gốc thật
+sự** bắt được qua `adb logcat` — `Fatal signal 5 (SIGTRAP)` trong
+`libwebviewchromium.so`, thread `NetworkService`. Phản ứng đầu tiên: bỏ hẳn
+WebView, chỉ hiện thumbnail tĩnh + luôn mở video bằng trình duyệt ngoài.
+
+**Vòng 2 — phục hồi phát tại chỗ, theo yêu cầu trực tiếp của Học** ("tôi muốn
+video được phát trong ô của app luôn chứ không phải nhảy qua youtube"). Không
+quay lại `youtube_player_flutter` — đổi sang **`youtube_player_iframe`**, khác
+biệt quan trọng: gói này dùng `webview_flutter` (chính chủ Flutter team) và để
+nguyên khung điều khiển play/pause/seek của chính YouTube chạy bên trong
+WebView, không vẽ thêm một lớp nút bấm Flutter đè lên trên. `youtube_player_flutter`
+(gói cũ) vẽ nút play/pause riêng bằng Flutter đè lên WebView, tạo ra hai lớp
+bắt cử chỉ tranh nhau — đó chính là gốc rễ lỗi "nhấn hai lần mới dừng được".
+Đổi gói nên sửa được đúng hai trong ba lỗi ban đầu (double-tap, vòng xoay tải
+mãi — cả hai đều là lỗi cách `youtube_player_flutter` tự vẽ chồng UI, không
+phải lỗi WebView hệ điều hành).
+
+⚠️ **Rủi ro KHÔNG sửa được bằng cách đổi gói:** bản chất crash `SIGTRAP` là lỗi
+ở System WebView của máy/máy ảo (backtrace nằm hoàn toàn trong
+`libwebviewchromium.so`, không chạm gì tới code Dart của app hay của bất kỳ
+gói Flutter nào) — mọi gói nhúng video qua WebView, kể cả `youtube_player_iframe`,
+đều render qua đúng một System WebView đó nên đều mang chung rủi ro này ở mức
+độ nào đó. Không có cách nào từ phía code Flutter đảm bảo tuyệt đối World
+WebView của một máy cụ thể không crash. Giảm thiểu đã áp dụng:
+
+- Chỉ dựng `YoutubePlayerController`/nạp WebView khi người dùng thật sự bấm
+  play (trước đó chỉ hiện ảnh thumbnail tĩnh `Image.network`) — giảm số lần
+  WebView phải khởi tạo.
+- Luôn kèm nút phụ "Mở trên YouTube" cạnh khung phát, kể cả khi đang phát tại
+  chỗ — lối thoát thủ công nếu WebView của máy nào đó vẫn không ổn định.
+- Đã kiểm thử phát/dừng/tua trực tiếp trên máy ảo sau khi đổi gói, theo dõi
+  song song `adb logcat` — không tái hiện crash, nhưng đây **không phải bằng
+  chứng loại trừ vĩnh viễn** vì bản chất là lỗi tuỳ máy/tuỳ phiên bản WebView.
+
+Nếu vấn đề tái diễn trên máy demo thật, phương án dự phòng đã biết hoạt động
+(vòng 1) là bỏ WebView, quay về thumbnail + mở ngoài — giữ nguyên logic tách
+ID video (`_youtubeVideoId`) nên chuyển đổi qua lại giữa hai cách không tốn
+nhiều công.
+
+### Thứ tự các phần ở màn Gợi ý xử lý (chốt 18/09/2026, theo yêu cầu của Học)
+
+Đổi từ: tên bệnh+tag → Triệu chứng → Điều kiện thuận lợi → cảnh báo (nếu có)
+→ Video → Cần làm ngay → ...
+
+Sang: tên bệnh+tag → **cảnh báo "bệnh lan nhanh"** (chỉ hiện khi mức độ Nặng)
+→ Video hướng dẫn xử lý → Triệu chứng → Điều kiện thuận lợi cho bệnh → Cần
+làm ngay → Thuốc gợi ý → Phòng ngừa lâu dài → tham khảo/khuyến cáo → nút hành
+động.
+
+Thẻ cảnh báo cũng đổi hẳn kiểu dáng: từ nền vàng cam nhạt 16% opacity (dễ
+chìm lẫn vào các thẻ thông tin trung tính xung quanh) sang nền vàng cam ĐẶC
+(`AgriColors.accent`) kèm viền đậm, bóng đổ, và dòng tiêu đề in hoa "CẢNH BÁO:
+BỆNH CÓ THỂ LAN NHANH" — yêu cầu trực tiếp là cảnh báo này "cần được thể hiện
+rõ hơn, màu sắc nhấn mạnh nội dung".
+
+---
+
 ## Trạng thái hiện tại (20/08/2026 — model/backend/mobile cập nhật 07/09/2026)
 
 | Phần | Tình trạng |
@@ -590,8 +744,8 @@ mới nhất không tải nổi trên mạng lúc làm).
 | `shared/data/tomato_diseases.json` | Đã commit |
 | `model/` code | **Đã huấn luyện xong** — `leaf_disease_detection_model.pt` (07/09/2026), xem `docx/bao-cao-huan-luyen-mo-hinh.md` cho số liệu đầy đủ. Từ 07/09/2026, **`model/checkpoints/` và `model/outputs/` đã theo Git** (quyết định của Bảo, đảo ngược quyết định ban đầu) — máy khác `pull` về là chạy được model thật ngay, không phải huấn luyện lại. Chỉ **dữ liệu PlantVillage `model/data/raw/` (18.160 ảnh / 10 lớp, ~275 MB) vẫn nằm ngoài Git** vì tải lại được từ Kaggle (nguồn ghi ở issue #11), không cần bắt repo gánh dung lượng đó. **Đã đo xong hai việc đánh giá lớn (15/09/2026):** #49 domain gap (**30,81 %** trên ảnh thật) và #17 kiểm Grad-CAM (**đủ tin trên PlantVillage, chưa đủ trên ảnh thật**) — xem hai báo cáo trong `docx/`. ⚠️ **Ảnh PlantDoc `model/data/field/plantdoc/` (746 ảnh / 231 MB) cũng ngoài Git**, tải lại từ `pratikkayal/PlantDoc-Dataset` |
 | `model/research/` | Đã commit — danh mục 46 bài báo chia 8 nhóm + bản tổng hợp đối chiếu kết quả với các công bố. Xem mục "Phần việc của Bảo" bên dưới |
-| `backend/` code | **Chạy mô hình thật** (không còn `DummyPredictor` mặc định) — 19/19 test pass, xem mục "Tích hợp mô hình thật" phía trên |
-| `mobile/` (Flutter) | Giao diện đã dựng xong từ trước; **luồng chính đã nối API thật** ngày 07/09/2026: đăng nhập/đăng ký → danh mục → chụp/chọn ảnh → chẩn đoán thật kèm khoanh vùng → gợi ý xử lý (thuốc + video). Có màn **Đăng ký** tự phục vụ (xem mục "Tự đăng ký tài khoản") và **chẩn đoán ngoại tuyến** khi mất mạng (xem mục "Nhận diện ngoại tuyến trên điện thoại"). Màn Lịch sử vẫn còn dữ liệu mẫu — chưa nối, để sau |
+| `backend/` code | **Chạy mô hình thật** (không còn `DummyPredictor` mặc định) — 52/52 test pass (tính tới 18/09/2026, thêm bộ `test_auth.py` cho refresh token), xem mục "Tích hợp mô hình thật" phía trên |
+| `mobile/` (Flutter) | Giao diện đã dựng xong từ trước; **luồng chính đã nối API thật** ngày 07/09/2026: đăng nhập/đăng ký → danh mục → chụp/chọn ảnh → chẩn đoán thật kèm khoanh vùng → gợi ý xử lý (thuốc + video). Có màn **Đăng ký** tự phục vụ (xem mục "Tự đăng ký tài khoản") và **chẩn đoán ngoại tuyến** khi mất mạng (xem mục "Nhận diện ngoại tuyến trên điện thoại"). Màn **Lịch sử đã nối `GET /diagnoses` thật** từ trước — dòng cũ ghi "còn dữ liệu mẫu, chưa nối" ở đây đã lỗi thời, xoá (xem mục "Dọn 9 issue mobile cũ" bên dưới) |
 | `web-admin/` (Next.js) | **Dựng xong 8 module** ngày 16/09/2026, kéo sớm hơn nhiều so với đề cương (dự kiến 01/10/2026) — theo yêu cầu trực tiếp của Học. Đổi từ kế hoạch Vite/4-trang sang Next.js App Router + TypeScript + Tailwind, xem "Web admin: kiến trúc và tiến độ" phía trên. Đã kiểm thử với backend thật + dữ liệu mẫu, **chưa** kiểm thử bằng cách bấm nút thật qua trình duyệt |
 
 Backend đã chạy được thật: đăng nhập, tạo lô đất, tải ảnh lên, chẩn đoán bằng

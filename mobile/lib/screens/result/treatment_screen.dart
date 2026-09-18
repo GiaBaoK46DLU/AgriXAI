@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_glass.dart';
@@ -99,6 +99,24 @@ class TreatmentScreen extends StatelessWidget {
             const SizedBox(height: 12),
             _VideoBox(videoUrl: disease.videoUrl),
             const SizedBox(height: 26),
+            if (disease.symptoms.isNotEmpty) ...<Widget>[
+              Text('Triệu chứng', style: AgriTextStyles.sectionTitle),
+              const SizedBox(height: 8),
+              Text(
+                disease.symptoms,
+                style: agriStyle(size: 14, height: 1.55, color: AgriColors.inkA(.82)),
+              ),
+              const SizedBox(height: 18),
+            ],
+            if (disease.conditions.isNotEmpty && disease.conditions != 'Không áp dụng.') ...<Widget>[
+              Text('Điều kiện thuận lợi cho bệnh', style: AgriTextStyles.sectionTitle),
+              const SizedBox(height: 8),
+              Text(
+                disease.conditions,
+                style: agriStyle(size: 14, height: 1.55, color: AgriColors.inkA(.82)),
+              ),
+              const SizedBox(height: 18),
+            ],
             Text('Cần làm ngay', style: AgriTextStyles.sectionTitle),
             const SizedBox(height: 12),
             for (int i = 0; i < disease.treatments.length; i++) ...<Widget>[
@@ -176,6 +194,39 @@ class TreatmentScreen extends StatelessWidget {
               if (i != disease.prevention.length - 1)
                 const SizedBox(height: 11),
             ],
+            if (disease.referenceUrl != null) ...<Widget>[
+              const SizedBox(height: 18),
+              GestureDetector(
+                onTap: () => _openUrl(context, disease.referenceUrl!),
+                child: Row(
+                  children: <Widget>[
+                    AgriIcons.info(15),
+                    const SizedBox(width: 7),
+                    Expanded(
+                      child: Text(
+                        'Xem nguồn tham khảo',
+                        style: agriStyle(
+                          size: 13,
+                          weight: FontWeight.w600,
+                          color: AgriColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            if (diagnosisCase.disclaimer.isNotEmpty) ...<Widget>[
+              const SizedBox(height: 14),
+              Text(
+                diagnosisCase.disclaimer,
+                style: agriStyle(
+                  size: 12,
+                  height: 1.55,
+                  color: AgriColors.inkA(.62),
+                ),
+              ),
+            ],
             const SizedBox(height: 24),
             GlassPillButton(
               label: 'Phản hồi về gợi ý xử lý này',
@@ -202,33 +253,53 @@ class TreatmentScreen extends StatelessWidget {
     );
   }
 
+  /// Cảnh báo "bệnh lan nhanh" cho các ca mức độ Nặng — cố ý dùng nền vàng
+  /// cam ĐẶC (không phải bản tint nhạt như các thẻ khác trong màn này) kèm
+  /// viền và bóng đổ đậm, để nổi bật rõ ràng thay vì chìm lẫn vào các thẻ
+  /// thông tin trung tính xung quanh.
   Widget _urgentCard(String text) {
     return GlassCard(
-      radius: 26,
-      blurSigma: 26,
-      color: AgriColors.accentA(.16),
-      border: Border.all(color: AgriColors.accentA(.34)),
+      radius: 24,
+      color: AgriColors.accent,
+      border: Border.all(color: AgriColors.accentInkDeep, width: 1.5),
       padding: const EdgeInsets.all(16),
+      shadows: AgriShadows.amberButton(),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(top: 1),
             child: AgriIcons.warning(
-              21,
-              triangle: AgriColors.accent,
-              mark: AgriColors.inkOnAccent,
+              24,
+              triangle: const Color(0xFFFFFFFF),
+              mark: AgriColors.accent,
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              text,
-              style: agriStyle(
-                size: 14,
-                height: 1.5,
-                color: AgriColors.inkSoftA(.86),
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'CẢNH BÁO: BỆNH CÓ THỂ LAN NHANH',
+                  style: agriStyle(
+                    size: 11.5,
+                    weight: FontWeight.w800,
+                    em: 0.02,
+                    color: AgriColors.accentInkDarkest,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  text,
+                  style: agriStyle(
+                    size: 14.5,
+                    weight: FontWeight.w700,
+                    height: 1.5,
+                    color: AgriColors.accentInkDarkest,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -260,13 +331,52 @@ class TreatmentScreen extends StatelessWidget {
   }
 }
 
+/// Tách ID video từ URL YouTube — chỉ cần đủ để dựng link ảnh thumbnail và
+/// nhận diện "đây có phải link YouTube hợp lệ không", không cần đầy đủ mọi
+/// dạng URL YouTube từng tồn tại.
+String? _youtubeVideoId(String url) {
+  final Uri? uri = Uri.tryParse(url);
+  if (uri == null) return null;
+  final String host = uri.host.toLowerCase();
+
+  if (host.contains('youtu.be')) {
+    return uri.pathSegments.isNotEmpty ? uri.pathSegments.first : null;
+  }
+  if (host.contains('youtube.com')) {
+    final String? v = uri.queryParameters['v'];
+    if (v != null && v.isNotEmpty) return v;
+    final List<String> segments = uri.pathSegments;
+    for (final String marker in <String>['embed', 'shorts']) {
+      final int i = segments.indexOf(marker);
+      if (i != -1 && i + 1 < segments.length) return segments[i + 1];
+    }
+  }
+  return null;
+}
+
 /// Khung video 16:9. `videoUrl` là `null` cho tới khi web admin gán video cho
-/// bệnh đó. Khi tách được ID YouTube từ URL thì nhúng thẳng trình phát ngay
-/// trong app (WebView IFrame Player API của `youtube_player_flutter`) — mở
-/// và phát tại chỗ, không nhảy qua app YouTube ngoài. Trình phát tự hiện
-/// đúng ảnh thumbnail của video trước khi nhấn play nên không cần tự tải
-/// ảnh riêng. Chỉ khi URL không phải link YouTube hợp lệ mới rơi về ô nhấn
-/// mở ngoài như cũ — vẫn không để nền trống.
+/// bệnh đó.
+///
+/// ⚠️ Ngày 18/09/2026 từng bỏ hẳn nhúng WebView sau khi kiểm thử thật (dùng
+/// `youtube_player_flutter`) bắt được crash gốc thật sự (`SIGTRAP` trong
+/// `libwebviewchromium.so`, thread `NetworkService`, qua `adb logcat`) kèm
+/// lỗi phải nhấn hai lần mới dừng video và có lúc tải mãi không phát được.
+/// Cùng ngày, theo yêu cầu trực tiếp của Học, phục hồi phát tại chỗ nhưng đổi
+/// gói: `youtube_player_iframe` thay vì `youtube_player_flutter`. Khác biệt
+/// quan trọng — `youtube_player_iframe` dùng `webview_flutter` (gói chính chủ
+/// Flutter team) và để nguyên khung điều khiển play/pause/seek của chính
+/// YouTube chạy trong WebView, không vẽ thêm một lớp nút bấm Flutter đè lên
+/// trên; `youtube_player_flutter` (gói cũ) vẽ nút play/pause bằng Flutter đè
+/// lên WebView nên có hai lớp bắt cử chỉ tranh nhau, đó là gốc rễ lỗi "nhấn
+/// hai lần". Xem CLAUDE.md mục video để biết đầy đủ rủi ro còn lại — bản
+/// chất `SIGTRAP` là lỗi ở System WebView của máy/máy ảo, đổi gói Flutter
+/// không đảm bảo hết được rủi ro tận gốc, chỉ giảm bớt so với gói cũ.
+///
+/// Chỉ dựng `YoutubePlayerController`/nạp WebView khi người dùng bấm play —
+/// trước đó chỉ hiện ảnh thumbnail tĩnh (`Image.network` thường), để không
+/// tốn tài nguyên WebView cho những lượt xem màn này mà không xem video.
+/// Luôn kèm một nút phụ "Mở trên YouTube" cạnh khung phát — lối thoát thủ
+/// công nếu WebView của máy nào đó vẫn không ổn định.
 class _VideoBox extends StatefulWidget {
   const _VideoBox({required this.videoUrl});
 
@@ -279,92 +389,127 @@ class _VideoBox extends StatefulWidget {
 class _VideoBoxState extends State<_VideoBox> {
   YoutubePlayerController? _controller;
 
-  @override
-  void initState() {
-    super.initState();
-    _initController();
-  }
+  String? get _videoId =>
+      widget.videoUrl == null ? null : _youtubeVideoId(widget.videoUrl!);
 
   @override
   void didUpdateWidget(covariant _VideoBox oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.videoUrl != widget.videoUrl) {
-      _controller?.dispose();
+      _controller?.close();
       _controller = null;
-      _initController();
     }
-  }
-
-  void _initController() {
-    final String? url = widget.videoUrl;
-    if (url == null) return;
-    final String? videoId = YoutubePlayer.convertUrlToId(url);
-    if (videoId == null) return;
-    _controller = YoutubePlayerController(
-      initialVideoId: videoId,
-      flags: const YoutubePlayerFlags(autoPlay: false, mute: false),
-    );
   }
 
   @override
   void dispose() {
-    _controller?.dispose();
+    _controller?.close();
     super.dispose();
+  }
+
+  void _startPlayback() {
+    final String? videoId = _videoId;
+    if (videoId == null) return;
+    setState(() {
+      _controller = YoutubePlayerController.fromVideoId(
+        videoId: videoId,
+        autoPlay: true,
+        params: const YoutubePlayerParams(showFullscreenButton: true),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final YoutubePlayerController? controller = _controller;
+    final String? url = widget.videoUrl;
+    final bool hasVideo = url != null;
+
     if (controller != null) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: YoutubePlayer(
-          controller: controller,
-          showVideoProgressIndicator: true,
-          progressIndicatorColor: AgriColors.primary,
-        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: YoutubePlayer(controller: controller),
+          ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () => _openUrl(context, url!),
+              child: Text(
+                'Mở trên YouTube',
+                style: agriStyle(
+                  size: 12.5,
+                  weight: FontWeight.w600,
+                  color: AgriColors.primary,
+                ),
+              ),
+            ),
+          ),
+        ],
       );
     }
 
-    final bool hasVideo = widget.videoUrl != null;
+    final String? videoId = _videoId;
     return AspectRatio(
       aspectRatio: 16 / 9,
       child: GlassCard(
         style: GlassStyle.soft,
         radius: 24,
-        onTap: hasVideo ? () => _openUrl(context, widget.videoUrl!) : null,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  gradient: agriPrimaryGradient,
-                  shape: BoxShape.circle,
-                  boxShadow: AgriShadows.playButton(),
-                ),
-                alignment: Alignment.center,
-                child: AgriIcons.play(22, const Color(0xFFFFFFFF)),
+        onTap: videoId != null
+            ? _startPlayback
+            : (hasVideo ? () => _openUrl(context, url) : null),
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            if (videoId != null)
+              Image.network(
+                'https://img.youtube.com/vi/$videoId/hqdefault.jpg',
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
               ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  hasVideo
-                      ? 'Nhấn để xem video hướng dẫn trên YouTube'
-                      : 'Video hướng dẫn sẽ được cập nhật sớm',
-                  textAlign: TextAlign.center,
-                  style: agriStyle(
-                    size: 13.5,
-                    weight: FontWeight.w600,
-                    color: AgriColors.inkA(.68),
+            if (videoId != null)
+              DecoratedBox(decoration: BoxDecoration(color: AgriColors.shadowA(.32))),
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      gradient: agriPrimaryGradient,
+                      shape: BoxShape.circle,
+                      boxShadow: AgriShadows.playButton(),
+                    ),
+                    alignment: Alignment.center,
+                    child: AgriIcons.play(22, const Color(0xFFFFFFFF)),
                   ),
-                ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      videoId != null
+                          ? 'Nhấn để phát video'
+                          : (hasVideo
+                              ? 'Nhấn để xem video hướng dẫn trên YouTube'
+                              : 'Video hướng dẫn sẽ được cập nhật sớm'),
+                      textAlign: TextAlign.center,
+                      style: agriStyle(
+                        size: 13.5,
+                        weight: FontWeight.w600,
+                        color: videoId != null
+                            ? const Color(0xFFFFFFFF)
+                            : AgriColors.inkA(.68),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
