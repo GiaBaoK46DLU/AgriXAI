@@ -75,9 +75,31 @@ Next.js, không phải trình duyệt — khác với bản Vite cũ.
 
 ## Deploy lên Vercel
 
-Đặt biến môi trường `BACKEND_URL` trỏ tới địa chỉ backend đã triển khai (ví
-dụ một máy chủ FastAPI public, hoặc tunnel khi demo). Không cần biến nào có
-tiền tố `NEXT_PUBLIC_` — kiến trúc BFF cố tình giữ mọi thứ ở phía server.
+⚠️ **Nguyên nhân phổ biến nhất khiến trang 404 trên mọi đường dẫn: repo này là
+monorepo (`backend/`, `mobile/`, `web-admin/`, `shared/`...) — KHÔNG có
+`package.json` ở thư mục gốc.** Nếu tạo project trên Vercel mà không chỉnh
+**Root Directory**, Vercel tìm ứng dụng Next.js ngay tại gốc repo, không thấy
+gì, và mọi đường dẫn (kể cả `/`) trả về 404 của chính Vercel — không phải lỗi
+code, không phải lỗi `next.config.mjs`.
+
+Sửa theo một trong hai cách (làm cả hai không xung đột — `vercel.json` chỉ
+được đọc khi nó nằm TRONG Root Directory đã chọn):
+
+1. **Cách khuyến nghị — chỉnh trong dashboard Vercel:** Project → Settings →
+   General → **Root Directory** → đặt thành `web-admin`. Đây là cách Vercel
+   khuyến nghị chính thức cho monorepo, ít rủi ro nhất với middleware/route
+   động. Sau khi đổi, bấm **Redeploy** (đổi Root Directory không tự kích hoạt
+   deploy mới).
+2. **Dự phòng — `vercel.json` ở gốc repo** (đã thêm vào repo): tự `cd
+   web-admin` rồi build, dùng được ngay cả khi Root Directory trong dashboard
+   vẫn để trống/gốc repo. Không cần làm gì thêm nếu dùng cách này, nhưng vẫn
+   nên đặt Root Directory theo cách 1 nếu tiện — đáng tin cậy hơn cho các
+   tính năng Next.js nâng cao (middleware, edge functions).
+
+Sau khi sửa Root Directory (hoặc thêm `vercel.json`), đặt biến môi trường
+`BACKEND_URL` trỏ tới địa chỉ backend đã triển khai (ví dụ một máy chủ FastAPI
+public, hoặc tunnel khi demo). Không cần biến nào có tiền tố `NEXT_PUBLIC_` —
+kiến trúc BFF cố tình giữ mọi thứ ở phía server.
 
 ## Lưu ý
 
