@@ -20,11 +20,19 @@ IMAGENET_STD = [0.229, 0.224, 0.225]
 
 
 class TomatoLeafDataset(Dataset):
-    """Đọc ảnh theo manifest do ``src.data.prepare`` sinh ra."""
+    """Đọc ảnh theo manifest do ``src.data.prepare`` sinh ra.
 
-    def __init__(self, manifest: str | Path, split: str, transform=None) -> None:
+    ``keys`` để trống thì lấy 10 lớp bệnh từ ``shared/data/tomato_diseases.json``
+    như mọi khi. Truyền danh sách khác chỉ dùng cho bộ chặn 2 lớp của #92
+    (``["tomato_leaf", "not_tomato_leaf"]``) — cố ý mở ở đây thay vì sửa
+    ``labels.py``, vì file đó gắn với danh mục bệnh dùng chung và thứ tự lớp
+    trong đó là thứ tự output của mô hình bệnh, đụng vào là sai nhãn toàn bộ.
+    """
+
+    def __init__(self, manifest: str | Path, split: str, transform=None,
+                 keys: list[str] | None = None) -> None:
         self.transform = transform
-        self.keys = class_keys()
+        self.keys = keys or class_keys()
         self.key_to_idx = {k: i for i, k in enumerate(self.keys)}
 
         self.samples: list[tuple[Path, int]] = []
@@ -102,12 +110,13 @@ def build_infer_transform(image_size: int) -> transforms.Compose:
     ])
 
 
-def build_dataloaders(cfg: dict[str, Any], manifest: str | Path) -> dict[str, DataLoader]:
+def build_dataloaders(cfg: dict[str, Any], manifest: str | Path,
+                      keys: list[str] | None = None) -> dict[str, DataLoader]:
     d = cfg["data"]
-    train_ds = TomatoLeafDataset(manifest, "train", build_train_transform(cfg))
+    train_ds = TomatoLeafDataset(manifest, "train", build_train_transform(cfg), keys)
     eval_tf = build_infer_transform(d["image_size"])
-    val_ds = TomatoLeafDataset(manifest, "val", eval_tf)
-    test_ds = TomatoLeafDataset(manifest, "test", eval_tf)
+    val_ds = TomatoLeafDataset(manifest, "val", eval_tf, keys)
+    test_ds = TomatoLeafDataset(manifest, "test", eval_tf, keys)
 
     common = {"batch_size": d["batch_size"], "num_workers": d["num_workers"],
               "pin_memory": torch.cuda.is_available()}

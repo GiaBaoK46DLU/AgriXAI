@@ -1,0 +1,194 @@
+{
+  "checkpoint": "checkpoints\\organ_gate.pt",
+  "model_version": "gate-efficientnet_b0-20260918-2101",
+  "A_gate_test": {
+    "n": 363,
+    "accuracy": 0.977961432506887,
+    "tomato_leaf": {
+      "n": 311,
+      "recall": 0.9807073954983923,
+      "precision": 0.993485342019544,
+      "bi_chan_oan": 6
+    },
+    "not_tomato_leaf": {
+      "n": 52,
+      "recall": 0.9615384615384616,
+      "precision": 0.8928571428571429,
+      "lot_luoi": 2
+    },
+    "confusion": {
+      "tp": 305,
+      "fn": 6,
+      "tn": 50,
+      "fp": 2
+    }
+  },
+  "B_plantvillage_test": {
+    "n": 2719,
+    "bi_chan_oan": 3,
+    "ty_le_chan_oan": 0.0011033468186833395,
+    "recall_tomato_leaf": 0.9988966531813167,
+    "theo_lop_benh": {
+      "yellow_leaf_curl_virus": 3
+    },
+    "vi_du_bi_chan": [
+      "data/raw/Tomato___Tomato_Yellow_Leaf_Curl_Virus/a5b5d284-5081-4340-9cfa-be58ed74aea3___UF.GRC_YLCV_Lab 02223.JPG",
+      "data/raw/Tomato___Tomato_Yellow_Leaf_Curl_Virus/97c12f01-9f88-4895-b0da-90c882f3f79a___UF.GRC_YLCV_Lab 01588.JPG",
+      "data/raw/Tomato___Tomato_Yellow_Leaf_Curl_Virus/3d3a0d67-3a9e-4b0d-b148-a0f397c4f61f___UF.GRC_YLCV_Lab 02274.JPG"
+    ]
+  },
+  "C_bo_am": {
+    "n": 342,
+    "lot_luoi": 11,
+    "recall_not_tomato_leaf_toan_bo": 0.9678362573099415,
+    "theo_nhom": {
+      "blur_dark_shake": {
+        "n": 54,
+        "lot": 2,
+        "n_test": 8,
+        "lot_test": 0,
+        "ty_le_lot": 0.037037037037037035,
+        "ty_le_lot_test": 0.0
+      },
+      "hand_face_clothing": {
+        "n": 61,
+        "lot": 1,
+        "n_test": 9,
+        "lot_test": 0,
+        "ty_le_lot": 0.01639344262295082,
+        "ty_le_lot_test": 0.0
+      },
+      "indoor_objects": {
+        "n": 60,
+        "lot": 0,
+        "n_test": 9,
+        "lot_test": 0,
+        "ty_le_lot": 0.0,
+        "ty_le_lot_test": 0.0
+      },
+      "other_plant_leaves": {
+        "n": 60,
+        "lot": 8,
+        "n_test": 9,
+        "lot_test": 2,
+        "ty_le_lot": 0.13333333333333333,
+        "ty_le_lot_test": 0.2222222222222222
+      },
+      "screenshot_document": {
+        "n": 52,
+        "lot": 0,
+        "n_test": 8,
+        "lot_test": 0,
+        "ty_le_lot": 0.0,
+        "ty_le_lot_test": 0.0
+      },
+      "soil_ground": {
+        "n": 55,
+        "lot": 0,
+        "n_test": 9,
+        "lot_test": 0,
+        "ty_le_lot": 0.0,
+        "ty_le_lot_test": 0.0
+      }
+    },
+    "vi_du_lot_luoi": [
+      "data\\negative\\hand_face_clothing\\0011_dd4340e2ef.jpg",
+      "data\\negative\\other_plant_leaves\\0010_3866df71e5.jpg",
+      "data\\negative\\other_plant_leaves\\0016_728d4da622.jpg",
+      "data\\negative\\other_plant_leaves\\0032_6e8862ee09.jpg",
+      "data\\negative\\other_plant_leaves\\0034_eaf55d4222.jpg",
+      "data\\negative\\other_plant_leaves\\0037_e2ca8dbeb7.jpg",
+      "data\\negative\\other_plant_leaves\\0043_d35cc1d140.jpg",
+      "data\\negative\\other_plant_leaves\\0049_b71d90bbde.jpg",
+      "data\\negative\\other_plant_leaves\\0060_9da4d847a7.jpg",
+      "data\\negative\\blur_dark_shake\\0009_a296c0c9fa.jpg",
+      "data\\negative\\blur_dark_shake\\0060_1ce03a4531.jpg"
+    ]
+  },
+  "D1_plantdoc_test_sach": {
+    "n": 68,
+    "bi_chan_oan": 6,
+    "ty_le_chan_oan": 0.08823529411764706,
+    "recall_tomato_leaf": 0.9117647058823529,
+    "theo_lop_benh": {
+      "bacterial_spot": {
+        "n": 8,
+        "bi_chan": 1
+      },
+      "early_blight": {
+        "n": 9,
+        "bi_chan": 2
+      },
+      "healthy": {
+        "n": 8,
+        "bi_chan": 2
+      },
+      "late_blight": {
+        "n": 10,
+        "bi_chan": 0
+      },
+      "leaf_mold": {
+        "n": 6,
+        "bi_chan": 0
+      },
+      "mosaic_virus": {
+        "n": 10,
+        "bi_chan": 0
+      },
+      "septoria_leaf_spot": {
+        "n": 11,
+        "bi_chan": 0
+      },
+      "yellow_leaf_curl_virus": {
+        "n": 6,
+        "bi_chan": 1
+      }
+    },
+    "ghi_chu": "Thước đo SẠCH: thư mục test gốc của PlantDoc, chưa từng vào huấn luyện bộ chặn dưới bất kỳ hình thức nào. Đây là con số phải trích khi báo cáo."
+  },
+  "D2_plantdoc_toan_bo_NHIEM": {
+    "n": 742,
+    "bi_chan_oan": 37,
+    "ty_le_chan_oan": 0.04986522911051213,
+    "recall_tomato_leaf": 0.9501347708894878,
+    "theo_lop_benh": {
+      "bacterial_spot": {
+        "n": 109,
+        "bi_chan": 4
+      },
+      "early_blight": {
+        "n": 88,
+        "bi_chan": 3
+      },
+      "healthy": {
+        "n": 63,
+        "bi_chan": 15
+      },
+      "late_blight": {
+        "n": 111,
+        "bi_chan": 2
+      },
+      "leaf_mold": {
+        "n": 91,
+        "bi_chan": 1
+      },
+      "mosaic_virus": {
+        "n": 54,
+        "bi_chan": 3
+      },
+      "septoria_leaf_spot": {
+        "n": 149,
+        "bi_chan": 2
+      },
+      "spider_mites": {
+        "n": 2,
+        "bi_chan": 0
+      },
+      "yellow_leaf_curl_virus": {
+        "n": 75,
+        "bi_chan": 7
+      }
+    },
+    "ghi_chu": "⚠️ NHIỄM — 674/742 ảnh này nằm trong tập huấn luyện của bộ chặn (thư mục train gốc). Giữ lại chỉ để so với hai bản trước khi dùng PlantDoc (0,0795 và 0,3477), TUYỆT ĐỐI không trích như số đo."
+  }
+}
