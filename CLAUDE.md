@@ -1081,9 +1081,15 @@ hành vi cũ y nguyên, không nạp gì thêm. Bật lên thì ảnh bị chặ
 
 Gói bộ chặn *vào trong* `DiseasePredictor` là cố ý: **hợp đồng dùng chung không đổi**,
 không phải thêm trường `organ` vào `Prediction`, backend không cần biết có mô hình thứ
-hai. Đổi lại, `not_tomato_leaf` **không có trong `shared/data/tomato_diseases.json`** nên
-`catalog.get_disease()` sẽ lỗi nếu backend chưa có nhánh xử lý riêng — đây đúng là điểm
-#92 dặn phải thống nhất trước, theo dõi ở **#47**. Chưa bật ở `backend/.env`.
+hai. Chưa bật ở `backend/.env`; theo dõi phần nối vào ở **#47**.
+
+⚠️ **Đính chính (18/09/2026): ticket #92 — và bản đầu của chính mục này — viết rằng
+`catalog.get_disease()` sẽ LỖI với khoá `not_tomato_leaf`. Sai.** Đọc
+`backend/app/services/catalog.py:37` thì nó trả về một **bản ghi rỗng an toàn** với
+`name_vi = key`. Nghĩa là bật bộ chặn mà quên xử lý thì **không có exception nào**,
+nông dân chỉ thấy tên bệnh là dòng chữ `not_tomato_leaf` — sai âm thầm, không hiện
+trong log, tệ hơn là sập hẳn. Phần overlay thì đã an toàn sẵn:
+`diagnosis_service.py:70` có kiểm `heatmap is not None` nên không vẽ elip bừa.
 
 ---
 
