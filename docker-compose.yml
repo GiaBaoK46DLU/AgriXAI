@@ -53,6 +53,9 @@ services:
       - MODEL_CHECKPOINT=/model/checkpoints/leaf_disease_detection_model.pt
       - MODEL_PACKAGE_DIR=/model
       - MODEL_DEVICE=cpu
+      # Bộ chặn lá/không-phải-lá (#92, nối vào backend ở #47) — checkpoint đã
+      # theo Git cùng model/checkpoints/, mount read-only y hệt MODEL_CHECKPOINT.
+      - MODEL_GATE_CHECKPOINT=/model/checkpoints/organ_gate.pt
     depends_on:
       db:
         condition: service_healthy

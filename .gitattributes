@@ -1,0 +1,4 @@
+# Script shell (scripts/backup.sh, restore.sh, ...) chạy bằng Git Bash trên
+# Windows — CRLF làm hỏng dòng shebang (#!/usr/bin/env bash) và ném lỗi kiểu
+# "bad interpreter". Ép LF bất kể core.autocrlf của máy nào clone repo.
+*.sh text eol=lf
