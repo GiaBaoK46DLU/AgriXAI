@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd web-admin && npm install && npm run build",
+  "outputDirectory": "web-admin/.next",
+  "installCommand": "echo 'skip root install — done inside buildCommand'",
+  "framework": "nextjs"
+}
