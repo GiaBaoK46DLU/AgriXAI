@@ -30,13 +30,24 @@ from sqlalchemy.orm import Session
 
 from app.models.diagnosis import Diagnosis, DiagnosisImage
 from app.services import catalog
-from app.services.inference.base import Prediction
+from app.services.catalog import NOT_TOMATO_LEAF_MESSAGE
+from app.services.inference.base import NOT_TOMATO_LEAF_KEY, Prediction
 from app.services.inference.loader import get_predictor
 from app.services.storage import local as storage
 from app.services.xai import explain, overlay
 from app.services.xai.explain import Explanation
 
 logger = logging.getLogger(__name__)
+
+
+class NotTomatoLeafError(Exception):
+    """Toàn bộ ảnh trong lô đều bị bộ chặn #92 từ chối — không có ảnh lá cà
+    chua nào để chẩn đoán. Endpoint bắt lỗi này và trả 422 kèm
+    `NOT_TOMATO_LEAF_MESSAGE`, KHÔNG tạo bản ghi `Diagnosis` nào (quyết định
+    #47: giữ Lịch sử/bộ lọc/thống kê sạch, không có `disease_key` lạ lọt vào)."""
+
+    def __init__(self) -> None:
+        super().__init__(NOT_TOMATO_LEAF_MESSAGE)
 
 
 @dataclass
@@ -108,7 +119,16 @@ def _run_and_aggregate(images: list[bytes]) -> _Aggregate:
 
     results = [_run_single_image(raw) for raw in images]
 
-    avg_probabilities = _average_probabilities(results)
+    # Ảnh bị bộ chặn #92 từ chối trả `probabilities={}` (mô hình bệnh chưa hề
+    # chạy) — loại khỏi phần tổng hợp bệnh để không pha loãng trung bình của
+    # các ảnh lá thật trong cùng lô. Nếu KHÔNG ảnh nào qua được bộ chặn thì
+    # không có gì để chẩn đoán cả — báo lỗi riêng thay vì cho `ranked[0]` sập
+    # vì rỗng.
+    leaf_results = [r for r in results if r.prediction.disease_key != NOT_TOMATO_LEAF_KEY]
+    if not leaf_results:
+        raise NotTomatoLeafError()
+
+    avg_probabilities = _average_probabilities(leaf_results)
     # Xếp hạng từ cao xuống thấp theo % trung bình rồi chọn bệnh đứng đầu —
     # không phải bệnh được nhiều ảnh tự chọn làm top-1 nhất.
     ranked = sorted(avg_probabilities.items(), key=lambda kv: kv[1], reverse=True)
@@ -117,11 +137,15 @@ def _run_and_aggregate(images: list[bytes]) -> _Aggregate:
     # Ảnh đại diện cho phần XAI (giải thích/mức độ/ảnh overlay chính): ảnh có
     # xác suất riêng cho đúng bệnh thắng cuộc cao nhất — luôn tồn tại vì
     # `top_key` chỉ đứng đầu bảng xếp hạng nhờ có mặt trong xác suất của
-    # ít nhất một ảnh.
+    # ít nhất một ảnh lá.
     representative = max(
-        results, key=lambda r: r.prediction.probabilities.get(top_key, 0.0)
+        leaf_results, key=lambda r: r.prediction.probabilities.get(top_key, 0.0)
     )
 
+    # `results` (không phải `leaf_results`) đi vào `_Aggregate` — ảnh bị chặn
+    # trong một lô hỗn hợp vẫn cần một hàng `DiagnosisImage` riêng (đúng
+    # `disease_key="not_tomato_leaf"`) để nông dân thấy đúng ảnh nào bị từ
+    # chối, chỉ là không góp phần vào bệnh/mức độ chung của cả lô.
     return _Aggregate(results, top_key, avg_probabilities, avg_confidence, representative)
 
 

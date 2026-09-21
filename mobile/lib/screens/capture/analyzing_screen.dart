@@ -64,6 +64,17 @@ class AnalyzingScreen extends StatefulWidget {
 }
 
 class _AnalyzingScreenState extends State<AnalyzingScreen> {
+  /// Câu báo lỗi khi bộ chặn lá/không-phải-lá (#92, nối vào backend ở #47)
+  /// từ chối cả lô ảnh. PHẢI khớp nguyên văn với `NOT_TOMATO_LEAF_MESSAGE`
+  /// trong `backend/app/services/catalog.py` — hai bên không import chung
+  /// được (khác ngôn ngữ) nên chép tay, cùng kiểu với cách
+  /// `mobile/assets/model/tomato_diseases.json` chép tay từ `shared/data/`
+  /// (xem CLAUDE.md). Dùng để hiện một màn phản hồi nhẹ nhàng hơn (icon máy
+  /// ảnh) thay vì màn lỗi chung (icon cảnh báo) — đây không phải một lỗi hệ
+  /// thống, mà là hệ thống đang làm đúng việc của nó.
+  static const String _notTomatoLeafMessage =
+      'Ảnh chưa rõ lá cà chua, bạn chụp lại giúp mình nhé';
+
   static const List<String> _labels = <String>[
     'Nén và tải ảnh lên máy chủ',
     'Nhận diện bệnh',
@@ -148,12 +159,16 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
           note: widget.note,
           save: widget.save,
         );
-      } catch (_) {
+      } on NetworkException {
         // Không gọi được backend (mất mạng, sập tường lửa, server tắt...) —
         // tự chuyển sang mô hình chạy ngay trên máy (xem CLAUDE.md mục suy
-        // luận ngoại tuyến). Không phân biệt loại lỗi mạng cụ thể vì với
-        // nông dân, "cứ ra được kết quả" quan trọng hơn thông báo lỗi chi tiết.
-        // Suy luận ngoại tuyến chỉ hỗ trợ một ảnh — dùng ảnh đầu tiên.
+        // luận ngoại tuyến). Chỉ bắt NetworkException, KHÔNG bắt rộng mọi lỗi
+        // nữa (xem #47): ApiException nghĩa là backend ĐÃ trả lời — kể cả bị
+        // bộ chặn #92 từ chối ("không phải lá cà chua") — nên phải rơi xuống
+        // `on ApiException` bên dưới để người dùng thấy đúng thông báo, thay
+        // vì âm thầm chạy lại offline (không có bộ chặn) và có thể vẫn ra một
+        // tên bệnh cho một tấm ảnh rõ ràng không phải lá. Suy luận ngoại
+        // tuyến chỉ hỗ trợ một ảnh — dùng ảnh đầu tiên.
         result = await OfflineInferenceService.instance.diagnose(
           imageFile: widget.images.first,
           imageBytes: images.first.bytes,
@@ -197,7 +212,12 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
     );
   }
 
+  /// `true` khi bộ chặn #92 từ chối ảnh — không phải một lỗi hệ thống nên
+  /// hiện màn phản hồi riêng, nhẹ nhàng hơn (xem `_notTomatoLeafMessage`).
+  bool get _isNotTomatoLeaf => _error == _notTomatoLeafMessage;
+
   List<Widget> _errorContent() {
+    final bool notLeaf = _isNotTomatoLeaf;
     return <Widget>[
       Center(
         child: GlassCard(
@@ -211,13 +231,15 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
           width: 136,
           height: 136,
           child: Center(
-            child: AgriIcons.warning(48, triangle: AgriColors.accent, mark: AgriColors.inkOnAccent),
+            child: notLeaf
+                ? AgriIcons.camera(48, body: AgriColors.olive, lens: AgriColors.primary)
+                : AgriIcons.warning(48, triangle: AgriColors.accent, mark: AgriColors.inkOnAccent),
           ),
         ),
       ),
       const SizedBox(height: 28),
       Text(
-        'Không phân tích được ảnh',
+        notLeaf ? 'Chưa nhận diện được lá cà chua' : 'Không phân tích được ảnh',
         textAlign: TextAlign.center,
         style: agriStyle(size: 22, weight: FontWeight.w700, em: -0.02),
       ),

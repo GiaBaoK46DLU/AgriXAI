@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { Sidebar } from "@/components/Sidebar";
+import { DummyModelBanner } from "@/components/DummyModelBanner";
 import { ApiError, apiFetch } from "@/lib/api";
 import { clearSessionCookie, requireToken } from "@/lib/session";
 import type { UserOut } from "@/lib/types";
@@ -50,6 +51,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </button>
           </form>
         </header>
+        <DummyModelBanner />
         <div className="flex-1 p-7">{children}</div>
       </main>
     </div>

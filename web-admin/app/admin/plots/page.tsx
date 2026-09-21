@@ -24,15 +24,26 @@ function formatDateTime(iso: string): string {
 export default async function PlotsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; detail?: string; new?: string; error?: string }>;
+  searchParams: Promise<{ q?: string; region?: string; detail?: string; new?: string; error?: string }>;
 }) {
   const sp = await searchParams;
   const q = sp.q ?? "";
+  const region = sp.region ?? "";
 
-  const [plots, farmers] = await Promise.all([
-    adminFetch<PlotWithStats[]>("/plots", { searchParams: { q: q || undefined } }),
+  // Lấy toàn bộ lô (không lọc) riêng để dựng danh sách khu vực cho bộ lọc —
+  // `region` là chuỗi tự do trong CSDL (không phải enum), nên không có danh
+  // sách cố định nào để hardcode; phải suy ra từ dữ liệu thật đang có.
+  const [plots, farmers, allPlots] = await Promise.all([
+    adminFetch<PlotWithStats[]>("/plots", {
+      searchParams: { q: q || undefined, region: region || undefined },
+    }),
     adminFetch<UserOut[]>("/users", { searchParams: { role: "farmer", limit: 500 } }),
+    adminFetch<PlotWithStats[]>("/plots", {}),
   ]);
+  const regions = Array.from(
+    new Set(allPlots.map((p) => p.region).filter((r): r is string => Boolean(r))),
+  ).sort((a, b) => a.localeCompare(b, "vi"));
+
   const detailId = firstIntParam(sp.detail);
   const detailPlot = detailId !== undefined ? plots.find((p) => p.id === detailId) : undefined;
 
@@ -54,6 +65,14 @@ export default async function PlotsPage({
             placeholder="Tìm theo tên lô, mã PUC hoặc chủ lô..."
             className={`${ui.input} w-[320px]`}
           />
+          <select name="region" defaultValue={region} className={ui.select}>
+            <option value="">Mọi khu vực</option>
+            {regions.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
           <button type="submit" className={ui.btnGhost}>
             Lọc
           </button>

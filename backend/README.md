@@ -212,6 +212,17 @@ Bộ test bảo vệ hai thứ quan trọng nhất:
 1. Luồng "gửi ảnh → nhận kết quả kèm giải thích XAI" luôn chạy được.
 2. Nông dân không bao giờ thấy được dữ liệu của nông dân khác.
 
+`tests/test_config.py` (#39/BE-03) bịt riêng một điểm mù đã biết: app từng
+**không khởi động nổi khi có file `.env` thật** — pydantic-settings chạy
+`json.loads()` lên field `CORS_ORIGINS` (kiểu `list`) trước khi validator tách
+dấu phẩy được gọi, nên ai làm đúng theo `copy .env.example .env` sẽ gặp crash
+ngay lúc khởi động. Bộ test cũ vẫn pass khi lỗi đó tồn tại, chỉ vì trong repo
+không có `.env` — không test nào từng thật sự nạp một file `.env`. Bộ test mới
+tự dựng file `.env` tạm để nạp `Settings` trực tiếp, nên bắt được lỗi này dù
+repo không có `.env`. Đã xác nhận test đỏ thật khi bỏ `NoDecode` đi (xem
+`CORS_ORIGINS: Annotated[list[str], NoDecode]` trong `app/core/config.py`) —
+đừng "dọn dẹp" xoá `NoDecode` vì trông như thừa.
+
 ---
 
 ## Cấu trúc
