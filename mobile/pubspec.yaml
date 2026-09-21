@@ -38,6 +38,11 @@ dependencies:
   # webview_flutter chính chủ Flutter team (postMessage, không phải hai lớp
   # bắt cử chỉ chồng nhau như youtube_player_flutter cũ).
   youtube_player_iframe: ^5.2.1
+  # Trước đây chỉ là phụ thuộc gián tiếp qua youtube_player_iframe — khai báo
+  # thẳng vì treatment_screen.dart gọi trực tiếp AndroidWebViewCookieManager
+  # để bật cookie bên thứ ba (sửa lỗi video YouTube báo "Error code: 152").
+  webview_flutter_android: ^4.3.4
+  webview_flutter_platform_interface: ^2.10.0
 
 dev_dependencies:
   flutter_test:

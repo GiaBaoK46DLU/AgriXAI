@@ -601,7 +601,7 @@ class _DiagnoseButton extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Chụp ảnh nhanh — không gắn lô đất, không lưu lịch sử',
+                  'Chụp ảnh nhanh — chưa gắn lô đất, gắn sau trong Lịch sử',
                   style: agriStyle(
                     size: 13.5,
                     color: AgriColors.whiteA(.82),

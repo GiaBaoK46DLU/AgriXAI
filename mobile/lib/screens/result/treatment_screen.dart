@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart'
+    show PlatformWebViewCookieManagerCreationParams;
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../core/app_colors.dart';
@@ -92,9 +95,23 @@ class TreatmentScreen extends StatelessWidget {
               _urgentCard(diagnosisCase.urgent!),
               const SizedBox(height: 22),
             ],
-            Text(
-              'Video hướng dẫn xử lý',
-              style: AgriTextStyles.sectionTitle,
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text(
+                    'Video hướng dẫn xử lý',
+                    style: AgriTextStyles.sectionTitle,
+                  ),
+                ),
+                if (disease.videoUrl != null)
+                  GhostButton(
+                    label: 'Mở trên YouTube',
+                    onPressed: () => _openUrl(context, disease.videoUrl!),
+                    fontSize: 12.5,
+                    minHeight: 28,
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                  ),
+              ],
             ),
             const SizedBox(height: 12),
             _VideoBox(videoUrl: disease.videoUrl),
@@ -375,8 +392,18 @@ String? _youtubeVideoId(String url) {
 /// Chỉ dựng `YoutubePlayerController`/nạp WebView khi người dùng bấm play —
 /// trước đó chỉ hiện ảnh thumbnail tĩnh (`Image.network` thường), để không
 /// tốn tài nguyên WebView cho những lượt xem màn này mà không xem video.
-/// Luôn kèm một nút phụ "Mở trên YouTube" cạnh khung phát — lối thoát thủ
-/// công nếu WebView của máy nào đó vẫn không ổn định.
+///
+/// ⚠️ 21/09/2026: một số video báo "This video is unavailable — Error code:
+/// 152" ngay khi phát trong WebView (dù cùng video mở được bình thường trong
+/// app YouTube thật) — đây là lỗi phía YouTube/Chrome WebView khi tài nguyên
+/// quảng cáo nội bộ (`static.doubleclick.net/instream/ad_status.js`) không
+/// tải được trong ngữ cảnh WebView nhúng, không phải lỗi cấu hình của app này
+/// (xem thảo luận cộng đồng ở package `youtube_player_flutter` issue #1087 —
+/// chưa có bản sửa chính thức). Đã thử set `userAgent` giống Chrome Mobile
+/// thật (mặc định `webview_flutter` dùng UA khác biệt) để giảm khả năng dính
+/// lỗi. Vì rủi ro này không loại trừ được hoàn toàn từ phía code Flutter, nút
+/// "Mở trên YouTube" luôn hiện cạnh tiêu đề mục — không chỉ sau khi bấm phát —
+/// để luôn có lối thoát thủ công không phụ thuộc trạng thái WebView.
 class _VideoBox extends StatefulWidget {
   const _VideoBox({required this.videoUrl});
 
@@ -410,12 +437,36 @@ class _VideoBoxState extends State<_VideoBox> {
   void _startPlayback() {
     final String? videoId = _videoId;
     if (videoId == null) return;
+    final YoutubePlayerController controller = YoutubePlayerController.fromVideoId(
+      videoId: videoId,
+      autoPlay: true,
+      params: const YoutubePlayerParams(
+        showFullscreenButton: true,
+        userAgent:
+            'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 '
+            '(KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36',
+      ),
+    );
+    // Cookie bên thứ ba TẮT theo mặc định cho một WebView riêng lẻ trên
+    // Android (khác cờ "chấp nhận cookie" toàn cục, luôn bật) — trình phát
+    // YouTube cần cookie từ *.doubleclick.net (bộ máy quảng cáo nội bộ của
+    // YouTube tự tải khi khởi động player, không liên quan quảng cáo hiển thị
+    // cho người dùng) để hoàn tất, thiếu cookie đó gây lỗi "Video unavailable
+    // — Error code: 152" dù video hoàn toàn phát bình thường trong app YouTube
+    // thật hoặc Chrome (đã tự kiểm chứng cả hai không lỗi). Không có tác dụng
+    // trên iOS (`webview_flutter_wkwebview` không tách third-party cookie theo
+    // kiểu này) nên chỉ bật khi platform thật sự là Android.
+    // `webViewController` được đánh dấu @internal chỉ để cảnh báo lint, không
+    // phải giới hạn thật ở runtime; youtube_player_iframe không có API public
+    // nào khác để với tới `WebViewController` bên dưới cho việc bật cookie này.
+    // ignore: invalid_use_of_internal_member
+    final platform = controller.webViewController.platform;
+    if (platform is AndroidWebViewController) {
+      AndroidWebViewCookieManager(const PlatformWebViewCookieManagerCreationParams())
+          .setAcceptThirdPartyCookies(platform, true);
+    }
     setState(() {
-      _controller = YoutubePlayerController.fromVideoId(
-        videoId: videoId,
-        autoPlay: true,
-        params: const YoutubePlayerParams(showFullscreenButton: true),
-      );
+      _controller = controller;
     });
   }
 
@@ -426,29 +477,9 @@ class _VideoBoxState extends State<_VideoBox> {
     final bool hasVideo = url != null;
 
     if (controller != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: YoutubePlayer(controller: controller),
-          ),
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () => _openUrl(context, url!),
-              child: Text(
-                'Mở trên YouTube',
-                style: agriStyle(
-                  size: 12.5,
-                  weight: FontWeight.w600,
-                  color: AgriColors.primary,
-                ),
-              ),
-            ),
-          ),
-        ],
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: YoutubePlayer(controller: controller),
       );
     }
 

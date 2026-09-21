@@ -10,6 +10,8 @@ import '../../core/app_scope.dart';
 import '../../core/app_typography.dart';
 import '../../data/demo_data.dart';
 import '../../models/models.dart';
+import '../../services/api_client.dart';
+import '../../services/session.dart' as session;
 import '../../widgets/agri_icons.dart';
 import '../../widgets/agri_screen.dart';
 import '../../widgets/buttons.dart';
@@ -26,6 +28,11 @@ import 'treatment_screen.dart';
 ///
 /// API khi nối thật: `POST /diagnoses` rồi `GET /diagnoses/{id}`. Nút gạt
 /// "Vùng nghi ngờ / Ảnh gốc" chỉ đổi giữa `overlay_url` và `image_url`.
+///
+/// Bản ghi đã lưu (`diagnosisCase.id != null`) nhưng chưa gắn lô đất
+/// (`plotId == null`) hiện chip "+ Gán lô đất" thay cho `MetaChip` thường —
+/// chốt 21/09/2026 khi Lịch sử bắt đầu lưu cả chẩn đoán chưa gắn lô, gọi
+/// `PATCH /diagnoses/{id}` (đã có sẵn từ trước, dùng cho web admin) để gán.
 class ResultScreen extends StatefulWidget {
   const ResultScreen({required this.diagnosisCase, super.key});
 
@@ -41,6 +48,13 @@ class _ResultScreenState extends State<ResultScreen> {
   int _imagePage = 0;
   FlutterTts? _tts;
 
+  /// Bản ghi đã lưu (`_case.id != null`) nhưng chưa gắn lô đất thì cho gắn
+  /// ngay ở màn này — theo dõi riêng bằng state cục bộ vì [DiagnosisCase]
+  /// (tham số widget) bất biến, không tự cập nhật khi `PATCH` thành công.
+  late String _plotLabel = widget.diagnosisCase.plot;
+  late int? _plotId = widget.diagnosisCase.plotId;
+  bool _linkingPlot = false;
+
   DiagnosisCase get _case => widget.diagnosisCase;
 
   Disease get _disease => _case.disease;
@@ -49,6 +63,66 @@ class _ResultScreenState extends State<ResultScreen> {
   void dispose() {
     _tts?.stop();
     super.dispose();
+  }
+
+  Future<void> _openPlotPicker() async {
+    final int? diagnosisId = _case.id;
+    if (diagnosisId == null || _linkingPlot) return;
+
+    List<Plot> plots;
+    try {
+      final List<dynamic> body = await session.apiClient.get('/plots') as List<dynamic>;
+      plots = body.map((dynamic p) => Plot.fromJson(p as Map<String, dynamic>)).toList();
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Không tải được danh sách lô đất')),
+        );
+      }
+      return;
+    }
+    if (!mounted) return;
+
+    if (plots.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bạn chưa có lô đất nào — thêm lô đất trước đã')),
+      );
+      return;
+    }
+
+    final Plot? picked = await showModalBottomSheet<Plot>(
+      context: context,
+      backgroundColor: const Color(0x00000000),
+      isScrollControlled: true,
+      builder: (BuildContext sheetContext) => _PlotPickerSheet(plots: plots),
+    );
+    if (picked == null || !mounted) return;
+    await _linkPlot(picked);
+  }
+
+  Future<void> _linkPlot(Plot plot) async {
+    setState(() => _linkingPlot = true);
+    try {
+      await session.apiClient
+          .patchJson('/diagnoses/${_case.id}', <String, dynamic>{'plot_id': plot.id});
+      if (!mounted) return;
+      setState(() {
+        _plotId = plot.id;
+        _plotLabel = '${plot.name} · ${plot.puc}';
+      });
+    } on ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Không gán được lô đất, thử lại sau')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _linkingPlot = false);
+    }
   }
 
   Future<void> _toggleSpeak() async {
@@ -150,7 +224,10 @@ class _ResultScreenState extends State<ResultScreen> {
               spacing: 7,
               runSpacing: 7,
               children: <Widget>[
-                MetaChip(label: _case.plot),
+                if (_plotId != null || _case.id == null)
+                  MetaChip(label: _plotLabel)
+                else
+                  _LinkPlotChip(loading: _linkingPlot, onTap: _openPlotPicker),
                 MetaChip(label: _case.time),
                 MetaChip(label: _case.modelBadge),
               ],
@@ -623,6 +700,114 @@ class _ResultScreenState extends State<ResultScreen> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Chip mời gắn lô đất — thay [MetaChip] tĩnh khi bản chẩn đoán đã lưu
+/// (`_case.id != null`) nhưng chưa gắn `plot_id` (chốt 21/09/2026, đi kèm
+/// việc lịch sử giờ lưu cả chẩn đoán chưa gắn lô — xem CLAUDE.md/CaptureScreen).
+class _LinkPlotChip extends StatelessWidget {
+  const _LinkPlotChip({required this.loading, required this.onTap});
+
+  final bool loading;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: const Color(0x00000000),
+      borderRadius: BorderRadius.circular(999),
+      child: InkWell(
+        onTap: loading ? null : onTap,
+        borderRadius: BorderRadius.circular(999),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: AgriColors.primaryLightA(.18),
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(color: AgriColors.primaryA(.4)),
+          ),
+          child: Text(
+            loading ? 'Đang gán lô đất…' : '+ Gán lô đất',
+            style: agriStyle(
+              size: 11.5,
+              weight: FontWeight.w700,
+              color: AgriColors.primary,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Sheet chọn lô đất để gắn vào một chẩn đoán đã lưu nhưng chưa có lô —
+/// dùng cùng phong cách với `_OptionSheet` trong `widgets/inputs.dart`
+/// (không dùng lại được vì lớp đó là private của file khác).
+class _PlotPickerSheet extends StatelessWidget {
+  const _PlotPickerSheet({required this.plots});
+
+  final List<Plot> plots;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(12),
+        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .7),
+        decoration: BoxDecoration(
+          color: AgriColors.cream,
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
+              child: Text(
+                'Gán vào lô đất nào?',
+                style: agriStyle(size: 16, weight: FontWeight.w700),
+              ),
+            ),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                itemCount: plots.length,
+                itemBuilder: (BuildContext context, int i) {
+                  final Plot plot = plots[i];
+                  return Material(
+                    color: const Color(0x00000000),
+                    borderRadius: BorderRadius.circular(18),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(18),
+                      onTap: () => Navigator.of(context).pop(plot),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              plot.name,
+                              style: agriStyle(size: 15, weight: FontWeight.w600),
+                            ),
+                            Text(
+                              plot.puc,
+                              style: agriStyle(size: 12, color: AgriColors.inkA(.62)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
+      ),
     );
   }
 }

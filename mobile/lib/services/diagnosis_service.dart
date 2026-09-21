@@ -7,9 +7,11 @@ class DiagnosisService {
 
   final ApiClient _api;
 
-  /// `save = false` khi chẩn đoán nhanh từ nút chụp ảnh chung, không qua một
-  /// lô đất cụ thể — backend không lưu vào CSDL nên không xuất hiện ở Lịch sử
-  /// (xem CLAUDE.md mục quản lý lô đất).
+  /// `save` luôn `true` ở mọi nơi gọi trong app hiện tại — kể cả chẩn đoán
+  /// nhanh từ nút chụp ảnh chung (không qua lô đất cụ thể) từ 21/09/2026 cũng
+  /// được lưu vào lịch sử, chỉ là chưa gắn `plot_id`. Tham số vẫn giữ lại vì
+  /// backend (`POST /diagnoses`) hỗ trợ `save=false` cho một chế độ xem trước
+  /// không lưu, chưa có nơi nào trong app dùng tới.
   Future<DiagnosisCase> diagnose({
     required List<({List<int> bytes, String filename})> images,
     int? plotId,
