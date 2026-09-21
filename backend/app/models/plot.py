@@ -44,6 +44,7 @@ class Plot(Base):
     crop: Mapped[str] = mapped_column(String(50), default="tomato")
     status: Mapped[str] = mapped_column(String(20), default=PlotStatus.ACTIVE, index=True)
     note: Mapped[str | None] = mapped_column(String(500), default=None)
+    image_path: Mapped[str | None] = mapped_column(String(255), default=None)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()

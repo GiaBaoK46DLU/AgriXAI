@@ -227,6 +227,23 @@ class _PlotDetailScreenState extends State<PlotDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  PrimarySolidButton(
+                    label: 'Chẩn đoán cho lô này',
+                    onPressed: _diagnoseForPlot,
+                  ),
+                  const SizedBox(height: 10),
+                  GlassPillButton(
+                    label: _deleting ? 'Đang xoá…' : 'Xoá lô đất',
+                    onPressed: _deleting ? () {} : _confirmDelete,
+                    minHeight: 48,
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w700,
+                    color: AgriColors.accentInkDeep,
+                    gradient: agriDangerGradient,
+                    border: Border.all(color: AgriColors.accentA(.55)),
+                    style: GlassStyle.control,
+                  ),
+                  const SizedBox(height: 22),
                   Text(
                     'Lịch sử trên lô này',
                     style: agriStyle(
@@ -254,23 +271,6 @@ class _PlotDetailScreenState extends State<PlotDetailScreen> {
                       ),
                       if (i != _rows.length - 1) const SizedBox(height: 10),
                     ],
-                  const SizedBox(height: 22),
-                  PrimarySolidButton(
-                    label: 'Chẩn đoán cho lô này',
-                    onPressed: _diagnoseForPlot,
-                  ),
-                  const SizedBox(height: 10),
-                  GlassPillButton(
-                    label: _deleting ? 'Đang xoá…' : 'Xoá lô đất',
-                    onPressed: _deleting ? () {} : _confirmDelete,
-                    minHeight: 48,
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w700,
-                    color: AgriColors.accentInkDeep,
-                    gradient: agriDangerGradient,
-                    border: Border.all(color: AgriColors.accentA(.55)),
-                    style: GlassStyle.control,
-                  ),
                 ],
               ),
             ),
@@ -290,8 +290,8 @@ class _PlotDetailScreenState extends State<PlotDetailScreen> {
         height: 206,
         child: Stack(
           children: <Widget>[
-            const Positioned.fill(
-              child: ImageSlot(placeholder: 'Ảnh lô đất'),
+            Positioned.fill(
+              child: ImageSlot(placeholder: 'Ảnh lô đất', imageUrl: plot.imageUrl),
             ),
             // linear-gradient(180deg, .92 0%, .8 46%, .86 100%)
             Positioned.fill(

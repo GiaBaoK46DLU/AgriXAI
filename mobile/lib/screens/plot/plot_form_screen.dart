@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_glass.dart';
@@ -8,11 +11,13 @@ import '../../core/app_typography.dart';
 import '../../models/models.dart';
 import '../../services/api_client.dart';
 import '../../services/session.dart' as session;
+import '../../widgets/agri_icons.dart';
 import '../../widgets/agri_screen.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/chips.dart';
 import '../../widgets/glass_bottom_bar.dart';
 import '../../widgets/glass_card.dart';
+import '../../widgets/image_slot.dart';
 import '../../widgets/inputs.dart';
 import '../../widgets/misc.dart';
 
@@ -52,8 +57,22 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
 
   late String _status = widget.plot?.status ?? 'Đang canh tác';
 
+  /// Ảnh mới chọn nhưng chưa tải lên — `null` nghĩa là giữ nguyên ảnh cũ
+  /// (nếu sửa) hoặc chưa gán ảnh nào (nếu thêm mới).
+  File? _pickedImage;
+
   bool _saving = false;
   String? _error;
+
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? picked = await ImagePicker().pickImage(
+      source: source,
+      maxWidth: 1600,
+      imageQuality: 90,
+    );
+    if (picked == null) return;
+    setState(() => _pickedImage = File(picked.path));
+  }
 
   @override
   void dispose() {
@@ -87,15 +106,30 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
     };
 
     try {
+      int plotId;
       if (widget.plot == null) {
         final String puc = _puc.text.trim();
-        await session.apiClient.postJson('/plots', <String, dynamic>{
+        final dynamic created = await session.apiClient.postJson('/plots', <String, dynamic>{
           ...payload,
           if (puc.isNotEmpty) 'puc': puc,
         });
+        plotId = (created as Map<String, dynamic>)['id'] as int;
       } else {
-        await session.apiClient.patchJson('/plots/${widget.plot!.id}', payload);
+        plotId = widget.plot!.id;
+        await session.apiClient.patchJson('/plots/$plotId', payload);
       }
+
+      final File? image = _pickedImage;
+      if (image != null) {
+        await session.apiClient.postMultipartFiles(
+          '/plots/$plotId/image',
+          fileField: 'file',
+          files: <({List<int> bytes, String filename})>[
+            (bytes: await image.readAsBytes(), filename: 'plot.jpg'),
+          ],
+        );
+      }
+
       if (!mounted) return;
       AppNav.toTab(context, AgriTab.plots);
     } on ApiException catch (e) {
@@ -126,6 +160,47 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
             ScreenHeader(
               title: widget.plot == null ? 'Thêm lô đất' : 'Sửa lô đất',
               onBack: () => Navigator.of(context).pop(),
+            ),
+            const SizedBox(height: 18),
+            const FieldLabel('Ảnh lô đất'),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: ImageSlot(
+                  placeholder: 'Chưa có ảnh lô đất',
+                  file: _pickedImage,
+                  imageUrl: _pickedImage == null ? widget.plot?.imageUrl : null,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: GlassPillButton(
+                    label: 'Chụp ảnh',
+                    onPressed: () => _pickImage(ImageSource.camera),
+                    icon: AgriIcons.camera(
+                      18,
+                      body: AgriColors.primary,
+                      lens: AgriColors.cream,
+                    ),
+                    minHeight: 46,
+                    fontSize: 13.5,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: GlassPillButton(
+                    label: 'Chọn từ thư viện',
+                    onPressed: () => _pickImage(ImageSource.gallery),
+                    icon: AgriIcons.upload(18, AgriColors.primary),
+                    minHeight: 46,
+                    fontSize: 13.5,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 18),
             GlassCard(

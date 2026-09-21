@@ -771,6 +771,108 @@ rõ hơn, màu sắc nhấn mạnh nội dung".
 
 ---
 
+## Video YouTube báo "Video unavailable — Error code: 152", lô đất chưa gán ảnh được, lịch sử bỏ sót chẩn đoán chưa gắn lô (chốt 21/09/2026)
+
+Bốn việc gộp một phiên, theo yêu cầu trực tiếp của Học, nhánh
+`hoc/task-108-video-plot-history-fixes`. Việc cải thiện độ chính xác
+model/Grad-CAM thật sự (#93/#90/#50/#94/#98) **không** nằm trong phiên này —
+Học xác nhận rõ chỉ tinh chỉnh overlay hiện có, không đụng checkpoint.
+
+**Video "Error code: 152" — chưa sửa dứt điểm, chỉ giảm nhẹ + luôn có lối
+thoát.** Tái hiện được ổn định trên máy ảo: mọi video YouTube (không riêng gì
+một video) báo lỗi này ngay khi phát trong `youtube_player_iframe`, dù cùng
+video mở bình thường trong Chrome thật hoặc app YouTube thật trên chính máy
+ảo đó (đã tự kiểm chứng cả hai). Tra cứu cộng đồng: lỗi 152 trong chính
+package này đã có người báo (issue #1087, chưa có bản vá chính thức), gắn với
+tài nguyên quảng cáo nội bộ của YouTube (`static.doubleclick.net/instream/
+ad_status.js`) không hoàn tất được trong ngữ cảnh WebView nhúng. Đã thử hai
+hướng vá tại `treatment_screen.dart`: (1) đặt `userAgent` giống Chrome Mobile
+thật thay vì UA mặc định của `webview_flutter`, (2) bật cookie bên thứ ba qua
+`AndroidWebViewCookieManager.setAcceptThirdPartyCookies` (thêm phụ thuộc trực
+tiếp `webview_flutter_android`, `webview_flutter_platform_interface` vào
+`pubspec.yaml`) — **cả hai đều không hết lỗi trên máy ảo đang dùng**. Vì rủi
+ro này không loại trừ được hoàn toàn từ phía code Flutter (bản chất là lỗi
+YouTube/WebView, không phải cấu hình app), nút "Mở trên YouTube" đổi từ "chỉ
+hiện sau khi bấm phát, cách xa phía dưới khung video" sang **luôn hiện ngay
+cạnh tiêu đề "Video hướng dẫn xử lý", sát mép phải, gọn** — theo đúng yêu cầu
+thiết kế của Học, và giờ đóng vai trò lối thoát chính chứ không chỉ dự phòng.
+**Việc còn để lại:** kiểm tra trên điện thoại thật xem lỗi 152 có tái hiện
+không — nhiều khả năng đây là đặc thù máy ảo (thiếu tích hợp đầy đủ dịch vụ
+quảng cáo/Play Services của AVD) chứ không phải lỗi sẽ gặp trên máy nông dân
+thật, nhưng chưa có điều kiện xác minh trong phiên này.
+
+**Tinh chỉnh ngưỡng vẽ overlay — tách khỏi ngưỡng tính mức độ nặng.** Thêm
+`OVERLAY_DRAW_THRESHOLD = 0.62` (backend/app/core/config.py), dùng riêng cho
+`overlay.draw_regions`/`has_visible_region`; `HEATMAP_THRESHOLD = 0.5` giữ
+nguyên, vẫn là ngưỡng duy nhất `explain.py` dùng để tính `affected_ratio`/mức
+độ nặng. Tách ra vì gộp chung một ngưỡng nghĩa là "làm khoanh vùng gọn hơn"
+sẽ kéo theo đổi luôn phân loại Nhẹ/Trung bình/Nặng (calibrate theo
+`max_area_ratio` trong `tomato_diseases.json`) — ngoài phạm vi yêu cầu. Ngưỡng
+vẽ cao hơn để elip bám sát đỉnh nóng nhất của CAM thay vì cả vùng ≥0.5 rộng
+hơn, dựa trên phát hiện của #17 (đỉnh CAM đáng tin hơn vùng ngưỡng rộng trên
+ảnh thật — xem mục "Ba rủi ro đã nhận diện" bên dưới). Cũng sửa kernel làm mượt
+biên (`cv2.morphologyEx`) từ cố định 5×5 sang tỉ lệ theo kích thước ảnh — 5×5
+trên ảnh 1280px (`MAX_IMAGE_DIMENSION`) gần như không có tác dụng. **Chưa đo
+lại bằng số liệu như #17 đã làm** — đây là tinh chỉnh heuristic có căn cứ,
+không phải bản sửa đã kiểm chứng lại bằng audit. `mobile/lib/services/
+offline_inference_service.dart` đã đồng bộ hai ngưỡng tương ứng
+(`_heatmapThreshold`/`_overlayDrawThreshold`) để hành vi ngoại tuyến khớp
+online — xem cảnh báo "sửa một bên phải nhớ soát lại bên kia" ở mục suy luận
+ngoại tuyến phía trên.
+
+**Lô đất: thêm ảnh + đổi vị trí hai nút hành động.** `plots.image_path`
+(cột mới, `VARCHAR(255)`, nullable — thêm bằng `ALTER TABLE` trực tiếp trên
+DB dev theo đúng tiền lệ cột `email`/bảng `refresh_tokens`, vì `alembic
+upgrade head` vẫn luôn là no-op). Endpoint mới `POST /plots/{id}/image`
+(multipart, tái dùng `storage.local.open_and_normalize`/`save_upload` —
+không tạo thư mục `plots/` riêng, chung `uploads/` với ảnh chẩn đoán).
+`PlotOut` thêm `image_url` (`computed_field`, giống `ImageUrlMixin` của
+`DiagnosisBase` nhưng optional vì không phải lô nào cũng có ảnh). Màn Sửa lô
+đất (`plot_form_screen.dart`) thêm khối chọn ảnh (Chụp ảnh / Chọn từ thư
+viện) phía trên form, tải lên **sau khi** lưu xong (lô mới thì cần `id` trả
+về từ `POST /plots` trước). Màn Chi tiết lô đất: hai nút "Chẩn đoán cho lô
+này" và "Xoá lô đất" chuyển từ **dưới cùng** (sau danh sách lịch sử, phải kéo
+hết danh sách mới thấy) lên **ngay dưới thẻ thông tin lô**, trước mục "Lịch
+sử trên lô này" — lịch sử dài không còn che mất hai nút hay dùng nhất.
+
+**Lịch sử: chẩn đoán chưa gắn lô đất giờ được lưu và hiện ra, gán lô được
+ngay trong màn kết quả.** Trước đây `CaptureScreen` chỉ gọi `POST /diagnoses`
+với `save=true` khi vào từ một lô đất cụ thể (`_hasPlot`); vào từ nút "Chẩn
+đoán bệnh" chung ở trang chủ luôn gửi `save=false` → backend chạy
+`run_diagnosis_preview`, **không ghi CSDL**, nên không có gì để "chưa gắn lô"
+mà hiện trong Lịch sử — nhánh đó chỉ là chẩn đoán xem tạm, mất luôn sau khi
+rời màn. Bỏ tham số `save: _hasPlot` ở lời gọi `AnalyzingScreen` trong
+`capture_screen.dart`, để mặc định `save: true` áp dụng cho MỌI lượt chẩn
+đoán kể cả không có lô — backend vốn đã nhận `plot_id=None` cho `save=true`
+sẵn từ trước (không phải sửa backend). `GET /diagnoses` cũng chưa từng lọc bỏ
+`plot_id IS NULL` — nên chỉ cần sửa phía tạo bản ghi, Lịch sử tự hiện ra đúng
+mà không cần sửa gì thêm ở `history_screen.dart`. `ResultScreen` thêm chip
+"+ Gán lô đất" (thay `MetaChip` tĩnh) khi bản ghi đã lưu
+(`diagnosisCase.id != null`) nhưng `plotId == null` — mở bottom sheet chọn
+lô, gọi `PATCH /diagnoses/{id}` với `plot_id` (endpoint **đã có sẵn** từ
+trước, vốn viết cho web admin, không phải thêm mới). Chẩn đoán đã có lô đất
+từ trước thì **không** thêm khả năng sửa — đúng yêu cầu, chỉ chẩn đoán chưa
+gắn lô mới có nút gán.
+
+⚠️ **Đổi chữ:** trang chủ + `capture_screen.dart` từng ghi "chẩn đoán nhanh —
+không gắn lô đất, không lưu lịch sử" — câu đó nay sai, đã sửa thành "chưa gắn
+lô đất, gắn sau trong Lịch sử". Nếu còn thấy câu cũ ở đâu đó là sót, cần sửa.
+
+**Đã kiểm thử thật trên máy ảo** (không chỉ build qua): dựng lại `flutter run`
+riêng, dùng `adb` (screencap + input tap) để bấm thật qua từng luồng — mở
+lô đất chưa từng có ảnh → sửa → chọn ảnh từ thư viện → lưu → xác nhận ảnh
+hiện ở đầu trang chi tiết; mở một chẩn đoán "Chưa gán lô đất" từ Lịch sử →
+bấm "+ Gán lô đất" → chọn lô → xác nhận Lịch sử cập nhật đúng lô ngay lập
+tức. `backend`: 54/54 test cũ vẫn pass sau các đổi schema/model. `mobile`:
+`flutter analyze` sạch. Trong lúc kiểm thử đã lỡ tải nhầm một ảnh test lên lô
+`Vườn cà chua sau nhà` (id=1, thao tác chạm nhầm lúc dò toạ độ) — đã dọn lại
+bằng `UPDATE plots SET image_path = NULL WHERE id = 1`. Diễn biến bấm nhầm đó
+từng trông giống một luồng tự động lạ (duyệt qua nhiều lô đất + chẩn đoán liên
+tiếp) — hoá ra chỉ là thao tác `adb input tap` của chính phiên làm việc này,
+không phải lỗi ứng dụng; ghi lại để không ai hoảng khi thấy log tương tự.
+
+---
+
 ## Trạng thái hiện tại (20/08/2026 — model/backend/mobile cập nhật 07/09/2026)
 
 | Phần | Tình trạng |

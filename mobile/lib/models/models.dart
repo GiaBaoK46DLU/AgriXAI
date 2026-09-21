@@ -210,6 +210,7 @@ class Plot {
     this.lastDiagnosisAt,
     required this.lastDisease,
     required this.lastSeverity,
+    this.imageUrl,
   });
 
   /// Dựng từ `PlotOut` hoặc `PlotWithStats` (`GET /plots`, `GET /plots/{id}`).
@@ -239,6 +240,9 @@ class Plot {
       lastDiagnosisAt: lastIso == null ? null : DateTime.parse(lastIso),
       lastDisease: (json['last_disease_name'] as String?) ?? 'Chưa chẩn đoán',
       lastSeverity: lastSeverity,
+      imageUrl: json['image_url'] == null
+          ? null
+          : '${AppConfig.storageBaseUrl}${json['image_url']}',
     );
   }
 
@@ -264,6 +268,9 @@ class Plot {
   final DateTime? lastDiagnosisAt;
   final String lastDisease;
   final Severity lastSeverity;
+
+  /// Ảnh đại diện lô đất — `null` cho tới khi người dùng gán qua màn sửa lô đất.
+  final String? imageUrl;
 }
 
 /// Một ngày dự báo + điều kiện hiện tại — `GET /weather`.
@@ -422,6 +429,7 @@ class DiagnosisCase {
     required this.affected,
     required this.severity,
     required this.plot,
+    this.plotId,
     required this.time,
     required this.explanation,
     required this.top3,
@@ -479,6 +487,7 @@ class DiagnosisCase {
       affected: _percent(affected),
       severity: severity,
       plot: _plotLabel(json),
+      plotId: json['plot_id'] as int?,
       time: formatIsoTimestamp(json['created_at'] as String),
       explanation: (json['explanation'] as String?) ?? '',
       top3: top3,
@@ -514,6 +523,10 @@ class DiagnosisCase {
   final String affected;
   final Severity severity;
   final String plot;
+
+  /// `null` khi chưa gán lô đất (hoặc chẩn đoán ngoại tuyến/không lưu) — dùng
+  /// để `ResultScreen` hiện nút "Gán lô đất" thay vì hàng chữ tĩnh.
+  final int? plotId;
   final String time;
   final String explanation;
 

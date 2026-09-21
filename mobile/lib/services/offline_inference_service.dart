@@ -30,6 +30,12 @@ class OfflineInferenceService {
   static final OfflineInferenceService instance = OfflineInferenceService._();
 
   static const double _heatmapThreshold = 0.5;
+  // Ngưỡng RIÊNG cho việc vẽ vùng khoanh — khớp `OVERLAY_DRAW_THRESHOLD` trong
+  // `backend/app/core/config.py`. `_heatmapThreshold` ở trên vẫn dùng cho tỉ lệ
+  // diện tích/mức độ nặng (khớp `max_area_ratio` trong tomato_diseases.json),
+  // đổi nó sẽ đổi luôn phân loại Nhẹ/Trung bình/Nặng. Ngưỡng vẽ cao hơn để elip
+  // bám sát đỉnh nóng nhất của CAM thay vì cả vùng >=0.5 rộng hơn.
+  static const double _overlayDrawThreshold = 0.62;
   static const double _minRegionRatio = 0.005;
   static const int _regionGrid = 56;
   static const List<int> _outlineColor = <int>[255, 64, 32];
@@ -133,7 +139,14 @@ class OfflineInferenceService {
 
     File? overlayFile;
     if (ratio >= _minRegionRatio) {
-      final _GridBox? box = _largestComponentBox(mask);
+      final List<List<bool>> drawMask = List<List<bool>>.generate(
+        _regionGrid,
+        (int y) => List<bool>.generate(
+          _regionGrid,
+          (int x) => camGrid[y][x] >= _overlayDrawThreshold,
+        ),
+      );
+      final _GridBox? box = _largestComponentBox(drawMask);
       if (box != null) {
         overlayFile = await _drawOverlay(decoded, box, _regionGrid);
       }

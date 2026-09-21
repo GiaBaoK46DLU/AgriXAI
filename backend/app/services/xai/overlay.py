@@ -33,7 +33,7 @@ def draw_regions(image: Image.Image, heatmap: np.ndarray,
     Returns:
         Ảnh mới đã vẽ; ảnh gốc không bị thay đổi.
     """
-    thr = settings.HEATMAP_THRESHOLD if threshold is None else threshold
+    thr = settings.OVERLAY_DRAW_THRESHOLD if threshold is None else threshold
 
     rgb = np.array(image.convert("RGB"))
     height, width = rgb.shape[:2]
@@ -45,8 +45,14 @@ def draw_regions(image: Image.Image, heatmap: np.ndarray,
 
     mask = (heatmap >= thr).astype(np.uint8) * 255
 
-    # Làm mượt biên: bỏ đốm nhiễu li ti rồi hàn các mảnh gần nhau thành một vùng
-    kernel = np.ones((5, 5), np.uint8)
+    # Làm mượt biên: bỏ đốm nhiễu li ti rồi hàn các mảnh gần nhau thành một vùng.
+    # Kernel PHẢI tỉ lệ theo kích thước ảnh — 5×5 cố định trên ảnh tới 1280px
+    # (MAX_IMAGE_DIMENSION) gần như không làm gì (chưa tới 0.4% chiều rộng ảnh),
+    # nên đốm nhiễu li ti không được lọc và mảnh gần nhau không được hàn lại.
+    k = max(5, round(min(width, height) / 100))
+    if k % 2 == 0:
+        k += 1
+    kernel = np.ones((k, k), np.uint8)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
 
@@ -72,5 +78,5 @@ def draw_regions(image: Image.Image, heatmap: np.ndarray,
 
 def has_visible_region(heatmap: np.ndarray, threshold: float | None = None) -> bool:
     """Kiểm tra có vùng nào đủ lớn để vẽ không — dùng để quyết định có lưu ảnh overlay."""
-    thr = settings.HEATMAP_THRESHOLD if threshold is None else threshold
+    thr = settings.OVERLAY_DRAW_THRESHOLD if threshold is None else threshold
     return float((heatmap >= thr).mean()) >= MIN_REGION_RATIO

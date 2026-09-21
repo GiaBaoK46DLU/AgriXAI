@@ -32,7 +32,9 @@ const int _maxNoteLength = 500;
 ///
 /// Lô đất (nếu có) luôn đến từ màn *Chi tiết lô đất* qua [initialPlotId] —
 /// không còn cho chọn lô ngay ở đây. Vào từ nút chụp ảnh chung (không có lô
-/// đất) thì kết quả chỉ hiện tạm thời, KHÔNG được backend lưu lại (xem
+/// đất) thì kết quả vẫn được backend lưu lại như bình thường, chỉ là chưa
+/// gắn `plot_id` — màn Lịch sử cho gắn lô đất sau (chốt 21/09/2026, đảo
+/// ngược quyết định cũ "chẩn đoán nhanh không lưu lịch sử" ghi trong
 /// CLAUDE.md mục quản lý lô đất).
 class CaptureScreen extends StatefulWidget {
   const CaptureScreen({super.key, this.initialPlotId, this.initialPlotName});
@@ -146,7 +148,6 @@ class _CaptureScreenState extends State<CaptureScreen> {
         images: List<File>.of(_images),
         plotId: widget.initialPlotId,
         plotName: widget.initialPlotName,
-        save: _hasPlot,
         note: note.isEmpty ? null : note,
       ),
     );
@@ -240,8 +241,8 @@ class _CaptureScreenState extends State<CaptureScreen> {
               child: Text(
                 _hasPlot
                     ? 'Kết quả sẽ được gắn vào lô "${widget.initialPlotName}" và lưu vào lịch sử.'
-                    : 'Chẩn đoán nhanh — kết quả sẽ KHÔNG được lưu vào lịch sử vì chưa gắn với '
-                        'lô đất nào. Vào từ màn chi tiết lô đất để lưu lại kết quả.',
+                    : 'Kết quả sẽ được lưu vào lịch sử nhưng chưa gắn với lô đất nào — bạn có '
+                        'thể gắn lô đất sau ở màn Lịch sử.',
                 style: agriStyle(
                   size: 12.5,
                   weight: FontWeight.w600,

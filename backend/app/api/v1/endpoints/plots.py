@@ -10,15 +10,18 @@ import random
 import string
 from datetime import datetime
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import selectinload
 
 from app.api.deps import CurrentUser, DbSession
+from app.core.config import settings
 from app.models.diagnosis import Diagnosis
 from app.models.plot import Plot
 from app.models.user import User
 from app.schemas.plot import PlotCreate, PlotOut, PlotUpdate, PlotWithStats
+from app.services.storage import local as storage
+from app.services.storage.local import InvalidImageError
 
 router = APIRouter()
 
@@ -155,6 +158,36 @@ def update_plot(plot_id: int, payload: PlotUpdate, db: DbSession, user: CurrentU
     for field, value in payload.model_dump(exclude_unset=True).items():
         if value is not None:
             setattr(plot, field, value)
+    db.commit()
+    db.refresh(plot)
+    return plot
+
+
+@router.post("/{plot_id}/image", response_model=PlotOut, summary="Gán/đổi ảnh lô đất")
+async def upload_plot_image(
+    plot_id: int, db: DbSession, user: CurrentUser,
+    file: UploadFile = File(..., description="Ảnh đại diện lô đất (JPEG/PNG/WEBP)"),
+):
+    """Ghi đè ảnh cũ nếu đã có — file cũ trên đĩa không bị xoá, giống cách
+    ``diagnoses`` hiện không dọn ảnh khi bản ghi đổi/xoá (xem storage/local.py).
+    """
+    plot = get_owned_plot(db, plot_id, user)
+
+    data = await file.read()
+    if not data:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Ảnh rỗng")
+    if len(data) > settings.max_upload_bytes:
+        raise HTTPException(
+            status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            f"Ảnh vượt quá {settings.MAX_UPLOAD_MB} MB. Hãy chụp ở độ phân giải thấp hơn.",
+        )
+
+    try:
+        image = storage.open_and_normalize(data)
+    except InvalidImageError as exc:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
+
+    plot.image_path = storage.save_upload(image)
     db.commit()
     db.refresh(plot)
     return plot

@@ -49,6 +49,15 @@ class Settings(BaseSettings):
 
     HEATMAP_THRESHOLD: float = 0.5
 
+    # Ngưỡng RIÊNG cho việc vẽ vùng khoanh (overlay.draw_regions/has_visible_region)
+    # — cố ý tách khỏi HEATMAP_THRESHOLD ở trên. HEATMAP_THRESHOLD còn được
+    # explain.py dùng để tính affected_ratio/mức độ nặng, đổi nó sẽ kéo theo đổi
+    # luôn ngưỡng phân loại Nhẹ/Trung bình/Nặng (calibrate theo max_area_ratio
+    # trong shared/data/tomato_diseases.json). Ngưỡng vẽ cao hơn một chút để elip
+    # bám sát vùng đỉnh nóng nhất của CAM thay vì cả vùng >=0.5 rộng hơn — #17 đo
+    # được đỉnh CAM đáng tin hơn vùng ngưỡng rộng trên ảnh thật (xem CLAUDE.md).
+    OVERLAY_DRAW_THRESHOLD: float = 0.62
+
     # Để trống -> endpoint /weather trả lỗi rõ ràng thay vì gọi OpenWeather
     # bằng key rỗng. Toạ độ cố định Đà Lạt vì mọi lô đất trong phạm vi đề tài
     # đều ở khu vực này (xem CLAUDE.md) — không cần lấy theo từng lô đất.

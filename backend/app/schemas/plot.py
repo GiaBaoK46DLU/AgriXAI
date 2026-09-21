@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, computed_field
 
 from app.models.plot import PlotStatus
+from app.schemas.diagnosis import STORAGE_URL_PREFIX
 
 
 class PlotBase(BaseModel):
@@ -41,6 +42,12 @@ class PlotOut(PlotBase):
     puc: str
     owner_id: int
     created_at: datetime
+    image_path: str | None = None
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def image_url(self) -> str | None:
+        return f"{STORAGE_URL_PREFIX}/{self.image_path}" if self.image_path else None
 
 
 class PlotWithStats(PlotOut):
