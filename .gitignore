@@ -51,6 +51,9 @@ backend/storage/uploads/**
 backend/storage/overlays/**
 !backend/storage/**/.gitkeep
 
+# ─── Bản sao lưu (#40/BE-06) — chứa dữ liệu người dùng thật, không lên Git ──
+scripts/backups/
+
 # ─── Node / Web ─────────────────────────────────────────
 node_modules/
 dist/

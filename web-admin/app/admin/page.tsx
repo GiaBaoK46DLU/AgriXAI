@@ -5,6 +5,7 @@ import type {
   DashboardStats,
   DiagnosisPage,
   ForumPostPage,
+  TimeseriesPoint,
   UserOut,
 } from "@/lib/types";
 import { firstIntParam } from "@/lib/params";
@@ -20,6 +21,23 @@ import { TYPE_LABEL, TYPE_TONE } from "@/app/admin/forum/labels";
 export const metadata = { title: "Tổng quan — AgriXAI Admin" };
 
 const RANGE_OPTIONS = [7, 30, 90, 365];
+
+/** Backend chỉ trả về NGÀY CÓ DỮ LIỆU trong `timeseries` (#33/WA-06) — thiếu
+ * bước chèn lại các ngày trống thì recharts vẽ các điểm sát nhau theo THỨ TỰ
+ * MẢNG chứ không theo khoảng cách thời gian thật, nén trục ngày lại và làm
+ * biểu đồ nhìn sai lệch hoàn toàn khi có khoảng trống. */
+function fillTimeseriesGaps(points: TimeseriesPoint[], days: number): TimeseriesPoint[] {
+  const countByDay = new Map(points.map((p) => [p.day, p.count]));
+  const filled: TimeseriesPoint[] = [];
+  const today = new Date();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    filled.push({ day: key, count: countByDay.get(key) ?? 0 });
+  }
+  return filled;
+}
 
 function timeAgo(iso: string): string {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -53,18 +71,6 @@ export default async function DashboardPage({
 
   return (
     <div>
-      {!stats.using_real_model && (
-        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-accent/35 bg-accent/14 px-5 py-3.5 text-sm font-semibold text-accent-ink">
-          <WarningIcon className="mt-0.5 shrink-0" width={18} height={18} />
-          <span>
-            Đang chạy mô hình giả (DummyPredictor) — số liệu chẩn đoán bên dưới không có ý nghĩa
-            thực tế. Trỏ <code className="rounded bg-white/50 px-1">MODEL_CHECKPOINT</code> trong{" "}
-            <code className="rounded bg-white/50 px-1">backend/.env</code> tới checkpoint thật để
-            chuyển đổi.
-          </span>
-        </div>
-      )}
-
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-extrabold tracking-[-0.01em]">Tổng quan hệ thống</h1>
@@ -109,7 +115,7 @@ export default async function DashboardPage({
           {stats.timeseries.length === 0 ? (
             <p className="py-16 text-center text-sm text-ink/60">Chưa có dữ liệu trong khoảng này</p>
           ) : (
-            <TrendAreaChart data={stats.timeseries} />
+            <TrendAreaChart data={fillTimeseriesGaps(stats.timeseries, days)} />
           )}
         </div>
 

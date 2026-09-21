@@ -52,10 +52,28 @@ def get_predictor() -> Predictor:
 
         from src.predictor import DiseasePredictor  # type: ignore[import-not-found]
 
+        # Bộ chặn (#92) là phụ, mô hình bệnh mới là chính — thiếu/lỗi checkpoint
+        # bộ chặn không được kéo cả predictor thật rơi về DummyPredictor. Nên
+        # kiểm tồn tại ở đây, trước khi vào constructor (nơi lỗi này sẽ bị
+        # `except Exception` bên dưới nuốt chung với lỗi của mô hình bệnh).
+        gate_checkpoint = settings.gate_checkpoint_path
+        if gate_checkpoint is not None and not gate_checkpoint.exists():
+            logger.error(
+                "Không tìm thấy checkpoint bộ chặn '%s' — bỏ qua #92, "
+                "vẫn dùng mô hình bệnh thật bình thường.", gate_checkpoint,
+            )
+            gate_checkpoint = None
+
         predictor = DiseasePredictor(
             checkpoint_path=str(checkpoint),
             device=settings.MODEL_DEVICE or None,
+            gate_checkpoint=str(gate_checkpoint) if gate_checkpoint else None,
         )
+        if gate_checkpoint is not None:
+            logger.info(
+                "Đã nạp bộ chặn lá/không-phải-lá: %s (phiên bản %s)",
+                gate_checkpoint, predictor.gate_version,
+            )
         logger.info(
             "Đã nạp mô hình thật: %s (phiên bản %s)", checkpoint, predictor.model_version
         )

@@ -17,6 +17,15 @@ from typing import Protocol, runtime_checkable
 import numpy as np
 from PIL import Image
 
+# Giá trị đặc biệt của `disease_key` khi bộ chặn 2 lớp (#92) kết luận ảnh
+# không phải lá cà chua — trùng với `NOT_LEAF_KEY` trong `model/src/predictor.py`.
+# Chép lại chuỗi hằng số này (thay vì import từ `model/`) vì đúng ranh giới
+# kiến trúc: backend chỉ được biết giá trị thuộc tính của `Prediction`, không
+# import bất cứ thứ gì khác trong `model/` (xem CLAUDE.md mục "Ranh giới kiến
+# trúc quan trọng nhất"). Khoá này KHÔNG có mặt trong
+# `shared/data/tomato_diseases.json` — xử lý riêng ở `catalog.get_disease()`.
+NOT_TOMATO_LEAF_KEY = "not_tomato_leaf"
+
 
 @dataclass
 class Prediction:

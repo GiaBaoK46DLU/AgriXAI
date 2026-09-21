@@ -23,6 +23,7 @@ from app.schemas.diagnosis import (
     ProbabilityItem,
 )
 from app.services import catalog, diagnosis_service
+from app.services.diagnosis_service import NotTomatoLeafError
 from app.services.storage.local import InvalidImageError
 
 router = APIRouter()
@@ -133,6 +134,12 @@ async def create_diagnosis(
         else:
             record = diagnosis_service.run_diagnosis_preview(user_id=user.id, images=images)
     except InvalidImageError as exc:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
+    except NotTomatoLeafError as exc:
+        # Bộ chặn #92 từ chối toàn bộ lô — không có ảnh lá nào để chẩn đoán,
+        # nên KHÔNG tạo bản ghi Diagnosis nào (xem NotTomatoLeafError). Dùng
+        # cùng mã lỗi 422 như InvalidImageError vì bản chất giống nhau: ảnh
+        # nhận được không hợp lệ để chạy tiếp luồng chẩn đoán.
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
 
     return _to_detail(db, record)

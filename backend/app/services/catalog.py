@@ -15,6 +15,12 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.models.medicine import DiseaseGuide, DiseaseMedicine, Medicine
+from app.services.inference.base import NOT_TOMATO_LEAF_KEY
+
+# Câu tiếng Việt hiển thị cho người dùng khi bộ chặn #92 từ chối ảnh — nguồn
+# duy nhất cho câu này, dùng cả ở đây (tên hiển thị) lẫn ở
+# `diagnosis_service` (thông báo lỗi 422 khi cả lô ảnh đều bị chặn).
+NOT_TOMATO_LEAF_MESSAGE = "Ảnh chưa rõ lá cà chua, bạn chụp lại giúp mình nhé"
 
 
 @lru_cache(maxsize=1)
@@ -35,7 +41,26 @@ def class_keys() -> list[str]:
 
 
 def get_disease(key: str) -> dict[str, Any]:
-    """Thông tin một lớp bệnh. Trả về bản ghi rỗng an toàn nếu khoá lạ."""
+    """Thông tin một lớp bệnh. Trả về bản ghi rỗng an toàn nếu khoá lạ.
+
+    ``key == NOT_TOMATO_LEAF_KEY`` (#92) là trường hợp đặc biệt phải xử lý
+    trước khi rơi vào nhánh "khoá lạ" bên dưới: khoá đó không có trong danh
+    mục JSON một cách CÓ CHỦ ĐÍCH (không phải lỗi thiếu dữ liệu), nên phải trả
+    về câu tiếng Việt dễ hiểu — không được để lọt chuỗi ``"not_tomato_leaf"``
+    ra giao diện (#47 tiêu chí hoàn thành).
+    """
+    if key == NOT_TOMATO_LEAF_KEY:
+        return {
+            "key": key,
+            "name_vi": NOT_TOMATO_LEAF_MESSAGE,
+            "name_en": "Not a tomato leaf",
+            "is_healthy": False,
+            "visual_cue": "",
+            "symptoms": "",
+            "treatments": [],
+            "prevention": [],
+        }
+
     found = diseases_by_key().get(key)
     if found:
         return found

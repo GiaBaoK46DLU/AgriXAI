@@ -43,6 +43,10 @@ class Settings(BaseSettings):
     MODEL_PACKAGE_DIR: str = "../model"
     MODEL_DEVICE: str = ""
 
+    # Bộ chặn 2 lớp lá/không phải lá (#92). Để trống -> không bật, hành vi
+    # giống hệt trước khi có #47: mọi ảnh đều đi thẳng vào mô hình bệnh.
+    MODEL_GATE_CHECKPOINT: str = ""
+
     STORAGE_DIR: str = "storage"
     MAX_UPLOAD_MB: int = 10
     MAX_IMAGE_DIMENSION: int = 1280
@@ -109,6 +113,13 @@ class Settings(BaseSettings):
         if not self.MODEL_CHECKPOINT.strip():
             return None
         p = Path(self.MODEL_CHECKPOINT)
+        return p if p.is_absolute() else (BACKEND_DIR / p).resolve()
+
+    @property
+    def gate_checkpoint_path(self) -> Path | None:
+        if not self.MODEL_GATE_CHECKPOINT.strip():
+            return None
+        p = Path(self.MODEL_GATE_CHECKPOINT)
         return p if p.is_absolute() else (BACKEND_DIR / p).resolve()
 
     @property

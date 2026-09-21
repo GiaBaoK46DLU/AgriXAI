@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ComponentType, SVGProps } from "react";
+import { useState, type ComponentType, type SVGProps } from "react";
 
 import {
   DashboardIcon,
@@ -37,19 +37,35 @@ const NAV_ITEMS: NavItem[] = [
 
 export function Sidebar({ adminName, adminEmail }: { adminName: string; adminEmail: string }) {
   const pathname = usePathname();
+  // Chỉ là trạng thái trong bộ nhớ — công cụ quản trị dùng trên máy tính,
+  // không cần nhớ lại qua các phiên (#31/WA-04: "không cần tối ưu cho điện
+  // thoại", thu gọn chỉ để đỡ chật khi màn hẹp trong một phiên làm việc).
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <aside
-      className="sticky top-0 flex h-screen w-64 shrink-0 flex-col gap-7 overflow-y-auto p-3.5"
+      className={`sticky top-0 flex h-screen shrink-0 flex-col gap-7 overflow-y-auto p-3.5 transition-[width] ${
+        collapsed ? "w-[72px]" : "w-64"
+      }`}
       style={{ background: "linear-gradient(200deg, var(--color-primary), var(--color-primary-dark))" }}
     >
       <div className="flex items-center gap-2.5 px-2">
         <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[10px] bg-white/18">
           <Logo size={19} colorA="#C3D24A" colorB="#FFFFFF" />
         </div>
-        <div className="text-[17px] font-extrabold tracking-[-0.01em] text-white">
-          AgriXAI <span className="text-xs font-semibold text-white/65">Admin</span>
-        </div>
+        {!collapsed && (
+          <div className="min-w-0 flex-1 truncate text-[17px] font-extrabold tracking-[-0.01em] text-white">
+            AgriXAI <span className="text-xs font-semibold text-white/65">Admin</span>
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={() => setCollapsed((v) => !v)}
+          aria-label={collapsed ? "Mở rộng menu" : "Thu gọn menu"}
+          className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-white/70 transition hover:bg-white/15 hover:text-white"
+        >
+          {collapsed ? "»" : "«"}
+        </button>
       </div>
 
       <nav className="flex flex-col gap-1">
@@ -59,12 +75,13 @@ export function Sidebar({ adminName, adminEmail }: { adminName: string; adminEma
             <Link
               key={href}
               href={href}
+              title={collapsed ? label : undefined}
               className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${
                 active ? "bg-white text-primary-dark" : "text-white/85 hover:bg-white/12"
               }`}
             >
               <Icon />
-              {label}
+              {!collapsed && label}
             </Link>
           );
         })}
@@ -73,15 +90,18 @@ export function Sidebar({ adminName, adminEmail }: { adminName: string; adminEma
       <div className="mt-auto flex flex-col gap-2">
         <Link
           href="/admin/account"
+          title={collapsed ? adminName : undefined}
           className="flex items-center gap-2.5 rounded-xl bg-white/12 p-2.5 transition hover:bg-white/20"
         >
           <div className="h-[30px] w-[30px] shrink-0 rounded-full bg-olive" />
-          <div className="min-w-0">
-            <div className="truncate text-[13px] font-bold leading-tight text-white">
-              {adminName}
+          {!collapsed && (
+            <div className="min-w-0">
+              <div className="truncate text-[13px] font-bold leading-tight text-white">
+                {adminName}
+              </div>
+              <div className="truncate text-[11px] leading-tight text-white/65">{adminEmail}</div>
             </div>
-            <div className="truncate text-[11px] leading-tight text-white/65">{adminEmail}</div>
-          </div>
+          )}
         </Link>
       </div>
     </aside>

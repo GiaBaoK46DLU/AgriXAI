@@ -90,3 +90,16 @@ export function storageUrl(relativePath: string): string {
 }
 
 export { BACKEND_URL };
+
+/** `/health` nằm ngoài tiền tố `/api/v1` và không cần token — public, rẻ (không
+ * chạy truy vấn CSDL nào), nên đây là endpoint đúng để gọi trên MỌI trang admin
+ * (không chỉ trang tổng quan) cho dải cảnh báo mô hình giả (#34). Dùng
+ * `/stats/dashboard` cho việc này sẽ vừa cần token vừa nặng hơn nhiều lần. */
+export async function getHealth(): Promise<{
+  status: string;
+  using_real_model: boolean;
+  model_version: string;
+}> {
+  const response = await fetch(new URL("/health", BACKEND_URL), { cache: "no-store" });
+  return response.json();
+}
