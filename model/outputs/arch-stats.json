@@ -1,0 +1,38 @@
+{
+  "n_threads": 4,
+  "n_repeat": 20,
+  "archs": {
+    "efficientnet_b0": {
+      "params": 4020358,
+      "params_trieu": 4.02,
+      "input_size": 224,
+      "feature_map": "7x7",
+      "cpu_ms": 28.8,
+      "kich_thuoc_mb": 16.1
+    },
+    "efficientnet_b3": {
+      "params": 10711602,
+      "params_trieu": 10.71,
+      "input_size": 300,
+      "feature_map": "10x10",
+      "cpu_ms": 82.6,
+      "kich_thuoc_mb": 42.8
+    },
+    "resnet18": {
+      "params": 11181642,
+      "params_trieu": 11.18,
+      "input_size": 224,
+      "feature_map": "7x7",
+      "cpu_ms": 35.6,
+      "kich_thuoc_mb": 44.7
+    },
+    "resnet50": {
+      "params": 23528522,
+      "params_trieu": 23.53,
+      "input_size": 224,
+      "feature_map": "7x7",
+      "cpu_ms": 83.7,
+      "kich_thuoc_mb": 94.1
+    }
+  }
+}
