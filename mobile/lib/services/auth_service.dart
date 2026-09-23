@@ -118,6 +118,12 @@ class AuthService {
       await _tokenStore.delete();
       await _tokenStore.deleteRefresh();
       return null;
+    } on NetworkException {
+      // Mất mạng lúc khởi động không có nghĩa phiên đã hết hạn — giữ
+      // nguyên token trong TokenStore (không logout), chỉ coi như chưa
+      // xác nhận được để _StartupGate không treo vô thời hạn. Mở lại app
+      // khi có mạng thì tryRestore() chạy lại và tự đăng nhập như cũ.
+      return null;
     }
   }
 

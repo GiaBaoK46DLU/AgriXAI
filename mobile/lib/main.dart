@@ -99,7 +99,15 @@ class _StartupGateState extends State<_StartupGate> {
   }
 
   Future<void> _restore() async {
-    final CurrentUser? user = await session.authService.tryRestore();
+    // Ranh giới khởi động app — bắt rộng mọi lỗi (không riêng gì lỗi mạng)
+    // để màn chờ không bao giờ treo vô thời hạn, kể cả lỗi cấu hình
+    // (backendHost sai định dạng) hay lỗi bất ngờ khác chưa lường trước.
+    CurrentUser? user;
+    try {
+      user = await session.authService.tryRestore();
+    } catch (_) {
+      user = null;
+    }
     if (!mounted) return;
     session.currentUser = user;
     setState(() => _checking = false);
