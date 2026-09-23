@@ -108,8 +108,9 @@ Thumbs.db
 desktop.ini
 .DS_Store
 
-# ─── File tạm của Word ──────────────────────────────────
+# ─── File tạm của Word / PowerPoint ─────────────────────
 ~$*.docx
+~$*.pptx
 
 # ─── Cấu hình MCP cục bộ (project_ref Supabase riêng máy) ──
 .mcp.json
