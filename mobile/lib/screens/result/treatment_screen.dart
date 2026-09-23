@@ -116,24 +116,6 @@ class TreatmentScreen extends StatelessWidget {
             const SizedBox(height: 12),
             _VideoBox(videoUrl: disease.videoUrl),
             const SizedBox(height: 26),
-            if (disease.symptoms.isNotEmpty) ...<Widget>[
-              Text('Triệu chứng', style: AgriTextStyles.sectionTitle),
-              const SizedBox(height: 8),
-              Text(
-                disease.symptoms,
-                style: agriStyle(size: 14, height: 1.55, color: AgriColors.inkA(.82)),
-              ),
-              const SizedBox(height: 18),
-            ],
-            if (disease.conditions.isNotEmpty && disease.conditions != 'Không áp dụng.') ...<Widget>[
-              Text('Điều kiện thuận lợi cho bệnh', style: AgriTextStyles.sectionTitle),
-              const SizedBox(height: 8),
-              Text(
-                disease.conditions,
-                style: agriStyle(size: 14, height: 1.55, color: AgriColors.inkA(.82)),
-              ),
-              const SizedBox(height: 18),
-            ],
             Text('Cần làm ngay', style: AgriTextStyles.sectionTitle),
             const SizedBox(height: 12),
             for (int i = 0; i < disease.treatments.length; i++) ...<Widget>[

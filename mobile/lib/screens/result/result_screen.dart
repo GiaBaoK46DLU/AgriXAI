@@ -220,6 +220,15 @@ class _ResultScreenState extends State<ResultScreen> {
             const SizedBox(height: 14),
             _explainCard(),
             const SizedBox(height: 16),
+            if (_disease.symptoms.isNotEmpty) ...<Widget>[
+              _infoCard('Triệu chứng', _disease.symptoms),
+              const SizedBox(height: 16),
+            ],
+            if (_disease.conditions.isNotEmpty &&
+                _disease.conditions != 'Không áp dụng.') ...<Widget>[
+              _infoCard('Điều kiện thuận lợi cho bệnh', _disease.conditions),
+              const SizedBox(height: 16),
+            ],
             Wrap(
               spacing: 7,
               runSpacing: 7,
@@ -575,6 +584,31 @@ class _ResultScreenState extends State<ResultScreen> {
           Text(
             _case.explanation,
             style: agriStyle(size: 15, height: 1.58),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Thẻ "Triệu chứng"/"Điều kiện thuận lợi cho bệnh" — chuyển từ màn Gợi ý
+  /// xử lý sang đây (23/09/2026, theo yêu cầu của Học) để đọc được ngay lúc
+  /// xem kết quả, không phải bấm thêm qua màn xử lý mới thấy. Cùng phong
+  /// cách GlassCard.card + bóng nhẹ như [_metricsCard] để đồng bộ với các
+  /// thẻ thông tin khác trên màn này.
+  Widget _infoCard(String title, String body) {
+    return GlassCard(
+      style: GlassStyle.card,
+      radius: 26,
+      padding: const EdgeInsets.all(18),
+      shadows: AgriShadows.raised(.1),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(title, style: AgriTextStyles.sectionTitle),
+          const SizedBox(height: 8),
+          Text(
+            body,
+            style: agriStyle(size: 14, height: 1.55, color: AgriColors.inkA(.82)),
           ),
         ],
       ),
