@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { DummyModelBanner } from "@/components/DummyModelBanner";
 import { ApiError, apiFetch } from "@/lib/api";
-import { clearSessionCookie, requireToken } from "@/lib/session";
+import { requireToken } from "@/lib/session";
 import type { UserOut } from "@/lib/types";
 
 import { logoutAction } from "./actions";
@@ -19,15 +19,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     // Token hết hạn hoặc tài khoản đã bị khoá kể từ lúc đăng nhập — xoá cookie
     // cũ rồi quay lại /login thay vì để trang trắng lỗi 401.
     if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
-      await clearSessionCookie();
-      redirect("/login");
+      // Không tự xoá cookie ở đây — layout đang render (không phải Server
+      // Action/Route Handler), gọi cookies().delete() thẳng sẽ crash với lỗi
+      // "Cookies can only be modified in a Server Action or Route Handler".
+      // Chuyển việc xoá cookie sang Route Handler ở app/auth/clear-session.
+      redirect("/auth/clear-session");
     }
     throw err;
   }
 
   if (me.role !== "admin") {
-    await clearSessionCookie();
-    redirect("/login");
+    redirect("/auth/clear-session");
   }
 
   return (
