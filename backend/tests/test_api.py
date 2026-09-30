@@ -201,10 +201,15 @@ def test_change_password_succeeds_then_old_password_stops_working(client, farmer
 
 
 # ── Lô đất ──
+#
+# Chốt 30/09/2026: chỉ quản trị tạo/xoá lô đất, gán thẳng cho một nông dân.
+# Nông dân chỉ nhận lô (tự xuất hiện trong danh sách) và sửa cây trồng/trạng
+# thái/ghi chú — không tự tạo, không xoá, không sửa tên/PUC/khu vực/diện tích.
 
-def test_create_and_list_plot(client, farmer_headers):
-    created = client.post(f"{API}/plots", headers=farmer_headers,
-                          json={"name": "Lô mới tạo", "region": "Đơn Dương"})
+def test_admin_creates_and_assigns_plot(client, admin_headers, farmer_headers, seeded):
+    created = client.post(f"{API}/plots", headers=admin_headers,
+                          json={"name": "Lô mới tạo", "region": "Đơn Dương",
+                                "owner_id": seeded["farmer_id"]})
     assert created.status_code == 201, created.text
     assert created.json()["puc"].startswith("PUC-"), "PUC phải được sinh tự động"
 
@@ -212,11 +217,32 @@ def test_create_and_list_plot(client, farmer_headers):
     assert any(p["name"] == "Lô mới tạo" for p in plots)
 
 
-def test_farmer_cannot_assign_plot_to_others(client, farmer_headers, seeded):
+def test_admin_create_plot_requires_owner(client, admin_headers):
+    response = client.post(f"{API}/plots", headers=admin_headers,
+                           json={"name": "Lô chưa gán ai"})
+    assert response.status_code == 422
+
+
+def test_farmer_cannot_create_plot(client, farmer_headers, seeded):
     response = client.post(f"{API}/plots", headers=farmer_headers,
-                           json={"name": "Lô của người khác",
-                                 "owner_id": seeded["admin_id"]})
+                           json={"name": "Lô tự tạo", "owner_id": seeded["farmer_id"]})
     assert response.status_code == 403
+
+
+def test_farmer_cannot_delete_plot(client, farmer_headers, seeded):
+    response = client.delete(f"{API}/plots/{seeded['plot_id']}", headers=farmer_headers)
+    assert response.status_code == 403
+
+
+def test_farmer_can_update_crop_but_not_name(client, farmer_headers, seeded):
+    ok = client.patch(f"{API}/plots/{seeded['plot_id']}", headers=farmer_headers,
+                      json={"crop": "Cà chua bi", "status": "fallow", "note": "Nghỉ vụ"})
+    assert ok.status_code == 200, ok.text
+    assert ok.json()["crop"] == "Cà chua bi"
+
+    blocked = client.patch(f"{API}/plots/{seeded['plot_id']}", headers=farmer_headers,
+                           json={"name": "Đổi tên lô"})
+    assert blocked.status_code == 403
 
 
 # ── Luồng chẩn đoán — phần quan trọng nhất ──

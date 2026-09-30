@@ -22,7 +22,9 @@ class PlotBase(BaseModel):
 class PlotCreate(PlotBase):
     # Mã vùng trồng. Bỏ trống thì hệ thống tự sinh.
     puc: str | None = Field(default=None, max_length=32)
-    # Chỉ quản trị mới được gán lô đất cho nông dân khác; nông dân bỏ trống.
+    # Bắt buộc (kiểm ở endpoint, không phải ở đây) — quản trị chọn nông dân
+    # nhận lô đất này. Chỉ quản trị mới gọi được endpoint tạo lô (chốt
+    # 30/09/2026), nông dân không tự tạo lô cho mình nữa.
     owner_id: int | None = None
 
 

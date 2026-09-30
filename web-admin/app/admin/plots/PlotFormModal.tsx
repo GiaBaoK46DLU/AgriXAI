@@ -10,10 +10,11 @@ const STATUS_OPTIONS: { value: string; label: string }[] = [
   { value: "archived", label: "Lưu trữ" },
 ];
 
-/** Nhiều nông dân không tự thêm được lô đất qua app — admin tạo hộ ở đây.
- * `owner_id` bắt buộc chọn (khác app mobile, nơi lô đất luôn tự gán cho chính
- * người tạo) vì đây là chỗ DUY NHẤT hệ thống cho tạo lô đất thay người khác —
- * backend chỉ nhận `owner_id` từ tài khoản admin (xem `POST /plots`). */
+/** Chốt 30/09/2026: chỉ quản trị tạo lô đất, đây là chỗ DUY NHẤT trong hệ
+ * thống làm được việc đó — app mobile không còn màn "Thêm lô đất" nữa, nông
+ * dân chỉ nhận lô do quản trị gán rồi tự canh tác. `owner_id` bắt buộc chọn
+ * ngay lúc tạo (backend 422 nếu thiếu, 403 nếu gọi bởi tài khoản không phải
+ * admin — xem `POST /plots`). */
 export function PlotFormModal({ farmers }: { farmers: UserOut[] }) {
   return (
     <Modal title="Thêm lô đất" closeHref="/admin/plots" maxWidth={520}>

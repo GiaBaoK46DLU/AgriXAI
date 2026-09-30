@@ -11,10 +11,12 @@ function errorRedirect(message: string): never {
   redirect(`${BASE}?new=1&error=${encodeURIComponent(message)}`);
 }
 
-// Chỉ CREATE — lô đất vẫn là dữ liệu của nông dân, admin chỉ hỗ trợ tạo hộ
-// (nhiều nông dân không tự thêm được), không có sửa/xoá qua trang này. Quyết
-// định "chỉ đọc" trước đây (xem CLAUDE.md) đổi đúng phạm vi được yêu cầu, không
-// mở rộng thêm.
+// Chỉ CREATE — không có sửa/xoá qua trang này. Chốt 30/09/2026 (xem CLAUDE.md):
+// chỉ quản trị được tạo lô đất, luôn gán thẳng cho một nông dân (owner_id bắt
+// buộc — backend 422/403 nếu thiếu hoặc gọi bởi tài khoản không phải admin).
+// Đây không còn là "tạo hộ" tạm thời mà là con đường DUY NHẤT tạo lô đất trong
+// hệ thống; nông dân chỉ nhận lô rồi tự sửa cây trồng/trạng thái/ghi chú trên
+// mobile (`PATCH /plots/{id}`, giới hạn ở `FARMER_EDITABLE_FIELDS`).
 export async function createPlotAction(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const ownerId = Number(formData.get("owner_id"));

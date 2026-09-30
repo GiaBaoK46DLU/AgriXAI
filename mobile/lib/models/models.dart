@@ -183,6 +183,11 @@ String plotStatusRawFromLabel(String label) => switch (label) {
       _ => 'active',
     };
 
+/// Nhãn hiển thị cho `Plot.crop`. Giá trị mặc định `"tomato"` (đặt lúc quản
+/// trị tạo lô, trước khi nông dân tự sửa lại) dịch sang tiếng Việt; mọi giá
+/// trị khác — do nông dân tự gõ — hiển thị nguyên văn.
+String plotCropLabel(String raw) => raw == 'tomato' ? 'Cà chua' : raw;
+
 /// `1200.0` -> `"1.200"` — dấu chấm ngăn cách hàng nghìn kiểu Việt Nam.
 String formatAreaNumber(double value) {
   final String digits = value.round().toString();
@@ -203,6 +208,7 @@ class Plot {
     required this.region,
     required this.area,
     required this.areaM2,
+    required this.crop,
     required this.status,
     required this.statusRaw,
     required this.count,
@@ -211,6 +217,7 @@ class Plot {
     required this.lastDisease,
     required this.lastSeverity,
     this.imageUrl,
+    this.note,
   });
 
   /// Dựng từ `PlotOut` hoặc `PlotWithStats` (`GET /plots`, `GET /plots/{id}`).
@@ -233,6 +240,7 @@ class Plot {
       region: (json['region'] as String?) ?? 'Chưa cập nhật khu vực',
       area: areaM2 == null ? 'Chưa cập nhật' : '${formatAreaNumber(areaM2)} m²',
       areaM2: areaM2,
+      crop: (json['crop'] as String?) ?? 'tomato',
       status: plotStatusLabel(statusRaw),
       statusRaw: statusRaw,
       count: (json['diagnosis_count'] as int?) ?? 0,
@@ -243,6 +251,7 @@ class Plot {
       imageUrl: json['image_url'] == null
           ? null
           : '${AppConfig.storageBaseUrl}${json['image_url']}',
+      note: json['note'] as String?,
     );
   }
 
@@ -254,6 +263,10 @@ class Plot {
 
   /// Giá trị thô (không định dạng) để đưa lại vào ô nhập khi sửa lô đất.
   final double? areaM2;
+
+  /// Cây trồng trên lô — nông dân tự chọn/sửa khi canh tác. Chuỗi thô gửi
+  /// lên `PATCH /plots/{id}`, mặc định `"tomato"` nếu quản trị chưa đặt.
+  final String crop;
   final String status;
 
   /// `"active"/"fallow"/"archived"` — gửi lên backend khi sửa, thay vì
@@ -271,6 +284,9 @@ class Plot {
 
   /// Ảnh đại diện lô đất — `null` cho tới khi người dùng gán qua màn sửa lô đất.
   final String? imageUrl;
+
+  /// Ghi chú tự do của nông dân — `null` nếu chưa từng ghi gì.
+  final String? note;
 }
 
 /// Một ngày dự báo + điều kiện hiện tại — `GET /weather`.
