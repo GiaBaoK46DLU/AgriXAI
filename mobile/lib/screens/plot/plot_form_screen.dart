@@ -21,14 +21,19 @@ import '../../widgets/image_slot.dart';
 import '../../widgets/inputs.dart';
 import '../../widgets/misc.dart';
 
-/// **09 Thêm / sửa lô đất** — UC-M4, UC-M5.
+/// **09 Sửa lô đất** — UC-M5.
 ///
-/// `POST /plots` khi thêm mới, `PATCH /plots/{id}` khi sửa.
+/// ⚠️ Chốt 30/09/2026: bỏ hẳn nhánh TẠO lô đất — chỉ quản trị tạo/gán lô đất
+/// qua web-admin (`PlotCreate.owner_id` nay bắt buộc, xem
+/// `backend/app/api/v1/endpoints/plots.py`). Màn này chỉ còn dùng để nông dân
+/// canh tác trên lô đã nhận: đổi cây trồng, trạng thái, ghi chú, ảnh. Tên, mã
+/// PUC, khu vực, diện tích do quản trị đặt lúc gán lô nên chỉ hiển thị, không
+/// cho sửa — backend cũng chặn (`FARMER_EDITABLE_FIELDS`) nếu cố gửi lên.
+/// Nối `PATCH /plots/{id}`.
 class PlotFormScreen extends StatefulWidget {
-  const PlotFormScreen({super.key, this.plot});
+  const PlotFormScreen({required this.plot, super.key});
 
-  /// `null` là thêm mới.
-  final Plot? plot;
+  final Plot plot;
 
   @override
   State<PlotFormScreen> createState() => _PlotFormScreenState();
@@ -41,24 +46,14 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
     'Lưu trữ',
   ];
 
-  late final TextEditingController _name =
-      TextEditingController(text: widget.plot?.name);
-  late final TextEditingController _puc =
-      TextEditingController(text: widget.plot?.puc);
-  late final TextEditingController _region =
-      TextEditingController(text: widget.plot?.region);
-  late final TextEditingController _area = TextEditingController(
-    text: widget.plot?.areaM2 == null
-        ? ''
-        : widget.plot!.areaM2!.toStringAsFixed(0),
-  );
-  final TextEditingController _crop = TextEditingController(text: 'Cà chua');
-  final TextEditingController _note = TextEditingController();
+  late final TextEditingController _crop =
+      TextEditingController(text: plotCropLabel(widget.plot.crop));
+  late final TextEditingController _note =
+      TextEditingController(text: widget.plot.note);
 
-  late String _status = widget.plot?.status ?? 'Đang canh tác';
+  late String _status = widget.plot.status;
 
-  /// Ảnh mới chọn nhưng chưa tải lên — `null` nghĩa là giữ nguyên ảnh cũ
-  /// (nếu sửa) hoặc chưa gán ảnh nào (nếu thêm mới).
+  /// Ảnh mới chọn nhưng chưa tải lên — `null` nghĩa là giữ nguyên ảnh cũ.
   File? _pickedImage;
 
   bool _saving = false;
@@ -76,19 +71,15 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
 
   @override
   void dispose() {
-    _name.dispose();
-    _puc.dispose();
-    _region.dispose();
-    _area.dispose();
     _crop.dispose();
     _note.dispose();
     super.dispose();
   }
 
   Future<void> _save() async {
-    final String name = _name.text.trim();
-    if (name.isEmpty) {
-      setState(() => _error = 'Nhập tên lô đất');
+    final String crop = _crop.text.trim();
+    if (crop.isEmpty) {
+      setState(() => _error = 'Nhập cây trồng đang canh tác');
       return;
     }
 
@@ -97,27 +88,15 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
       _error = null;
     });
 
+    final int plotId = widget.plot.id;
     final Map<String, dynamic> payload = <String, dynamic>{
-      'name': name,
-      'region': _region.text.trim().isEmpty ? null : _region.text.trim(),
-      'area_m2': double.tryParse(_area.text.trim()),
+      'crop': crop,
       'status': plotStatusRawFromLabel(_status),
       'note': _note.text.trim().isEmpty ? null : _note.text.trim(),
     };
 
     try {
-      int plotId;
-      if (widget.plot == null) {
-        final String puc = _puc.text.trim();
-        final dynamic created = await session.apiClient.postJson('/plots', <String, dynamic>{
-          ...payload,
-          if (puc.isNotEmpty) 'puc': puc,
-        });
-        plotId = (created as Map<String, dynamic>)['id'] as int;
-      } else {
-        plotId = widget.plot!.id;
-        await session.apiClient.patchJson('/plots/$plotId', payload);
-      }
+      await session.apiClient.patchJson('/plots/$plotId', payload);
 
       final File? image = _pickedImage;
       if (image != null) {
@@ -146,6 +125,8 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Plot plot = widget.plot;
+
     return AgriScreen(
       child: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(
@@ -158,7 +139,7 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             ScreenHeader(
-              title: widget.plot == null ? 'Thêm lô đất' : 'Sửa lô đất',
+              title: 'Sửa lô đất',
               onBack: () => Navigator.of(context).pop(),
             ),
             const SizedBox(height: 18),
@@ -170,7 +151,7 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
                 child: ImageSlot(
                   placeholder: 'Chưa có ảnh lô đất',
                   file: _pickedImage,
-                  imageUrl: _pickedImage == null ? widget.plot?.imageUrl : null,
+                  imageUrl: _pickedImage == null ? plot.imageUrl : null,
                 ),
               ),
             ),
@@ -211,58 +192,25 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  const FieldLabel('Tên lô đất'),
-                  GlassField(
-                    controller: _name,
-                    hintText: 'Ví dụ: Vườn nhà trên',
-                  ),
-                  const SizedBox(height: 15),
-                  const FieldLabel('Mã vùng trồng (PUC)'),
-                  GlassField(
-                    controller: _puc,
-                    hintText: 'Để trống — hệ thống tự sinh',
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 7, left: 6),
-                    child: Text(
-                      'Định dạng PUC-YYMM-XXXX.',
-                      style: agriStyle(size: 12, color: AgriColors.inkA(.6)),
+                  Text(
+                    'Do quản trị gán — không sửa được',
+                    style: agriStyle(
+                      size: 12,
+                      weight: FontWeight.w600,
+                      color: AgriColors.inkA(.6),
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  const FieldLabel('Khu vực'),
+                  const SizedBox(height: 10),
+                  _readOnlyRow('Tên lô đất', plot.name),
+                  _readOnlyRow('Mã vùng trồng', plot.puc),
+                  _readOnlyRow('Khu vực', plot.region),
+                  _readOnlyRow('Diện tích', plot.area),
+                  const SizedBox(height: 6),
+                  const Divider(height: 24),
+                  const FieldLabel('Cây trồng'),
                   GlassField(
-                    controller: _region,
-                    hintText: 'Xã / phường, tỉnh',
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            const FieldLabel('Diện tích (m²)'),
-                            GlassField(
-                              controller: _area,
-                              hintText: '1200',
-                              keyboardType: TextInputType.number,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 11),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            const FieldLabel('Cây trồng'),
-                            GlassField(controller: _crop),
-                          ],
-                        ),
-                      ),
-                    ],
+                    controller: _crop,
+                    hintText: 'Ví dụ: Cà chua',
                   ),
                   const SizedBox(height: 15),
                   const FieldLabel('Trạng thái', bottomGap: 8),
@@ -311,6 +259,27 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _readOnlyRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              label,
+              style: agriStyle(size: 13.5, color: AgriColors.inkA(.68)),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            value,
+            style: agriStyle(size: 13.5, weight: FontWeight.w700),
+          ),
+        ],
       ),
     );
   }

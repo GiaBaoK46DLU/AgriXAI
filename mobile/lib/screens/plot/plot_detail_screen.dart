@@ -11,7 +11,6 @@ import '../../services/session.dart' as session;
 import '../../widgets/agri_icons.dart';
 import '../../widgets/agri_screen.dart';
 import '../../widgets/buttons.dart';
-import '../../widgets/glass_bottom_bar.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/image_slot.dart';
 import '../../widgets/misc.dart';
@@ -22,9 +21,12 @@ import 'plot_form_screen.dart';
 
 /// **08 Chi tiết lô đất** — UC-M3, UC-M5.
 ///
-/// Nối `GET /plots/{id}`, `GET /diagnoses?plot_id=`, `DELETE /plots/{id}`.
-/// Bệnh mức Nặng gần nhất trên lô này hiện banner "Cần xử lý trong 24 giờ" —
-/// xem CLAUDE.md.
+/// Nối `GET /plots/{id}`, `GET /diagnoses?plot_id=`. Bệnh mức Nặng gần nhất
+/// trên lô này hiện banner "Cần xử lý trong 24 giờ" — xem CLAUDE.md.
+///
+/// ⚠️ Chốt 30/09/2026: bỏ nút xoá lô đất khỏi mobile — chỉ quản trị xoá được
+/// (`DELETE /plots/{id}` nay 403 với nông dân), nông dân chỉ canh tác trên lô
+/// đã nhận.
 class PlotDetailScreen extends StatefulWidget {
   const PlotDetailScreen({required this.plotId, super.key});
 
@@ -37,7 +39,6 @@ class PlotDetailScreen extends StatefulWidget {
 class _PlotDetailScreenState extends State<PlotDetailScreen> {
   bool _loading = true;
   String? _error;
-  bool _deleting = false;
   Plot? _plot;
   List<DiagnosisEntry> _rows = <DiagnosisEntry>[];
   int _total = 0;
@@ -112,50 +113,6 @@ class _PlotDetailScreenState extends State<PlotDetailScreen> {
     }
   }
 
-  Future<void> _confirmDelete() async {
-    final bool? confirmed = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Xoá lô đất?'),
-        content: Text(
-          'Lịch sử chẩn đoán trên lô "${_plot?.name}" vẫn được giữ lại, chỉ '
-          'không còn gắn với lô đất nào nữa.',
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Huỷ'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Xoá'),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true || !mounted) return;
-
-    setState(() => _deleting = true);
-    try {
-      await session.apiClient.delete('/plots/${widget.plotId}');
-      if (!mounted) return;
-      AppNav.toTab(context, AgriTab.plots);
-    } on ApiException catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.message)));
-      }
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Không xoá được lô đất, thử lại sau.')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _deleting = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_loading) {
@@ -191,7 +148,7 @@ class _PlotDetailScreenState extends State<PlotDetailScreen> {
       ('Mã vùng trồng', plot.puc),
       ('Khu vực', plot.region),
       ('Diện tích', plot.area),
-      ('Cây trồng', 'Cà chua'),
+      ('Cây trồng', plotCropLabel(plot.crop)),
       ('Trạng thái', plot.status),
       ('Số lần chẩn đoán', '$_total'),
     ];
@@ -230,18 +187,6 @@ class _PlotDetailScreenState extends State<PlotDetailScreen> {
                   PrimarySolidButton(
                     label: 'Chẩn đoán cho lô này',
                     onPressed: _diagnoseForPlot,
-                  ),
-                  const SizedBox(height: 10),
-                  GlassPillButton(
-                    label: _deleting ? 'Đang xoá…' : 'Xoá lô đất',
-                    onPressed: _deleting ? () {} : _confirmDelete,
-                    minHeight: 48,
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w700,
-                    color: AgriColors.accentInkDeep,
-                    gradient: agriDangerGradient,
-                    border: Border.all(color: AgriColors.accentA(.55)),
-                    style: GlassStyle.control,
                   ),
                   const SizedBox(height: 22),
                   Text(

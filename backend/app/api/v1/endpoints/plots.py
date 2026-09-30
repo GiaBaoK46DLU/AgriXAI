@@ -1,7 +1,14 @@
 """Quản lý lô đất.
 
-Nguyên tắc phân quyền áp dụng cho toàn bộ file: nông dân chỉ thấy và sửa được
-lô đất của chính mình; quản trị thấy tất cả.
+Nguyên tắc phân quyền áp dụng cho toàn bộ file: nông dân chỉ thấy được lô đất
+của chính mình; quản trị thấy tất cả.
+
+⚠️ Chốt 30/09/2026 — đổi nghiệp vụ: chỉ quản trị được TẠO và XOÁ lô đất (qua
+web-admin), gán thẳng cho một nông dân cụ thể lúc tạo. Nông dân không tự tạo
+lô đất trên mobile nữa, chỉ "nhận" lô do quản trị gán (lô tự xuất hiện trong
+danh sách của họ) rồi tự canh tác: sửa cây trồng, trạng thái, ghi chú, ảnh lô
+đất. Tên, mã PUC, khu vực, diện tích do quản trị đặt lúc gán, nông dân không
+sửa được. Xem CLAUDE.md.
 """
 
 from __future__ import annotations
@@ -124,16 +131,24 @@ def list_plots(
 @router.post("", response_model=PlotOut, status_code=status.HTTP_201_CREATED,
              summary="Tạo lô đất mới")
 def create_plot(payload: PlotCreate, db: DbSession, user: CurrentUser):
-    owner_id = user.id
-    if payload.owner_id is not None:
-        if not user.is_admin:
-            raise HTTPException(
-                status.HTTP_403_FORBIDDEN,
-                "Chỉ quản trị mới được tạo lô đất cho người khác",
-            )
-        if db.get(User, payload.owner_id) is None:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, "Không tìm thấy chủ lô đất")
-        owner_id = payload.owner_id
+    """Chỉ quản trị được gọi — nông dân không tự tạo lô đất (chốt 30/09/2026).
+
+    Quản trị luôn phải chỉ định ``owner_id`` (nông dân nhận lô), vì lô đất
+    không tồn tại ở trạng thái "chưa có chủ" trong mô hình hiện tại.
+    """
+    if not user.is_admin:
+        raise HTTPException(
+            status.HTTP_403_FORBIDDEN,
+            "Chỉ quản trị mới được tạo lô đất — liên hệ quản trị để được gán lô",
+        )
+    if payload.owner_id is None:
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_ENTITY,
+            "Phải chọn nông dân sở hữu lô đất",
+        )
+    if db.get(User, payload.owner_id) is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Không tìm thấy chủ lô đất")
+    owner_id = payload.owner_id
 
     puc = payload.puc or generate_puc(db)
     if db.scalar(select(Plot.id).where(Plot.puc == puc)) is not None:
@@ -152,10 +167,23 @@ def get_plot(plot_id: int, db: DbSession, user: CurrentUser):
     return get_owned_plot(db, plot_id, user)
 
 
+#: Nông dân chỉ được sửa những trường này trên lô đất đã nhận — tên, mã PUC,
+#: khu vực, diện tích do quản trị đặt lúc gán lô (chốt 30/09/2026).
+FARMER_EDITABLE_FIELDS = {"crop", "status", "note"}
+
+
 @router.patch("/{plot_id}", response_model=PlotOut, summary="Cập nhật lô đất")
 def update_plot(plot_id: int, payload: PlotUpdate, db: DbSession, user: CurrentUser):
     plot = get_owned_plot(db, plot_id, user)
-    for field, value in payload.model_dump(exclude_unset=True).items():
+    data = payload.model_dump(exclude_unset=True)
+    if not user.is_admin:
+        disallowed = sorted(set(data) - FARMER_EDITABLE_FIELDS)
+        if disallowed:
+            raise HTTPException(
+                status.HTTP_403_FORBIDDEN,
+                f"Nông dân không được sửa: {', '.join(disallowed)}",
+            )
+    for field, value in data.items():
         if value is not None:
             setattr(plot, field, value)
     db.commit()
@@ -200,7 +228,13 @@ def delete_plot(plot_id: int, db: DbSession, user: CurrentUser):
 
     Dữ liệu chẩn đoán là bằng chứng đã ghi nhận tại thời điểm đó, xoá lô đất
     không có nghĩa là chuyện đã xảy ra bị xoá.
+
+    Chỉ quản trị xoá được, kể cả với lô đất của chính nông dân đang canh tác
+    (chốt 30/09/2026) — quản trị quản lý vòng đời lô đất, nông dân chỉ canh
+    tác trên lô đã nhận.
     """
     plot = get_owned_plot(db, plot_id, user)
+    if not user.is_admin:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Chỉ quản trị mới được xoá lô đất")
     db.delete(plot)
     db.commit()

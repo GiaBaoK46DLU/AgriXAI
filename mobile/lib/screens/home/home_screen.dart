@@ -19,7 +19,6 @@ import '../../widgets/misc.dart';
 import '../../widgets/rows.dart';
 import '../capture/capture_screen.dart';
 import '../plot/plot_detail_screen.dart';
-import '../plot/plot_form_screen.dart';
 import '../result/result_screen.dart';
 
 const List<String> _weekdayVi = <String>[
@@ -118,11 +117,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (mounted) _load();
   }
 
-  Future<void> _addPlot() async {
-    await AppNav.push(context, (_) => const PlotFormScreen());
-    if (mounted) _load();
-  }
-
   Future<void> _openDiagnosis(DiagnosisEntry entry) async {
     try {
       final DiagnosisCase detail = await session.diagnosisService.get(entry.id);
@@ -167,17 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         AppNav.push(context, (_) => const CaptureScreen()),
                   ),
                   const SizedBox(height: 24),
-                  SectionHeader(
-                    title: 'Lô đất của bạn',
-                    action: GlassPillButton(
-                      label: '+ Thêm lô',
-                      onPressed: _addPlot,
-                      minHeight: 40,
-                      fontSize: 13.5,
-                      color: AgriColors.primary,
-                      style: GlassStyle.field,
-                    ),
-                  ),
+                  const SectionHeader(title: 'Lô đất của bạn'),
                   const SizedBox(height: 12),
                   if (_loading)
                     const Padding(
@@ -190,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Text(
-                        'Chưa có lô đất nào — nhấn "+ Thêm lô" để bắt đầu theo dõi.',
+                        'Chưa có lô đất nào — quản trị viên sẽ gán lô đất cho bạn để bắt đầu theo dõi.',
                         style: agriStyle(size: 13.5, color: AgriColors.inkA(.68)),
                       ),
                     )

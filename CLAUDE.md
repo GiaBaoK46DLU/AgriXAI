@@ -893,6 +893,56 @@ không phải lỗi ứng dụng; ghi lại để không ai hoảng khi thấy l
 
 ---
 
+## Lô đất: chỉ quản trị tạo/xoá, nông dân chỉ nhận và canh tác (chốt 30/09/2026)
+
+Đổi nghiệp vụ theo yêu cầu trực tiếp của Học. Trước đây nông dân tự tạo lô đất
+cho chính mình ngay trên mobile (`POST /plots` không cần `owner_id`). Từ nay:
+
+- **Chỉ quản trị tạo lô đất**, luôn gán thẳng cho một nông dân cụ thể
+  (`owner_id` bắt buộc) — lô tự xuất hiện trong danh sách của nông dân đó,
+  không có bước "chấp nhận" nào thêm. Nông dân gọi `POST /plots` nhận thẳng
+  `403`. Không làm mô hình "lô chờ nhận" (owner_id rỗng) — không cần thiết vì
+  quản trị đã biết gán cho ai ngay lúc tạo, và làm vậy sẽ phải đổi `owner_id`
+  từ bắt buộc sang nullable, kéo theo một bộ tiêu chí lọc/hiển thị "lô chưa có
+  chủ" chưa ai yêu cầu.
+- **Nông dân chỉ sửa được `crop`/`status`/`note` trên lô đã nhận** (cây trồng,
+  trạng thái canh tác, ghi chú) cộng ảnh lô đất (endpoint ảnh riêng, không đổi).
+  Tên, mã PUC, khu vực, diện tích do quản trị đặt lúc gán, nông dân gửi lên bị
+  `403`. Đây chính là phần "nông dân tự chọn loại cây trồng và nhập thông tin
+  vào lô đất" — làm qua sửa, không phải qua tạo.
+- **Chỉ quản trị xoá lô đất** — nông dân gọi `DELETE /plots/{id}` trên lô của
+  chính mình cũng nhận `403`.
+- Backend: ba điểm trên nằm trong `backend/app/api/v1/endpoints/plots.py`
+  (`create_plot`, `update_plot` với hằng `FARMER_EDITABLE_FIELDS`,
+  `delete_plot`). Test cập nhật trong `backend/tests/test_api.py`.
+- Mobile: bỏ hẳn nút "+ Thêm lô" ở trang chủ (`home_screen.dart`) và nút "Xoá
+  lô đất" ở màn chi tiết (`plot_detail_screen.dart`). `PlotFormScreen` đổi
+  thành **chỉ sửa** (`plot` nay bắt buộc, không còn nhánh tạo mới) — tên/PUC/
+  khu vực/diện tích hiển thị dạng chữ, không còn ô nhập; chỉ còn sửa được cây
+  trồng, trạng thái, ghi chú, ảnh.
+- Web-admin **đã có sẵn** form tạo lô đất + chọn nông dân sở hữu
+  (`web-admin/app/admin/plots/{PlotFormModal.tsx,actions.ts}`, thêm từ commit
+  `9b5a337` ngày 16/09/2026 nhưng chưa từng được ghi vào file này) — đúng thứ
+  cần cho quyết định lần này, chỉ sửa lại comment cho khớp: trước đây khung là
+  "admin tạo hộ" (ngầm hiểu như một lối tắt cho trường hợp nông dân không tự
+  làm được), nay là **con đường duy nhất** tạo lô đất trong toàn hệ thống.
+- ⚠️ **Bug tiện thể sửa luôn vì đụng đúng chỗ:** `Plot` phía mobile
+  (`mobile/lib/models/models.dart`) trước đó không đọc trường `crop` lẫn
+  `note` từ JSON backend trả về — ô "Cây trồng" trên form cũ có hiển thị
+  nhưng **không hề được gửi lên** `PATCH /plots/{id}` (thiếu key `crop` trong
+  payload), và ô "Ghi chú" luôn khởi tạo rỗng dù lô đã có ghi chú từ trước.
+  Cả hai lỗi đó vô hại khi lô đất còn tự do tạo/sửa toàn bộ trường, nhưng từ
+  nay `crop`/`note` là hai trong ba trường **duy nhất** nông dân còn sửa được
+  nên bắt buộc phải đúng. Đã thêm `Plot.crop`/`Plot.note`, hàm hiển thị
+  `plotCropLabel()` (dịch giá trị mặc định `"tomato"` sang "Cà chua", giữ
+  nguyên các giá trị khác do nông dân tự gõ).
+- Đã kiểm: `backend` 65/65 test pass (thêm 5 test mới, bỏ 2 test cũ giả định
+  nông dân tự tạo lô), `flutter analyze` sạch, `web-admin` `npm run build`
+  qua strict TypeScript. **Chưa** bấm thử thật qua trình duyệt/máy ảo trong
+  phiên này.
+
+---
+
 ## Trạng thái hiện tại (20/08/2026 — model/backend/mobile cập nhật 07/09/2026)
 
 | Phần | Tình trạng |
