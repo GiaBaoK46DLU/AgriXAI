@@ -49,7 +49,14 @@ services:
       # Docker (lỗi có từ trước, không liên quan tới việc bật mô hình thật).
       - ./shared:/shared:ro
     environment:
-      - DATABASE_URL=postgresql://plantdx:plantdx@db:5432/plantdx
+      # Ghi rõ driver "+psycopg2" — để trống thì SQLAlchemy 2.1+ tự chọn
+      # dialect "psycopg" (v3, chưa cài trong requirements.txt) thay vì
+      # psycopg2-binary đang dùng, làm container crash-loop ngay lúc khởi
+      # động (ModuleNotFoundError: No module named 'psycopg'). backend/.env(.example)
+      # đã ghi rõ driver này từ trước; chỗ này trong compose là chỗ duy nhất
+      # còn sót — phát hiện 30/09/2026 lúc rebuild image sau một thời gian
+      # dài không đụng tới (requirements.txt không ghim phiên bản SQLAlchemy).
+      - DATABASE_URL=postgresql+psycopg2://plantdx:plantdx@db:5432/plantdx
       - MODEL_CHECKPOINT=/model/checkpoints/leaf_disease_detection_model.pt
       - MODEL_PACKAGE_DIR=/model
       - MODEL_DEVICE=cpu
