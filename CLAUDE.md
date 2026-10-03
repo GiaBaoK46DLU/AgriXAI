@@ -821,6 +821,19 @@ không — nhiều khả năng đây là đặc thù máy ảo (thiếu tích h�
 quảng cáo/Play Services của AVD) chứ không phải lỗi sẽ gặp trên máy nông dân
 thật, nhưng chưa có điều kiện xác minh trong phiên này.
 
+✅ **ĐÃ SỬA DỨT ĐIỂM (03/10/2026) — đoạn trên chẩn đoán sai nguyên nhân.** Lỗi
+152 không do cookie/userAgent/quảng cáo, mà do **YouTube (từ giữa 2025) bắt trình phát
+nhúng phải có `Referer`/`origin` định danh nơi nhúng**. `youtube_player_iframe` nạp
+trang chứa với origin cố định `https://www.youtube.com` và dùng luôn giá trị đó làm
+`host` của iframe, nên không chỉnh được qua tham số. Đã bỏ gói đó, tự viết
+`mobile/lib/widgets/inline_youtube_player.dart`: `webview_flutter` nạp một `<iframe>`
+embed chuẩn với `baseUrl`/`origin`/`widget_referrer` = `https://<applicationId>`
+(hằng `kYoutubeEmbedReferrer`, **phải khớp `applicationId`** trong
+`android/app/build.gradle.kts` — đổi package thì sửa theo). Kèm: autoplay không cần
+chạm lần hai, toàn màn hình qua `setCustomWidgetCallbacks` (Back để thoát), bấm
+logo/tiêu đề YouTube trong khung thì mở app ngoài. Đã kiểm trên máy ảo Pixel_6: phát,
+dừng, toàn màn hình, thoát, mở ngoài đều chạy. Nút "Mở trên YouTube" giữ nguyên.
+
 **Tinh chỉnh ngưỡng vẽ overlay — tách khỏi ngưỡng tính mức độ nặng.** Thêm
 `OVERLAY_DRAW_THRESHOLD = 0.62` (backend/app/core/config.py), dùng riêng cho
 `overlay.draw_regions`/`has_visible_region`; `HEATMAP_THRESHOLD = 0.5` giữ

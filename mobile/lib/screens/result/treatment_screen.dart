@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
-import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart'
-    show PlatformWebViewCookieManagerCreationParams;
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../core/app_colors.dart';
 import '../../core/app_glass.dart';
@@ -18,6 +14,7 @@ import '../../widgets/buttons.dart';
 import '../../widgets/chips.dart';
 import '../../widgets/glass_bottom_bar.dart';
 import '../../widgets/glass_card.dart';
+import '../../widgets/inline_youtube_player.dart';
 import '../../widgets/misc.dart';
 import '../../widgets/rows.dart';
 import '../forum/forum_compose_screen.dart';
@@ -371,21 +368,17 @@ String? _youtubeVideoId(String url) {
 /// chất `SIGTRAP` là lỗi ở System WebView của máy/máy ảo, đổi gói Flutter
 /// không đảm bảo hết được rủi ro tận gốc, chỉ giảm bớt so với gói cũ.
 ///
-/// Chỉ dựng `YoutubePlayerController`/nạp WebView khi người dùng bấm play —
+/// Chỉ dựng `InlineYoutubePlayer`/nạp WebView khi người dùng bấm play —
 /// trước đó chỉ hiện ảnh thumbnail tĩnh (`Image.network` thường), để không
 /// tốn tài nguyên WebView cho những lượt xem màn này mà không xem video.
 ///
-/// ⚠️ 21/09/2026: một số video báo "This video is unavailable — Error code:
-/// 152" ngay khi phát trong WebView (dù cùng video mở được bình thường trong
-/// app YouTube thật) — đây là lỗi phía YouTube/Chrome WebView khi tài nguyên
-/// quảng cáo nội bộ (`static.doubleclick.net/instream/ad_status.js`) không
-/// tải được trong ngữ cảnh WebView nhúng, không phải lỗi cấu hình của app này
-/// (xem thảo luận cộng đồng ở package `youtube_player_flutter` issue #1087 —
-/// chưa có bản sửa chính thức). Đã thử set `userAgent` giống Chrome Mobile
-/// thật (mặc định `webview_flutter` dùng UA khác biệt) để giảm khả năng dính
-/// lỗi. Vì rủi ro này không loại trừ được hoàn toàn từ phía code Flutter, nút
-/// "Mở trên YouTube" luôn hiện cạnh tiêu đề mục — không chỉ sau khi bấm phát —
-/// để luôn có lối thoát thủ công không phụ thuộc trạng thái WebView.
+/// ⚠️ 21/09/2026 mọi video báo "Video unavailable — Error code: 152" khi
+/// phát trong app. Nguyên nhân thật (sửa 03/10/2026): YouTube bắt trình phát
+/// nhúng phải có `Referer`/`origin` định danh nơi nhúng, còn
+/// `youtube_player_iframe` cố định trang chứa ở origin `www.youtube.com` —
+/// không phải userAgent hay cookie như phỏng đoán ban đầu. Nay phát bằng
+/// `InlineYoutubePlayer` (tự nhúng iframe, origin `https://<applicationId>`).
+/// Nút "Mở trên YouTube" cạnh tiêu đề mục vẫn giữ làm lối thoát thủ công.
 class _VideoBox extends StatefulWidget {
   const _VideoBox({required this.videoUrl});
 
@@ -396,7 +389,7 @@ class _VideoBox extends StatefulWidget {
 }
 
 class _VideoBoxState extends State<_VideoBox> {
-  YoutubePlayerController? _controller;
+  bool _playing = false;
 
   String? get _videoId =>
       widget.videoUrl == null ? null : _youtubeVideoId(widget.videoUrl!);
@@ -404,68 +397,27 @@ class _VideoBoxState extends State<_VideoBox> {
   @override
   void didUpdateWidget(covariant _VideoBox oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.videoUrl != widget.videoUrl) {
-      _controller?.close();
-      _controller = null;
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller?.close();
-    super.dispose();
+    if (oldWidget.videoUrl != widget.videoUrl) _playing = false;
   }
 
   void _startPlayback() {
-    final String? videoId = _videoId;
-    if (videoId == null) return;
-    final YoutubePlayerController controller = YoutubePlayerController.fromVideoId(
-      videoId: videoId,
-      autoPlay: true,
-      params: const YoutubePlayerParams(
-        showFullscreenButton: true,
-        userAgent:
-            'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 '
-            '(KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36',
-      ),
-    );
-    // Cookie bên thứ ba TẮT theo mặc định cho một WebView riêng lẻ trên
-    // Android (khác cờ "chấp nhận cookie" toàn cục, luôn bật) — trình phát
-    // YouTube cần cookie từ *.doubleclick.net (bộ máy quảng cáo nội bộ của
-    // YouTube tự tải khi khởi động player, không liên quan quảng cáo hiển thị
-    // cho người dùng) để hoàn tất, thiếu cookie đó gây lỗi "Video unavailable
-    // — Error code: 152" dù video hoàn toàn phát bình thường trong app YouTube
-    // thật hoặc Chrome (đã tự kiểm chứng cả hai không lỗi). Không có tác dụng
-    // trên iOS (`webview_flutter_wkwebview` không tách third-party cookie theo
-    // kiểu này) nên chỉ bật khi platform thật sự là Android.
-    // `webViewController` được đánh dấu @internal chỉ để cảnh báo lint, không
-    // phải giới hạn thật ở runtime; youtube_player_iframe không có API public
-    // nào khác để với tới `WebViewController` bên dưới cho việc bật cookie này.
-    // ignore: invalid_use_of_internal_member
-    final platform = controller.webViewController.platform;
-    if (platform is AndroidWebViewController) {
-      AndroidWebViewCookieManager(const PlatformWebViewCookieManagerCreationParams())
-          .setAcceptThirdPartyCookies(platform, true);
-    }
-    setState(() {
-      _controller = controller;
-    });
+    if (_videoId == null) return;
+    setState(() => _playing = true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final YoutubePlayerController? controller = _controller;
     final String? url = widget.videoUrl;
     final bool hasVideo = url != null;
+    final String? videoId = _videoId;
 
-    if (controller != null) {
+    if (_playing && videoId != null) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(24),
-        child: YoutubePlayer(controller: controller),
+        child: InlineYoutubePlayer(key: ValueKey<String>(videoId), videoId: videoId),
       );
     }
 
-    final String? videoId = _videoId;
     return AspectRatio(
       aspectRatio: 16 / 9,
       child: GlassCard(
