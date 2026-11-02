@@ -26,6 +26,14 @@ con số trong đó do nhóm tự đo trên checkpoint đang chạy, không trí
 | `bao-cao-mo-hinh-grad-cam-xai.md` | Lý do chọn kiến trúc EfficientNet-B0, cơ sở lý thuyết XAI, Grad-CAM, đối chiếu 7 bài báo đã đọc kỹ | #14 |
 | `bao-cao-domain-gap.md` | Mô hình chạy trên ảnh thật thì còn lại gì. **99,60 % → 30,81 %, tụt 68,79 điểm.** Kèm phân tích mô hình sụp về 3 lớp, bảng ngưỡng tin cậy, Grad-CAM trên nền phức tạp, và mục *Hạn chế* | #49 |
 
+## So sánh phương pháp XAI
+
+[Báo cáo so sánh Grad-CAM, LIME và SHAP](bao-cao-so-sanh-gradcam-lime-shap.docx)
+trình bày nguyên lý, kết quả chạy trên cùng checkpoint và căn cứ lựa chọn cho
+AgriXAI (issue #122). SHAP trong thực nghiệm là Kernel SHAP. Dữ liệu, hình đầu ra
+và [cách chạy lại](../model/outputs/xai-comparison-122/PHUONG_PHAP.md) nằm trong
+`model/outputs/xai-comparison-122/`.
+
 ## Kế hoạch và rà soát
 
 | File | Nội dung |
