@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "default_method": "gradcam_plusplus",
+  "baseline_method": "gradcam",
+  "non_square_inputs": [
+    {
+      "sample_id": "pv-bacterial_spot-3",
+      "predicted": "bacterial_spot",
+      "shape": [
+        270,
+        350
+      ],
+      "probabilities_equal": true
+    },
+    {
+      "sample_id": "pv-septoria_leaf_spot-2",
+      "predicted": "septoria_leaf_spot",
+      "shape": [
+        270,
+        350
+      ],
+      "probabilities_equal": true
+    },
+    {
+      "sample_id": "pd-septoria_leaf_spot-2",
+      "predicted": "early_blight",
+      "shape": [
+        270,
+        350
+      ],
+      "probabilities_equal": true
+    }
+  ],
+  "real_gate_rejection": {
+    "path": "data/negative/blur_dark_shake/0011_a144e43b14.jpg",
+    "sha256": "a144e43b1473106dab85a8f2b51d43c0dd2c74fb8d7fd09dbefbfc3fb8b4f679",
+    "disease_key": "not_tomato_leaf",
+    "heatmap_is_none": true
+  },
+  "with_heatmap_false": true
+}
