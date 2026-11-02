@@ -1,0 +1,19 @@
+{
+  "runs": [
+    {
+      "directory": "D:\\AgriXAI\\model\\outputs\\xai-comparison-122\\quality",
+      "images": 56,
+      "records": 504,
+      "empty_positive_maps": 0,
+      "checks": "passed"
+    },
+    {
+      "directory": "D:\\AgriXAI\\model\\outputs\\xai-comparison-122\\cpu",
+      "images": 19,
+      "records": 171,
+      "empty_positive_maps": 0,
+      "checks": "passed"
+    }
+  ],
+  "gallery_images": 56
+}

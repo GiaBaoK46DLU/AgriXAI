@@ -2,3 +2,6 @@
 # Windows — CRLF làm hỏng dòng shebang (#!/usr/bin/env bash) và ném lỗi kiểu
 # "bad interpreter". Ép LF bất kể core.autocrlf của máy nào clone repo.
 *.sh text eol=lf
+
+# Giữ đúng byte của mã thực nghiệm đã được ghi hash trong protocol.json (#122).
+model/src/evaluation/compare_xai.py text eol=lf
