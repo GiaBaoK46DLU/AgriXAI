@@ -1,0 +1,426 @@
+{
+  "checkpoint_sha256": "893d63f0657e0fe29b2d2fb04868f181cb574ad9c0a2323df4dd2504e3d9beb6",
+  "model_version": "efficientnet_b0-20260907-1443",
+  "device": "cpu",
+  "threads": 4,
+  "repeats": 3,
+  "overlay_threshold": 0.62,
+  "reference_version": "1.5.5",
+  "reference_source_sha256": "c535a218284ecffe6cc11e406aaec67d16fef2d813528e58462d25a96373efba",
+  "started_utc": "2026-11-02T10:44:22.337321+00:00",
+  "text_hash_mode": "sha256, CRLF normalized to LF",
+  "sources_sha256": {
+    "model/src/evaluation/compare_gradcam_plusplus.py": "38997acac721d88ee6899798ec87fb06771465c6337ec89c4d9d763c3fb9c30e",
+    "model/src/xai/gradcam.py": "47c239e03f4738ec815a1fbbeb8aa0267c9e303677952254af8d3ba8d88b5478",
+    "model/src/xai/gradcam_plusplus.py": "b4d5371df71106879e3d60e5479ba09b029a48a3d74dbe6b4f2f7ee4ef495aa8",
+    "model/src/predictor.py": "3737b3955e9286e87241ee99bafa1c488ca51a83cae1a92f045546530c16bed8",
+    "model/src/evaluation/compare_xai.py": "4b29416c968c14fe6c11469e0cca65691f394f4bc90029b107db42f27f3c2ec6",
+    "model/src/data/dataset.py": "b2661f81f4a32d04bb7d4354cdd20d6186222e72fd2bb1daba9f9cfe2c7f0da6",
+    "model/src/models/build.py": "3c42ba93e28d923dba7a2185e0ca36946a8a3d5a4d77384cb84b80eab08986b7",
+    "backend/app/services/xai/overlay.py": "770c56c62f048de67b7db4d57d416fee30d5c635a44b7d69d814624bd0a76260",
+    "backend/app/services/xai/explain.py": "9189b3d942323dc986c5facf4def8a43533065f0c390a0149f67255f50818bb0"
+  },
+  "torch": "2.13.0+cu126",
+  "numpy": "2.2.6",
+  "opencv": "5.0.0",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.1 (tags/v3.12.1:2305ca5, Dec  7 2023, 22:03:25) [MSC v.1937 64 bit (AMD64)]",
+  "samples": [
+    {
+      "sample_id": "pv-bacterial_spot-1",
+      "dataset": "pv",
+      "label": "bacterial_spot",
+      "path": "data/raw/Tomato___Bacterial_spot/0de30b71-8bd0-4270-a65b-7ae8befdd765___GCREC_Bact.Sp 6360.JPG",
+      "image_sha256": "8628290e5ce45225195bc1fc00eecb7155324b8a0108fcf7a20b589150dedd17"
+    },
+    {
+      "sample_id": "pv-bacterial_spot-2",
+      "dataset": "pv",
+      "label": "bacterial_spot",
+      "path": "data/raw/Tomato___Bacterial_spot/30dab838-d0e4-4028-9992-39a30009c167___GCREC_Bact.Sp 5829.JPG",
+      "image_sha256": "c7076b8810c92dff544ff0ae89387c160a880849528c38a4a90cc7e0278fd212"
+    },
+    {
+      "sample_id": "pv-bacterial_spot-3",
+      "dataset": "pv",
+      "label": "bacterial_spot",
+      "path": "data/raw/Tomato___Bacterial_spot/83ecce4f-12d0-4d5a-8c65-8f0b2b24de73___GCREC_Bact.Sp 3259.JPG",
+      "image_sha256": "b75dd93b35993c19ea374af67f308e3650f6ed93aa87cf9a5c31c0cb33344914"
+    },
+    {
+      "sample_id": "pv-early_blight-1",
+      "dataset": "pv",
+      "label": "early_blight",
+      "path": "data/raw/Tomato___Early_blight/3dab5935-91ca-489d-b4f4-127300fc527e___RS_Erly.B 6342.JPG",
+      "image_sha256": "48307e88c6676f9ef0b4716191179c2926e443d971abeedcc6b2f3693a3c1c74"
+    },
+    {
+      "sample_id": "pv-early_blight-2",
+      "dataset": "pv",
+      "label": "early_blight",
+      "path": "data/raw/Tomato___Early_blight/6485f47f-79cf-455f-9d6c-dbb04ddb580f___RS_Erly.B 7576.JPG",
+      "image_sha256": "972217015e89ad5119e86dc2fec28015e7980c370ef2910b42da5917947562a6"
+    },
+    {
+      "sample_id": "pv-early_blight-3",
+      "dataset": "pv",
+      "label": "early_blight",
+      "path": "data/raw/Tomato___Early_blight/676eb874-87e8-4f5d-bd38-013799c31996___RS_Erly.B 6458.JPG",
+      "image_sha256": "ba6f37720c74857281442b88debc489fc4e0442a8a17a2638f3f371741389dcd"
+    },
+    {
+      "sample_id": "pv-healthy-1",
+      "dataset": "pv",
+      "label": "healthy",
+      "path": "data/raw/Tomato___healthy/19e31197-5f6d-4925-975c-884bd4a94bfe___RS_HL 0291.JPG",
+      "image_sha256": "f740a65862a46ee6281cb7743017a6fa86aa7201fbd7864a24c3b84a5b2942ec"
+    },
+    {
+      "sample_id": "pv-healthy-2",
+      "dataset": "pv",
+      "label": "healthy",
+      "path": "data/raw/Tomato___healthy/b7e3a280-a031-475d-95b2-a1d2f0f49e02___GH_HL Leaf 279.JPG",
+      "image_sha256": "20ce85eb66508fc735f993e0d915000e9cba2c3d4d132ea9b46bd58268e69d70"
+    },
+    {
+      "sample_id": "pv-healthy-3",
+      "dataset": "pv",
+      "label": "healthy",
+      "path": "data/raw/Tomato___healthy/c5db6d9e-4821-4b05-8b44-80ba702a8401___GH_HL Leaf 373.JPG",
+      "image_sha256": "c1a3f8d42fcc2ac228daf5659b8a4b2c35bd626b1f5c69b1422d659ca78d9839"
+    },
+    {
+      "sample_id": "pv-late_blight-1",
+      "dataset": "pv",
+      "label": "late_blight",
+      "path": "data/raw/Tomato___Late_blight/24364b4f-3f9f-4166-860d-34a938d3d630___RS_Late.B 4986.JPG",
+      "image_sha256": "8e0c110cb93b0d12395035082bd2a98bc04e7dec94400e9d635f98d47fa7e151"
+    },
+    {
+      "sample_id": "pv-late_blight-2",
+      "dataset": "pv",
+      "label": "late_blight",
+      "path": "data/raw/Tomato___Late_blight/cd3a1b72-2538-4ed0-9b04-6485b4f0ab0c___RS_Late.B 7149.JPG",
+      "image_sha256": "79f6002c7515b7eb38ac072a5483d42bf723a65912759d08f447281c1a290e77"
+    },
+    {
+      "sample_id": "pv-late_blight-3",
+      "dataset": "pv",
+      "label": "late_blight",
+      "path": "data/raw/Tomato___Late_blight/fabba25a-e191-47c5-a468-6acf744312e1___GHLB2 Leaf 8835.JPG",
+      "image_sha256": "d536c192c457165b0768f62d45b1f7e4b06d019ae50c9b3318d8ba68f668d773"
+    },
+    {
+      "sample_id": "pv-leaf_mold-1",
+      "dataset": "pv",
+      "label": "leaf_mold",
+      "path": "data/raw/Tomato___Leaf_Mold/0ae36892-5cb1-476e-8a51-b7fd8183a535___Crnl_L.Mold 6728.JPG",
+      "image_sha256": "33063ecffbdddcb0ca01d1838b32e22eaa0fb7c207db670c58e9f16ca01b47ea"
+    },
+    {
+      "sample_id": "pv-leaf_mold-2",
+      "dataset": "pv",
+      "label": "leaf_mold",
+      "path": "data/raw/Tomato___Leaf_Mold/0eda4dc5-7f7b-4e27-9e53-1e0326eef88e___Crnl_L.Mold 8850.JPG",
+      "image_sha256": "3cced4193e4b7a6e611fbe37a065a70e6f39f521aa9b566f2fc69d64c100bfef"
+    },
+    {
+      "sample_id": "pv-leaf_mold-3",
+      "dataset": "pv",
+      "label": "leaf_mold",
+      "path": "data/raw/Tomato___Leaf_Mold/3a7f507d-76d7-4489-baf4-2e4dad468173___Crnl_L.Mold 8784.JPG",
+      "image_sha256": "7f88cf954f9160f863f40ba1d5902f3cd42b459652af1ac4aa9e81f50fe79550"
+    },
+    {
+      "sample_id": "pv-mosaic_virus-1",
+      "dataset": "pv",
+      "label": "mosaic_virus",
+      "path": "data/raw/Tomato___Tomato_mosaic_virus/457f4e02-65b3-4e02-ba87-7f20ab44f89e___PSU_CG 2180.JPG",
+      "image_sha256": "0a5d7e4d8ac79d1423b67c41f1cb5268f656a041f218701a3de47b003c4cb6b2"
+    },
+    {
+      "sample_id": "pv-mosaic_virus-2",
+      "dataset": "pv",
+      "label": "mosaic_virus",
+      "path": "data/raw/Tomato___Tomato_mosaic_virus/526f2f56-2290-422d-a454-d576aa72d466___PSU_CG 2057.JPG",
+      "image_sha256": "ba6092b2c1a12036cbc552b13c1d0d241e9b41d5e5243f7ffd8981dfa86c6ae3"
+    },
+    {
+      "sample_id": "pv-mosaic_virus-3",
+      "dataset": "pv",
+      "label": "mosaic_virus",
+      "path": "data/raw/Tomato___Tomato_mosaic_virus/9c96bbe3-5599-4e31-996f-ae37d75872f5___PSU_CG 2215.JPG",
+      "image_sha256": "f256e1b4f895b55e76fca3e3d9de42e1d9973ca869dc351326de9e12ef4c8592"
+    },
+    {
+      "sample_id": "pv-septoria_leaf_spot-1",
+      "dataset": "pv",
+      "label": "septoria_leaf_spot",
+      "path": "data/raw/Tomato___Septoria_leaf_spot/0d12d6ee-bc90-413e-8638-e476cd8ba8ee___Keller.St_CG 1840.JPG",
+      "image_sha256": "f22e3370e712329497bf6d867e6b8f93f107907438d43b4c7ea908097aeef106"
+    },
+    {
+      "sample_id": "pv-septoria_leaf_spot-2",
+      "dataset": "pv",
+      "label": "septoria_leaf_spot",
+      "path": "data/raw/Tomato___Septoria_leaf_spot/689b643a-89fa-4a7f-93a3-edd9d2d5ac6a___Matt.S_CG 2517.JPG",
+      "image_sha256": "0aff441b077dca39b9377f69edc5d684e5a70376fa8be2cb79b822aab734bb4a"
+    },
+    {
+      "sample_id": "pv-septoria_leaf_spot-3",
+      "dataset": "pv",
+      "label": "septoria_leaf_spot",
+      "path": "data/raw/Tomato___Septoria_leaf_spot/d67b224c-b089-430d-b185-dfae7b7a5a9e___Keller.St_CG 1950.JPG",
+      "image_sha256": "11167d388e72f129d7d13794cb78d34ee065fef72d4c1c2a80fd07dfa861e0aa"
+    },
+    {
+      "sample_id": "pv-spider_mites-1",
+      "dataset": "pv",
+      "label": "spider_mites",
+      "path": "data/raw/Tomato___Spider_mites Two-spotted_spider_mite/3359d10c-2afd-4734-8a71-d19d25a041a6___Com.G_SpM_FL 9016.JPG",
+      "image_sha256": "0a7e9f87da902315c92677420cf1d803667267b13a0e09aaa61de05cf3f904b9"
+    },
+    {
+      "sample_id": "pv-spider_mites-2",
+      "dataset": "pv",
+      "label": "spider_mites",
+      "path": "data/raw/Tomato___Spider_mites Two-spotted_spider_mite/74433374-b410-426c-8752-c0e4ea7c9f71___Com.G_SpM_FL 8641.JPG",
+      "image_sha256": "262a727e2b4e1fb6755efd920bd42b11a03fccd386fc244cc7e9eacc7bb85422"
+    },
+    {
+      "sample_id": "pv-spider_mites-3",
+      "dataset": "pv",
+      "label": "spider_mites",
+      "path": "data/raw/Tomato___Spider_mites Two-spotted_spider_mite/9e86198b-55c7-45b2-821f-42e0ca05312c___Com.G_SpM_FL 9417.JPG",
+      "image_sha256": "06cf8cd54f4cd90cef0bea3dbb65214d7662c2e5129e961a45c820d8933c0213"
+    },
+    {
+      "sample_id": "pv-target_spot-1",
+      "dataset": "pv",
+      "label": "target_spot",
+      "path": "data/raw/Tomato___Target_Spot/02b891ad-b252-4f46-8618-89a0c36193c2___Com.G_TgS_FL 0038.JPG",
+      "image_sha256": "92518f32b296e94067e4c027e5b7a8b772952f86d394c8cc5590e8381b4fb6f9"
+    },
+    {
+      "sample_id": "pv-target_spot-2",
+      "dataset": "pv",
+      "label": "target_spot",
+      "path": "data/raw/Tomato___Target_Spot/65fc846a-ffd1-49ca-9f1e-1050ac94c196___Com.G_TgS_FL 8093.JPG",
+      "image_sha256": "d9268fe30cbfbbc037ebd98239a6055434d55e36f1a17648979a4327cefd9aaf"
+    },
+    {
+      "sample_id": "pv-target_spot-3",
+      "dataset": "pv",
+      "label": "target_spot",
+      "path": "data/raw/Tomato___Target_Spot/facfaefa-628d-4e71-8174-9aa24d43724d___Com.G_TgS_FL 9767.JPG",
+      "image_sha256": "2145d52b203ade310c90102abeb37c793b63b158ec130eb51dcb0ec1366d7d04"
+    },
+    {
+      "sample_id": "pv-yellow_leaf_curl_virus-1",
+      "dataset": "pv",
+      "label": "yellow_leaf_curl_virus",
+      "path": "data/raw/Tomato___Tomato_Yellow_Leaf_Curl_Virus/39543d85-1d1d-46a7-8f5e-558dab77f7f6___UF.GRC_YLCV_Lab 01450.JPG",
+      "image_sha256": "071fecf90955f2c555d4457f05b576436ce9da37f9c68c7dfe63f0c008aa84db"
+    },
+    {
+      "sample_id": "pv-yellow_leaf_curl_virus-2",
+      "dataset": "pv",
+      "label": "yellow_leaf_curl_virus",
+      "path": "data/raw/Tomato___Tomato_Yellow_Leaf_Curl_Virus/e7793d98-ca6c-4030-8b4a-4bd506cde757___YLCV_NREC 2268.JPG",
+      "image_sha256": "de177c97ba71fecef047c11ef6ac561dfc2dbd16d70b0df1ef0481c66354b1ed"
+    },
+    {
+      "sample_id": "pv-yellow_leaf_curl_virus-3",
+      "dataset": "pv",
+      "label": "yellow_leaf_curl_virus",
+      "path": "data/raw/Tomato___Tomato_Yellow_Leaf_Curl_Virus/f8dfef7f-9548-4e77-b9d6-69854ed088ce___UF.GRC_YLCV_Lab 01856.JPG",
+      "image_sha256": "bd4b87e4e8442062f17ea2bb017cfe9f9a56aedae4bd4d7891a0ef6ff2b4cbfb"
+    },
+    {
+      "sample_id": "pd-bacterial_spot-1",
+      "dataset": "pd",
+      "label": "bacterial_spot",
+      "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/Tom_Bact3.jpg",
+      "image_sha256": "abe1259ccd33542f7cd9c14ecef8a995b601272c0808b52daade7f153fdc5b66"
+    },
+    {
+      "sample_id": "pd-bacterial_spot-2",
+      "dataset": "pd",
+      "label": "bacterial_spot",
+      "path": "data/field/plantdoc/train/Tomato leaf bacterial spot/250_cb=20100819110637.jpg",
+      "image_sha256": "2d25dc83d793494f55bd1174b7f196ea0dd8ea9a2750ff1f58ceb6ccd4ed73d8"
+    },
+    {
+      "sample_id": "pd-bacterial_spot-3",
+      "dataset": "pd",
+      "label": "bacterial_spot",
+      "path": "data/field/plantdoc/train/Tomato leaf bacterial spot/bacterial-speck-tomato1x2400-275mmny.jpg",
+      "image_sha256": "ac2ac4e037fa3a21ab41ca613fd1d2825eb5b0d8f1d4392be928c048a94252b6"
+    },
+    {
+      "sample_id": "pd-early_blight-1",
+      "dataset": "pd",
+      "label": "early_blight",
+      "path": "data/field/plantdoc/train/Tomato Early blight leaf/Early-blight.jpg",
+      "image_sha256": "55c2e84169c7e645d9c23583e6ad8eaf19e930ee99b33b38a8c4c60e639e0099"
+    },
+    {
+      "sample_id": "pd-early_blight-2",
+      "dataset": "pd",
+      "label": "early_blight",
+      "path": "data/field/plantdoc/train/Tomato Early blight leaf/FS547-2-big.jpg",
+      "image_sha256": "842ea84ed99308608449bbae66957a7115a30988be1518afe4c253f2897913ac"
+    },
+    {
+      "sample_id": "pd-early_blight-3",
+      "dataset": "pd",
+      "label": "early_blight",
+      "path": "data/field/plantdoc/train/Tomato Early blight leaf/Original_e-blight.JPG.rend.hgtvcom.966.725.jpeg.jpg",
+      "image_sha256": "6b1819bc9dee9e1436e94b6a431183cca88a28744a2bfa25aa1d986039c29fa1"
+    },
+    {
+      "sample_id": "pd-healthy-1",
+      "dataset": "pd",
+      "label": "healthy",
+      "path": "data/field/plantdoc/test/Tomato leaf/Tomato_leaf.jpg",
+      "image_sha256": "9cffe92d5f898fa2bb96e78f63ef46059b710a0f2d97054f1e534a5619778b13"
+    },
+    {
+      "sample_id": "pd-healthy-2",
+      "dataset": "pd",
+      "label": "healthy",
+      "path": "data/field/plantdoc/train/Tomato leaf/003.JPG.jpg",
+      "image_sha256": "b070fe8ff66dc8071997ee06f13d31ff5bf7c5348eab09a9f5ef39b76861b50f"
+    },
+    {
+      "sample_id": "pd-healthy-3",
+      "dataset": "pd",
+      "label": "healthy",
+      "path": "data/field/plantdoc/train/Tomato leaf/single-a-green-leaf-of-tomato-picture-id496662675_k=6&m=496662675&s=612x612&w=0&h=6zKfv022H_9cLQSIR_kpcOAlTeg1eIVtLBbc80PQA7Y=.jpg",
+      "image_sha256": "91a7140dcd6cf50ee2e7e89095b4b10da2554276c751bef20363a543e60172a7"
+    },
+    {
+      "sample_id": "pd-late_blight-1",
+      "dataset": "pd",
+      "label": "late_blight",
+      "path": "data/field/plantdoc/train/Tomato leaf late blight/late_blight_tomato_leaf.jpg",
+      "image_sha256": "e4c76f512198fc742905de176ec4f2f5611df51eddff2fc5f1ee9d2ebe479ef3"
+    },
+    {
+      "sample_id": "pd-late_blight-2",
+      "dataset": "pd",
+      "label": "late_blight",
+      "path": "data/field/plantdoc/train/Tomato leaf late blight/p1020076cs.jpg",
+      "image_sha256": "be9b106043b7d340ffaa915fcda01d7b1966100e3df8337a281f48df9ee80bc0"
+    },
+    {
+      "sample_id": "pd-late_blight-3",
+      "dataset": "pd",
+      "label": "late_blight",
+      "path": "data/field/plantdoc/train/Tomato leaf late blight/tomato-late-blight-conn-2015-137c.jpg",
+      "image_sha256": "6c402224e255ad2119dc600ac2714f207a4f59ab9192a588fe6c8f15bd2ce020"
+    },
+    {
+      "sample_id": "pd-leaf_mold-1",
+      "dataset": "pd",
+      "label": "leaf_mold",
+      "path": "data/field/plantdoc/train/Tomato mold leaf/23633262_1572609386115825_1396180255_o.jpg",
+      "image_sha256": "3d1839351811b5cc8e6bbb53cc8c4b0c750e6c2bac8bff6c0d02c301a2b18b09"
+    },
+    {
+      "sample_id": "pd-leaf_mold-2",
+      "dataset": "pd",
+      "label": "leaf_mold",
+      "path": "data/field/plantdoc/train/Tomato mold leaf/image233.jpg",
+      "image_sha256": "d234eb2911afd0e67f9a50437a87c5ee16cf89cf6131aeb134a05e1d14a49b75"
+    },
+    {
+      "sample_id": "pd-leaf_mold-3",
+      "dataset": "pd",
+      "label": "leaf_mold",
+      "path": "data/field/plantdoc/train/Tomato mold leaf/tomato-gray-leaf-spot.jpg",
+      "image_sha256": "e47ce4513a2f26b7ec55004f6f3c275e7795409351678165c08050bba5a7b00b"
+    },
+    {
+      "sample_id": "pd-mosaic_virus-1",
+      "dataset": "pd",
+      "label": "mosaic_virus",
+      "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/D%29AlfMov.jpg",
+      "image_sha256": "1dd06a9e3bd48713bb445a8588d8c38dec7643435e5c8b0652f584ac4eff64c1"
+    },
+    {
+      "sample_id": "pd-mosaic_virus-2",
+      "dataset": "pd",
+      "label": "mosaic_virus",
+      "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/Tomato-Mosaic-1wdr2jx-300x225.jpg",
+      "image_sha256": "4e1e9dd3e151f41b1a610024c4ca401a7c052f970723faf8b137edce24102e41"
+    },
+    {
+      "sample_id": "pd-mosaic_virus-3",
+      "dataset": "pd",
+      "label": "mosaic_virus",
+      "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/page_2.jpg",
+      "image_sha256": "995ada04ba135f89218ddc3f17617e59411b63ae5167c25ded94284aeda9d7e8"
+    },
+    {
+      "sample_id": "pd-septoria_leaf_spot-1",
+      "dataset": "pd",
+      "label": "septoria_leaf_spot",
+      "path": "data/field/plantdoc/train/Tomato Septoria leaf spot/PHOTO_1333642740144.jpg",
+      "image_sha256": "96de8e01c001bb855bfb8509a43d77f0b97a77bd730eebb99ca17bdba5bac46c"
+    },
+    {
+      "sample_id": "pd-septoria_leaf_spot-2",
+      "dataset": "pd",
+      "label": "septoria_leaf_spot",
+      "path": "data/field/plantdoc/train/Tomato Septoria leaf spot/Septoria-461x346.jpg",
+      "image_sha256": "2ab4760580398c3294a11039a7c21a73b6c2becef277e18d2e630a48da5f431b"
+    },
+    {
+      "sample_id": "pd-septoria_leaf_spot-3",
+      "dataset": "pd",
+      "label": "septoria_leaf_spot",
+      "path": "data/field/plantdoc/train/Tomato Septoria leaf spot/tomato-plant-is-infected-with-septoria-leaf-spot-1.jpg",
+      "image_sha256": "e409a55ef9717eeb960e447354dc3e90ceb6adfcf89193a8c984d254d8b4d4b0"
+    },
+    {
+      "sample_id": "pd-spider_mites-1",
+      "dataset": "pd",
+      "label": "spider_mites",
+      "path": "data/field/plantdoc/train/Tomato two spotted spider mites leaf/SpotSpeckBlightMite-1l4v879.jpg",
+      "image_sha256": "7a39980b4f6448958db22a28da7b409e74834a820592f7302b5547703ab61578"
+    },
+    {
+      "sample_id": "pd-spider_mites-2",
+      "dataset": "pd",
+      "label": "spider_mites",
+      "path": "data/field/plantdoc/train/Tomato two spotted spider mites leaf/comparing-diseases-4-canker-tomato-1y51ejs.jpg",
+      "image_sha256": "2c59025109d5e9a2cfba879cfde943fa3d238a4dbaf2e44763b986d6bef5c22d"
+    },
+    {
+      "sample_id": "pd-yellow_leaf_curl_virus-1",
+      "dataset": "pd",
+      "label": "yellow_leaf_curl_virus",
+      "path": "data/field/plantdoc/train/Tomato leaf yellow virus/IMG_2687.JPG.jpg",
+      "image_sha256": "9edbc0c343fc0c0a21f1d0e3afea684a3e63cdd3958ba0ba5ce2f05ddd002219"
+    },
+    {
+      "sample_id": "pd-yellow_leaf_curl_virus-2",
+      "dataset": "pd",
+      "label": "yellow_leaf_curl_virus",
+      "path": "data/field/plantdoc/train/Tomato leaf yellow virus/tlcv-tomato-leaf-curl-virus-symptoms-on-a-glasshouse-tomato-plant-bmyh62.jpg",
+      "image_sha256": "90c5fc48c9795258c3b989f9d9c0d29a11280e9d3298552229f67575311222b6"
+    },
+    {
+      "sample_id": "pd-yellow_leaf_curl_virus-3",
+      "dataset": "pd",
+      "label": "yellow_leaf_curl_virus",
+      "path": "data/field/plantdoc/train/Tomato leaf yellow virus/tomatoyellowleafcurlcropped.jpg",
+      "image_sha256": "f3856815a06e4465036ae051553878fe74a6eae1f19a709e01241ed644491bf5"
+    }
+  ],
+  "annotation_sha256": {
+    "pv": "47b2862b29f8a71a171799b823b40bfc7de0ba77a68afa139d7f1194aed45a0e",
+    "pd": "ad0e3f23a9afdcec1dee013f2ba0da03911efef9cd8920e4ae0355153a4c3e6c"
+  }
+}

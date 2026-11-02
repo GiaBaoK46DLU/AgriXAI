@@ -28,7 +28,7 @@ from PIL import Image
 
 from src.data.dataset import build_infer_transform
 from src.models.build import load_checkpoint, target_layer_for_gradcam
-from src.xai.gradcam import GradCAM
+from src.xai.gradcam_plusplus import create_cam
 
 
 NOT_LEAF_KEY = "not_tomato_leaf"
@@ -78,7 +78,9 @@ class DiseasePredictor:
     """
 
     def __init__(self, checkpoint_path: str | Path, device: str | None = None,
-                 gate_checkpoint: str | Path | None = None) -> None:
+                 gate_checkpoint: str | Path | None = None,
+                 xai_method: str | None = None,
+                 xai_config_path: str | Path | None = None) -> None:
         path = Path(checkpoint_path)
         if not path.exists():
             raise FileNotFoundError(
@@ -93,7 +95,19 @@ class DiseasePredictor:
         self.image_size: int = ckpt.get("image_size", 224)
         self.model_version: str = ckpt.get("model_version", path.stem)
         self.transform = build_infer_transform(self.image_size)
-        self._cam = GradCAM(self.model, target_layer_for_gradcam(self.model, ckpt["arch"]))
+        # Chỉ đọc cấu hình XAI; kích thước ảnh/kiến trúc vẫn lấy từ checkpoint.
+        # Backend tiếp tục dùng constructor cũ, không đổi hợp đồng Prediction.
+        if xai_method is None:
+            import yaml
+
+            config_path = (Path(xai_config_path) if xai_config_path is not None
+                           else Path(__file__).resolve().parents[1] / "configs/default.yaml")
+            with config_path.open(encoding="utf-8") as stream:
+                config = yaml.safe_load(stream) or {}
+            xai_method = config.get("xai", {}).get("method", "gradcam")
+        self.xai_method = xai_method
+        self._cam = create_cam(self.model, target_layer_for_gradcam(self.model, ckpt["arch"]),
+                               method=xai_method)
 
         self._gate = None
         if gate_checkpoint is not None:

@@ -1,0 +1,28 @@
+{
+  "document": "docx/bao-cao-nang-cap-gradcam-plus-plus.docx",
+  "document_sha256": "461b8737ab283fab2595ef46f6737ffca733dbfc5f984c998c27df64e950bbee",
+  "generator_sha256": "64a8acdcfbacb37cf05ab726f380f5ed49713e405d3149eab801ba60837814af",
+  "summary_sha256": "385ee99ae23b701ea56aa6bfa8b9bcd933549875252e8b8cc09d35ad199a7ee5",
+  "figures": {
+    "pd-septoria_leaf_spot-2-contour.png": "8fde36b4a2f51c4a8fa06f48a9ad339c917fcdb19f9567d3796c2999f3f2bb80",
+    "pd-septoria_leaf_spot-2-heatmap.png": "60f17d6cdd77037a21b6c0561422b9f111a570bcc42703eb147e57a9623a00fe",
+    "pv-septoria_leaf_spot-2-contour.png": "c7b3130a70487295b17dcf5db4efc0fbb6b7295b6eb1fca87c380e1a128caab4",
+    "pv-septoria_leaf_spot-2-heatmap.png": "7370d254e33c726ad2d1ed18bcf8de25d7119cb3ddae19ebf5cdbff704f6e77e"
+  },
+  "tables": 3,
+  "figures_count": 4,
+  "aggregation": "pooled by image",
+  "illustrations": {
+    "A": "pv-septoria_leaf_spot-2",
+    "B": "pd-septoria_leaf_spot-2"
+  },
+  "qa": {
+    "passed": true,
+    "rendered_pages": 4,
+    "tables_verified": 3,
+    "embedded_figures_verified": 4,
+    "aggregation": "pooled by image",
+    "visual_review": "all four pages"
+  },
+  "text_hash_mode": "sha256, CRLF normalized to LF"
+}
