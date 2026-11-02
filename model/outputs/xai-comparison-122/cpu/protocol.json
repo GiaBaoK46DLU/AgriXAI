@@ -1,0 +1,590 @@
+{
+  "started_utc": "2026-11-02T05:56:08.332582+00:00",
+  "config": {
+    "checkpoint_sha256": "893d63f0657e0fe29b2d2fb04868f181cb574ad9c0a2323df4dd2504e3d9beb6",
+    "script_sha256": "4b29416c968c14fe6c11469e0cca65691f394f4bc90029b107db42f27f3c2ec6",
+    "gradcam_source_sha256": "1dffd048a9ea3d0ac612b92b10d11ee50d7656a3fa74e17095c74d82d66205ae",
+    "catalog_sha256": "87d4f8c88daa3a903fe95d89b1b688cce67213a3da220266062d539cb0ff1c30",
+    "model_version": "efficientnet_b0-20260907-1443",
+    "image_size": 224,
+    "device": "cpu",
+    "batch_size": 32,
+    "threads": 4,
+    "seeds": [
+      42,
+      123,
+      2026
+    ],
+    "perturbations": 1000,
+    "slic_segments_requested": 50,
+    "slic_compactness": 10,
+    "baseline": "global image mean RGB rounded down to uint8",
+    "methods": [
+      "gradcam",
+      "lime",
+      "kernel_shap"
+    ],
+    "timing_only": true,
+    "sample_ids": [
+      "pv-bacterial_spot-1",
+      "pv-early_blight-1",
+      "pv-healthy-1",
+      "pv-late_blight-1",
+      "pv-leaf_mold-1",
+      "pv-mosaic_virus-1",
+      "pv-septoria_leaf_spot-1",
+      "pv-spider_mites-1",
+      "pv-target_spot-1",
+      "pv-yellow_leaf_curl_virus-1",
+      "pd-bacterial_spot-1",
+      "pd-early_blight-1",
+      "pd-healthy-1",
+      "pd-late_blight-1",
+      "pd-leaf_mold-1",
+      "pd-mosaic_virus-1",
+      "pd-septoria_leaf_spot-1",
+      "pd-spider_mites-1",
+      "pd-yellow_leaf_curl_virus-1"
+    ]
+  },
+  "python": "3.12.1",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 191 Stepping 2, GenuineIntel",
+  "cpu_count": 16,
+  "gpu": "NVIDIA GeForce RTX 4060 Ti",
+  "git_head": "6658e9e86c176d04a692f6921e2e4cac12f07aa1",
+  "versions": {
+    "torch": "2.13.0+cu126",
+    "torchvision": "0.28.0+cu126",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "scikit-learn": "1.7.2",
+    "scikit-image": "0.25.2",
+    "lime": "0.2.0.1",
+    "shap": "0.49.1"
+  },
+  "samples": [
+    {
+      "sample_id": "pv-bacterial_spot-1",
+      "dataset": "pv",
+      "label": "bacterial_spot",
+      "path": "data/raw/Tomato___Bacterial_spot/0de30b71-8bd0-4270-a65b-7ae8befdd765___GCREC_Bact.Sp 6360.JPG",
+      "image_sha256": "8628290e5ce45225195bc1fc00eecb7155324b8a0108fcf7a20b589150dedd17",
+      "annotation": {
+        "kieu_trieu_chung": "cuc_bo",
+        "ghi_chu": "Vien la chay nau gan het chu vi + vai dom sam tren phien. Vet benh nam o RIA la.",
+        "luoi": [
+          "NNNNNNNNNNNNNN",
+          "NNNNNNNLVVVVNN",
+          "NNNNNLLLLLLVVN",
+          "NNNNLLLLLLLVVN",
+          "NNNVLLLLLLLVVN",
+          "NNVVLLLLLLLVVN",
+          "NNVLLLLLLLVVVN",
+          "NNVLLLLLLLVVVN",
+          "NNVLLLLLLLLVVN",
+          "NNVLLLLLLLLVVN",
+          "NNVLLLLLLLVVNN",
+          "NNNVVLLLLLVVNN",
+          "NNNNNNLLNNNNNN",
+          "NNNNNNLLNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pv-early_blight-1",
+      "dataset": "pv",
+      "label": "early_blight",
+      "path": "data/raw/Tomato___Early_blight/3dab5935-91ca-489d-b4f4-127300fc527e___RS_Erly.B 6342.JPG",
+      "image_sha256": "48307e88c6676f9ef0b4716191179c2926e443d971abeedcc6b2f3693a3c1c74",
+      "annotation": {
+        "kieu_trieu_chung": "cuc_bo",
+        "ghi_chu": "Nhieu dom den dong tam co dien + quang vang quanh dom. Vet benh ro va phan bo khap phien.",
+        "luoi": [
+          "NNNNNNNNNNNNNN",
+          "NNNNNNLLVVLNNN",
+          "NNNNLVVLLLLLNN",
+          "NNNLLVVVLLLLLN",
+          "NNLVVLLLLLLLLN",
+          "NNLLVLLVVLLLVN",
+          "NLLLLVLLVVLVVN",
+          "NLLVLLLLVVVVVN",
+          "LLLLLLVVVLVVVN",
+          "LLLLLLVVLVVLNN",
+          "LLLLLLLLLNNNNN",
+          "LLLLLLLLLNNNNN",
+          "NNLLLLLLNNNNNN",
+          "NNNNNNLLNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pv-healthy-1",
+      "dataset": "pv",
+      "label": "healthy",
+      "path": "data/raw/Tomato___healthy/19e31197-5f6d-4925-975c-884bd4a94bfe___RS_HL 0291.JPG",
+      "image_sha256": "f740a65862a46ee6281cb7743017a6fa86aa7201fbd7864a24c3b84a5b2942ec",
+      "annotation": {
+        "kieu_trieu_chung": "khong_co_vet",
+        "ghi_chu": "La khoe. KHONG co o V nao — theo dinh nghia. Bong do dam o goc duoi-trai tinh la nen.",
+        "luoi": [
+          "NNNNNNLLLNNNNN",
+          "NNNNNLLLLLNNNN",
+          "NNNNLLLLLLLNNN",
+          "NNNLLLLLLLLNNN",
+          "NNLLLLLLLLLNNN",
+          "NNLLLLLLLLLNNN",
+          "NLLLLLLLLLLNNN",
+          "NLLLLLLLLLLNNN",
+          "NLLLLLLLLLLLNN",
+          "NLLLLLLLLLLLNN",
+          "NLLLLLLLLLLNNN",
+          "NLLLLLLLLLLNNN",
+          "NNNLLLNNNNNNNN",
+          "NNNLLNNNNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pv-late_blight-1",
+      "dataset": "pv",
+      "label": "late_blight",
+      "path": "data/raw/Tomato___Late_blight/24364b4f-3f9f-4166-860d-34a938d3d630___RS_Late.B 4986.JPG",
+      "image_sha256": "8e0c110cb93b0d12395035082bd2a98bc04e7dec94400e9d635f98d47fa7e151",
+      "annotation": {
+        "kieu_trieu_chung": "cuc_bo",
+        "ghi_chu": "Mang hoai tu nau den RAT LON chiem nua tren anh — dac trung moc suong muon. Nua duoi la mo xanh con lanh. Day la ca de nhat trong ca bo.",
+        "luoi": [
+          "NNNVVVNNNNNNNN",
+          "NNVVVVVVNNNNNN",
+          "NVVVVVVVVNNNNN",
+          "NNVVVVVVVNNNNN",
+          "NNVVVVVVVNNNNN",
+          "NNVVVVVVVLLNNN",
+          "NLVVVVVVVLLLNN",
+          "LLLLLVVVVLLLLN",
+          "LLLLVVLLLLLLLN",
+          "LLLLLLLLLLLLLN",
+          "LLLLLLLLLLLLNN",
+          "LLLLLLLLLLLNNN",
+          "LLLNNNLLNNNNNN",
+          "NNNNNNLNNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pv-leaf_mold-1",
+      "dataset": "pv",
+      "label": "leaf_mold",
+      "path": "data/raw/Tomato___Leaf_Mold/0ae36892-5cb1-476e-8a51-b7fd8183a535___Crnl_L.Mold 6728.JPG",
+      "image_sha256": "33063ecffbdddcb0ca01d1838b32e22eaa0fb7c207db670c58e9f16ca01b47ea",
+      "annotation": {
+        "kieu_trieu_chung": "khuech_tan",
+        "ghi_chu": "Phien la chinh bac mau vang-luc gan het (trieu chung moc la trai deu), doi lap voi hai la chet mau xanh dam o goc duoi-trai. V ~ ca phien -> ti le V/L khong doc duoc cho lop nay.",
+        "luoi": [
+          "NNNNNNNNNNNNNN",
+          "NNNNNNNNNVVVNN",
+          "NNNNNNNVVVVVNN",
+          "NNNNNNVVVVVNNN",
+          "NNNNNVVVVVVNNN",
+          "NNNNVVVVVVNNNN",
+          "NNLLVVVVVVNNNN",
+          "NNLLVVVVVVNNNN",
+          "NLLLVVVVVNNNNN",
+          "NLLLVVVVNNNNNN",
+          "NNLLVVVNNNNNNN",
+          "NNNLVVNNNNNNNN",
+          "NNNNNNNNNNNNNN",
+          "NNNNNNNNNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pv-mosaic_virus-1",
+      "dataset": "pv",
+      "label": "mosaic_virus",
+      "path": "data/raw/Tomato___Tomato_mosaic_virus/457f4e02-65b3-4e02-ba87-7f20ab44f89e___PSU_CG 2180.JPG",
+      "image_sha256": "0a5d7e4d8ac79d1423b67c41f1cb5268f656a041f218701a3de47b003c4cb6b2",
+      "annotation": {
+        "kieu_trieu_chung": "khuech_tan",
+        "ghi_chu": "La xanh dam, kham nhe + ria la nhan nheo bien dang. Trieu chung o day RAT kho khu tru — danh dau ca phien la V, cuong la giu L.",
+        "luoi": [
+          "NNNNNVVNNNNNNN",
+          "NNNNVVVVNNNNNN",
+          "NNNNVVVVVNNNNN",
+          "NNNNVVVVVNNNNN",
+          "NNNNVVVVVNNNNN",
+          "NNNNVVVVVNNNNN",
+          "NNNNVVVVVVVNNN",
+          "NNNNVVVVVVVNNN",
+          "NNNNNVVVVVNNNN",
+          "NNNNNNLLLNNNNN",
+          "NNNNNNLLNNNNNN",
+          "NNNNNNLLNNNNNN",
+          "NNNNNNNNNNNNNN",
+          "NNNNNNNNNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pv-septoria_leaf_spot-1",
+      "dataset": "pv",
+      "label": "septoria_leaf_spot",
+      "path": "data/raw/Tomato___Septoria_leaf_spot/0d12d6ee-bc90-413e-8638-e476cd8ba8ee___Keller.St_CG 1840.JPG",
+      "image_sha256": "f22e3370e712329497bf6d867e6b8f93f107907438d43b4c7ea908097aeef106",
+      "annotation": {
+        "kieu_trieu_chung": "cuc_bo",
+        "ghi_chu": "Nhieu dom nau sam ro rang + vang la quanh dom. Nua tren la vang nang hon nua duoi.",
+        "luoi": [
+          "NNNNNNNNNNNNNN",
+          "NNNNNNNNNNNNNN",
+          "NNNNVVVVVVVNNN",
+          "NNNVVVVVVVVNNN",
+          "NNNVVVLLVVVNNN",
+          "NNNVVLLLLVVNNN",
+          "NNVVVVLVVVVVNN",
+          "NLLLLLLVVLLLNN",
+          "NLVVVVVLLLLLNN",
+          "NLLLLLLLLLLLLN",
+          "NNLLLLLLLVVLLN",
+          "NNNLLLLLNNNNNN",
+          "NNNNNNNNNNNNNN",
+          "NNNNNNNNNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pv-spider_mites-1",
+      "dataset": "pv",
+      "label": "spider_mites",
+      "path": "data/raw/Tomato___Spider_mites Two-spotted_spider_mite/3359d10c-2afd-4734-8a71-d19d25a041a6___Com.G_SpM_FL 9016.JPG",
+      "image_sha256": "0a7e9f87da902315c92677420cf1d803667267b13a0e09aaa61de05cf3f904b9",
+      "annotation": {
+        "kieu_trieu_chung": "khuech_tan",
+        "ghi_chu": "CANH BAO: cham li ti do nhen do gan nhu KHONG nhin thay o 224px. Danh dau ca phien la V vi trieu chung trai deu, nhung day la gioi han cua phep do chu khong phai do chinh xac.",
+        "luoi": [
+          "NNNNNNNNNNNNNN",
+          "NNNNNNVVNNNNNN",
+          "NNNNNVVVVNNNNN",
+          "NNNNNVVVVVNNNN",
+          "NNNNVVVVVVNNNN",
+          "NNNNVVVVVVNNNN",
+          "NNNNVVVVVVNNNN",
+          "NNNNVVVVVVNNNN",
+          "NNNVVVVVVNNNNN",
+          "NNNVVVVVVNNNNN",
+          "NNNNVVVVNNNNNN",
+          "NNNNNVVVNNNNNN",
+          "NNNNNNNNNNNNNN",
+          "NNNNNNNNNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pv-target_spot-1",
+      "dataset": "pv",
+      "label": "target_spot",
+      "path": "data/raw/Tomato___Target_Spot/02b891ad-b252-4f46-8618-89a0c36193c2___Com.G_TgS_FL 0038.JPG",
+      "image_sha256": "92518f32b296e94067e4c027e5b7a8b772952f86d394c8cc5590e8381b4fb6f9",
+      "annotation": {
+        "kieu_trieu_chung": "cuc_bo",
+        "ghi_chu": "Chi 4-5 dom nau NHO tren mot phien la lon con xanh. Dien tich V rat be (~4% anh) — ca kho nhat cho Grad-CAM.",
+        "luoi": [
+          "NNNNLLNNNNNNNN",
+          "NNNNLLLNNNNNNN",
+          "NNNLLLLLNNNNNN",
+          "NNNLLLLLLNNNNN",
+          "NNLLLLLLLNNNNN",
+          "NNLLVLLVLLNNNN",
+          "NNLVVLLLLLNNNN",
+          "NLLLLVLLLLLNNN",
+          "NLVVLLLLLLLLNN",
+          "NLLLLLLLLLLLNN",
+          "NLLLLLLLLLLLNN",
+          "NNLLLLLLLLLLNN",
+          "NNNNLLLLLLLNNN",
+          "NNNNNLLNNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pv-yellow_leaf_curl_virus-1",
+      "dataset": "pv",
+      "label": "yellow_leaf_curl_virus",
+      "path": "data/raw/Tomato___Tomato_Yellow_Leaf_Curl_Virus/39543d85-1d1d-46a7-8f5e-558dab77f7f6___UF.GRC_YLCV_Lab 01450.JPG",
+      "image_sha256": "071fecf90955f2c555d4457f05b576436ce9da37f9c68c7dfe63f0c008aa84db",
+      "annotation": {
+        "kieu_trieu_chung": "khuech_tan",
+        "ghi_chu": "Vang ria la ro (cot 11-13 va 2-3), giua phien con xanh — o day trieu chung KHU TRU duoc vao ria la, khac hai ca YLCV con lai.",
+        "luoi": [
+          "NNNNNLLLNNNNNN",
+          "NNNNLLLLLLNNNN",
+          "NNNNLLLLLLVNNN",
+          "NNNNLLLLLLVNNN",
+          "NNNLLLLLLLVVNN",
+          "NNNLLLLLLLVVNN",
+          "NNVLLLLLLLVVNN",
+          "NNVLLLLLLLVVVN",
+          "NVVLLLLLLLVVVN",
+          "NVVLLLLLLLVVVN",
+          "NNLLLLLLLLVVNN",
+          "NNNNLLLLLNNNNN",
+          "NNNNNNLLNNNNNN",
+          "NNNNNNLLNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pd-bacterial_spot-1",
+      "dataset": "pd",
+      "label": "bacterial_spot",
+      "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/Tom_Bact3.jpg",
+      "image_sha256": "abe1259ccd33542f7cd9c14ecef8a995b601272c0808b52daade7f153fdc5b66",
+      "annotation": {
+        "kieu_trieu_chung": "cuc_bo",
+        "co_van_de_du_lieu": true,
+        "ghi_chu": "⚠️ Anh co MOT QUA ca chua bi dom vi khuan chiem gan het nua phai, cong mot chiec la kho quan lai o ben trai. Qua -> N vi mo hinh chi hoc la. Nen den tuyen. Day la anh trong lop 'la' cua PlantDoc nhung chu the chinh la QUA.",
+        "luoi": [
+          "NNVVNNNNNNNNNN",
+          "NNVVNNNNNNNNNN",
+          "NNLLNNNNNNNNNN",
+          "NNLLVNNNNNNNNN",
+          "NNLLLNNNNNNNNN",
+          "NNLLVNNNNNNNNN",
+          "NNLLLNNNNNNNNN",
+          "NNVLLNNNNNNNNN",
+          "NNLLNNNNNNNNNN",
+          "NNLLNNNNNNNNNN",
+          "NNVVNNNNNNNNNN",
+          "NNLLNNNNNNNNNN",
+          "NNLLNNNNNNNNNN",
+          "NNVVNNNNNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pd-early_blight-1",
+      "dataset": "pd",
+      "label": "early_blight",
+      "path": "data/field/plantdoc/train/Tomato Early blight leaf/Early-blight.jpg",
+      "image_sha256": "55c2e84169c7e645d9c23583e6ad8eaf19e930ee99b33b38a8c4c60e639e0099",
+      "annotation": {
+        "kieu_trieu_chung": "cuc_bo",
+        "co_van_de_du_lieu": false,
+        "ghi_chu": "Anh chup CA BUI cay trong nha kinh — dung loai anh ma bao cao domain gap muc 5.1 goi la 'nhom 1'. La chiem ~78% dien tich anh, vet benh chi ~7%.",
+        "luoi": [
+          "NNNNLVLLLLLLLL",
+          "NNNNLVLLLLLLLL",
+          "NNNNLLLLLLLLLL",
+          "NNNNLLLLLVLLLL",
+          "NNNLLLVVLLLLLL",
+          "NNNLLLVVLLLLLL",
+          "NNNLLLLLLLLLLL",
+          "NNNLLLLLLLLLLL",
+          "NNLLLLLLLVLLLL",
+          "NNLLLLLLLLLLLL",
+          "NNVVLLLLLLLLLL",
+          "NNVVLLLLLLLLLL",
+          "NNLLLLVVVLLLLL",
+          "NNLLLLVVVLLLLL"
+        ]
+      }
+    },
+    {
+      "sample_id": "pd-healthy-1",
+      "dataset": "pd",
+      "label": "healthy",
+      "path": "data/field/plantdoc/test/Tomato leaf/Tomato_leaf.jpg",
+      "image_sha256": "9cffe92d5f898fa2bb96e78f63ef46059b710a0f2d97054f1e534a5619778b13",
+      "annotation": {
+        "kieu_trieu_chung": "khong_co_vet",
+        "co_van_de_du_lieu": false,
+        "ghi_chu": "Can canh mot la khoe nguoc sang, nen la tan la toi mo. Khong co o V.",
+        "luoi": [
+          "LLLLLLLLLNNNNN",
+          "LLLLLLLLLNNNNN",
+          "LLLLLLLLLLNNNN",
+          "LLLLLLLLLLNNNN",
+          "LLLLLLLLLNNNNN",
+          "LLLLLLLLLNNNNN",
+          "LLLLLLLLLLLNNN",
+          "LLLLLLLLLLLNNN",
+          "NLLLLLLLLLLLNN",
+          "NNLLLLLLLLLLNN",
+          "NNNLLLLLLLLLNN",
+          "NNNLLLLLLLLNNN",
+          "NNNNNLLLLLNNNN",
+          "NNNNNLLLLNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pd-late_blight-1",
+      "dataset": "pd",
+      "label": "late_blight",
+      "path": "data/field/plantdoc/train/Tomato leaf late blight/late_blight_tomato_leaf.jpg",
+      "image_sha256": "e4c76f512198fc742905de176ec4f2f5611df51eddff2fc5f1ee9d2ebe479ef3",
+      "annotation": {
+        "kieu_trieu_chung": "cuc_bo",
+        "co_van_de_du_lieu": false,
+        "ghi_chu": "Can canh CUC GAN: mang hoai tu xam nau khong lo + vien bao tu trang, chiem ~60% khung hinh. KHONG co mot o nen nao — ca anh la mo la. Day la ca ma phep do 'trong la' mat het y nghia, chi con V-vs-L la doc duoc.",
+        "luoi": [
+          "LLLLLLLLLLLLLL",
+          "LLLLLLLLVVLLLL",
+          "VVLLLLLLVVLLLL",
+          "VVVVVVLLVVVVLL",
+          "VVVVVVVVVVVVVL",
+          "VVVVVVVVVVVVVL",
+          "VVVVVVVVVVVVVV",
+          "VVVVVVVVVVVVVV",
+          "LVVVVVVVVVVVVV",
+          "LVVVVVVVVVVVVV",
+          "LLVVVVVVVVVVVL",
+          "LLLVVVVVVVVVLL",
+          "LLLLLLLLLLLLLL",
+          "LLLLLLLLLLLLLL"
+        ]
+      }
+    },
+    {
+      "sample_id": "pd-leaf_mold-1",
+      "dataset": "pd",
+      "label": "leaf_mold",
+      "path": "data/field/plantdoc/train/Tomato mold leaf/23633262_1572609386115825_1396180255_o.jpg",
+      "image_sha256": "3d1839351811b5cc8e6bbb53cc8c4b0c750e6c2bac8bff6c0d02c301a2b18b09",
+      "annotation": {
+        "kieu_trieu_chung": "khuech_tan",
+        "co_van_de_du_lieu": false,
+        "ghi_chu": "⚠️ Co BAN TAY NGUOI chiem goc duoi-trai (~15% anh). Da thit nguoi bao hoa mau cao nen mat na Otsu cua #49 gan nhu chac chan tinh tay la 'la' — day dung la ca ma #17 sinh ra de bat. Trieu chung moc la chi nhan ra mo mo o ria phai phien la; anh mo, gan nhu nhin nhu la khoe.",
+        "luoi": [
+          "NNNNNNNNNNNNNN",
+          "NNNNNNNNNNNNNN",
+          "NNNNNNNNLLLLLL",
+          "NNNNLLLLLLLLLL",
+          "NNNLLLLLVLLLLL",
+          "NNNLLLLLVLLLLL",
+          "NNNLLLLLVLLLLL",
+          "NNLLLLLLVLLLLL",
+          "NLLLLLLLLNNLLL",
+          "NLLLLLLLNNNLLL",
+          "NNNNLLLLLLLLLL",
+          "NNNNNLLLLLLLLL",
+          "NNNNNNLLLLLLLL",
+          "NNNNNNLLLLLLLL"
+        ]
+      }
+    },
+    {
+      "sample_id": "pd-mosaic_virus-1",
+      "dataset": "pd",
+      "label": "mosaic_virus",
+      "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/D%29AlfMov.jpg",
+      "image_sha256": "1dd06a9e3bd48713bb445a8588d8c38dec7643435e5c8b0652f584ac4eff64c1",
+      "annotation": {
+        "kieu_trieu_chung": "khuech_tan",
+        "co_van_de_du_lieu": false,
+        "ghi_chu": "BA la cat roi xep canh nhau tren nen DEN, co dau ban quyen '(c) T.A. Zitter'. Kham vang thay ro o nua duoi moi la.",
+        "luoi": [
+          "NNLLNNNNNNNNNN",
+          "NLLLNNNLNNNNNN",
+          "NLLLNNLLNNNLNN",
+          "NLLLNNLLLNLLNN",
+          "LLLLNLLLLNLLLN",
+          "LLLLNLLLLNLLLN",
+          "VVLLNLLLLNVVLN",
+          "VVLLNLLLLNVVLN",
+          "VVLLNLVVLNVVLN",
+          "VVLLNLVVLNVVLN",
+          "VVLLNLVVVNVVLN",
+          "NLLLNLVVVNLLNN",
+          "NLLNNNLLLNNLNN",
+          "NNNNNNLLNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pd-septoria_leaf_spot-1",
+      "dataset": "pd",
+      "label": "septoria_leaf_spot",
+      "path": "data/field/plantdoc/train/Tomato Septoria leaf spot/PHOTO_1333642740144.jpg",
+      "image_sha256": "96de8e01c001bb855bfb8509a43d77f0b97a77bd730eebb99ca17bdba5bac46c",
+      "annotation": {
+        "kieu_trieu_chung": "cuc_bo",
+        "co_van_de_du_lieu": false,
+        "ghi_chu": "Cay con trong chau nhua den, chup trong nha, nen tuong be. Chi MOT la (goc giua-trai) vang va co dom den ro; cac la khac con xanh.",
+        "luoi": [
+          "LLLLLNLLNLLLLN",
+          "LLLLLNLLNLLLLN",
+          "LLLLNLLLNNLLLN",
+          "LLLLNLLLNNLLLN",
+          "LLLNNLLLNNLLLN",
+          "LLLNNLLLNNLLLN",
+          "LLVVVLLLNNLLLN",
+          "LLVVVLLLNNNLLN",
+          "LLVVVLLLNNNNNN",
+          "LLVVVNNNNNNNNN",
+          "LLVVNNNNNNNNNN",
+          "LLLLNNNNNNNNNN",
+          "LLLNNNNLLNNNNN",
+          "LLLNNNNLLNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pd-spider_mites-1",
+      "dataset": "pd",
+      "label": "spider_mites",
+      "path": "data/field/plantdoc/train/Tomato two spotted spider mites leaf/SpotSpeckBlightMite-1l4v879.jpg",
+      "image_sha256": "7a39980b4f6448958db22a28da7b409e74834a820592f7302b5547703ab61578",
+      "annotation": {
+        "kieu_trieu_chung": "khuech_tan",
+        "co_van_de_du_lieu": true,
+        "ghi_chu": "⚠️ KHONG PHAI MOT TAM ANH. Day la anh GHEP 2x2 tu tai lieu khuyen nong, bon o co CHU trang de ten bon benh KHAC NHAU: 'Bacterial Spot', 'Bacterial Speck', 'Early Blight', 'Mite Damage'. Chi 1/4 anh la nhen do. Gan nhan spider_mites cho ca tam anh nay la sai ve ban chat. Hai anh spider_mites duy nhat cua PlantDoc DEU la bien the cua tam ghep nay.",
+        "luoi": [
+          "LLLLLLLLLLLLLL",
+          "LLLNNLLLLLLLLL",
+          "NNLNNLLLLVVVLL",
+          "NNLNNLLLLVVVLL",
+          "NNLLLLLLLVVLLL",
+          "NNLLLLLLLLLLLL",
+          "NNNNNNNNNNNNNN",
+          "LLLLLLLLLLLLLL",
+          "LLVVLLLLLLLLLL",
+          "LLVVLLLLLLLLLL",
+          "LLLLNNNLLLLLLL",
+          "LLLLNNNLLLLLLL",
+          "NNNLLLLLLLLLLL",
+          "NNNNNNNNNNNNNN"
+        ]
+      }
+    },
+    {
+      "sample_id": "pd-yellow_leaf_curl_virus-1",
+      "dataset": "pd",
+      "label": "yellow_leaf_curl_virus",
+      "path": "data/field/plantdoc/train/Tomato leaf yellow virus/IMG_2687.JPG.jpg",
+      "image_sha256": "9edbc0c343fc0c0a21f1d0e3afea684a3e63cdd3958ba0ba5ce2f05ddd002219",
+      "annotation": {
+        "kieu_trieu_chung": "khuech_tan",
+        "co_van_de_du_lieu": false,
+        "ghi_chu": "Cay trong chau DO tren nen tuong be, co bao nhua den ben phai. Nua phai tan la vang sang va cuon men — trieu chung ro; nua trai con xanh.",
+        "luoi": [
+          "NNNNNNNNNNNNNN",
+          "LLLLLLLLLNNNNN",
+          "LLLLLLLVVVVNNN",
+          "LLLLLLLVVVVNNN",
+          "LLLLLLLVVVVNNN",
+          "LLLLLLLVVVVNNN",
+          "LLLLLLLVVVVNNN",
+          "LLLLLLLVVVVNNN",
+          "LLLLLLLVVVVNNN",
+          "NNNLLLLVVVVNNN",
+          "NNNNLLLVVVLNNN",
+          "NNNNLLLLLNNNNN",
+          "NNNLLLLLNNNNLL",
+          "NNNLLLLLNNNNLL"
+        ]
+      }
+    }
+  ]
+}

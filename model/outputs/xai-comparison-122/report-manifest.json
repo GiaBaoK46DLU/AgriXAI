@@ -1,0 +1,12 @@
+{
+  "report": "docx\\bao-cao-so-sanh-gradcam-lime-shap.docx",
+  "report_sha256": "adeb060fda4e9a8bab2650a4c404f9c7d3725b8c92a9ae933b0db501640c9e97",
+  "quality_summary_sha256": "2040e556a39d92604b9ce9f96949fcc7dadf604a21ff4d5374f7e1f1c94f3279",
+  "cpu_summary_sha256": "6770e04b4ea3eb4084a7ec74f4a043ac617254737820676e6494277dc9f78ada",
+  "word_rendered_pages": 8,
+  "visual_review": "Đã xem toàn bộ 8 trang bản cập nhật giải thích, không cắt chữ, tràn bảng hoặc chồng hình",
+  "document_checks": "passed",
+  "quality_explanations": 504,
+  "cpu_explanations": 171,
+  "gallery_images": 56
+}
