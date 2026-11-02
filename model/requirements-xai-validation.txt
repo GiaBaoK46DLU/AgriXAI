@@ -7,3 +7,5 @@ pydantic-settings>=2.3
 sqlalchemy>=2.0
 # Các hàm đo không gian/bootstrap dùng chung với thực nghiệm #122.
 scikit-image==0.25.2
+# Sinh lại báo cáo Word từ số đo và hình kết quả.
+python-docx==1.2.0
