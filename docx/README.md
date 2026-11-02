@@ -36,6 +36,11 @@ và [cách chạy lại](../model/outputs/xai-comparison-122/PHUONG_PHAP.md) n�
 
 ## Kế hoạch và rà soát
 
+[Báo cáo ngắn nâng cấp Grad-CAM++ (#98)](bao-cao-nang-cap-gradcam-plus-plus.docx):
+nguyên lý, bảng so sánh định lượng, hình có chú thích và quyết định bật mặc định.
+[Thực nghiệm đầy đủ](bao-cao-gradcam-plus-plus.md) lưu chi tiết công thức, đối chứng
+thư viện và 56 ảnh so sánh heatmap/contour, gồm cả các chỉ số chưa cải thiện.
+
 | File | Nội dung |
 |---|---|
 | `Plan_model.md` | Rà soát 4 vấn đề phát hiện khi thử app với mô hình thật (10/09/2026) + kế hoạch xử lý **gắn theo issue GitHub**. Chứa mục 5.2 — căn cứ loại bộ dữ liệu H1 |

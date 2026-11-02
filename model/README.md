@@ -241,6 +241,34 @@ model/
 
 ## Ghi chú kỹ thuật cần nhớ khi bảo vệ
 
+### Grad-CAM++ (#98)
+
+Đã cài Grad-CAM++ bên cạnh Grad-CAM gốc. Chọn bằng `xai.method` trong
+`configs/default.yaml`: `gradcam` hoặc `gradcam_plusplus`. Khởi động lại backend
+sau khi đổi vì predictor được cache khi nạp. Checkpoint và danh mục lớp giữ nguyên.
+Mặc định là **Grad-CAM++** từ 02/11/2026 theo quyết định triển khai của nhóm.
+Bản ++ cải thiện một số chỉ số nhiệt trên PlantVillage; contour trên PlantDoc
+ở ngưỡng hiện tại chưa tốt hơn. Xem [báo cáo và số liệu](../docx/bao-cao-gradcam-plus-plus.md)
+và [bản Word ngắn có hình/bảng](../docx/bao-cao-nang-cap-gradcam-plus-plus.docx).
+
+Có thể chọn riêng hoặc quay lại Grad-CAM mà không đổi cấu hình chung:
+
+```python
+predictor = DiseasePredictor("checkpoints/leaf_disease_detection_model.pt",
+                             xai_method="gradcam_plusplus")
+# Đối chứng hoặc quay lại thuật toán cũ: xai_method="gradcam".
+```
+
+```powershell
+python -m src.xai.visualize --xai-method gradcam_plusplus --num 12 --out outputs/figures/gradcam-plus-plus.png
+```
+
+Grad-CAM++ chỉ áp dụng cho suy luận PyTorch; mô hình ONNX trên điện thoại vẫn dùng
+CAM cổ điển. Khi bật bản ++ trên server, vùng khoanh online và offline có thể khác.
+Các trường của `Prediction` và cách ánh xạ heatmap về kích thước ảnh gốc không đổi.
+
+### Các lựa chọn của mô hình
+
 **Vì sao chọn transfer learning?** Bộ cà chua chỉ ~18k ảnh, còn ImageNet mà backbone đã học có 1.2 triệu ảnh. Huấn luyện từ đầu với dữ liệu nhỏ như vậy gần như chắc chắn overfit.
 
 **Vì sao lấy lớp tích chập cuối cho Grad-CAM?** Đó là điểm cân bằng: đặc trưng đã đủ trừu tượng để mang ngữ nghĩa ("vết đốm nâu có vòng đồng tâm"), nhưng vẫn còn lưới không gian 7×7 nên biết được vết bệnh nằm ở đâu trên lá. Lấy lớp nông hơn thì heatmap chi tiết nhưng vô nghĩa; lấy sau global pooling thì mất sạch thông tin vị trí.
