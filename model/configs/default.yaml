@@ -51,6 +51,9 @@ augment:
   gaussian_blur_prob: 0.15
 
 xai:
+  # gradcam | gradcam_plusplus — chọn bản ++ mặc định ngày 02/11/2026.
+  # Nhánh offline trên điện thoại vẫn dùng CAM cổ điển (không có backprop).
+  method: gradcam_plusplus
   # Ngưỡng cắt heatmap để tạo vùng khoanh (0..1)
   heatmap_threshold: 0.5
 

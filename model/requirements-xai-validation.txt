@@ -1,0 +1,9 @@
+# Chỉ dùng để kiểm chứng công thức #98, không cần cho backend hoặc mobile.
+# Cài sau model/requirements.txt trong môi trường thực nghiệm riêng.
+grad-cam==1.5.5
+pytest>=8.0
+# Đọc cấu hình khi gọi đúng bộ vẽ contour backend trong thực nghiệm.
+pydantic-settings>=2.3
+sqlalchemy>=2.0
+# Các hàm đo không gian/bootstrap dùng chung với thực nghiệm #122.
+scikit-image==0.25.2

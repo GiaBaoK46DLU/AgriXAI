@@ -35,13 +35,15 @@ def overlay_heatmap(image: Image.Image, heatmap: np.ndarray, alpha: float = 0.45
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Vẽ hình minh hoạ Grad-CAM")
+    ap = argparse.ArgumentParser(description="Vẽ hình minh hoạ phương pháp XAI đã chọn")
     ap.add_argument("--checkpoint", default="checkpoints/best.pt")
     ap.add_argument("--manifest", default="data/processed/split.csv")
     ap.add_argument("--split", default="test")
     ap.add_argument("--num", type=int, default=12, help="Số ảnh đưa vào hình")
     ap.add_argument("--out", default="outputs/figures/gradcam-samples.png")
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--xai-method", choices=("gradcam", "gradcam_plusplus"),
+                    help="Không truyền thì đọc xai.method từ configs/default.yaml")
     args = ap.parse_args()
 
     import csv
@@ -53,7 +55,7 @@ def main() -> None:
     random.Random(args.seed).shuffle(rows)
     rows = rows[:args.num]
 
-    predictor = DiseasePredictor(args.checkpoint)
+    predictor = DiseasePredictor(args.checkpoint, xai_method=args.xai_method)
     names_vi = key_to_name_vi()
 
     cols = 4
@@ -79,7 +81,8 @@ def main() -> None:
     for ax in axes[len(rows):]:
         ax.axis("off")
 
-    fig.suptitle("Grad-CAM — vùng ảnh ảnh hưởng tới quyết định của mô hình", fontsize=12)
+    method_name = "Grad-CAM++" if predictor.xai_method == "gradcam_plusplus" else "Grad-CAM"
+    fig.suptitle(f"{method_name} — vùng ảnh ảnh hưởng tới quyết định của mô hình", fontsize=12)
     fig.tight_layout()
 
     out = Path(args.out)
