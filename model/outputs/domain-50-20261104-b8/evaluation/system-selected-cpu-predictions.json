@@ -1,0 +1,662 @@
+[
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/039b47d574bc4bb8a14259a1cd96a741.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "not_tomato_leaf",
+    "correct": false,
+    "rejected": true,
+    "model_version": "gate-efficientnet_b0-20260918-2101"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/100983448.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "early_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/1234080-Early-Blight.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "early_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/bugs-and-blight-061.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "not_tomato_leaf",
+    "correct": false,
+    "rejected": true,
+    "model_version": "gate-efficientnet_b0-20260918-2101"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/dscn3175.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "bacterial_spot",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/early_blight1-150x150.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "early_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/earlyblight21_.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "early_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/Shoemaker_7068.JPG.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "early_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/tomato_early-blight_01_zoom.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "early_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/1684.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "healthy",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/2013-08-20-06.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "early_blight",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/90e2c0.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "healthy",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/DSCN1015.JPG.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "not_tomato_leaf",
+    "correct": false,
+    "rejected": true,
+    "model_version": "gate-efficientnet_b0-20260918-2101"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/IMG_1246.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "bacterial_spot",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/main-qimg-d9c2a93f60568485c989670d9bbf703b.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "healthy",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/Tomato59.JPG.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "not_tomato_leaf",
+    "correct": false,
+    "rejected": true,
+    "model_version": "gate-efficientnet_b0-20260918-2101"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/Tomato_leaf.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "leaf_mold",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/%2320+Bacterial+Spot+and+Speck.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "not_tomato_leaf",
+    "correct": false,
+    "rejected": true,
+    "model_version": "gate-efficientnet_b0-20260918-2101"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/07.17.18-Common_Tomato_Diseases_Canker-258x300.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "bacterial_spot",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/bact-spot-fig-1.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "bacterial_spot",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/Bacterial_spots563.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "bacterial_spot",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/Tom_Bact3.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "late_blight",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/Tom_Bact7.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "septoria_leaf_spot",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/Tomato%2BBacterial%2BSpot%2Bon%2BLeaves.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "septoria_leaf_spot",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/tomato_bacterial-speck_01_zoom.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "septoria_leaf_spot",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/110822-206-Tomato-blight.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "late_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/18c.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "late_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/636368370164094909-late-blight-15-.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "late_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/70.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "early_blight",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/dsc_8148cs.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "late_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/E%29Tomato-late-blight-foliar.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "late_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/image.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "late_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/IMG_5808.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "late_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/late_blight_tomato_leaf_spore1x1200.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "late_blight",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/LateBlt09_06.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "leaf_mold",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/9511.img.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "leaf_mold",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/D%29AlfMov.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "leaf_mold",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/everystockphoto-21099455-l.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "yellow_leaf_curl_virus",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/ill-tomato-of-tomato-mosaic-virus-DBE17N.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "healthy",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/page_2.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "leaf_mold",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/tmv-tomato-34.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "yellow_leaf_curl_virus",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/tmv-tomato-9.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "leaf_mold",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/toma_TMV.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "mosaic_virus",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/Tomato-Mosaic-1wdr2jx-300x225.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "healthy",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/tomato_virus_04_zoom.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "leaf_mold",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf yellow virus/11-40580_5.jpg",
+    "label": "yellow_leaf_curl_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "yellow_leaf_curl_virus",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf yellow virus/17fc47.jpg",
+    "label": "yellow_leaf_curl_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "not_tomato_leaf",
+    "correct": false,
+    "rejected": true,
+    "model_version": "gate-efficientnet_b0-20260918-2101"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf yellow virus/8226402877_9abf151b5b_b.jpg",
+    "label": "yellow_leaf_curl_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "yellow_leaf_curl_virus",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf yellow virus/fwa2013313115151.jpg",
+    "label": "yellow_leaf_curl_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "yellow_leaf_curl_virus",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf yellow virus/glyphosate.jpg",
+    "label": "yellow_leaf_curl_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "yellow_leaf_curl_virus",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/49%20Leafmold%20Bottom.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "late_blight",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/50%20Leafmold%20Top.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "leaf_mold",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/BIGSD.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "leaf_mold",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/black_leaf_mold_in_zina_tina.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "leaf_mold",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/dscn6689.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "leaf_mold",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/fungus-univ-of-minnesoeta.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "early_blight",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/0.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "late_blight",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/2septoria-tomato.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "septoria_leaf_spot",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/2STEM.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "septoria_leaf_spot",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/55830b60a7cf2.image.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "septoria_leaf_spot",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/6134794031202304.jpeg.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "septoria_leaf_spot",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/636227737977191231-septoria-leaf-spot-VT.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "septoria_leaf_spot",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/6447731_orig.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "bacterial_spot",
+    "correct": false,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/7-17-Photo3_Septoria-MARY.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "septoria_leaf_spot",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/RARZ4.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "septoria_leaf_spot",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/sept4disease-019.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "prediction": "septoria_leaf_spot",
+    "correct": true,
+    "rejected": false,
+    "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal"
+  }
+]

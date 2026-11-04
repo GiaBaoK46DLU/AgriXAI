@@ -1,0 +1,16 @@
+[
+  {
+    "checkpoint": "outputs\\domain-50-20261104-b8\\augmentation.pt",
+    "before_sha256": "02bdcb84b88318538ae55f7385baf5bc519d1da57aaa78adac7e3ac2df4339df",
+    "after_sha256": "bfa48426947cb263ffa5d790332fe9d2fe0a6ab6ea3f311c9543e847641c507b",
+    "tensors_unchanged": true,
+    "val_acc": 0.9926308032424466
+  },
+  {
+    "checkpoint": "outputs\\domain-50-20261104-b8\\adaptation.pt",
+    "before_sha256": "2b5ad2113c8e99128dd4bd43a116ad336260ef34681608bf385788b653b1b776",
+    "after_sha256": "645a22600a89c3bed77c44a27b3114aff7af225567cf60ffbfbc7e5d5eee8717",
+    "tensors_unchanged": true,
+    "val_acc": 0.977523949889462
+  }
+]

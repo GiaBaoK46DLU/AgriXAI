@@ -1,0 +1,212 @@
+{
+  "visible": {
+    "source": "data/raw/Tomato___Bacterial_spot/f04fd2e9-8aef-423f-8c47-42e179092bad___GCREC_Bact.Sp 3679.JPG",
+    "status": 201,
+    "response": {
+      "image_path": "uploads/2026/11/04213542-89598063.jpg",
+      "overlay_path": "overlays/2026/11/04213542-f0ac51c8.jpg",
+      "id": 0,
+      "plot_id": null,
+      "user_id": 1,
+      "disease_key": "bacterial_spot",
+      "disease_name": "Đốm lá vi khuẩn",
+      "confidence": 0.6705261468887329,
+      "severity": "moderate",
+      "severity_name": "Trung bình",
+      "affected_ratio": 0.308349609375,
+      "explanation": "Hệ thống tập trung vào phần giữa của lá — nơi xuất hiện nhiều đốm nhỏ sũng nước, sau chuyển nâu đen và có quầng vàng bao quanh. Đây là dấu hiệu đặc trưng của Đốm lá vi khuẩn (độ tin cậy 67%, vùng nghi ngờ chiếm khoảng 31% diện tích ảnh).",
+      "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal",
+      "latency_ms": 340.7836999685969,
+      "note": null,
+      "created_at": "2026-11-04T14:35:42.416920Z",
+      "plot_puc": null,
+      "plot_name": null,
+      "disease": {
+        "key": "bacterial_spot",
+        "name_vi": "Đốm lá vi khuẩn",
+        "name_en": "Bacterial spot",
+        "pathogen": "Vi khuẩn Xanthomonas spp.",
+        "is_healthy": false,
+        "visual_cue": "nhiều đốm nhỏ sũng nước, sau chuyển nâu đen và có quầng vàng bao quanh",
+        "symptoms": "Trên lá xuất hiện các đốm nhỏ đường kính 1–3 mm, ban đầu sũng nước rồi chuyển nâu sẫm, thường có quầng vàng. Đốm dày lên làm lá vàng và rụng sớm. Trên quả có đốm sần sùi màu nâu.",
+        "favorable_conditions": "Ẩm độ cao, mưa nhiều, nhiệt độ 24–30°C; lây lan mạnh khi tưới phun mưa hoặc thao tác trên ruộng lúc lá còn ướt.",
+        "treatments": [
+          "Ngắt ngay các lá có đốm sũng nước hoặc đã chuyển nâu đen, cho vào túi kín mang ra khỏi vườn để đốt hoặc chôn sâu — không vứt lại trên mặt luống.",
+          "Trong 1–2 ngày tới, phun thuốc gốc đồng (copper hydroxide hoặc copper oxychloride) đều lên cả hai mặt lá, có thể phối hợp mancozeb để tăng hiệu quả.",
+          "Lặp lại sau mỗi 7 ngày, liên tục 2–3 lần nếu đốm mới vẫn tiếp tục xuất hiện.",
+          "Ngừng tưới phun mưa lên tán lá ngay từ hôm nay, chuyển sang tưới gốc hoặc tưới nhỏ giọt.",
+          "Không buộc dây, tỉa nhánh hay hái quả khi lá còn ướt sương hoặc ướt mưa — vi khuẩn lây rất nhanh qua tay và dụng cụ lúc lá ướt.",
+          "Sau 5–7 ngày kiểm tra lại: nếu vẫn còn đốm mới, rút ngắn chu kỳ phun xuống 5 ngày/lần."
+        ],
+        "prevention": [
+          "Dùng hạt giống/cây con sạch bệnh.",
+          "Luân canh với cây khác họ cà tối thiểu 2 năm.",
+          "Trồng thưa hợp lý để tán lá thông thoáng, mau khô."
+        ],
+        "reference_url": null,
+        "products": [],
+        "video_url": null
+      },
+      "top_predictions": [
+        {
+          "disease_key": "bacterial_spot",
+          "name_vi": "Đốm lá vi khuẩn",
+          "probability": 0.6705261468887329
+        },
+        {
+          "disease_key": "target_spot",
+          "name_vi": "Đốm mắt cua",
+          "probability": 0.3108406066894531
+        },
+        {
+          "disease_key": "yellow_leaf_curl_virus",
+          "name_vi": "Virus xoăn vàng lá",
+          "probability": 0.006985033396631479
+        }
+      ],
+      "disclaimer": "Gợi ý xử lý mang tính tham khảo học thuật, tổng hợp từ khuyến cáo canh tác phổ biến. Người dùng cần đối chiếu với cán bộ khuyến nông địa phương và nhãn thuốc trước khi sử dụng.",
+      "images": [
+        {
+          "image_path": "uploads/2026/11/04213542-89598063.jpg",
+          "overlay_path": "overlays/2026/11/04213542-f0ac51c8.jpg",
+          "id": 1,
+          "disease_key": "bacterial_spot",
+          "disease_name": "Đốm lá vi khuẩn",
+          "confidence": 0.6705261468887329,
+          "image_url": "/storage/uploads/2026/11/04213542-89598063.jpg",
+          "overlay_url": "/storage/overlays/2026/11/04213542-f0ac51c8.jpg"
+        },
+        {
+          "image_path": "uploads/2026/11/04213542-cb4d4d05.jpg",
+          "overlay_path": "overlays/2026/11/04213542-3d9cd56d.jpg",
+          "id": 2,
+          "disease_key": "bacterial_spot",
+          "disease_name": "Đốm lá vi khuẩn",
+          "confidence": 0.6705261468887329,
+          "image_url": "/storage/uploads/2026/11/04213542-cb4d4d05.jpg",
+          "overlay_url": "/storage/overlays/2026/11/04213542-3d9cd56d.jpg"
+        },
+        {
+          "image_path": "uploads/2026/11/04213542-bfd54c35.jpg",
+          "overlay_path": "overlays/2026/11/04213542-36836d92.jpg",
+          "id": 3,
+          "disease_key": "bacterial_spot",
+          "disease_name": "Đốm lá vi khuẩn",
+          "confidence": 0.6705261468887329,
+          "image_url": "/storage/uploads/2026/11/04213542-bfd54c35.jpg",
+          "overlay_url": "/storage/overlays/2026/11/04213542-36836d92.jpg"
+        }
+      ],
+      "image_url": "/storage/uploads/2026/11/04213542-89598063.jpg",
+      "overlay_url": "/storage/overlays/2026/11/04213542-f0ac51c8.jpg"
+    }
+  },
+  "hidden": {
+    "source": "data/raw/Tomato___Early_blight/48749ece-911d-440f-873d-475e58132969___RS_Erly.B 7479.JPG",
+    "status": 201,
+    "response": {
+      "image_path": "uploads/2026/11/04213542-991a88d8.jpg",
+      "overlay_path": null,
+      "id": 0,
+      "plot_id": null,
+      "user_id": 1,
+      "disease_key": "early_blight",
+      "disease_name": "Đốm vòng (đốm nâu)",
+      "confidence": 0.9408617615699768,
+      "severity": "mild",
+      "severity_name": "Nhẹ",
+      "affected_ratio": 0.0,
+      "explanation": "Hệ thống nghiêng về Đốm vòng (đốm nâu) với độ tin cậy 94%, nhưng không khoanh được vùng nào đủ rõ trên ảnh. Nên chụp lại gần hơn, đủ sáng và lấy nét vào phần lá nghi ngờ.",
+      "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal",
+      "latency_ms": 383.1470000441186,
+      "note": null,
+      "created_at": "2026-11-04T14:35:42.964835Z",
+      "plot_puc": null,
+      "plot_name": null,
+      "disease": {
+        "key": "early_blight",
+        "name_vi": "Đốm vòng (đốm nâu)",
+        "name_en": "Early blight",
+        "pathogen": "Nấm Alternaria solani",
+        "is_healthy": false,
+        "visual_cue": "các đốm nâu sẫm có vòng đồng tâm như hình bia bắn, xung quanh ngả vàng",
+        "symptoms": "Đốm nâu sẫm với các vòng đồng tâm đặc trưng, đường kính có thể tới 10 mm, thường xuất hiện ở lá gốc trước rồi lan dần lên trên. Mô quanh vết bệnh ngả vàng, lá khô và rụng từ dưới lên.",
+        "favorable_conditions": "Ẩm độ cao xen kẽ khô hạn, nhiệt độ 24–29°C; cây thiếu dinh dưỡng hoặc đang mang nhiều quả dễ nhiễm nặng.",
+        "treatments": [
+          "Cắt bỏ ngay các lá gốc có vòng đồng tâm đặc trưng, gom và tiêu huỷ — không để tàn dư trên mặt luống vì đó là nguồn bào tử lây tiếp.",
+          "Phun một trong các hoạt chất mancozeb, chlorothalonil, azoxystrobin hoặc difenoconazole trong 1–2 ngày tới; luân phiên đổi hoạt chất giữa các lần phun để tránh kháng thuốc.",
+          "Lặp lại phun mỗi 7–10 ngày trong giai đoạn cây đang mang nhiều quả — đây là lúc cây dễ suy kiệt và nhiễm nặng nhất.",
+          "Bón bổ sung cân đối đạm – lân – kali ngay trong đợt bón phân gần nhất, tránh để cây thiếu dinh dưỡng lúc nuôi quả.",
+          "Theo dõi lá gốc mỗi 5–7 ngày; nếu bệnh lan lên các tầng lá phía trên, tăng tần suất phun và cân nhắc tỉa bớt lá gốc để thông thoáng."
+        ],
+        "prevention": [
+          "Phủ gốc bằng rơm hoặc màng phủ để hạn chế bào tử từ đất bắn lên lá.",
+          "Luân canh, cày vùi tàn dư sau vụ.",
+          "Tỉa bớt lá gốc để tán thông thoáng."
+        ],
+        "reference_url": null,
+        "products": [],
+        "video_url": null
+      },
+      "top_predictions": [
+        {
+          "disease_key": "early_blight",
+          "name_vi": "Đốm vòng (đốm nâu)",
+          "probability": 0.9408617615699768
+        },
+        {
+          "disease_key": "late_blight",
+          "name_vi": "Mốc sương muộn",
+          "probability": 0.03249523043632507
+        },
+        {
+          "disease_key": "bacterial_spot",
+          "name_vi": "Đốm lá vi khuẩn",
+          "probability": 0.013066981919109821
+        }
+      ],
+      "disclaimer": "Gợi ý xử lý mang tính tham khảo học thuật, tổng hợp từ khuyến cáo canh tác phổ biến. Người dùng cần đối chiếu với cán bộ khuyến nông địa phương và nhãn thuốc trước khi sử dụng.",
+      "images": [
+        {
+          "image_path": "uploads/2026/11/04213542-991a88d8.jpg",
+          "overlay_path": null,
+          "id": 1,
+          "disease_key": "early_blight",
+          "disease_name": "Đốm vòng (đốm nâu)",
+          "confidence": 0.9408617615699768,
+          "image_url": "/storage/uploads/2026/11/04213542-991a88d8.jpg",
+          "overlay_url": null
+        },
+        {
+          "image_path": "uploads/2026/11/04213542-c3790e9e.jpg",
+          "overlay_path": null,
+          "id": 2,
+          "disease_key": "early_blight",
+          "disease_name": "Đốm vòng (đốm nâu)",
+          "confidence": 0.9408617615699768,
+          "image_url": "/storage/uploads/2026/11/04213542-c3790e9e.jpg",
+          "overlay_url": null
+        },
+        {
+          "image_path": "uploads/2026/11/04213542-c2245e53.jpg",
+          "overlay_path": null,
+          "id": 3,
+          "disease_key": "early_blight",
+          "disease_name": "Đốm vòng (đốm nâu)",
+          "confidence": 0.9408617615699768,
+          "image_url": "/storage/uploads/2026/11/04213542-c2245e53.jpg",
+          "overlay_url": null
+        }
+      ],
+      "image_url": "/storage/uploads/2026/11/04213542-991a88d8.jpg",
+      "overlay_url": null
+    }
+  },
+  "rejected": {
+    "source": "data/negative/blur_dark_shake/0011_a144e43b14.jpg",
+    "status": 422,
+    "response": {
+      "detail": "Ảnh chưa rõ lá cà chua, bạn chụp lại giúp mình nhé"
+    }
+  }
+}

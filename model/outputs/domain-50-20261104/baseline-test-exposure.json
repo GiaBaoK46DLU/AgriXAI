@@ -1,0 +1,23 @@
+[
+  {
+    "path": "data/raw/Tomato___Late_blight/1a69b38b-c4eb-42c4-9584-bcb14fb8db0c___GHLB2 Leaf 9011.JPG",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantvillage",
+    "sha256": "7ff8410db407008bb9aecf0cc5505f2b47ffd89e508413a30ea983b4bc169714"
+  },
+  {
+    "path": "data/raw/Tomato___Late_blight/c1775bad-7c02-41fb-bb7d-f8df91d60ac3___GHLB_PS Leaf 23.5 Day 13.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantvillage",
+    "sha256": "90220c67ab2c3ed150e93f0c26691d463200e784c74152e62acedac8a4d2d525"
+  },
+  {
+    "path": "data/raw/Tomato___Late_blight/861d8b00-57a4-46b0-b51a-09d102dbe119___GHLB_PS Leaf 24 Day 13.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantvillage",
+    "sha256": "3a60a7b6f3a287981d21dca37f27e5480cc46d1144688d435e53db7a47b7006f"
+  }
+]
