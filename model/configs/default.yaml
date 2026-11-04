@@ -49,6 +49,13 @@ augment:
     hue: 0.05
   random_resized_crop_scale: [0.7, 1.0]
   gaussian_blur_prob: 0.15
+  # Chỉ dùng lúc huấn luyện; nền chỉ lấy từ split train của bộ ảnh âm.
+  # Thí nghiệm #50 bật trong cấu hình lưu cùng checkpoint; không sửa số liệu cũ.
+  outdoor:
+    enabled: false
+    background_manifest: data/processed/gate-split.csv
+    background_prob: 0.7
+    light_prob: 0.5
 
 xai:
   # gradcam | gradcam_plusplus — chọn bản ++ mặc định ngày 02/11/2026.
@@ -56,6 +63,20 @@ xai:
   method: gradcam_plusplus
   # Ngưỡng cắt heatmap để tạo vùng khoanh (0..1)
   heatmap_threshold: 0.5
+  # Chốt hiển thị theo vùng lá ước lượng; không phải xác suất giải thích đúng.
+  reliability:
+    enabled: true
+    min_leaf_mass: 0.65
+    min_lift: 0.05
+
+preprocess:
+  leaf_crop:
+    # #93: validation CPU không tăng khi cắt; giữ tuỳ chọn để đối chứng.
+    enabled: false
+    padding: 0.08
+    min_area: 0.05
+    max_area: 0.90
+    min_dominance: 0.65
 
 paths:
   checkpoint_dir: checkpoints

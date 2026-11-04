@@ -117,6 +117,18 @@ def build_dataloaders(cfg: dict[str, Any], manifest: str | Path,
     eval_tf = build_infer_transform(d["image_size"])
     val_ds = TomatoLeafDataset(manifest, "val", eval_tf, keys)
     test_ds = TomatoLeafDataset(manifest, "test", eval_tf, keys)
+    if (cfg.get("augment", {}).get("outdoor", {}).get("enabled", False)
+            or cfg.get("preprocess", {}).get("leaf_crop", {}).get("enabled", False)):
+        from src.data.domain_dataset import DomainDiseaseDataset
+
+        with open(manifest, encoding="utf-8") as stream:
+            rows = list(csv.DictReader(stream))
+        train_ds = DomainDiseaseDataset([r for r in rows if r["split"] == "train"],
+                                       keys or class_keys(), cfg, training=True)
+        val_ds = DomainDiseaseDataset([r for r in rows if r["split"] == "val"],
+                                     keys or class_keys(), cfg)
+        test_ds = DomainDiseaseDataset([r for r in rows if r["split"] == "test"],
+                                      keys or class_keys(), cfg)
 
     common = {"batch_size": d["batch_size"], "num_workers": d["num_workers"],
               "pin_memory": torch.cuda.is_available()}
