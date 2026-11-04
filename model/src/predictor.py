@@ -32,7 +32,6 @@ from src.models.build import load_checkpoint, target_layer_for_gradcam
 from src.xai.gradcam_plusplus import create_cam
 from src.xai.reliability import assess_heatmap
 
-
 NOT_LEAF_KEY = "not_tomato_leaf"
 
 

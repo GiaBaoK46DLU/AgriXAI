@@ -7,7 +7,6 @@ import numpy as np
 import pytest
 import torch
 from PIL import Image
-
 from src.predictor import DiseasePredictor
 
 ROOT = Path(__file__).resolve().parents[1]
