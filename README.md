@@ -182,7 +182,11 @@ python -m src.training.train --config configs/default.yaml
 python -m src.evaluation.evaluate --checkpoint checkpoints/best.pt
 ```
 
-Sau khi có `checkpoints/best.pt`, trỏ `MODEL_CHECKPOINT` trong `backend/.env` tới file đó rồi khởi động lại backend — hệ thống tự chuyển từ mô hình giả sang mô hình thật.
+Checkpoint server đã đóng gói tại `model/checkpoints/leaf_disease_domain_adapted.pt`.
+Trỏ `MODEL_CHECKPOINT` trong `backend/.env` tới
+`../model/checkpoints/leaf_disease_domain_adapted.pt`, hoặc dùng cấu hình Docker Compose.
+Khởi động lại backend để nạp checkpoint và cấu hình XAI mới. Kết quả kiểm tra, giới hạn
+và cách tái lập nằm trong [báo cáo domain adaptation](docx/bao-cao-cat-la-domain-adaptation.md).
 
 ---
 
