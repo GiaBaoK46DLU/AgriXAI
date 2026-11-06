@@ -1,0 +1,38 @@
+{
+  "baseline": {
+    "n": 66,
+    "rejected": 6,
+    "overall_accuracy": 0.2727272727272727,
+    "accepted_accuracy": 0.3,
+    "gate_checkpoint_sha256": "911745307fbf3f7fc9fbe41346b0b182adb380676fa9bf8e0d18c6c2938fca8a",
+    "disease_checkpoint_sha256": "893d63f0657e0fe29b2d2fb04868f181cb574ad9c0a2323df4dd2504e3d9beb6",
+    "includes_backend_image_normalization": true
+  },
+  "selected": {
+    "n": 66,
+    "rejected": 6,
+    "overall_accuracy": 0.5606060606060606,
+    "accepted_accuracy": 0.6166666666666667,
+    "gate_checkpoint_sha256": "911745307fbf3f7fc9fbe41346b0b182adb380676fa9bf8e0d18c6c2938fca8a",
+    "disease_checkpoint_sha256": "c54e3dc0795791a11afd25b9df567ae213ec27be34fe2beda598b99c40b5ac41",
+    "includes_backend_image_normalization": true
+  },
+  "baseline-cpu": {
+    "n": 66,
+    "rejected": 6,
+    "overall_accuracy": 0.2727272727272727,
+    "accepted_accuracy": 0.3,
+    "gate_checkpoint_sha256": "911745307fbf3f7fc9fbe41346b0b182adb380676fa9bf8e0d18c6c2938fca8a",
+    "disease_checkpoint_sha256": "893d63f0657e0fe29b2d2fb04868f181cb574ad9c0a2323df4dd2504e3d9beb6",
+    "includes_backend_image_normalization": true
+  },
+  "selected-cpu": {
+    "n": 66,
+    "rejected": 6,
+    "overall_accuracy": 0.5606060606060606,
+    "accepted_accuracy": 0.6166666666666667,
+    "gate_checkpoint_sha256": "911745307fbf3f7fc9fbe41346b0b182adb380676fa9bf8e0d18c6c2938fca8a",
+    "disease_checkpoint_sha256": "c54e3dc0795791a11afd25b9df567ae213ec27be34fe2beda598b99c40b5ac41",
+    "includes_backend_image_normalization": true
+  }
+}

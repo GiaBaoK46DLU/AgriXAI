@@ -1,0 +1,67 @@
+{
+  "reason": "clarify proposed leaf box while crop is disabled",
+  "numeric_metrics_unchanged": true,
+  "predictions_and_guard_decisions_match": true,
+  "images": [
+    {
+      "file": "pv-test-1.png",
+      "before": "34ff9623bd3f0eb9210bd4eaa48411d4ebc4f7e24dc25925ee3035ea011a93a8",
+      "after": "965ace06b8b3f0bc6ad137d6f3522281acaad9dbe66d23aba83280790c02e085"
+    },
+    {
+      "file": "pv-test-2.png",
+      "before": "40cad8ac706706be3b6a1f26bf1aceae67df3e1a5483aa73fffd54ee5e952239",
+      "after": "12983d30d0adc62677439e488970903e5241df3c2f5132708584fc45432cff8d"
+    },
+    {
+      "file": "pv-test-3.png",
+      "before": "fc266ab20e5faadd7d984df7b25566c5e0b6c4161a01617b02deabb76ffd9ed2",
+      "after": "f34d73522a59548ad33f043542d0670d506d7e47f55f7d9b8df05279bbe24de5"
+    },
+    {
+      "file": "pv-test-4.png",
+      "before": "5a208e8a636f1d10572a1b0e74fbadb3f1f88b5491f320be1714b3da927da6d1",
+      "after": "e6e82534dbe1fd9879ac69b3ea68534c2494e77950e699572b1d16a45e4a25cc"
+    },
+    {
+      "file": "pv-test-5.png",
+      "before": "dbda1c01619d85d44c945a4c25c68fcac35d3b5e8abe63358bc81ed28e5ee3a0",
+      "after": "9c15126f40c100099f417d4f992907c0650ba19469fb15e6ba6244640f4dc99a"
+    },
+    {
+      "file": "pv-test-6.png",
+      "before": "c50e55d6c2779dcd908e67575d81ce17f8c74bb673428e9fba60bad85ef876b4",
+      "after": "fe5aeec789cc6311f4cc1b265d7eb739a596324565d3e09058a5034bafbcfe29"
+    },
+    {
+      "file": "pd-test-1.png",
+      "before": "06afb8268ea2328bbcacbc7e7f4e5bd00f4c836037a95af7cd69e7d26d85bd2e",
+      "after": "42ad015eaf991d5ca54bdfd9a72e1bc0f5cacc283d03d74859a1676f98e40872"
+    },
+    {
+      "file": "pd-test-2.png",
+      "before": "c31bf89db0c918bca5b8f8c75b0befbb6a31ea9de4ff1a1b1aaad8897a2a4e37",
+      "after": "4f75090ba40d20f4f43875dabe106103d8c874cc7fc7de721fc02f24f00d4788"
+    },
+    {
+      "file": "pd-test-3.png",
+      "before": "1efa7dd014528fd3e2dcad1887db4cc097c550ae9bd047d27aff259461d39796",
+      "after": "1fdaf1ef293904aeccf55dab4804d2c62168727cd864ec7a187912349d406703"
+    },
+    {
+      "file": "pd-test-4.png",
+      "before": "21bb9e6020e05f07249f6c4d294d7081f5d6f5dab3723f794d2d0c0b8225ba56",
+      "after": "4902c604ccc06bd3b795d1fafb9ccc2dd0bb9e886dd7ad397737ece796f954aa"
+    },
+    {
+      "file": "pd-test-5.png",
+      "before": "24c937232ba441b5ec6b8fb888789739c2ffd748ba0d31f7df8b84a8347d22e8",
+      "after": "794b22709376b14483a2fda968480420a90a2cf010a00e1b3229a448ae02ccfd"
+    },
+    {
+      "file": "pd-test-6.png",
+      "before": "09d8fcb47e5a6c3c67369ebb7395b2a8f676c79ddbf159953f59f46f493909bf",
+      "after": "d232efaa252947f6dfb0a097ac6eed77959c6fdd0ea0d3da0291df7616570b5c"
+    }
+  ]
+}

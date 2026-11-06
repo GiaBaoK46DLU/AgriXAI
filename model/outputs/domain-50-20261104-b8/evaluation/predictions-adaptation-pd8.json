@@ -1,0 +1,1322 @@
+[
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/039b47d574bc4bb8a14259a1cd96a741.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 1,
+    "prediction": 3,
+    "probabilities": [
+      0.14946770668029785,
+      0.15187212824821472,
+      0.07163077592849731,
+      0.3497842848300934,
+      0.22999335825443268,
+      0.01890568807721138,
+      0.010466153733432293,
+      0.008728064596652985,
+      0.005300408229231834,
+      0.003851406741887331
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/100983448.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 1,
+    "prediction": 1,
+    "probabilities": [
+      0.019740022718906403,
+      0.7555610537528992,
+      0.15562602877616882,
+      0.009800184518098831,
+      0.05407068505883217,
+      0.00012580829206854105,
+      0.00045668738312087953,
+      0.0015622670762240887,
+      0.002442062133923173,
+      0.0006152502028271556
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/1234080-Early-Blight.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 1,
+    "prediction": 1,
+    "probabilities": [
+      0.11951626092195511,
+      0.772698163986206,
+      0.015480861067771912,
+      0.010591826401650906,
+      0.051057472825050354,
+      0.0006214816821739078,
+      0.01382574625313282,
+      0.0002683281491044909,
+      0.0010677826358005404,
+      0.014872032217681408
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/bugs-and-blight-061.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 1,
+    "prediction": 9,
+    "probabilities": [
+      0.013897174969315529,
+      0.010704118758440018,
+      0.004687133245170116,
+      0.004984619095921516,
+      0.09217958897352219,
+      0.00020492440671660006,
+      0.004245591349899769,
+      0.00039923773147165775,
+      0.0018085540505126119,
+      0.8668890595436096
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/dscn3175.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 1,
+    "prediction": 0,
+    "probabilities": [
+      0.5604991316795349,
+      0.14711107313632965,
+      0.09570764750242233,
+      0.061282820999622345,
+      0.052397992461919785,
+      0.026863906532526016,
+      0.022442923858761787,
+      0.00784226506948471,
+      0.010461036115884781,
+      0.015391259454190731
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/early_blight1-150x150.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 1,
+    "prediction": 1,
+    "probabilities": [
+      0.0044923704117536545,
+      0.9536363482475281,
+      0.019637800753116608,
+      0.007548104971647263,
+      0.011247330345213413,
+      0.00012284326658118516,
+      5.330627755029127e-05,
+      0.00012514802801888436,
+      0.0024881227873265743,
+      0.0006485424237325788
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/earlyblight21_.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 1,
+    "prediction": 1,
+    "probabilities": [
+      0.07916898280382156,
+      0.6131482124328613,
+      0.14915435016155243,
+      0.07629555463790894,
+      0.05148527771234512,
+      0.01008669100701809,
+      0.004126154817640781,
+      0.007747608702629805,
+      0.0037331099156290293,
+      0.005053996108472347
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/Shoemaker_7068.JPG.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 1,
+    "prediction": 1,
+    "probabilities": [
+      0.25072816014289856,
+      0.6321642398834229,
+      0.057125307619571686,
+      0.021013209596276283,
+      0.014391561038792133,
+      0.0005683382041752338,
+      0.004869190976023674,
+      0.0014200903242453933,
+      0.004162361845374107,
+      0.01355750858783722
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Early blight leaf/tomato_early-blight_01_zoom.jpg",
+    "label": "early_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 1,
+    "prediction": 0,
+    "probabilities": [
+      0.4801650941371918,
+      0.4443510174751282,
+      0.009029793553054333,
+      0.005493356380611658,
+      0.04770304635167122,
+      0.0007336484268307686,
+      0.0017565808957442641,
+      0.0036341289523988962,
+      0.004868695978075266,
+      0.0022646335419267416
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/1684.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 9,
+    "prediction": 9,
+    "probabilities": [
+      0.00023794412845745683,
+      2.2230891772778705e-05,
+      0.000989826861768961,
+      0.0007933759479783475,
+      0.0004933333839289844,
+      0.0011110808700323105,
+      0.0001079156863852404,
+      0.00010699329141061753,
+      0.00019490456907078624,
+      0.9959424138069153
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/2013-08-20-06.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 9,
+    "prediction": 8,
+    "probabilities": [
+      0.04130135849118233,
+      0.19299104809761047,
+      0.14712518453598022,
+      0.04061643034219742,
+      0.019017502665519714,
+      0.002388420281931758,
+      0.0036338402424007654,
+      0.0021008681505918503,
+      0.4029783606529236,
+      0.14784696698188782
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/90e2c0.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 9,
+    "prediction": 9,
+    "probabilities": [
+      0.005285939667373896,
+      0.0017358701443299651,
+      0.030883848667144775,
+      0.15929429233074188,
+      0.024564558640122414,
+      0.020623859018087387,
+      0.012893729843199253,
+      0.000328503898344934,
+      0.08173109591007233,
+      0.6626583337783813
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/DSCN1015.JPG.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 9,
+    "prediction": 9,
+    "probabilities": [
+      0.0028153921011835337,
+      0.0006586057716049254,
+      0.011681869626045227,
+      0.0052732923068106174,
+      0.0028396632988005877,
+      0.0006799543043598533,
+      0.000962010701186955,
+      0.0006864885217510164,
+      0.0015953726833686233,
+      0.9728074073791504
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/IMG_1246.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 9,
+    "prediction": 0,
+    "probabilities": [
+      0.7247674465179443,
+      0.0191099401563406,
+      0.015524499118328094,
+      0.032172687351703644,
+      0.0010682808933779597,
+      0.006106801331043243,
+      0.03140506520867348,
+      0.024838266894221306,
+      0.0023481042589992285,
+      0.14265897870063782
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/main-qimg-d9c2a93f60568485c989670d9bbf703b.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 9,
+    "prediction": 9,
+    "probabilities": [
+      0.007141472306102514,
+      0.0022728354670107365,
+      0.014475377276539803,
+      0.01191544160246849,
+      0.004285390488803387,
+      0.008287441916763783,
+      0.00198289193212986,
+      0.002846074989065528,
+      0.015799228101968765,
+      0.9309937953948975
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/Tomato59.JPG.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 9,
+    "prediction": 7,
+    "probabilities": [
+      0.05441304296255112,
+      0.2356223165988922,
+      0.01808089017868042,
+      0.043575964868068695,
+      0.07273472845554352,
+      0.005957866553217173,
+      0.00636777188628912,
+      0.3430757522583008,
+      0.05982299894094467,
+      0.16034865379333496
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf/Tomato_leaf.jpg",
+    "label": "healthy",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 9,
+    "prediction": 9,
+    "probabilities": [
+      0.08279193937778473,
+      0.01256364956498146,
+      0.055732715874910355,
+      0.22280505299568176,
+      0.05883103981614113,
+      0.01271949801594019,
+      0.022596320137381554,
+      0.11954672634601593,
+      0.10616852343082428,
+      0.30624449253082275
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/%2320+Bacterial+Spot+and+Speck.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 0,
+    "prediction": 2,
+    "probabilities": [
+      0.053685903549194336,
+      0.02704133465886116,
+      0.3606364130973816,
+      0.03807136416435242,
+      0.2657858431339264,
+      0.03898656368255615,
+      0.028890805318951607,
+      0.08423605561256409,
+      0.04599706456065178,
+      0.05666862428188324
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/07.17.18-Common_Tomato_Diseases_Canker-258x300.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 0,
+    "prediction": 0,
+    "probabilities": [
+      0.8260830044746399,
+      0.08720807731151581,
+      0.014962452463805676,
+      0.014200699515640736,
+      0.002526303753256798,
+      0.0029000616632401943,
+      0.017915232107043266,
+      0.021650435402989388,
+      0.0021767388097941875,
+      0.010376991704106331
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/bact-spot-fig-1.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 0,
+    "prediction": 0,
+    "probabilities": [
+      0.8411197066307068,
+      0.0055775754153728485,
+      0.008593381382524967,
+      0.040434811264276505,
+      0.022681033238768578,
+      0.009096554480493069,
+      0.002820827066898346,
+      0.001951789017766714,
+      0.002926149871200323,
+      0.06479809433221817
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/Bacterial_spots563.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 0,
+    "prediction": 0,
+    "probabilities": [
+      0.7908598780632019,
+      0.06879782676696777,
+      0.055076003074645996,
+      0.008701673708856106,
+      0.03259461745619774,
+      0.003112630918622017,
+      0.028156664222478867,
+      0.003547581611201167,
+      0.0026010265573859215,
+      0.00655221426859498
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/Tom_Bact3.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 0,
+    "prediction": 2,
+    "probabilities": [
+      0.02274075150489807,
+      0.013475664891302586,
+      0.8760148882865906,
+      0.01614994928240776,
+      0.061312053352594376,
+      0.00315664429217577,
+      0.0010560835944488645,
+      0.00041524655534885824,
+      0.001473059644922614,
+      0.004205675330013037
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/Tom_Bact7.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 0,
+    "prediction": 9,
+    "probabilities": [
+      0.025002600625157356,
+      0.008941009640693665,
+      0.04098477214574814,
+      0.10596724599599838,
+      0.18678586184978485,
+      0.015922104939818382,
+      0.008864669129252434,
+      0.010173115879297256,
+      0.012866511940956116,
+      0.5844920873641968
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/Tomato%2BBacterial%2BSpot%2Bon%2BLeaves.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 0,
+    "prediction": 4,
+    "probabilities": [
+      0.15588197112083435,
+      0.043576668947935104,
+      0.007258059922605753,
+      0.009896381758153439,
+      0.7496426105499268,
+      0.00625891238451004,
+      0.009155306033790112,
+      0.006060516461730003,
+      0.01144593395292759,
+      0.0008236208814196289
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf bacterial spot/tomato_bacterial-speck_01_zoom.jpg",
+    "label": "bacterial_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 0,
+    "prediction": 4,
+    "probabilities": [
+      0.16547322273254395,
+      0.06616688519716263,
+      0.003244648687541485,
+      0.0018849980551749468,
+      0.7352685928344727,
+      0.002864500042051077,
+      0.007840213365852833,
+      0.0023550018668174744,
+      0.010207243263721466,
+      0.004694660194218159
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/110822-206-Tomato-blight.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 2,
+    "prediction": 2,
+    "probabilities": [
+      0.0031889360398054123,
+      0.006438645999878645,
+      0.9607512950897217,
+      0.005735745653510094,
+      0.002879047766327858,
+      0.0070520737208426,
+      0.001935887965373695,
+      0.0006570989498868585,
+      0.008252374827861786,
+      0.0031088320538401604
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/18c.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 2,
+    "prediction": 2,
+    "probabilities": [
+      0.0025724482256919146,
+      0.0022635171189904213,
+      0.9723441004753113,
+      0.015116898342967033,
+      0.0007301540463231504,
+      0.002195954555645585,
+      0.0009038897114805877,
+      0.00018715379701461643,
+      0.002717622322961688,
+      0.0009682013187557459
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/636368370164094909-late-blight-15-.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 2,
+    "prediction": 2,
+    "probabilities": [
+      0.0008894142811186612,
+      0.0005877710646018386,
+      0.8008959293365479,
+      0.018801160156726837,
+      0.0007023272337391973,
+      0.02074483409523964,
+      0.015881884843111038,
+      0.00031816173577681184,
+      0.026124155148863792,
+      0.11505439132452011
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/70.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 2,
+    "prediction": 1,
+    "probabilities": [
+      0.27237871289253235,
+      0.5035930871963501,
+      0.15244123339653015,
+      0.021617094054818153,
+      0.007493424229323864,
+      0.002395615680143237,
+      0.021773435175418854,
+      0.006301967892795801,
+      0.0030814367346465588,
+      0.00892404280602932
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/dsc_8148cs.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 2,
+    "prediction": 2,
+    "probabilities": [
+      0.0018715757178142667,
+      0.0015364718856289983,
+      0.9864354729652405,
+      0.0028675319626927376,
+      0.0028274531941860914,
+      0.0017423555254936218,
+      0.0005912110791541636,
+      0.00010980968363583088,
+      0.0017069801688194275,
+      0.000311074749333784
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/E%29Tomato-late-blight-foliar.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 2,
+    "prediction": 2,
+    "probabilities": [
+      0.0004821739566978067,
+      0.00019308390619698912,
+      0.9805306196212769,
+      0.014901540242135525,
+      0.0006655510514974594,
+      0.0025127746630460024,
+      0.00030888989567756653,
+      6.7418418439046945e-06,
+      0.00010064900561701506,
+      0.00029797921888530254
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/image.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 2,
+    "prediction": 2,
+    "probabilities": [
+      0.0300812479108572,
+      0.016968226060271263,
+      0.7311901450157166,
+      0.04622545838356018,
+      0.07095593959093094,
+      0.003683726768940687,
+      0.003156997263431549,
+      0.001494871685281396,
+      0.08859376609325409,
+      0.007649634033441544
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/IMG_5808.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 2,
+    "prediction": 2,
+    "probabilities": [
+      0.1040603518486023,
+      0.05187109857797623,
+      0.7936757206916809,
+      0.023093756288290024,
+      0.006998791359364986,
+      0.0036367508582770824,
+      0.0018525499617680907,
+      0.0020970709156244993,
+      0.00693137850612402,
+      0.005782483611255884
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/late_blight_tomato_leaf_spore1x1200.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 2,
+    "prediction": 2,
+    "probabilities": [
+      0.001387189724482596,
+      0.0015749911544844508,
+      0.8773971199989319,
+      0.009160714223980904,
+      0.004578188993036747,
+      0.0049958620220422745,
+      0.014453746378421783,
+      0.005093524232506752,
+      0.011318161152303219,
+      0.07004047930240631
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf late blight/LateBlt09_06.jpg",
+    "label": "late_blight",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 2,
+    "prediction": 3,
+    "probabilities": [
+      0.089187853038311,
+      0.2008434236049652,
+      0.03578600659966469,
+      0.4575228989124298,
+      0.1378020942211151,
+      0.002156305592507124,
+      0.015479556284844875,
+      0.01074298843741417,
+      0.0329943485558033,
+      0.017484497278928757
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/9511.img.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 8,
+    "prediction": 9,
+    "probabilities": [
+      0.04349282756447792,
+      0.02172129973769188,
+      0.01482400018721819,
+      0.10781358927488327,
+      0.010647142305970192,
+      0.013454931788146496,
+      0.05267014726996422,
+      0.024149417877197266,
+      0.3134159743785858,
+      0.3978106677532196
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/D%29AlfMov.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 8,
+    "prediction": 4,
+    "probabilities": [
+      0.10464401543140411,
+      0.010764890350401402,
+      0.0679132491350174,
+      0.3370502293109894,
+      0.3424789011478424,
+      0.02125716023147106,
+      0.0012471050722524524,
+      0.0062309871427714825,
+      0.10398326814174652,
+      0.004430169705301523
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/everystockphoto-21099455-l.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 8,
+    "prediction": 8,
+    "probabilities": [
+      0.02025478705763817,
+      0.004553202074021101,
+      0.004821706563234329,
+      0.027682429179549217,
+      0.041249580681324005,
+      0.02987460047006607,
+      0.004957198165357113,
+      0.31714823842048645,
+      0.5353128910064697,
+      0.0141453193500638
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/ill-tomato-of-tomato-mosaic-virus-DBE17N.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 8,
+    "prediction": 9,
+    "probabilities": [
+      0.09413585811853409,
+      0.004238692577928305,
+      0.11014212667942047,
+      0.13653182983398438,
+      0.049621690064668655,
+      0.006934176664799452,
+      0.006970221642404795,
+      0.010331535711884499,
+      0.09983557462692261,
+      0.48125821352005005
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/page_2.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 8,
+    "prediction": 3,
+    "probabilities": [
+      0.08561892807483673,
+      0.015808410942554474,
+      0.2931750416755676,
+      0.49820858240127563,
+      0.014730517752468586,
+      0.03301055729389191,
+      0.005610325839370489,
+      0.0179214458912611,
+      0.018019797280430794,
+      0.0178963802754879
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/tmv-tomato-34.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 8,
+    "prediction": 7,
+    "probabilities": [
+      0.1187313050031662,
+      0.03644522279500961,
+      0.007137552369385958,
+      0.16545619070529938,
+      0.018976274877786636,
+      0.024653954431414604,
+      0.028852058574557304,
+      0.2713962495326996,
+      0.06771371513605118,
+      0.2606375515460968
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/tmv-tomato-9.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 8,
+    "prediction": 3,
+    "probabilities": [
+      0.007897932082414627,
+      0.005463491193950176,
+      0.26920178532600403,
+      0.4813079237937927,
+      0.0013079281197860837,
+      0.007394781801849604,
+      0.00508924201130867,
+      0.08201182633638382,
+      0.11274906247854233,
+      0.027575945481657982
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/toma_TMV.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 8,
+    "prediction": 8,
+    "probabilities": [
+      0.007143912371248007,
+      0.004746774211525917,
+      0.005488335154950619,
+      0.20066264271736145,
+      0.22350040078163147,
+      0.000756989058572799,
+      0.001243787701241672,
+      0.00608601002022624,
+      0.5058903694152832,
+      0.044480789452791214
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/Tomato-Mosaic-1wdr2jx-300x225.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 8,
+    "prediction": 9,
+    "probabilities": [
+      0.007755564525723457,
+      0.0030579331796616316,
+      0.09255679696798325,
+      0.21880140900611877,
+      0.09445618093013763,
+      0.012232149951159954,
+      0.003108441596850753,
+      0.17044878005981445,
+      0.09266477823257446,
+      0.30491796135902405
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf mosaic virus/tomato_virus_04_zoom.jpg",
+    "label": "mosaic_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 8,
+    "prediction": 9,
+    "probabilities": [
+      0.016693713143467903,
+      0.003565196879208088,
+      0.029878050088882446,
+      0.16150780022144318,
+      0.004394473508000374,
+      0.02312089502811432,
+      0.019362246617674828,
+      0.0004060649371240288,
+      0.0443958044052124,
+      0.696675717830658
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf yellow virus/11-40580_5.jpg",
+    "label": "yellow_leaf_curl_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 7,
+    "prediction": 7,
+    "probabilities": [
+      0.006550623569637537,
+      0.00739735271781683,
+      0.007912935689091682,
+      0.03053022362291813,
+      0.010225238278508186,
+      0.0011648235376924276,
+      0.008204225450754166,
+      0.8862398266792297,
+      0.03938257694244385,
+      0.0023921639658510685
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf yellow virus/17fc47.jpg",
+    "label": "yellow_leaf_curl_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 7,
+    "prediction": 9,
+    "probabilities": [
+      0.2564719021320343,
+      0.04331982880830765,
+      0.018416933715343475,
+      0.20153464376926422,
+      0.06373796612024307,
+      0.005386754404753447,
+      0.005645090714097023,
+      0.04967069625854492,
+      0.03133334591984749,
+      0.32448282837867737
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf yellow virus/8226402877_9abf151b5b_b.jpg",
+    "label": "yellow_leaf_curl_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 7,
+    "prediction": 7,
+    "probabilities": [
+      0.10752103477716446,
+      0.03950053080916405,
+      0.032421547919511795,
+      0.017607085406780243,
+      0.07612941414117813,
+      0.010118653997778893,
+      0.003974223043769598,
+      0.5551724433898926,
+      0.15136215090751648,
+      0.006192917935550213
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf yellow virus/fwa2013313115151.jpg",
+    "label": "yellow_leaf_curl_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 7,
+    "prediction": 8,
+    "probabilities": [
+      0.0017565959133207798,
+      0.00031579521601088345,
+      0.0008589149219915271,
+      0.003144119633361697,
+      0.002497769193723798,
+      0.00442876573652029,
+      0.0007422897033393383,
+      0.4745010435581207,
+      0.5077053308486938,
+      0.00404930068179965
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato leaf yellow virus/glyphosate.jpg",
+    "label": "yellow_leaf_curl_virus",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 7,
+    "prediction": 7,
+    "probabilities": [
+      0.1652974933385849,
+      0.024490121752023697,
+      0.011477446183562279,
+      0.031572334468364716,
+      0.0414942130446434,
+      0.010689690709114075,
+      0.00773396622389555,
+      0.6373668909072876,
+      0.06056853383779526,
+      0.00930938683450222
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/49%20Leafmold%20Bottom.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 3,
+    "prediction": 2,
+    "probabilities": [
+      0.19134531915187836,
+      0.037485335022211075,
+      0.34935444593429565,
+      0.20272734761238098,
+      0.0490456223487854,
+      0.07471887022256851,
+      0.03580004349350929,
+      0.0016428892267867923,
+      0.012578564696013927,
+      0.0453016422688961
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/50%20Leafmold%20Top.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 3,
+    "prediction": 3,
+    "probabilities": [
+      0.08887701481580734,
+      0.06062978506088257,
+      0.00827336497604847,
+      0.8165459632873535,
+      0.0038952832110226154,
+      0.00414673238992691,
+      0.003433049423620105,
+      0.002051009563729167,
+      0.00380327133461833,
+      0.00834452174603939
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/BIGSD.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 3,
+    "prediction": 3,
+    "probabilities": [
+      0.015272151678800583,
+      0.12903378903865814,
+      0.04339895024895668,
+      0.7492129802703857,
+      0.0030465559102594852,
+      0.0019820404704660177,
+      0.01077029574662447,
+      0.03171504661440849,
+      0.009720634669065475,
+      0.005847649648785591
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/black_leaf_mold_in_zina_tina.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 3,
+    "prediction": 3,
+    "probabilities": [
+      0.06499592959880829,
+      0.007824167609214783,
+      0.0483100526034832,
+      0.6281118392944336,
+      0.1828950196504593,
+      0.0028883691411465406,
+      0.0008575773099437356,
+      0.006885739974677563,
+      0.03289974480867386,
+      0.0243315901607275
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/dscn6689.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 3,
+    "prediction": 3,
+    "probabilities": [
+      0.010214733891189098,
+      0.011017650365829468,
+      0.23489245772361755,
+      0.6314722299575806,
+      0.0117139657959342,
+      0.0025890148244798183,
+      0.017479034140706062,
+      0.0010382417822256684,
+      0.004528369288891554,
+      0.0750543400645256
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato mold leaf/fungus-univ-of-minnesoeta.jpg",
+    "label": "leaf_mold",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 3,
+    "prediction": 1,
+    "probabilities": [
+      0.06211092695593834,
+      0.34895408153533936,
+      0.17916682362556458,
+      0.11694759130477905,
+      0.20978356897830963,
+      0.007595786824822426,
+      0.004809301346540451,
+      0.029902923852205276,
+      0.036647021770477295,
+      0.00408204086124897
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/0.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 4,
+    "prediction": 2,
+    "probabilities": [
+      0.024890903383493423,
+      0.005966736935079098,
+      0.9134066700935364,
+      0.036538008600473404,
+      0.0044813198037445545,
+      0.0034390809014439583,
+      0.0007936684414744377,
+      0.0013307310873642564,
+      0.006806504912674427,
+      0.002346406225115061
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/2septoria-tomato.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 4,
+    "prediction": 4,
+    "probabilities": [
+      0.033009424805641174,
+      0.010768040083348751,
+      0.0031935195438563824,
+      0.0023855778854340315,
+      0.9445830583572388,
+      0.000974583497736603,
+      0.00146498903632164,
+      0.0011959959520027041,
+      0.0014293183339759707,
+      0.0009954712586477399
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/2STEM.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 4,
+    "prediction": 4,
+    "probabilities": [
+      0.28518396615982056,
+      0.03008226305246353,
+      0.0021579284220933914,
+      0.005864076316356659,
+      0.6481145620346069,
+      0.010683039203286171,
+      0.0067351809702813625,
+      0.0014651098754256964,
+      0.0033508306369185448,
+      0.006363017950206995
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/55830b60a7cf2.image.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 4,
+    "prediction": 0,
+    "probabilities": [
+      0.3867955803871155,
+      0.18574601411819458,
+      0.002489230362698436,
+      0.00516983587294817,
+      0.34905707836151123,
+      0.00712126400321722,
+      0.018397681415081024,
+      0.006984838750213385,
+      0.020227482542395592,
+      0.018011009320616722
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/6134794031202304.jpeg.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 4,
+    "prediction": 4,
+    "probabilities": [
+      0.22249053418636322,
+      0.02014225162565708,
+      0.002119064563885331,
+      0.0023182672448456287,
+      0.7242430448532104,
+      0.0015499284490942955,
+      0.002706254366785288,
+      0.001044450094923377,
+      0.009180807508528233,
+      0.014205300249159336
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/636227737977191231-septoria-leaf-spot-VT.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 4,
+    "prediction": 4,
+    "probabilities": [
+      0.3601004183292389,
+      0.07412397116422653,
+      0.0382351353764534,
+      0.02858886867761612,
+      0.4013414680957794,
+      0.00968774501234293,
+      0.03478309512138367,
+      0.0223230067640543,
+      0.010371348820626736,
+      0.020444972440600395
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/6447731_orig.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 4,
+    "prediction": 0,
+    "probabilities": [
+      0.6595577001571655,
+      0.00840300228446722,
+      0.0036593901459127665,
+      0.00247992854565382,
+      0.3140806257724762,
+      0.00047277260455302894,
+      0.0029638379346579313,
+      0.0015909322537481785,
+      0.0015938266878947616,
+      0.005198002327233553
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/7-17-Photo3_Septoria-MARY.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 4,
+    "prediction": 4,
+    "probabilities": [
+      0.03891385346651077,
+      0.1283223181962967,
+      0.0009566494845785201,
+      0.0013185035204514861,
+      0.8195250630378723,
+      0.0005333175649866462,
+      0.0002438119990983978,
+      2.062329076579772e-05,
+      0.008690234273672104,
+      0.0014755959855392575
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/RARZ4.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 4,
+    "prediction": 4,
+    "probabilities": [
+      0.15242622792720795,
+      0.1392785906791687,
+      0.005479349289089441,
+      0.01164330169558525,
+      0.6318631172180176,
+      0.0008734253933653235,
+      0.0011353264562785625,
+      0.003562968922778964,
+      0.051369935274124146,
+      0.0023677314165979624
+    ]
+  },
+  {
+    "path": "data/field/plantdoc/test/Tomato Septoria leaf spot/sept4disease-019.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "test",
+    "source": "plantdoc",
+    "truth": 4,
+    "prediction": 4,
+    "probabilities": [
+      0.14797452092170715,
+      0.10784582793712616,
+      0.001375808147713542,
+      0.002095553558319807,
+      0.7251448631286621,
+      0.0008931077900342643,
+      0.002345974324271083,
+      0.00032194668892771006,
+      0.0011272947303950787,
+      0.010875087231397629
+    ]
+  }
+]

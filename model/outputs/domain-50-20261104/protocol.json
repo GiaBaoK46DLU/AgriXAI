@@ -1,0 +1,88 @@
+{
+  "seed": 42,
+  "device": "cuda",
+  "torch": "2.13.0+cu126",
+  "checkpoint_sha256": "893d63f0657e0fe29b2d2fb04868f181cb574ad9c0a2323df4dd2504e3d9beb6",
+  "config": {
+    "seed": 42,
+    "data": {
+      "raw_dir": "data/raw",
+      "processed_dir": "data/processed",
+      "field_dir": "data/field",
+      "image_size": 224,
+      "val_ratio": 0.15,
+      "test_ratio": 0.15,
+      "batch_size": 32,
+      "num_workers": 8
+    },
+    "model": {
+      "arch": "efficientnet_b0",
+      "pretrained": true,
+      "dropout": 0.3
+    },
+    "train": {
+      "epochs": 25,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "freeze_backbone_epochs": 3,
+      "label_smoothing": 0.05,
+      "early_stopping_patience": 6,
+      "amp": true
+    },
+    "augment": {
+      "horizontal_flip": 0.5,
+      "vertical_flip": 0.2,
+      "rotation_degrees": 30,
+      "color_jitter": {
+        "brightness": 0.3,
+        "contrast": 0.3,
+        "saturation": 0.3,
+        "hue": 0.05
+      },
+      "random_resized_crop_scale": [
+        0.7,
+        1.0
+      ],
+      "gaussian_blur_prob": 0.15,
+      "outdoor": {
+        "enabled": true,
+        "background_manifest": "data/processed/gate-split.csv",
+        "background_prob": 0.7,
+        "light_prob": 0.5
+      }
+    },
+    "xai": {
+      "method": "gradcam_plusplus",
+      "heatmap_threshold": 0.5,
+      "reliability": {
+        "enabled": false,
+        "min_leaf_mass": 0.65,
+        "min_lift": 0.05
+      }
+    },
+    "preprocess": {
+      "leaf_crop": {
+        "enabled": false,
+        "padding": 0.08,
+        "min_area": 0.05,
+        "max_area": 0.9,
+        "min_dominance": 0.65
+      }
+    },
+    "paths": {
+      "checkpoint_dir": "checkpoints",
+      "output_dir": "outputs"
+    }
+  },
+  "test_overlap_hashes_removed": [
+    "2a05a74db3a270ac0ec77c00ebe89a332eed589819435129cc3c29eb6e701eb2",
+    "32e9ffabaa054c19ae8df95e94fbd7a25105defdea1214eb5f8bd804ea9a7428",
+    "3a60a7b6f3a287981d21dca37f27e5480cc46d1144688d435e53db7a47b7006f",
+    "7ff8410db407008bb9aecf0cc5505f2b47ffd89e508413a30ea983b4bc169714",
+    "90220c67ab2c3ed150e93f0c26691d463200e784c74152e62acedac8a4d2d525"
+  ],
+  "remaining_test_overlap": [],
+  "selection_rule": "PD validation macro-F1; PV validation accuracy >= 0.985 preferred; no test tuning",
+  "augmentation_epochs": 6,
+  "adaptation_epochs": 15
+}

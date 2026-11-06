@@ -1,0 +1,17 @@
+Đã tạo xong các bảng: diagnoses, diagnosis_images, disease_guides, disease_medicines, forum_comments, forum_post_likes, forum_posts, medicines, plots, refresh_tokens, users
+INFO:     Started server process [51244]
+INFO:     Waiting for application startup.
+2026-11-04 21:40:35,363  INFO     app.services.inference.loader — Đã nạp bộ chặn lá/không-phải-lá: D:\AgriXAI\model\checkpoints\organ_gate.pt (phiên bản gate-efficientnet_b0-20260918-2101)
+2026-11-04 21:40:35,363  INFO     app.services.inference.loader — Đã nạp mô hình thật: D:\AgriXAI\model\outputs\domain-50-20261104-b8\rehearsal.pt (phiên bản efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal)
+2026-11-04 21:40:35,363  INFO     app.main — Mô hình thật đã sẵn sàng: efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:57862 (Press CTRL+C to quit)
+INFO:     127.0.0.1:57869 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57869 - "POST /api/v1/auth/register HTTP/1.1" 201 Created
+INFO:     127.0.0.1:57869 - "POST /api/v1/diagnoses HTTP/1.1" 201 Created
+INFO:     127.0.0.1:57869 - "GET /api/v1/diagnoses/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57869 - "GET /storage/overlays/2026/11/04214036-d75effd2.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57869 - "POST /api/v1/diagnoses HTTP/1.1" 201 Created
+C:\Users\Maxsys\AppData\Local\Temp\agrixai-xai-122\.venv\Lib\site-packages\fastapi\routing.py:372: StarletteDeprecationWarning: 'HTTP_422_UNPROCESSABLE_ENTITY' is deprecated. Use 'HTTP_422_UNPROCESSABLE_CONTENT' instead.
+  return await dependant.call(**values)
+INFO:     127.0.0.1:57869 - "POST /api/v1/diagnoses HTTP/1.1" 422 Unprocessable Entity

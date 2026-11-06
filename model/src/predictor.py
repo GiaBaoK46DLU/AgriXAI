@@ -27,9 +27,10 @@ import torch
 from PIL import Image
 
 from src.data.dataset import build_infer_transform
+from src.data.leaf_crop import LeafRegion, locate_leaf
 from src.models.build import load_checkpoint, target_layer_for_gradcam
 from src.xai.gradcam_plusplus import create_cam
-
+from src.xai.reliability import assess_heatmap
 
 NOT_LEAF_KEY = "not_tomato_leaf"
 
@@ -49,6 +50,8 @@ class Prediction:
         heatmap: mảng (H, W) float32 trong khoảng 0..1, ĐÚNG kích thước ảnh
             gốc truyền vào. Giá trị càng cao = vùng đó càng ảnh hưởng tới
             quyết định của mô hình. Backend dùng mảng này để vẽ vùng khoanh.
+            Trả None khi chốt vị trí XAI không đủ bằng chứng; xác suất bệnh
+            vẫn giữ nguyên; backend bỏ overlay và nhắc chụp lại với nhãn bệnh.
         model_version: định danh phiên bản mô hình, ghi kèm mỗi bản chẩn đoán
             để sau này truy vết được kết quả do mô hình nào sinh ra.
         latency_ms: thời gian suy luận, dùng cho phần đánh giá hiệu năng.
@@ -95,15 +98,19 @@ class DiseasePredictor:
         self.image_size: int = ckpt.get("image_size", 224)
         self.model_version: str = ckpt.get("model_version", path.stem)
         self.transform = build_infer_transform(self.image_size)
-        # Chỉ đọc cấu hình XAI; kích thước ảnh/kiến trúc vẫn lấy từ checkpoint.
+        # Đọc XAI và tiền xử lý; kích thước ảnh/kiến trúc vẫn lấy từ checkpoint.
         # Backend tiếp tục dùng constructor cũ, không đổi hợp đồng Prediction.
-        if xai_method is None:
-            import yaml
+        import yaml
 
-            config_path = (Path(xai_config_path) if xai_config_path is not None
-                           else Path(__file__).resolve().parents[1] / "configs/default.yaml")
-            with config_path.open(encoding="utf-8") as stream:
-                config = yaml.safe_load(stream) or {}
+        config_path = (Path(xai_config_path) if xai_config_path is not None
+                       else Path(__file__).resolve().parents[1] / "configs/default.yaml")
+        with config_path.open(encoding="utf-8") as stream:
+            config = yaml.safe_load(stream) or {}
+        self.crop_config = dict(config.get("preprocess", {}).get("leaf_crop", {}))
+        self.crop_enabled = self.crop_config.pop("enabled", False)
+        self.reliability_config = dict(config.get("xai", {}).get("reliability", {}))
+        self.reliability_enabled = self.reliability_config.pop("enabled", False)
+        if xai_method is None:
             xai_method = config.get("xai", {}).get("method", "gradcam")
         self.xai_method = xai_method
         self._cam = create_cam(self.model, target_layer_for_gradcam(self.model, ckpt["arch"]),
@@ -147,7 +154,12 @@ class DiseasePredictor:
                     latency_ms=(time.perf_counter() - started) * 1000,
                 )
 
-        tensor = self.transform(image).unsqueeze(0).to(self.device)
+        # Bộ chặn vẫn xem TOÀN ảnh. Cắt sau chốt để không đổi đầu vào #92.
+        region = (locate_leaf(image, **self.crop_config)
+                  if self.crop_enabled or self.reliability_enabled
+                  else LeafRegion((0, 0, orig_w, orig_h), None, "disabled"))
+        model_image = image.crop(region.box) if self.crop_enabled else image
+        tensor = self.transform(model_image).unsqueeze(0).to(self.device)
 
         with torch.no_grad():
             probs = torch.softmax(self.model(tensor), dim=1)[0]
@@ -156,7 +168,12 @@ class DiseasePredictor:
         heatmap = None
         if with_heatmap:
             cam = self._cam(tensor, class_idx=idx)[0]          # (S, S), 0..1
-            heatmap = self._resize_heatmap(cam, orig_w, orig_h)
+            heatmap = (region.restore(cam, image.size) if self.crop_enabled
+                       else self._resize_heatmap(cam, orig_w, orig_h))
+            if self.reliability_enabled:
+                decision = assess_heatmap(heatmap, region.mask, **self.reliability_config)
+                if not decision["accepted"]:
+                    heatmap = None
 
         return Prediction(
             disease_key=self.class_keys[idx],

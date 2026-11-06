@@ -1,0 +1,57 @@
+{
+  "pv-validation": {
+    "n": 300,
+    "hidden": 80,
+    "reasons": {
+      "accepted": 220,
+      "outside_leaf": 59,
+      "unknown_leaf_mask": 21
+    },
+    "accepted_accuracy": 0.9772727272727273,
+    "all_accuracy": 0.9833333333333333
+  },
+  "pd-validation": {
+    "n": 135,
+    "hidden": 85,
+    "reasons": {
+      "accepted": 50,
+      "outside_leaf": 22,
+      "unknown_leaf_mask": 63
+    },
+    "accepted_accuracy": 0.54,
+    "all_accuracy": 0.5777777777777777
+  },
+  "pv-test": {
+    "n": 300,
+    "hidden": 68,
+    "reasons": {
+      "accepted": 232,
+      "outside_leaf": 37,
+      "unknown_leaf_mask": 31
+    },
+    "accepted_accuracy": 0.9956896551724138,
+    "all_accuracy": 0.99
+  },
+  "pd-test": {
+    "n": 66,
+    "hidden": 43,
+    "reasons": {
+      "accepted": 23,
+      "outside_leaf": 17,
+      "unknown_leaf_mask": 26
+    },
+    "accepted_accuracy": 0.5652173913043478,
+    "all_accuracy": 0.5757575757575758
+  },
+  "negative-test": {
+    "n": 52,
+    "hidden": 40,
+    "reasons": {
+      "accepted": 12,
+      "outside_leaf": 14,
+      "unknown_leaf_mask": 26
+    },
+    "accepted_accuracy": 0.0,
+    "all_accuracy": 0.0
+  }
+}

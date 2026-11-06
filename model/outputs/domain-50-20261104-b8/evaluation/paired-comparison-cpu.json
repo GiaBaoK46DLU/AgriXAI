@@ -1,0 +1,22 @@
+{
+  "pv10": {
+    "accuracy_delta": -0.00735564545788893,
+    "paired_bootstrap_ci95": [
+      -0.011033468186833395,
+      -0.003677822728944465
+    ],
+    "wrong_to_correct": 3,
+    "correct_to_wrong": 23,
+    "mcnemar_exact_p": 8.797645568847656e-05
+  },
+  "pd8": {
+    "accuracy_delta": 0.2878787878787879,
+    "paired_bootstrap_ci95": [
+      0.16666666666666666,
+      0.4090909090909091
+    ],
+    "wrong_to_correct": 20,
+    "correct_to_wrong": 1,
+    "mcnemar_exact_p": 2.09808349609375e-05
+  }
+}

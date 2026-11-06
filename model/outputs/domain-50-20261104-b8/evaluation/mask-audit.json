@@ -1,0 +1,282 @@
+[
+  {
+    "sample": "pv-bacterial_spot-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.8406063077759652
+  },
+  {
+    "sample": "pv-bacterial_spot-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.8180384330640229
+  },
+  {
+    "sample": "pv-bacterial_spot-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7801282881948944
+  },
+  {
+    "sample": "pv-early_blight-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.8013229031381195
+  },
+  {
+    "sample": "pv-early_blight-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.5313702370609408
+  },
+  {
+    "sample": "pv-early_blight-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.6791488789539144
+  },
+  {
+    "sample": "pv-healthy-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.4660299031354416
+  },
+  {
+    "sample": "pv-healthy-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7846636302546106
+  },
+  {
+    "sample": "pv-healthy-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7315080001527475
+  },
+  {
+    "sample": "pv-late_blight-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.6282600569341806
+  },
+  {
+    "sample": "pv-late_blight-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.5184957385115544
+  },
+  {
+    "sample": "pv-late_blight-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.6825578730231492
+  },
+  {
+    "sample": "pv-leaf_mold-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7050294517444495
+  },
+  {
+    "sample": "pv-leaf_mold-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.6751956874907694
+  },
+  {
+    "sample": "pv-leaf_mold-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7856523292004695
+  },
+  {
+    "sample": "pv-mosaic_virus-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.6321098948272161
+  },
+  {
+    "sample": "pv-mosaic_virus-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.5611136519551795
+  },
+  {
+    "sample": "pv-mosaic_virus-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7602354688162919
+  },
+  {
+    "sample": "pv-septoria_leaf_spot-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.5619912603889984
+  },
+  {
+    "sample": "pv-septoria_leaf_spot-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.6700322535408778
+  },
+  {
+    "sample": "pv-septoria_leaf_spot-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.6130291203842689
+  },
+  {
+    "sample": "pv-spider_mites-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.5285555555555556
+  },
+  {
+    "sample": "pv-spider_mites-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.5433067414745332
+  },
+  {
+    "sample": "pv-spider_mites-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7061586937840161
+  },
+  {
+    "sample": "pv-target_spot-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7243112577699332
+  },
+  {
+    "sample": "pv-target_spot-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7412204835270928
+  },
+  {
+    "sample": "pv-target_spot-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7237438714196188
+  },
+  {
+    "sample": "pv-yellow_leaf_curl_virus-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7078837577327003
+  },
+  {
+    "sample": "pv-yellow_leaf_curl_virus-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.6054399111851235
+  },
+  {
+    "sample": "pv-yellow_leaf_curl_virus-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7557734306026672
+  },
+  {
+    "sample": "pd-bacterial_spot-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.11776094634270882
+  },
+  {
+    "sample": "pd-bacterial_spot-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.6066635455680399
+  },
+  {
+    "sample": "pd-bacterial_spot-3",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  },
+  {
+    "sample": "pd-early_blight-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.5821727715964495
+  },
+  {
+    "sample": "pd-early_blight-2",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  },
+  {
+    "sample": "pd-early_blight-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.3306640625
+  },
+  {
+    "sample": "pd-healthy-1",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  },
+  {
+    "sample": "pd-healthy-2",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  },
+  {
+    "sample": "pd-healthy-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.605061460592914
+  },
+  {
+    "sample": "pd-late_blight-1",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  },
+  {
+    "sample": "pd-late_blight-2",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  },
+  {
+    "sample": "pd-late_blight-3",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  },
+  {
+    "sample": "pd-leaf_mold-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.558782924122249
+  },
+  {
+    "sample": "pd-leaf_mold-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.778517926399621
+  },
+  {
+    "sample": "pd-leaf_mold-3",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  },
+  {
+    "sample": "pd-mosaic_virus-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.2825191661914718
+  },
+  {
+    "sample": "pd-mosaic_virus-2",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  },
+  {
+    "sample": "pd-mosaic_virus-3",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  },
+  {
+    "sample": "pd-septoria_leaf_spot-1",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  },
+  {
+    "sample": "pd-septoria_leaf_spot-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.3588375128181225
+  },
+  {
+    "sample": "pd-septoria_leaf_spot-3",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.7884531363778217
+  },
+  {
+    "sample": "pd-spider_mites-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.5586127222143632
+  },
+  {
+    "sample": "pd-spider_mites-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.6829676026832003
+  },
+  {
+    "sample": "pd-yellow_leaf_curl_virus-1",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.6878664110472062
+  },
+  {
+    "sample": "pd-yellow_leaf_curl_virus-2",
+    "reason": "localized",
+    "mask_iou_ai_reference": 0.8323360916613622
+  },
+  {
+    "sample": "pd-yellow_leaf_curl_virus-3",
+    "reason": "ambiguous_mask",
+    "mask_iou_ai_reference": null
+  }
+]

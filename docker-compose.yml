@@ -57,7 +57,7 @@ services:
       # còn sót — phát hiện 30/09/2026 lúc rebuild image sau một thời gian
       # dài không đụng tới (requirements.txt không ghim phiên bản SQLAlchemy).
       - DATABASE_URL=postgresql+psycopg2://plantdx:plantdx@db:5432/plantdx
-      - MODEL_CHECKPOINT=/model/checkpoints/leaf_disease_detection_model.pt
+      - MODEL_CHECKPOINT=/model/checkpoints/leaf_disease_domain_adapted.pt
       - MODEL_PACKAGE_DIR=/model
       - MODEL_DEVICE=cpu
       # Bộ chặn lá/không-phải-lá (#92, nối vào backend ở #47) — checkpoint đã

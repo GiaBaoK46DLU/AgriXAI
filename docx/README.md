@@ -36,6 +36,11 @@ và [cách chạy lại](../model/outputs/xai-comparison-122/PHUONG_PHAP.md) n�
 
 ## Kế hoạch và rà soát
 
+[Cắt lá, chốt hiển thị XAI và cải thiện domain gap (#93/#90/#50)](bao-cao-cat-la-domain-adaptation.md):
+so sánh từng hướng trên cùng tập test sạch, số CPU/GPU, ảnh kiểm tra toạ độ,
+quy tắc ẩn heatmap và kiểm tra API bằng checkpoint thật. Các file số liệu nằm
+trong `model/outputs/domain-50-20261104-b8/`.
+
 [Báo cáo ngắn nâng cấp Grad-CAM++ (#98)](bao-cao-nang-cap-gradcam-plus-plus.docx):
 nguyên lý, bảng so sánh định lượng, hình có chú thích và quyết định bật mặc định.
 [Thực nghiệm đầy đủ](bao-cao-gradcam-plus-plus.md) lưu chi tiết công thức, đối chứng

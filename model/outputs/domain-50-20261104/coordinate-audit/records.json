@@ -1,0 +1,266 @@
+[
+  {
+    "path": "data/raw/Tomato___Bacterial_spot/f5b9b1ee-1abf-489f-be80-a4c80bfb2820___UF.GRC_BS_Lab Leaf 0445.JPG",
+    "label": "bacterial_spot",
+    "split": "val",
+    "source": "plantvillage",
+    "box": [
+      22,
+      43,
+      218,
+      222
+    ],
+    "image_size": [
+      256,
+      256
+    ],
+    "heatmap_shape": [
+      256,
+      256
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pv-01.png"
+  },
+  {
+    "path": "data/raw/Tomato___Bacterial_spot/afd78d63-13b3-400f-8e9a-1c87f27fa12f___UF.GRC_BS_Lab Leaf 0239.JPG",
+    "label": "bacterial_spot",
+    "split": "val",
+    "source": "plantvillage",
+    "box": [
+      40,
+      58,
+      239,
+      192
+    ],
+    "image_size": [
+      256,
+      256
+    ],
+    "heatmap_shape": [
+      256,
+      256
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pv-02.png"
+  },
+  {
+    "path": "data/raw/Tomato___Bacterial_spot/1838f883-5e4b-4b24-bf4b-77d4a82f5f46___GCREC_Bact.Sp 6335.JPG",
+    "label": "bacterial_spot",
+    "split": "val",
+    "source": "plantvillage",
+    "box": [
+      27,
+      0,
+      254,
+      256
+    ],
+    "image_size": [
+      256,
+      256
+    ],
+    "heatmap_shape": [
+      256,
+      256
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pv-03.png"
+  },
+  {
+    "path": "data/raw/Tomato___Bacterial_spot/98df469d-20d0-4b6e-aae3-617473f3081f___GCREC_Bact.Sp 5792.JPG",
+    "label": "bacterial_spot",
+    "split": "val",
+    "source": "plantvillage",
+    "box": [
+      0,
+      0,
+      224,
+      256
+    ],
+    "image_size": [
+      256,
+      256
+    ],
+    "heatmap_shape": [
+      256,
+      256
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pv-04.png"
+  },
+  {
+    "path": "data/raw/Tomato___Bacterial_spot/9a8c7e68-6887-40f1-b0f4-94bb5b678264___UF.GRC_BS_Lab Leaf 0399.JPG",
+    "label": "bacterial_spot",
+    "split": "val",
+    "source": "plantvillage",
+    "box": [
+      35,
+      18,
+      217,
+      248
+    ],
+    "image_size": [
+      256,
+      256
+    ],
+    "heatmap_shape": [
+      256,
+      256
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pv-05.png"
+  },
+  {
+    "path": "data/raw/Tomato___Bacterial_spot/3d41d2d9-7014-4409-a953-21227ef9d8e1___GCREC_Bact.Sp 3699.JPG",
+    "label": "bacterial_spot",
+    "split": "val",
+    "source": "plantvillage",
+    "box": [
+      11,
+      0,
+      241,
+      251
+    ],
+    "image_size": [
+      256,
+      256
+    ],
+    "heatmap_shape": [
+      256,
+      256
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pv-06.png"
+  },
+  {
+    "path": "data/field/plantdoc/train/Tomato Septoria leaf spot/1c421500ddd390c90596ad2cf12d5429.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "val",
+    "source": "plantdoc",
+    "box": [
+      0,
+      0,
+      212,
+      173
+    ],
+    "image_size": [
+      240,
+      208
+    ],
+    "heatmap_shape": [
+      208,
+      240
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pd-01.png"
+  },
+  {
+    "path": "data/field/plantdoc/train/Tomato Septoria leaf spot/septoria-tomato-leaf.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "val",
+    "source": "plantdoc",
+    "box": [
+      15,
+      9,
+      242,
+      189
+    ],
+    "image_size": [
+      300,
+      206
+    ],
+    "heatmap_shape": [
+      206,
+      300
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pd-02.png"
+  },
+  {
+    "path": "data/field/plantdoc/train/Tomato leaf/stock-photo-tomato-leaf-isolated-on-white-background-580281301.jpg",
+    "label": "healthy",
+    "split": "val",
+    "source": "plantdoc",
+    "box": [
+      54,
+      45,
+      397,
+      324
+    ],
+    "image_size": [
+      450,
+      360
+    ],
+    "heatmap_shape": [
+      360,
+      450
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pd-03.png"
+  },
+  {
+    "path": "data/field/plantdoc/train/Tomato leaf/single-a-green-leaf-of-tomato-picture-id496662675_k=6&m=496662675&s=612x612&w=0&h=6zKfv022H_9cLQSIR_kpcOAlTeg1eIVtLBbc80PQA7Y=.jpg",
+    "label": "healthy",
+    "split": "val",
+    "source": "plantdoc",
+    "box": [
+      59,
+      30,
+      589,
+      496
+    ],
+    "image_size": [
+      612,
+      508
+    ],
+    "heatmap_shape": [
+      508,
+      612
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pd-04.png"
+  },
+  {
+    "path": "data/field/plantdoc/train/Tomato leaf late blight/late-blight-tom-leaf.jpg",
+    "label": "late_blight",
+    "split": "val",
+    "source": "plantdoc",
+    "box": [
+      116,
+      0,
+      768,
+      521
+    ],
+    "image_size": [
+      768,
+      521
+    ],
+    "heatmap_shape": [
+      521,
+      768
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pd-05.png"
+  },
+  {
+    "path": "data/field/plantdoc/train/Tomato Septoria leaf spot/slide21-n.jpg",
+    "label": "septoria_leaf_spot",
+    "split": "val",
+    "source": "plantdoc",
+    "box": [
+      127,
+      21,
+      547,
+      540
+    ],
+    "image_size": [
+      720,
+      540
+    ],
+    "heatmap_shape": [
+      540,
+      720
+    ],
+    "outside_crop_mass": 0.0,
+    "figure": "pd-06.png"
+  }
+]

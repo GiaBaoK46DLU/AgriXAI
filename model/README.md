@@ -208,7 +208,9 @@ Cách backend nạp:
 
 ```env
 # backend/.env
-MODEL_CHECKPOINT=../model/checkpoints/best.pt
+MODEL_CHECKPOINT=../model/checkpoints/leaf_disease_domain_adapted.pt
+MODEL_GATE_CHECKPOINT=../model/checkpoints/organ_gate.pt
+MODEL_DEVICE=cpu
 ```
 
 Khi biến này rỗng hoặc file không tồn tại, backend tự chuyển sang `DummyPredictor` — toàn hệ thống vẫn chạy được để phát triển giao diện song song.
@@ -223,7 +225,7 @@ model/
 ├── data/
 │   ├── raw/                   PlantVillage gốc (git bỏ qua)
 │   ├── processed/split.csv    Manifest chia tập
-│   └── field/                 Ảnh tự chụp ngoài đồng
+│   └── field/plantdoc/        Ảnh PlantDoc công khai, tách train/test gốc
 ├── src/
 │   ├── labels.py              Đọc danh mục bệnh — nguồn sự thật về thứ tự lớp
 │   ├── predictor.py           ★ HỢP ĐỒNG với backend
@@ -233,13 +235,65 @@ model/
 │   ├── evaluation/evaluate.py
 │   ├── xai/{gradcam,visualize}.py
 │   └── utils/common.py
-├── checkpoints/best.pt        (git bỏ qua — quá nặng)
+├── checkpoints/               Checkpoint theo Git; bản gốc giữ riêng để đối chứng
 └── outputs/                   Hình và số liệu cho báo cáo
 ```
 
 ---
 
 ## Ghi chú kỹ thuật cần nhớ khi bảo vệ
+
+### Cắt lá, chốt XAI và học domain (#93, #90, #50)
+
+[Báo cáo kết quả và giới hạn](../docx/bao-cao-cat-la-domain-adaptation.md), kèm
+[số liệu từng ảnh và protocol](outputs/domain-50-20261104-b8/). Báo cáo phân biệt
+kết quả CPU/GPU, mô hình bệnh/bộ chặn, tập train/validation/test. PlantDoc là ảnh
+công khai từ Internet, không phải bộ ảnh tự chụp tại Đà Lạt.
+
+- `src/data/leaf_crop.py`: tìm vùng nổi bật bằng màu; giữ ảnh đầy đủ khi mask
+  không rõ. Bật/tắt bằng `preprocess.leaf_crop.enabled`. CAM của ảnh cắt được đặt
+  lại vào đúng toạ độ ảnh gốc; 12 ảnh kiểm tra nằm ở
+  `outputs/domain-50-20261104/coordinate-audit/`, gồm cả trường hợp tách lá chưa tốt.
+- `src/xai/reliability.py`: chốt hiển thị dựa vào khối lượng CAM trong lá và lift
+  so với diện tích lá. Cấu hình `xai.reliability`: `enabled`, `min_leaf_mass`,
+  `min_lift`. Không đủ bằng chứng thì `Prediction.heatmap=None`; backend dùng
+  nhánh giải thích/chụp lại sẵn có. Qua chốt không chứng minh chẩn đoán đúng hoặc
+  vùng khoanh chính là vết bệnh.
+- `src/data/domain_dataset.py`: ghép nền chỉ cho ảnh PV train, nền chỉ từ split
+  train của bộ ảnh âm; thêm nắng/bóng đổ. PlantDoc giữ nền thật. Cấu hình
+  `augment.outdoor` có thể bật cho `src.training.train`; thí nghiệm đầy đủ #50
+  dùng entrypoint `src.training.adapt_domain`.
+- Sau fine-tune, thử hiệu chỉnh BN và học nhắc lại/chưng cất từ checkpoint cha.
+  Mọi biến thể được chọn bằng validation CPU, batch 1. Chỉ mở test khi đã có
+  `selection.json`; không chọn lại checkpoint theo số test.
+
+Cần PV, PlantDoc, các manifest và bộ ảnh âm #91 trên máy để học lại. Từ `model/`,
+dùng thư mục đầu ra mới để giữ nguyên bằng chứng cũ:
+
+```powershell
+python -u -m src.training.adapt_domain --out outputs/domain-50-new --train-batch-size 8 --num-workers 2 --reuse-crop-validation outputs/domain-50-20261104
+python -u -m src.evaluation.select_domain_crop --run outputs/domain-50-new
+python -u -m src.evaluation.evaluate_domain --run outputs/domain-50-new
+python -u -m src.evaluation.smoke_domain_api --run outputs/domain-50-new
+python -m src.evaluation.verify_domain --run outputs/domain-50-new
+python -m src.evaluation.domain_report --run outputs/domain-50-new --out ../docx/bao-cao-domain-new.md
+```
+
+`--reuse-crop-validation` chỉ dùng khi hash checkpoint, ảnh và danh sách validation
+khớp. Bỏ tham số đó để đo cắt lại từ đầu. Bộ ảnh âm không được tải lại tự động;
+cần dùng bản sao lưu của nhóm. Cần dependency huấn luyện trong `requirements.txt`
+và dependency backend để chạy kiểm tra API. Dữ liệu thô vẫn không lên Git.
+
+`smoke_domain_api` dùng checkpoint thật, SQLite/storage tạm và TestClient.
+`smoke_domain_http` kiểm thêm Uvicorn, đăng ký/đăng nhập, loader và cấu hình mặc
+định thật, sau khi đã áp dụng cấu hình được chọn. Cả hai không ghi vào DB dev.
+Các ca API lặp một ảnh ba lần để kiểm hợp đồng 3–5 ảnh, không tính thành ba mẫu
+đánh giá độc lập.
+
+Hash ảnh/checkpoint kiểm byte nghiêm ngặt. Hash văn bản chuẩn hoá CRLF/LF để
+kiểm chứng được khi checkout qua Git. Bản đối chứng cũ #98 gắn với mã nguồn
+tại commit `c5eec2f`; verifier của thí nghiệm cũ kiểm cả hash mã nguồn nên cần
+checkout commit đó để kiểm lại nguyên trạng. Số liệu cũ không bị ghi đè.
 
 ### Grad-CAM++ (#98)
 
