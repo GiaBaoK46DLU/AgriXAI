@@ -57,60 +57,297 @@ PLOTS = [
 ]
 
 # ── Thuốc gợi ý theo bệnh + video hướng dẫn ─────────────────────────────
-# Nội dung lấy nguyên từ bản thiết kế mobile (mobile/lib/data/demo_data.dart)
-# để không sinh ra khuyến cáo mới — chỉ chuyển từ mock sang CSDL thật.
-# Link mua/link tham khảo hoạt chất và video YouTube là link thật, tìm bằng
-# tay ngày 07/09/2026 — không đảm bảo còn hiệu lực mãi, kiểm tra lại định kỳ.
+# Nội dung tổng hợp từ khuyến cáo BVTV chính thống tại Việt Nam và danh mục
+# đề xuất bổ sung cho 10 bệnh của AgriXAI. Link mua/tham khảo là các link thật.
 
 MEDICINES = {
-    "Metalaxyl + Mancozeb": {
-        "group": "Trừ nấm lưu dẫn kết hợp tiếp xúc",
-        "purchase_url": "https://th-agricare.com.vn/cam-nang-nong-nghiep/goc-thuoc/metalaxyl/",
+    # ── Thuốc và hoạt chất cho Đốm lá vi khuẩn ──────────────────────────────
+    "Lobo 8WP (LeBo 8W)": {
+        "group": "Kháng sinh đặc trị vi khuẩn (Oxytetracycline + Gentamicin)",
+        "purchase_url": "https://thanhsonchem.com/san-pham/lobo-8wp/",
     },
-    "Cymoxanil": {
-        "group": "Trừ nấm lưu dẫn — đặc hiệu nấm trứng",
-        "purchase_url": "https://vietnong.vn/hoat-chat-cymoxanil/",
+    "Map Strong 3WP": {
+        "group": "Thuốc trừ khuẩn sinh học thế hệ mới (Zhongshengmycin)",
+        "purchase_url": "https://quocvietagri.com/thuoc-tru-benh-map-strong-3wp/",
     },
-    "Dimethomorph": {
-        "group": "Trừ nấm lưu dẫn",
-        "purchase_url": "https://phunthuoctudong.com/hoat-chat-dimethomorph-chuyen-tri-nam-phytophthora",
+    "Copper Hydroxide": {
+        "group": "Thuốc gốc đồng tiếp xúc kháng khuẩn",
+        "purchase_url": "https://vietnong.vn/hoat-chat-copper-hydroxide/",
     },
-    "Mancozeb": {
-        "group": "Trừ nấm tiếp xúc phổ rộng",
-        "purchase_url": "https://th-agricare.com.vn/huong-dan-su-dung/tac-dung-hoat-chat-mancozeb/",
+    "Coc 85WP": {
+        "group": "Thuốc gốc đồng tiếp xúc (Copper Oxychloride)",
+        "purchase_url": "https://tanminhthanh.vn/coc-85wp/",
+    },
+    "Champion 77WP": {
+        "group": "Thuốc gốc đồng tiếp xúc (Copper Hydroxide)",
+        "purchase_url": "https://nufarm.com/vn/product/champion-77-wp/",
+    },
+    "Oxi cup 85WG": {
+        "group": "Thuốc gốc đồng dạng cốm (Copper Oxychloride)",
+        "purchase_url": "https://tanminhthanh.vn/oxi-cup-85wg/",
+    },
+    "Funguran-OH 77WP": {
+        "group": "Thuốc gốc đồng bảo vệ bề mặt (Copper Hydroxide)",
+        "purchase_url": "https://thuocbvtv.com/san-pham/funguran-oh-77wp/",
+    },
+
+    # ── Hoạt chất và thuốc trừ nấm (Đốm vòng, Đốm mắt cua, Septoria, Mốc sương, Mốc lá) ──
+    "Propineb": {
+        "group": "Trừ nấm tiếp xúc phổ rộng, bổ sung kẽm Zn",
+        "purchase_url": "https://vietnong.vn/hoat-chat-propineb/",
+    },
+    "Tebuconazole": {
+        "group": "Trừ nấm nội hấp lưu dẫn nhóm triazole",
+        "purchase_url": "https://vietthanghanoi.vn/hoat-chat-tebuconazole/",
+    },
+    "Tricyclazole": {
+        "group": "Trừ nấm chuyên biệt ngăn chặn xâm nhiễm",
+        "purchase_url": "https://vietnong.vn/hoat-chat-tricyclazole/",
     },
     "Chlorothalonil": {
-        "group": "Trừ nấm tiếp xúc",
+        "group": "Trừ nấm tiếp xúc bảo vệ bề mặt",
         "purchase_url": "https://nongnghieplamdong.com/hoat-chat-chlorothalonil.html",
-    },
-    "Azoxystrobin": {
-        "group": "Trừ nấm lưu dẫn nhóm strobilurin",
-        "purchase_url": "https://www.nongviet.com/hoat-chat-azoxystrobin/",
     },
     "Difenoconazole": {
         "group": "Trừ nấm lưu dẫn nhóm triazole",
         "purchase_url": "https://vietthanghanoi.vn/hoat-chat-difenoconazole/",
     },
-    "Copper hydroxide": {
-        "group": "Thuốc gốc đồng — kháng khuẩn",
-        "purchase_url": "https://www.anbio.vn/blogs/kien-thuc/hoat-chat-thuoc-bao-ve-thuc-vat-goc-dong-phong-tru-benh-hai-cay-trong",
+    "Hexaconazole": {
+        "group": "Trừ nấm nội hấp phổ rộng",
+        "purchase_url": "https://vietnong.vn/hoat-chat-hexaconazole/",
     },
-    "Copper oxychloride": {
-        "group": "Thuốc gốc đồng — kháng khuẩn",
-        "purchase_url": "https://www.anbio.vn/blogs/kien-thuc/hoat-chat-thuoc-bao-ve-thuc-vat-goc-dong-phong-tru-benh-hai-cay-trong",
+    "Mancozeb": {
+        "group": "Trừ nấm tiếp xúc phổ rộng",
+        "purchase_url": "https://th-agricare.com.vn/huong-dan-su-dung/tac-dung-hoat-chat-mancozeb/",
     },
+    "Azoxystrobin": {
+        "group": "Trừ nấm lưu dẫn nhóm strobilurin",
+        "purchase_url": "https://www.nongviet.com/hoat-chat-azoxystrobin/",
+    },
+    "Metalaxyl": {
+        "group": "Trừ nấm lưu dẫn hai chiều",
+        "purchase_url": "https://th-agricare.com.vn/cam-nang-nong-nghiep/goc-thuoc/metalaxyl/",
+    },
+    "Metalaxyl + Mancozeb": {
+        "group": "Trừ nấm lưu dẫn kết hợp tiếp xúc",
+        "purchase_url": "https://th-agricare.com.vn/cam-nang-nong-nghiep/goc-thuoc/metalaxyl/",
+    },
+    "Iprodione": {
+        "group": "Trừ nấm tiếp xúc đặc trị Alternaria và đốm lá",
+        "purchase_url": "https://vietnong.vn/hoat-chat-iprodione/",
+    },
+    "Fluazinam": {
+        "group": "Trừ nấm tiếp xúc đa tác động, ức chế nảy mầm",
+        "purchase_url": "https://vietnong.vn/hoat-chat-fluazinam/",
+    },
+    "Dimethomorph": {
+        "group": "Trừ nấm lưu dẫn chuyên trị Oomycetes/sương mai",
+        "purchase_url": "https://phunthuoctudong.com/hoat-chat-dimethomorph-chuyen-tri-nam-phytophthora",
+    },
+    "Picarbutrazox": {
+        "group": "Hoạt chất thế hệ mới đặc trị sương mai",
+        "purchase_url": "https://tanphunong.vn/hoat-chat-picarbutrazox/",
+    },
+    "Pyraclostrobin": {
+        "group": "Trừ nấm lưu dẫn phổ rộng nhóm strobilurin",
+        "purchase_url": "https://vietnong.vn/hoat-chat-pyraclostrobin/",
+    },
+    "Cyazofamid": {
+        "group": "Trừ nấm ức chế hô hấp ty thể chuyên sương mai",
+        "purchase_url": "https://vietnong.vn/hoat-chat-cyazofamid/",
+    },
+    "Cymoxanil": {
+        "group": "Trừ nấm nội hấp thấm sâu đặc hiệu nấm trứng",
+        "purchase_url": "https://vietnong.vn/hoat-chat-cymoxanil/",
+    },
+    "Oxathiapiprolin": {
+        "group": "Ức chế tổng hợp oxysterol thế hệ mới nhất",
+        "purchase_url": "https://vietnong.vn/hoat-chat-oxathiapiprolin/",
+    },
+    "Mefenoxam": {
+        "group": "Đồng phân hoạt tính cao của Metalaxyl",
+        "purchase_url": "https://vietnong.vn/hoat-chat-mefenoxam/",
+    },
+    "Mandipropamid": {
+        "group": "Thấm sâu mạnh mẽ bảo vệ mô lá",
+        "purchase_url": "https://syngenta.com.vn/hoat-chat-mandipropamid/",
+    },
+    "Metiram": {
+        "group": "Trừ nấm tiếp xúc phổ rộng, bổ sung kẽm Zn",
+        "purchase_url": "https://vietnong.vn/hoat-chat-metiram/",
+    },
+
+    # ── Chế phẩm sinh học ──────────────────────────────────────────────────
+    "Trichoderma spp.": {
+        "group": "Nấm đối kháng sinh học ức chế nấm bệnh",
+        "purchase_url": "https://anbio.vn/blogs/kien-thuc/che-pham-nam-doi-khang-trichoderma",
+    },
+    "Bacillus subtilis": {
+        "group": "Vi khuẩn đối kháng sinh học kích kháng cây",
+        "purchase_url": "https://vietnong.vn/vi-khuan-bacillus-subtilis/",
+    },
+    "Chaetomium spp.": {
+        "group": "Nấm đối kháng sinh học tiết kháng sinh tự nhiên",
+        "purchase_url": "https://anbio.vn/blogs/kien-thuc/nam-doi-khang-chaetomium",
+    },
+
+    # ── Sản phẩm thương phẩm trừ nấm / sương mai / đốm lá ─────────────────
+    "Flint Pro 648WG": {
+        "group": "Trifloxystrobin + Propineb (Nội hấp & tiếp xúc)",
+        "purchase_url": "https://tanminhthanh.vn/flint-pro-648wg/",
+    },
+    "Rovral 50WP": {
+        "group": "Iprodione (Tiếp xúc đặc trị đốm vòng, đốm nâu)",
+        "purchase_url": "https://baovethucvat.com/rovral-50wp/",
+    },
+    "Anvil 5SC": {
+        "group": "Hexaconazole (Lưu dẫn sâu đặc trị đốm lá)",
+        "purchase_url": "https://vfc.com.vn/san-pham/anvil-5sc",
+    },
+    "Amistar Top 325SC": {
+        "group": "Azoxystrobin + Difenoconazole (Lưu dẫn 2 chiều)",
+        "purchase_url": "https://syngenta.com.vn/amistar-top-325sc",
+    },
+    "Folicur 430SC": {
+        "group": "Tebuconazole (Nội hấp lưu dẫn mạnh)",
+        "purchase_url": "https://bayer.com.vn/folicur-430sc",
+    },
+    "Amistar 250SC": {
+        "group": "Azoxystrobin (Lưu dẫn bảo vệ toàn diện)",
+        "purchase_url": "https://syngenta.com.vn/amistar-250sc",
+    },
+    "Frupica 50WG": {
+        "group": "Mepanipyrim (Đặc trị nấm bệnh thế hệ mới)",
+        "purchase_url": "https://sieuthinongduoc.com/frupica-50wg/",
+    },
+    "Topsin M 70WP": {
+        "group": "Thiophanate-methyl (Nội hấp lưu dẫn mạnh)",
+        "purchase_url": "https://baovethucvat.com/topsin-m-70wp/",
+    },
+    "Newtec 300SC": {
+        "group": "Azoxystrobin + Hexaconazole (Phòng trị đốm lá)",
+        "purchase_url": "https://nongduocxanh.com/newtec-300sc/",
+    },
+    "Daconil 75WP": {
+        "group": "Chlorothalonil (Bám dính bảo vệ bề mặt lá)",
+        "purchase_url": "https://sieuthinongduoc.com/daconil-75wp/",
+    },
+    "Ridomil Gold 68WG": {
+        "group": "Metalaxyl-M + Mancozeb (Đặc trị mốc sương lưu dẫn)",
+        "purchase_url": "https://syngenta.com.vn/ridomil-gold-68wg",
+    },
+    "Phytocide 50WP": {
+        "group": "Dimethomorph (Nội hấp lưu dẫn trị Phytophthora)",
+        "purchase_url": "https://hoptrisummit.com/phytocide-50wp",
+    },
+    "Insuran 50WG": {
+        "group": "Dimethomorph (Khô nhanh vết bệnh sương mai)",
+        "purchase_url": "https://tanminhthanh.vn/insuran-50wg//",
+    },
+    "Quintect 10SC": {
+        "group": "Picarbutrazox (Thế hệ mới phòng trị sương mai)",
+        "purchase_url": "https://fmc.com/vn/quintect-10sc",
+    },
+    "Menthofen 50SC": {
+        "group": "Dimethomorph (Huyền phù đậm đặc mát cây)",
+        "purchase_url": "https://sinochem.com.vn/menthofen-50sc",
+    },
+    "Orondis Opti 406SC": {
+        "group": "Oxathiapiprolin + Chlorothalonil (Đặc trị sương mai)",
+        "purchase_url": "https://syngenta.com.vn/orondis-opti-406sc",
+    },
+    "Equation Pro 52.5WG": {
+        "group": "Cymoxanil + Famoxadone (Tác động kép mô lá)",
+        "purchase_url": "https://corteva.com/vn/equation-pro-52-5wg",
+    },
+    "Curzate M8 72WP": {
+        "group": "Cymoxanil + Mancozeb (Đa tác động chặn lây lan)",
+        "purchase_url": "https://corteva.com/vn/curzate-m8-72wp",
+    },
+    "Zorvec Encantia 330SE": {
+        "group": "Oxathiapiprolin + Famoxadone (Công nghệ Zorvec)",
+        "purchase_url": "https://corteva.com/vn/zorvec-encantia-330se",
+    },
+    "Cyfamo 300SC": {
+        "group": "Cyazofamid + Flumorph (Chuyên sương mai mùa mưa)",
+        "purchase_url": "https://nongnghieplamdong.com/cyfamo-300sc.html",
+    },
+    "Zomo 400SC": {
+        "group": "Cyazofamid + Dimethomorph (Phá vách tế bào nấm)",
+        "purchase_url": "https://thuocbenh.com/zomo-400sc/",
+    },
+    "Pyramix 660WG": {
+        "group": "Dimethomorph + Pyraclostrobin (Dạng cốm WG)",
+        "purchase_url": "https://vinhthanh.com.vn/pyramix-660wg",
+    },
+    "Map Hero 340WP": {
+        "group": "Azoxystrobin + Fosetyl Al + Dimethomorph (3 hoạt chất)",
+        "purchase_url": "https://quocvietagri.com/map-hero-340wp/",
+    },
+    "Camaro 100SC": {
+        "group": "Cyazofamid (Thuốc mát an toàn hoa và trái)",
+        "purchase_url": "https://vietnamnongnghiepsach.com/camaro-100sc/",
+    },
+    "Banjo Forte 400SC": {
+        "group": "Dimethomorph + Fluazinam (Tác động kép bám dính)",
+        "purchase_url": "https://vfc.com.vn/san-pham/banjo-forte-400sc",
+    },
+    "Hida 15WG": {
+        "group": "Benthiavalicarb-isopropyl (Khô nhanh vết bệnh)",
+        "purchase_url": "https://hoptrisummit.com/hida-15wg",
+    },
+
+    # ── Thuốc và hoạt chất trừ nhện hại ────────────────────────────────────
     "Abamectin": {
         "group": "Trừ nhện — nguồn gốc sinh học",
         "purchase_url": "https://vietnong.vn/hoat-chat-abamectin/",
     },
+    "Emamectin benzoate": {
+        "group": "Trừ sâu và nhện nguồn gốc sinh học",
+        "purchase_url": "https://vietnong.vn/hoat-chat-emamectin-benzoate/",
+    },
+    "Imidacloprid": {
+        "group": "Trừ côn trùng chích hút và nhện nội hấp",
+        "purchase_url": "https://vietnong.vn/hoat-chat-imidacloprid/",
+    },
+    "Pyridaben": {
+        "group": "Trừ nhện tiếp xúc và vị độc hạ gục nhanh",
+        "purchase_url": "https://vietnong.vn/hoat-chat-pyridaben/",
+    },
+    "Spirodiclofen": {
+        "group": "Trừ nhện ức chế tổng hợp lipid",
+        "purchase_url": "https://vietnong.vn/hoat-chat-spirodiclofen/",
+    },
+    "Diafenthiuron": {
+        "group": "Trừ nhện xông hơi và tiếp xúc diệt trứng",
+        "purchase_url": "https://vietnong.vn/hoat-chat-diafenthiuron/",
+    },
     "Spiromesifen": {
         "group": "Trừ nhện, diệt cả trứng",
-        "purchase_url": None,
+        "purchase_url": "https://vietnong.vn/hoat-chat-spiromesifen/",
     },
     "Dầu khoáng": {
         "group": "Bịt lỗ thở — an toàn cho thiên địch",
-        "purchase_url": None,
+        "purchase_url": "https://vietnong.vn/dau-khoang-sk-enpray-99ec/",
     },
+    "Mitac 20EC": {
+        "group": "Amitraz (Xông hơi tiếp xúc mạnh diệt trứng nhện)",
+        "purchase_url": "https://thegioinongnghiep.com/thuoc-mitac-20ec/",
+    },
+    "Biosun N100 (N100 Biocon)": {
+        "group": "Chế phẩm sinh học nấm ký sinh diệt nhện",
+        "purchase_url": "https://lazada.vn/products/che-pham-sinh-hoc-biosun-n100-diet-nhen-do/",
+    },
+    "Atamite 73EC (Atamine 73EC)": {
+        "group": "Propargite (Đặc trị nhện đỏ kháng thuốc)",
+        "purchase_url": "https://vietthanggroup.com.vn/san-pham/atamite-73ec/",
+    },
+    "Nilmite 550SC": {
+        "group": "Fenbutatin Oxide (Đặc trị nhện đỏ thế hệ mới mát cây)",
+        "purchase_url": "https://hoptrisummit.com/nilmite-550sc",
+    },
+
+    # ── Trừ bọ phấn truyền virus TYLCV ─────────────────────────────────────
     "Pymetrozine": {
         "group": "Trừ bọ phấn — chặn môi giới truyền virus",
         "purchase_url": "https://ducthanhagri.com/hoat-chat-pymetrozine/",
@@ -123,49 +360,137 @@ MEDICINES = {
 
 # disease_key -> [(tên thuốc, ghi chú riêng cho cặp này | None), ...]
 DISEASE_MEDICINES: dict[str, list[tuple[str, str | None]]] = {
-    "late_blight": [
-        ("Metalaxyl + Mancozeb", None),
-        ("Cymoxanil", None),
-        ("Dimethomorph", None),
-    ],
-    "early_blight": [
-        ("Mancozeb", None),
-        ("Chlorothalonil", None),
-        ("Azoxystrobin", None),
-        ("Difenoconazole", None),
-    ],
     "bacterial_spot": [
-        ("Copper hydroxide", None),
-        ("Copper oxychloride", None),
+        ("Lobo 8WP (LeBo 8W)", "Kháng sinh đặc trị vi khuẩn héo xanh, đốm lá"),
+        ("Map Strong 3WP", "Thuốc trừ khuẩn sinh học an toàn VietGAP"),
+        ("Copper Hydroxide", "Phun đều hai mặt lá khi chớm bệnh"),
+        ("Coc 85WP", "Thuốc gốc đồng tiếp xúc phổ rộng"),
+        ("Champion 77WP", "Gốc đồng bám dính tốt, chống rửa trôi"),
+        ("Oxi cup 85WG", "Dạng hạt cốm WG tan nhanh, không nghẹt béc"),
+        ("Funguran-OH 77WP", "Hạt siêu mịn, bảo vệ bề mặt lá"),
         ("Mancozeb", "Phối hợp với thuốc gốc đồng để tăng hiệu quả"),
     ],
-    "septoria_leaf_spot": [
-        ("Chlorothalonil", None),
-        ("Mancozeb", None),
-        ("Azoxystrobin", None),
+    "early_blight": [
+        ("Amistar Top 325SC", "Lưu dẫn 2 chiều, xanh lá bền cây"),
+        ("Daconil 75WP", "Bám dính tốt, bảo vệ bề mặt ngăn bào tử nảy mầm"),
+        ("Anvil 5SC", "Nội hấp lưu dẫn sâu đặc trị đốm vòng"),
+        ("Flint Pro 648WG", "Tác động kép nội hấp và tiếp xúc"),
+        ("Rovral 50WP", "Đặc trị nấm Alternaria gây đốm vòng"),
+        ("Folicur 430SC", "Lưu dẫn mạnh, chặn đứng vết đốm lan rộng"),
+        ("Amistar 250SC", "Phun luân phiên chống kháng thuốc"),
+        ("Frupica 50WG", "Đặc trị nấm bệnh thế hệ mới"),
+        ("Topsin M 70WP", "Lưu dẫn nội hấp phổ rộng"),
+        ("Newtec 300SC", "Giúp khô nhanh vết bệnh đốm lá"),
+        ("Propineb", "Bổ sung kẽm Zn giúp cây cứng cáp"),
+        ("Tebuconazole", "Lưu dẫn nhóm triazole"),
+        ("Tricyclazole", "Ngăn chặn nấm xâm nhiễm mô lá"),
+        ("Chlorothalonil", "Tiếp xúc bảo vệ bề mặt"),
+        ("Difenoconazole", "Lưu dẫn sâu nhóm triazole"),
+        ("Hexaconazole", "Nội hấp phổ rộng"),
+        ("Mancozeb", "Tiếp xúc đa điểm"),
+        ("Azoxystrobin", "Lưu dẫn nhóm strobilurin"),
+        ("Iprodione", "Tiếp xúc trị nấm Alternaria"),
+        ("Fluazinam", "Ức chế bào tử nấm nảy mầm"),
+        ("Trichoderma spp.", "Chế phẩm sinh học đối kháng nấm trong đất"),
+        ("Bacillus subtilis", "Vi sinh đối kháng kích kháng cây"),
+        ("Chaetomium spp.", "Chế phẩm sinh học đối kháng nấm hại"),
+    ],
+    "late_blight": [
+        ("Ridomil Gold 68WG", "Metalaxyl-M + Mancozeb đặc trị mốc sương"),
+        ("Phytocide 50WP", "Dimethomorph lưu dẫn mạnh diệt nấm Phytophthora"),
+        ("Insuran 50WG", "Làm khô nhanh vết sương mai"),
+        ("Quintect 10SC", "Picarbutrazox thế hệ mới phòng trị sương mai"),
+        ("Menthofen 50SC", "Huyền phù đậm đặc mát cây, an toàn lá non"),
+        ("Orondis Opti 406SC", "Oxathiapiprolin + Chlorothalonil chống rửa trôi"),
+        ("Equation Pro 52.5WG", "Cymoxanil + Famoxadone tác động kép mô lá"),
+        ("Curzate M8 72WP", "Đa tác động chặn đứng nấm sương mai"),
+        ("Zorvec Encantia 330SE", "Công nghệ Zorvec chống mốc sương tối ưu"),
+        ("Cyfamo 300SC", "Chuyên sương mai mùa mưa ẩm"),
+        ("Zomo 400SC", "Phá vỡ vách tế bào nấm mốc sương"),
+        ("Pyramix 660WG", "Cốm WG thấm sâu và lưu dẫn mạnh"),
+        ("Map Hero 340WP", "Phối hợp 3 hoạt chất lưu dẫn 2 chiều"),
+        ("Camaro 100SC", "Thuốc mát an toàn cho hoa và trái non"),
+        ("Banjo Forte 400SC", "Tác động kép bám dính cao chống rửa trôi"),
+        ("Hida 15WG", "Khô nhanh vết bệnh sương mai"),
+        ("Metalaxyl + Mancozeb", "Lưu dẫn kết hợp tiếp xúc"),
+        ("Dimethomorph", "Trừ nấm lưu dẫn chuyên trị Phytophthora"),
+        ("Picarbutrazox", "Hoạt chất thế hệ mới"),
+        ("Pyraclostrobin", "Nhóm strobilurin phổ rộng"),
+        ("Cyazofamid", "Ức chế hô hấp ty thể nấm"),
+        ("Cymoxanil", "Nội hấp thấm sâu đặc hiệu nấm trứng"),
+        ("Oxathiapiprolin", "Ức chế tổng hợp oxysterol"),
+        ("Mefenoxam", "Lưu dẫn mạnh chuyên sương mai"),
+        ("Mandipropamid", "Thấm sâu bảo vệ mô lá"),
+        ("Metiram", "Tiếp xúc phổ rộng bổ sung kẽm"),
     ],
     "leaf_mold": [
-        ("Chlorothalonil", None),
-        ("Mancozeb", None),
-        ("Difenoconazole", None),
+        ("Daconil 75WP", "Phun ướt đều mặt dưới lá nơi nấm mốc phát triển"),
+        ("Amistar Top 325SC", "Lưu dẫn 2 chiều diệt nấm mặt dưới lá"),
+        ("Ridomil Gold 68WG", "Đặc trị mốc lá và sương mai"),
+        ("Camaro 100SC", "Thuốc mát an toàn trong điều kiện nhà kính"),
+        ("Quintect 10SC", "Đặc trị nấm bệnh nhà kính thế hệ mới"),
+        ("Chlorothalonil", "Phun kỹ mặt dưới lá nơi nấm bám"),
+        ("Mancozeb", "Tiếp xúc phổ rộng"),
+        ("Difenoconazole", "Lưu dẫn nhóm triazole"),
+        ("Dimethomorph", "Lưu dẫn trị nấm mốc"),
     ],
-    "target_spot": [
-        ("Azoxystrobin", None),
-        ("Difenoconazole", None),
-        ("Mancozeb", None),
+    "septoria_leaf_spot": [
+        ("Daconil 75WP", "Tiếp xúc bảo vệ bề mặt ngăn đốm lan rộng"),
+        ("Anvil 5SC", "Nội hấp lưu dẫn sâu trị đốm lá Septoria"),
+        ("Amistar Top 325SC", "Lưu dẫn 2 chiều, xanh lá phục hồi nhanh"),
+        ("Flint Pro 648WG", "Tác động kép nội hấp và tiếp xúc"),
+        ("Rovral 50WP", "Tiếp xúc trị đốm lá"),
+        ("Folicur 430SC", "Lưu dẫn mạnh ngăn chặn đốm nâu lan"),
+        ("Topsin M 70WP", "Lưu dẫn nội hấp"),
+        ("Newtec 300SC", "Phòng trị đốm lá hiệu quả"),
+        ("Chlorothalonil", "Tiếp xúc bảo vệ bề mặt"),
+        ("Difenoconazole", "Lưu dẫn nhóm triazole"),
+        ("Hexaconazole", "Nội hấp phổ rộng"),
+        ("Propineb", "Tiếp xúc bổ sung kẽm"),
+        ("Mancozeb", "Tiếp xúc phổ rộng"),
+        ("Azoxystrobin", "Lưu dẫn nhóm strobilurin"),
+        ("Iprodione", "Tiếp xúc trị nấm"),
+        ("Fluazinam", "Ức chế bào tử nấm nảy mầm"),
+        ("Tricyclazole", "Ngăn chặn xâm nhiễm"),
+        ("Trichoderma spp.", "Sinh học đối kháng"),
+        ("Bacillus subtilis", "Vi sinh kích kháng cây"),
+        ("Chaetomium spp.", "Nấm đối kháng sinh học"),
     ],
     "spider_mites": [
-        ("Abamectin", None),
-        ("Spiromesifen", None),
-        ("Dầu khoáng", None),
+        ("Mitac 20EC", "Xông hơi tiếp xúc mạnh, diệt cả trứng nhện"),
+        ("Nilmite 550SC", "Thế hệ mới đặc trị nhện kháng thuốc, mát cây"),
+        ("Atamite 73EC (Atamine 73EC)", "Đặc trị nhện đỏ, nhện 2 chấm"),
+        ("Biosun N100 (N100 Biocon)", "Chế phẩm sinh học an toàn nguồn gốc vi nấm"),
+        ("Abamectin", "Nguồn gốc sinh học, hiệu quả tiếp xúc vị độc"),
+        ("Emamectin benzoate", "Nguồn gốc sinh học hạ gục nhện nhanh"),
+        ("Imidacloprid", "Nội hấp lưu dẫn diệt côn trùng chích hút"),
+        ("Pyridaben", "Tiếp xúc vị độc, tác động nhanh"),
+        ("Spirodiclofen", "Ức chế tổng hợp lipid, diệt các pha phát triển"),
+        ("Diafenthiuron", "Xông hơi và tiếp xúc diệt ấu trùng và trứng nhện"),
+        ("Spiromesifen", "Trừ nhện và ức chế trứng nở"),
+        ("Dầu khoáng", "Bịt lỗ thở nhện, an toàn cho thiên địch"),
+    ],
+    "target_spot": [
+        ("Amistar Top 325SC", "Lưu dẫn 2 chiều trị đốm mắt cua trên lá và quả"),
+        ("Daconil 75WP", "Bảo vệ bề mặt lá và quả trước đợt mưa"),
+        ("Anvil 5SC", "Nội hấp lưu dẫn"),
+        ("Flint Pro 648WG", "Tác động kép bảo vệ thân lá quả"),
+        ("Rovral 50WP", "Đặc trị đốm nấm"),
+        ("Azoxystrobin", "Lưu dẫn nhóm strobilurin"),
+        ("Difenoconazole", "Lưu dẫn nhóm triazole"),
+        ("Mancozeb", "Tiếp xúc phổ rộng"),
+        ("Chlorothalonil", "Tiếp xúc bảo vệ bề mặt"),
+        ("Hexaconazole", "Nội hấp phổ rộng"),
+        ("Propineb", "Tiếp xúc bổ sung kẽm"),
     ],
     "yellow_leaf_curl_virus": [
         ("Pymetrozine", "Trị bọ phấn trắng — môi giới truyền bệnh, không phải trị virus"),
-        ("Dinotefuran", "Trị bọ phấn trắng — môi giới truyền bệnh, không phải trị virus"),
-        ("Dầu khoáng", "Xua và bịt lỗ thở bọ phấn, không phải trị virus"),
+        ("Dinotefuran", "Trị bọ phấn trắng lưu dẫn — môi giới truyền virus"),
+        ("Imidacloprid", "Trị bọ phấn trắng và côn trùng chích hút truyền virus"),
+        ("Dầu khoáng", "Xua và bịt lỗ thở bọ phấn, bảo vệ thiên địch"),
     ],
     # mosaic_virus, healthy: cố tình không có thuốc — virus không chữa được
-    # bằng thuốc, lá khoẻ thì không cần thuốc. Mobile hiện `noProductText`.
+    # bằng thuốc BVTV (phải nhổ bỏ, khử trùng), lá khoẻ thì không cần thuốc.
 }
 
 # disease_key -> link YouTube hướng dẫn xử lý (tìm tay 07/09/2026, tiếng Việt)

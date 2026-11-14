@@ -75,7 +75,7 @@ class GradCAMPlusPlus(GradCAM):
         self.activations = self.gradients = None
 
 
-def create_cam(model, target_layer, method: str = "gradcam") -> GradCAM:
+def create_cam(model, target_layer, method: str = "gradcam_plusplus") -> GradCAM:
     """Chọn thuật toán rõ ràng; cấu hình sai phải báo lỗi thay vì âm thầm đổi."""
     classes = {"gradcam": GradCAM, "gradcam_plusplus": GradCAMPlusPlus}
     if method not in classes:

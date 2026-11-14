@@ -78,6 +78,8 @@ def test_missing_target_layer_does_not_reuse_previous_activations(model):
 
 
 def test_selector_preserves_baseline_and_rejects_typo(model):
+    with create_cam(model, model[1]) as default_cam:
+        assert type(default_cam) is GradCAMPlusPlus
     for method, cls in (("gradcam", GradCAM), ("gradcam_plusplus", GradCAMPlusPlus)):
         with create_cam(model, model[1], method) as cam:
             assert type(cam) is cls

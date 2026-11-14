@@ -62,6 +62,9 @@ class Settings(BaseSettings):
     # được đỉnh CAM đáng tin hơn vùng ngưỡng rộng trên ảnh thật (xem CLAUDE.md).
     OVERLAY_DRAW_THRESHOLD: float = 0.62
 
+    # Phương pháp giải thích trực quan XAI (mặc định "gradcam_plusplus", có thể chọn "gradcam")
+    XAI_METHOD: str = "gradcam_plusplus"
+
     # Để trống -> endpoint /weather trả lỗi rõ ràng thay vì gọi OpenWeather
     # bằng key rỗng. Toạ độ cố định Đà Lạt vì mọi lô đất trong phạm vi đề tài
     # đều ở khu vực này (xem CLAUDE.md) — không cần lấy theo từng lô đất.

@@ -78,7 +78,7 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
   static const List<String> _labels = <String>[
     'Nén và tải ảnh lên máy chủ',
     'Nhận diện bệnh',
-    'Khoanh vùng nghi ngờ (Grad-CAM)',
+    'Khoanh vùng nghi ngờ (Grad-CAM++)',
   ];
 
   final List<Timer> _timers = <Timer>[];

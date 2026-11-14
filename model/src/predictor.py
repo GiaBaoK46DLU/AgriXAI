@@ -66,7 +66,7 @@ class Prediction:
 
 
 class DiseasePredictor:
-    """Nạp checkpoint và chạy suy luận + Grad-CAM trên ảnh đơn lẻ.
+    """Nạp checkpoint và chạy suy luận + Grad-CAM++ trên ảnh đơn lẻ.
 
     ``gate_checkpoint`` (#92) bật bộ chặn 2 lớp chạy **trước** mô hình bệnh: ảnh
     không phải lá cà chua thì trả thẳng ``disease_key="not_tomato_leaf"`` kèm
@@ -111,7 +111,7 @@ class DiseasePredictor:
         self.reliability_config = dict(config.get("xai", {}).get("reliability", {}))
         self.reliability_enabled = self.reliability_config.pop("enabled", False)
         if xai_method is None:
-            xai_method = config.get("xai", {}).get("method", "gradcam")
+            xai_method = config.get("xai", {}).get("method", "gradcam_plusplus")
         self.xai_method = xai_method
         self._cam = create_cam(self.model, target_layer_for_gradcam(self.model, ckpt["arch"]),
                                method=xai_method)

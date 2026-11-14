@@ -25,6 +25,7 @@ class DummyPredictor:
     """Sinh kết quả giả có hình dạng giống hệt kết quả thật."""
 
     model_version = "dummy-v1"
+    xai_method = "gradcam_plusplus"
 
     def __init__(self) -> None:
         self.class_keys = class_keys()

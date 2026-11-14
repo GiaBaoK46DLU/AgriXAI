@@ -95,4 +95,5 @@ def health():
         "status": "ok",
         "using_real_model": is_using_real_model(),
         "model_version": getattr(predictor, "model_version", "unknown"),
+        "xai_method": getattr(predictor, "xai_method", settings.XAI_METHOD),
     }

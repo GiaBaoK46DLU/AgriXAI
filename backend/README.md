@@ -187,7 +187,7 @@ Kết quả trả về:
 bytes ảnh
   ├─ kiểm tra dung lượng, định dạng
   ├─ open_and_normalize()      xoay đúng chiều theo EXIF, thu nhỏ về ≤1280px
-  ├─ predictor.predict()       mô hình + Grad-CAM  → nhãn, độ tin cậy, heatmap
+  ├─ predictor.predict()       mô hình + Grad-CAM++  → nhãn, độ tin cậy, heatmap
   ├─ explain.interpret()       heatmap → mức độ nặng + vị trí + câu giải thích
   ├─ overlay.draw_regions()    heatmap → elip khoanh vùng trên ảnh
   ├─ lưu 2 ảnh xuống storage/

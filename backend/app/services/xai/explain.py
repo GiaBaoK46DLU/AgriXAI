@@ -1,4 +1,4 @@
-"""Biến bản đồ nhiệt Grad-CAM thành thứ nông dân hiểu được.
+"""Biến bản đồ nhiệt Grad-CAM++ thành thứ nông dân hiểu được.
 
 Đây là đóng góp chính của đề tài. Heatmap thô là một mảng số — đưa thẳng cho
 nông dân xem thì vô nghĩa. Ở đây ta rút từ nó ra ba thứ cụ thể:
@@ -7,7 +7,7 @@ nông dân xem thì vô nghĩa. Ở đây ta rút từ nó ra ba thứ cụ th�
   2. **Vị trí**       — vết bệnh nằm ở đâu trên lá, mô tả bằng lời.
   3. **Câu giải thích** — một câu tiếng Việt thường ngày, không có thuật ngữ.
 
-Cần nói rõ giới hạn khi viết báo cáo: Grad-CAM chỉ ra vùng ảnh **ảnh hưởng
+Cần nói rõ giới hạn khi viết báo cáo: Grad-CAM++ chỉ ra vùng ảnh **ảnh hưởng
 nhiều nhất tới quyết định của mô hình**, không phải vùng bệnh được bác sĩ cây
 trồng khoanh. Hai thứ này thường trùng nhau nhưng không đồng nhất về mặt khái
 niệm, và tỉ lệ diện tích ở đây là ước lượng gián tiếp cho mức độ nặng.

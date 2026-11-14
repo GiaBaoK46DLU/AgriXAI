@@ -6,7 +6,7 @@ cách độc lập:
 
     bytes ảnh
       -> mở & chuẩn hoá (xoay đúng chiều, thu nhỏ)
-      -> predictor.predict()          [mô hình + Grad-CAM]
+      -> predictor.predict()          [mô hình + Grad-CAM++]
       -> explain.interpret()          [mức độ, vị trí, câu giải thích]
       -> overlay.draw_regions()       [vẽ vùng khoanh]
       -> lưu 2 ảnh + 1 bản ghi CSDL (``DiagnosisImage``)

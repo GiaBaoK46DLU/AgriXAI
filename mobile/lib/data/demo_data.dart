@@ -112,15 +112,17 @@ class DemoData {
         'Phun phòng cho các cây xung quanh ngay cả khi chưa có triệu chứng.',
       ],
       products: <ProductLink>[
-        ProductLink(
-          name: 'Metalaxyl + Mancozeb',
-          group: 'Trừ nấm lưu dẫn kết hợp tiếp xúc',
-        ),
-        ProductLink(
-          name: 'Cymoxanil',
-          group: 'Trừ nấm lưu dẫn — đặc hiệu nấm trứng',
-        ),
-        ProductLink(name: 'Dimethomorph', group: 'Trừ nấm lưu dẫn'),
+        ProductLink(name: 'Ridomil Gold 68WG', group: 'Metalaxyl-M + Mancozeb đặc trị mốc sương'),
+        ProductLink(name: 'Phytocide 50WP', group: 'Dimethomorph lưu dẫn diệt Phytophthora'),
+        ProductLink(name: 'Orondis Opti 406SC', group: 'Oxathiapiprolin + Chlorothalonil'),
+        ProductLink(name: 'Equation Pro 52.5WG', group: 'Cymoxanil + Famoxadone tác động kép'),
+        ProductLink(name: 'Curzate M8 72WP', group: 'Cymoxanil + Mancozeb'),
+        ProductLink(name: 'Zorvec Encantia 330SE', group: 'Oxathiapiprolin + Famoxadone'),
+        ProductLink(name: 'Banjo Forte 400SC', group: 'Dimethomorph + Fluazinam'),
+        ProductLink(name: 'Hida 15WG', group: 'Benthiavalicarb chuyên trị Oomycetes'),
+        ProductLink(name: 'Metalaxyl + Mancozeb', group: 'Trừ nấm lưu dẫn kết hợp tiếp xúc'),
+        ProductLink(name: 'Cymoxanil', group: 'Trừ nấm nội hấp đặc hiệu nấm trứng'),
+        ProductLink(name: 'Dimethomorph', group: 'Trừ nấm lưu dẫn chuyên Phytophthora'),
       ],
       prevention: <String>[
         'Theo dõi dự báo thời tiết, phun phòng trước các đợt mưa ẩm kéo dài.',
@@ -145,16 +147,16 @@ class DemoData {
         'Bón cân đối đạm – lân – kali, tránh để cây suy kiệt trong giai đoạn nuôi quả.',
       ],
       products: <ProductLink>[
+        ProductLink(name: 'Amistar Top 325SC', group: 'Azoxystrobin + Difenoconazole lưu dẫn 2 chiều'),
+        ProductLink(name: 'Daconil 75WP', group: 'Chlorothalonil tiếp xúc bảo vệ bề mặt'),
+        ProductLink(name: 'Anvil 5SC', group: 'Hexaconazole nội hấp lưu dẫn sâu'),
+        ProductLink(name: 'Flint Pro 648WG', group: 'Trifloxystrobin + Propineb'),
+        ProductLink(name: 'Rovral 50WP', group: 'Iprodione đặc trị nấm Alternaria'),
+        ProductLink(name: 'Folicur 430SC', group: 'Tebuconazole lưu dẫn mạnh'),
+        ProductLink(name: 'Propineb', group: 'Tiếp xúc bổ sung kẽm Zn'),
         ProductLink(name: 'Mancozeb', group: 'Trừ nấm tiếp xúc phổ rộng'),
-        ProductLink(name: 'Chlorothalonil', group: 'Trừ nấm tiếp xúc'),
-        ProductLink(
-          name: 'Azoxystrobin',
-          group: 'Trừ nấm lưu dẫn nhóm strobilurin',
-        ),
-        ProductLink(
-          name: 'Difenoconazole',
-          group: 'Trừ nấm lưu dẫn nhóm triazole',
-        ),
+        ProductLink(name: 'Azoxystrobin', group: 'Trừ nấm lưu dẫn nhóm strobilurin'),
+        ProductLink(name: 'Trichoderma spp.', group: 'Nấm đối kháng sinh học'),
       ],
       prevention: <String>[
         'Phủ gốc bằng rơm hoặc màng phủ để hạn chế bào tử từ đất bắn lên lá.',
@@ -180,14 +182,13 @@ class DemoData {
         'Không thao tác chăm sóc khi lá còn ướt để hạn chế lây lan.',
       ],
       products: <ProductLink>[
-        ProductLink(
-          name: 'Copper hydroxide',
-          group: 'Thuốc gốc đồng — kháng khuẩn',
-        ),
-        ProductLink(
-          name: 'Copper oxychloride',
-          group: 'Thuốc gốc đồng — kháng khuẩn',
-        ),
+        ProductLink(name: 'Lobo 8WP (LeBo 8W)', group: 'Kháng sinh đặc trị vi khuẩn'),
+        ProductLink(name: 'Map Strong 3WP', group: 'Thuốc trừ khuẩn sinh học (Zhongshengmycin)'),
+        ProductLink(name: 'Copper Hydroxide', group: 'Thuốc gốc đồng tiếp xúc kháng khuẩn'),
+        ProductLink(name: 'Coc 85WP', group: 'Thuốc gốc đồng (Copper Oxychloride)'),
+        ProductLink(name: 'Champion 77WP', group: 'Thuốc gốc đồng bám dính tốt'),
+        ProductLink(name: 'Oxi cup 85WG', group: 'Dạng cốm WG tan nhanh'),
+        ProductLink(name: 'Funguran-OH 77WP', group: 'Thuốc gốc đồng hạt siêu mịn'),
         ProductLink(name: 'Mancozeb', group: 'Phối hợp để tăng hiệu quả'),
       ],
       prevention: <String>[
@@ -240,7 +241,22 @@ class DemoData {
         'Chỉ phun thuốc khi bệnh đã xuất hiện, không phun phòng tràn lan.',
       ],
       products: <ProductLink>[
-        ProductLink(name: 'Chlorothalonil', group: 'Trừ nấm tiếp xúc'),
+        ProductLink(
+          name: 'Daconil 75WP',
+          group: 'Chlorothalonil tiếp xúc bảo vệ bề mặt',
+        ),
+        ProductLink(
+          name: 'Amistar Top 325SC',
+          group: 'Azoxystrobin + Difenoconazole lưu dẫn 2 chiều',
+        ),
+        ProductLink(
+          name: 'Ridomil Gold 68WG',
+          group: 'Metalaxyl-M + Mancozeb đặc trị mốc lá',
+        ),
+        ProductLink(
+          name: 'Dimethomorph',
+          group: 'Trừ nấm lưu dẫn chuyên mốc lá',
+        ),
         ProductLink(name: 'Mancozeb', group: 'Trừ nấm tiếp xúc phổ rộng'),
         ProductLink(name: 'Difenoconazole', group: 'Trừ nấm lưu dẫn'),
       ],
@@ -267,8 +283,12 @@ class DemoData {
         'Tránh tưới phun mưa vào chiều tối.',
       ],
       products: <ProductLink>[
-        ProductLink(name: 'Azoxystrobin', group: 'Trừ nấm lưu dẫn'),
-        ProductLink(name: 'Difenoconazole', group: 'Trừ nấm lưu dẫn'),
+        ProductLink(name: 'Amistar Top 325SC', group: 'Azoxystrobin + Difenoconazole lưu dẫn 2 chiều'),
+        ProductLink(name: 'Daconil 75WP', group: 'Chlorothalonil tiếp xúc bảo vệ bề mặt lá và quả'),
+        ProductLink(name: 'Flint Pro 648WG', group: 'Trifloxystrobin + Propineb'),
+        ProductLink(name: 'Rovral 50WP', group: 'Iprodione đặc trị đốm nấm'),
+        ProductLink(name: 'Azoxystrobin', group: 'Trừ nấm lưu dẫn nhóm strobilurin'),
+        ProductLink(name: 'Difenoconazole', group: 'Trừ nấm lưu dẫn nhóm triazole'),
         ProductLink(name: 'Mancozeb', group: 'Trừ nấm tiếp xúc phổ rộng'),
       ],
       prevention: <String>[
@@ -295,12 +315,14 @@ class DemoData {
         'Luân phiên hoạt chất vì nhện đỏ kháng thuốc rất nhanh.',
       ],
       products: <ProductLink>[
+        ProductLink(name: 'Mitac 20EC', group: 'Amitraz xông hơi diệt trứng nhện'),
+        ProductLink(name: 'Nilmite 550SC', group: 'Fenbutatin Oxide đặc trị nhện kháng thuốc'),
+        ProductLink(name: 'Atamite 73EC (Atamine 73EC)', group: 'Propargite đặc trị nhện đỏ'),
+        ProductLink(name: 'Biosun N100 (N100 Biocon)', group: 'Chế phẩm sinh học vi nấm diệt nhện'),
         ProductLink(name: 'Abamectin', group: 'Trừ nhện — nguồn gốc sinh học'),
-        ProductLink(name: 'Spiromesifen', group: 'Trừ nhện, diệt cả trứng'),
-        ProductLink(
-          name: 'Dầu khoáng',
-          group: 'Bịt lỗ thở — an toàn cho thiên địch',
-        ),
+        ProductLink(name: 'Spirodiclofen', group: 'Ức chế tổng hợp lipid diệt nhện'),
+        ProductLink(name: 'Pyridaben', group: 'Tiếp xúc vị độc hạ gục nhanh'),
+        ProductLink(name: 'Dầu khoáng', group: 'Bịt lỗ thở — an toàn cho thiên địch'),
       ],
       prevention: <String>[
         'Giữ ẩm độ vườn hợp lý, tránh để khô hạn kéo dài.',

@@ -23,6 +23,7 @@ def test_health(client):
     assert body["status"] == "ok"
     # Khi test luôn phải là mô hình giả, không được vô tình nạp checkpoint thật
     assert body["using_real_model"] is False
+    assert body["xai_method"] == "gradcam_plusplus"
 
 
 def test_disease_catalog(client):

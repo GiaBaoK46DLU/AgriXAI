@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "3029d585-be57-493c-b1ff-e21a7690ce57",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "D:\\AgriXAI\\.archify\\architecture-agrixai-20261003-224841\\candidate.json",
+  "output": "D:\\AgriXAI\\.archify\\architecture-agrixai-20261003-224841\\agrixai.html",
+  "specification": {
+    "sha256": "a71f16347df3068eacfd78dbb06cbc0a332d0243c1733d5e20304ef9ea69e95a",
+    "bytes": 4167
+  },
+  "artifact": {
+    "sha256": "1cf7132196f8ebfd7e90da19ce228d356ffacdb57d0ea3a3e41e3689c888e1ce",
+    "bytes": 768013
+  }
+}

@@ -68,6 +68,7 @@ def get_predictor() -> Predictor:
             checkpoint_path=str(checkpoint),
             device=settings.MODEL_DEVICE or None,
             gate_checkpoint=str(gate_checkpoint) if gate_checkpoint else None,
+            xai_method=settings.XAI_METHOD,
         )
         if gate_checkpoint is not None:
             logger.info(
@@ -75,7 +76,8 @@ def get_predictor() -> Predictor:
                 gate_checkpoint, predictor.gate_version,
             )
         logger.info(
-            "Đã nạp mô hình thật: %s (phiên bản %s)", checkpoint, predictor.model_version
+            "Đã nạp mô hình thật: %s (phiên bản %s, XAI: %s)",
+            checkpoint, predictor.model_version, getattr(predictor, "xai_method", settings.XAI_METHOD),
         )
         return predictor
 

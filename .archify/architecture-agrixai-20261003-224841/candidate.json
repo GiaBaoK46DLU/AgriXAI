@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Kiến trúc hệ thống AgriXAI",
+    "output": ".archify/architecture-agrixai-20261003-224841/agrixai.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    { "id": "webadmin", "type": "frontend", "label": "Web admin", "sublabel": "Next.js BFF · quản trị", "pos": [320, 130], "size": [170, 64] },
+    { "id": "catalog", "type": "database", "label": "Danh mục bệnh", "sublabel": "tomato_diseases.json", "pos": [630, 130], "size": [170, 64] },
+    { "id": "gate", "type": "security", "label": "Bộ chặn lá / không lá", "sublabel": "organ_gate.pt", "pos": [930, 130], "size": [170, 64] },
+    { "id": "mobile", "type": "frontend", "label": "App mobile", "sublabel": "Flutter · nông dân", "pos": [40, 300], "size": [170, 64] },
+    { "id": "api", "type": "backend", "label": "Backend API", "sublabel": "FastAPI /api/v1 · JWT", "pos": [320, 300], "size": [170, 64] },
+    { "id": "diag", "type": "backend", "label": "Dịch vụ chẩn đoán", "sublabel": "diagnosis_service", "pos": [630, 300], "size": [170, 64] },
+    { "id": "predictor", "type": "backend", "label": "DiseasePredictor", "sublabel": "hợp đồng predict()", "pos": [930, 300], "size": [170, 64], "tag": "ranh giới model/" },
+    { "id": "offline", "type": "frontend", "label": "Suy luận ngoại tuyến", "sublabel": "ONNX + CAM trên máy", "pos": [40, 470], "size": [170, 64] },
+    { "id": "db", "type": "database", "label": "PostgreSQL 16", "sublabel": "Docker · SQLAlchemy", "pos": [320, 470], "size": [170, 64] },
+    { "id": "xai", "type": "backend", "label": "XAI overlay", "sublabel": "contour + câu tiếng Việt", "pos": [630, 470], "size": [170, 64] },
+    { "id": "leaf", "type": "backend", "label": "Mô hình 10 lớp lá", "sublabel": "EfficientNet-B0 + CAM", "pos": [930, 470], "size": [170, 64] },
+    { "id": "storage", "type": "database", "label": "Kho ảnh", "sublabel": "backend/storage", "pos": [630, 640], "size": [170, 64] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Backend (máy chủ)", "wraps": ["api", "diag", "predictor", "gate", "leaf", "xai", "catalog", "db", "storage"] }
+  ],
+  "connections": [
+    { "id": "mobile-api", "from": "mobile", "to": "api", "label": "REST + JWT", "variant": "emphasis" },
+    { "id": "api-diag", "from": "api", "to": "diag", "label": "POST /diagnoses", "variant": "emphasis" },
+    { "id": "diag-predictor", "from": "diag", "to": "predictor", "label": "predict(ảnh)", "variant": "emphasis" },
+    { "id": "predictor-gate", "from": "predictor", "to": "gate", "label": "lọc trước", "variant": "security" },
+    { "id": "predictor-leaf", "from": "predictor", "to": "leaf", "label": "ảnh là lá" },
+    { "id": "diag-catalog", "from": "diag", "to": "catalog", "label": "tra bệnh" },
+    { "id": "diag-xai", "from": "diag", "to": "xai", "label": "heatmap" },
+    { "id": "xai-storage", "from": "xai", "to": "storage", "label": "ảnh khoanh" },
+    { "id": "api-db", "from": "api", "to": "db", "label": "SQL" },
+    { "id": "webadmin-api", "from": "webadmin", "to": "api", "label": "gọi phía server", "variant": "security" },
+    { "id": "mobile-offline", "from": "mobile", "to": "offline", "label": "khi mất mạng", "variant": "dashed" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "Luồng chẩn đoán", "items": ["Ảnh → bộ chặn → mô hình lá → Grad-CAM", "Heatmap thành vùng khoanh + câu tiếng Việt", "Cả lô ảnh bị chặn → 422, không ghi CSDL"] },
+    { "dot": "violet", "title": "Hợp đồng dùng chung", "items": ["Backend chỉ biết predict() → Prediction", "Chưa có checkpoint → DummyPredictor", "Thứ tự mảng diseases = thứ tự output"] },
+    { "dot": "rose", "title": "Bảo mật", "items": ["Access 30 phút + refresh token xoay vòng", "Web admin giữ JWT trong cookie httpOnly", "Nông dân không tạo/xoá được lô đất"] },
+    { "dot": "amber", "title": "Chưa nằm trong luồng", "items": ["Supabase: bản chụp DB, chưa cutover", "Phần bệnh trên quả: bắt đầu ~12/10"] }
+  ]
+}

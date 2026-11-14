@@ -68,7 +68,7 @@ export async function DiagnosisDetailModal({ diagnosisId }: { diagnosisId: numbe
 
       <div className="mb-1.5 flex items-center justify-between text-xs font-semibold text-ink/60">
         <span>Ảnh đã tải lên ({images.length})</span>
-        <span>Gốc / Khoanh vùng vết bệnh (Grad-CAM)</span>
+        <span>Gốc / Khoanh vùng vết bệnh (Grad-CAM++)</span>
       </div>
       <div className="mb-4.5 flex gap-3 overflow-x-auto pb-1">
         {images.map((img, i) => (

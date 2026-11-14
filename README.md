@@ -18,10 +18,10 @@ Hệ thống nhận diện bệnh trên lá cà chua từ ảnh chụp, **kèm p
 
 Các mô hình Deep Learning nhận diện bệnh cây đạt độ chính xác cao nhưng hoạt động như một **"hộp đen"** — chỉ trả về nhãn bệnh mà không giải thích được lý do. Điều này tạo rào cản về *niềm tin*: người nông dân không dám dựa vào kết quả AI để quyết định phun thuốc.
 
-Đồ án này giải quyết rào cản đó bằng cách ghép mô hình phân loại với **Grad-CAM**, rồi đi thêm một bước nữa mà các nghiên cứu thường bỏ qua:
+Đồ án này giải quyết rào cản đó bằng cách ghép mô hình phân loại với **Grad-CAM++**, rồi đi thêm một bước nữa mà các nghiên cứu thường bỏ qua:
 
 ```
-Ảnh lá  →  Mô hình phân loại  →  Grad-CAM heatmap  →  Khoanh vùng (contour/elip)  →  Câu giải thích tiếng Việt
+Ảnh lá  →  Mô hình phân loại  →  Grad-CAM++ heatmap  →  Khoanh vùng (contour/elip)  →  Câu giải thích tiếng Việt
                                    (kỹ thuật)              (dễ nhìn)                    (dễ hiểu)
 ```
 
@@ -95,7 +95,7 @@ Nhờ vậy hai người làm song song: Bảo thay đổi mô hình bên trong 
 ```
 AgriXAI/
 ├── docx/            Tài liệu đồ án: đề cương, phân tích, kế hoạch, báo cáo
-├── model/           [Bảo]  PyTorch: dữ liệu, huấn luyện, đánh giá, Grad-CAM
+├── model/           [Bảo]  PyTorch: dữ liệu, huấn luyện, đánh giá, Grad-CAM++
 ├── backend/         [Học]  FastAPI + PostgreSQL + lưu trữ ảnh
 ├── mobile/          Flutter — app cho nông dân (4 màn hình)
 ├── web-admin/       React + Vite — dashboard quản trị (4 trang)

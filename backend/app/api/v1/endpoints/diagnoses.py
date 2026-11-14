@@ -91,7 +91,7 @@ async def create_diagnosis(
         ),
     ),
 ):
-    """Nhận 3–5 ảnh, chạy mô hình + Grad-CAM riêng cho từng ảnh, rồi tổng hợp kết
+    """Nhận 3–5 ảnh, chạy mô hình + Grad-CAM++ riêng cho từng ảnh, rồi tổng hợp kết
     quả bằng bỏ phiếu theo đa số (xem ``diagnosis_service.run_diagnosis``).
 
     Đây là endpoint mà app di động gọi ở màn hình *Chụp / tải ảnh*.
