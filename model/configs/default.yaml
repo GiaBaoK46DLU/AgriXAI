@@ -64,8 +64,10 @@ xai:
   # Ngưỡng cắt heatmap để tạo vùng khoanh (0..1)
   heatmap_threshold: 0.5
   # Chốt hiển thị theo vùng lá ước lượng; không phải xác suất giải thích đúng.
+  # Tắt để không chặn overlay — has_visible_region (OVERLAY_DRAW_THRESHOLD) đã
+  # đủ làm bộ lọc nhẹ hơn mà vẫn loại được heatmap nhiễu.
   reliability:
-    enabled: true
+    enabled: false
     min_leaf_mass: 0.65
     min_lift: 0.05
 
