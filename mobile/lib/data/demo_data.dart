@@ -127,7 +127,6 @@ class DemoData {
       prevention: <String>[
         'Theo dõi dự báo thời tiết, phun phòng trước các đợt mưa ẩm kéo dài.',
         'Trồng giống có khả năng kháng bệnh.',
-        'Tuyệt đối không trồng cà chua cạnh ruộng khoai tây.',
       ],
     ),
     Disease(
@@ -382,7 +381,7 @@ class DemoData {
       treatments: <String>[
         'Không có thuốc chữa virus — nhổ bỏ và tiêu huỷ cây bệnh.',
         'Rửa tay và khử trùng dụng cụ bằng cồn hoặc dung dịch javel sau khi chạm cây bệnh.',
-        'Không hút thuốc lá khi làm việc trong ruộng cà chua.',
+        'Không hút thuốc lá khi làm việc trong ruộng cây.',
       ],
       products: <ProductLink>[],
       noProductText:

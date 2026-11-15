@@ -258,7 +258,7 @@ class _Hero extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           const Positioned.fill(
-            child: ImageSlot(placeholder: 'Ảnh vườn cà chua'),
+            child: ImageSlot(placeholder: 'Ảnh vườn cây'),
           ),
           // linear-gradient(180deg, .9 0%, .72 26%, .44 52%, .84 100%)
           Positioned.fill(

@@ -98,7 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Stack(
         children: <Widget>[
           const Positioned.fill(
-            child: ImageSlot(placeholder: 'Ảnh ruộng cà chua'),
+            child: ImageSlot(placeholder: 'Ảnh ruộng cây'),
           ),
           Positioned.fill(
             child: IgnorePointer(

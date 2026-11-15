@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
         children: <Widget>[
           const Positioned.fill(
             child: ImageSlot(
-              placeholder: 'Ảnh ruộng cà chua',
+              placeholder: 'Ảnh ruộng cây',
               assetPath: 'assets/images/login_image.jpg',
             ),
           ),

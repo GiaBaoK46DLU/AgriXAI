@@ -73,7 +73,7 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
   /// ảnh) thay vì màn lỗi chung (icon cảnh báo) — đây không phải một lỗi hệ
   /// thống, mà là hệ thống đang làm đúng việc của nó.
   static const String _notTomatoLeafMessage =
-      'Ảnh chưa rõ lá cà chua, bạn chụp lại giúp mình nhé';
+      'Ảnh chưa rõ lá cây, bạn chụp lại giúp mình nhé';
 
   static const List<String> _labels = <String>[
     'Nén và tải ảnh lên máy chủ',
@@ -164,7 +164,7 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
         // tự chuyển sang mô hình chạy ngay trên máy (xem CLAUDE.md mục suy
         // luận ngoại tuyến). Chỉ bắt NetworkException, KHÔNG bắt rộng mọi lỗi
         // nữa (xem #47): ApiException nghĩa là backend ĐÃ trả lời — kể cả bị
-        // bộ chặn #92 từ chối ("không phải lá cà chua") — nên phải rơi xuống
+        // bộ chặn #92 từ chối ("không phải lá cây") — nên phải rơi xuống
         // `on ApiException` bên dưới để người dùng thấy đúng thông báo, thay
         // vì âm thầm chạy lại offline (không có bộ chặn) và có thể vẫn ra một
         // tên bệnh cho một tấm ảnh rõ ràng không phải lá. Suy luận ngoại
@@ -239,7 +239,7 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
       ),
       const SizedBox(height: 28),
       Text(
-        notLeaf ? 'Chưa nhận diện được lá cà chua' : 'Không phân tích được ảnh',
+        notLeaf ? 'Chưa nhận diện được lá cây' : 'Không phân tích được ảnh',
         textAlign: TextAlign.center,
         style: agriStyle(size: 22, weight: FontWeight.w700, em: -0.02),
       ),
