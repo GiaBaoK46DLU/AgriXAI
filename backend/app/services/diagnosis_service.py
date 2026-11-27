@@ -18,6 +18,11 @@ từ cao xuống thấp** — bệnh có tỉ lệ trung bình cao nhất thắn
 ánh đúng "% tỉ lệ tổng hợp" thay vì chỉ đếm phiếu top-1 của từng ảnh, nên một
 bệnh được nhiều ảnh đồng thuận với xác suất cao vẫn có thể thắng dù không có
 ảnh nào tự chọn nó làm top-1 riêng lẻ.
+
+Câu giải thích, mức độ nặng và vùng khoanh chính của lô ảnh luôn nói về bệnh
+chung này. Chúng lấy bản đồ nhiệt của một ảnh đại diện, ưu tiên ảnh cũng tự chọn
+đúng bệnh đó; chế độ ngoại tuyến trên điện thoại chọn ảnh đại diện theo cùng quy
+tắc (``mobile/lib/services/offline_aggregation.dart``).
 """
 
 from __future__ import annotations
@@ -41,8 +46,8 @@ logger = logging.getLogger(__name__)
 
 
 class NotTomatoLeafError(Exception):
-    """Toàn bộ ảnh trong lô đều bị bộ chặn #92 từ chối — không có ảnh lá cà
-    chua nào để chẩn đoán. Endpoint bắt lỗi này và trả 422 kèm
+    """Toàn bộ ảnh trong lô đều bị bộ chặn #92 từ chối — không có ảnh lá cây
+    nào để chẩn đoán. Endpoint bắt lỗi này và trả 422 kèm
     `NOT_TOMATO_LEAF_MESSAGE`, KHÔNG tạo bản ghi `Diagnosis` nào (quyết định
     #47: giữ Lịch sử/bộ lọc/thống kê sạch, không có `disease_key` lạ lọt vào)."""
 
@@ -53,7 +58,6 @@ class NotTomatoLeafError(Exception):
 @dataclass
 class _ImageResult:
     prediction: Prediction
-    interpretation: Explanation
     image_path: str
     overlay_path: str | None
 
@@ -68,10 +72,6 @@ def _run_single_image(image_bytes: bytes) -> _ImageResult:
 
     predictor = get_predictor()
     prediction = predictor.predict(image)
-
-    interpretation = explain.interpret(
-        prediction.disease_key, prediction.confidence, prediction.heatmap
-    )
 
     image_path = storage.save_upload(image)
 
@@ -89,7 +89,6 @@ def _run_single_image(image_bytes: bytes) -> _ImageResult:
 
     return _ImageResult(
         prediction=prediction,
-        interpretation=interpretation,
         image_path=image_path,
         overlay_path=overlay_path,
     )
@@ -111,6 +110,8 @@ class _Aggregate:
     avg_probabilities: dict[str, float]
     avg_confidence: float
     representative: _ImageResult
+    interpretation: Explanation     # giải thích cho bệnh chung `top_key`
+    overlay_path: str | None        # chỉ có khi ảnh đại diện cũng chọn `top_key`
 
 
 def _run_and_aggregate(images: list[bytes]) -> _Aggregate:
@@ -134,19 +135,41 @@ def _run_and_aggregate(images: list[bytes]) -> _Aggregate:
     ranked = sorted(avg_probabilities.items(), key=lambda kv: kv[1], reverse=True)
     top_key, avg_confidence = ranked[0]
 
-    # Ảnh đại diện cho phần XAI (giải thích/mức độ/ảnh overlay chính): ảnh có
-    # xác suất riêng cho đúng bệnh thắng cuộc cao nhất — luôn tồn tại vì
-    # `top_key` chỉ đứng đầu bảng xếp hạng nhờ có mặt trong xác suất của
-    # ít nhất một ảnh lá.
+    # Ảnh đại diện cho phần XAI (giải thích/mức độ/ảnh overlay chính): ưu tiên
+    # ảnh cũng tự chọn bệnh thắng cuộc làm top-1, trong nhóm đó lấy xác suất cao
+    # nhất. Không ảnh nào chọn bệnh đó thì lấy ảnh có xác suất cao nhất cho nó.
     representative = max(
-        leaf_results, key=lambda r: r.prediction.probabilities.get(top_key, 0.0)
+        leaf_results,
+        key=lambda r: (
+            r.prediction.disease_key == top_key,
+            r.prediction.probabilities.get(top_key, 0.0),
+        ),
+    )
+
+    # Bản đồ nhiệt và ảnh overlay mà mô hình trả về ứng với bệnh do CHÍNH ảnh đó
+    # chọn. Nếu ảnh đại diện chọn bệnh khác thì hai thứ này không nói về bệnh
+    # chung nên không dùng. Câu giải thích luôn dựng theo `top_key` và độ tin cậy
+    # trung bình để khớp với kết luận lưu trong bản ghi.
+    matches = representative.prediction.disease_key == top_key
+    interpretation = explain.interpret(
+        top_key,
+        avg_confidence,
+        representative.prediction.heatmap if matches else None,
     )
 
     # `results` (không phải `leaf_results`) đi vào `_Aggregate` — ảnh bị chặn
     # trong một lô hỗn hợp vẫn cần một hàng `DiagnosisImage` riêng (đúng
     # `disease_key="not_tomato_leaf"`) để nông dân thấy đúng ảnh nào bị từ
     # chối, chỉ là không góp phần vào bệnh/mức độ chung của cả lô.
-    return _Aggregate(results, top_key, avg_probabilities, avg_confidence, representative)
+    return _Aggregate(
+        results=results,
+        top_key=top_key,
+        avg_probabilities=avg_probabilities,
+        avg_confidence=avg_confidence,
+        representative=representative,
+        interpretation=interpretation,
+        overlay_path=representative.overlay_path if matches else None,
+    )
 
 
 def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
@@ -158,21 +181,20 @@ def run_diagnosis(db: Session, *, user_id: int, plot_id: int | None,
     """
     agg = _run_and_aggregate(images)
     disease = catalog.get_disease(agg.top_key)
-    rep_interp = agg.representative.interpretation
 
     record = Diagnosis(
         user_id=user_id,
         plot_id=plot_id,
         image_path=agg.representative.image_path,
-        overlay_path=agg.representative.overlay_path,
+        overlay_path=agg.overlay_path,
         disease_key=agg.top_key,
         disease_name=disease.get("name_vi", agg.top_key),
         confidence=agg.avg_confidence,
         probabilities=agg.avg_probabilities,
-        severity=rep_interp.severity,
-        severity_name=rep_interp.severity_name,
-        affected_ratio=rep_interp.affected_ratio,
-        explanation=rep_interp.text,
+        severity=agg.interpretation.severity,
+        severity_name=agg.interpretation.severity_name,
+        affected_ratio=agg.interpretation.affected_ratio,
+        explanation=agg.interpretation.text,
         model_version=agg.representative.prediction.model_version,
         latency_ms=sum(r.prediction.latency_ms for r in agg.results),
         note=note,
@@ -211,21 +233,20 @@ def run_diagnosis_preview(user_id: int, images: list[bytes]) -> Diagnosis:
     """
     agg = _run_and_aggregate(images)
     disease = catalog.get_disease(agg.top_key)
-    rep_interp = agg.representative.interpretation
 
     record = Diagnosis(
         user_id=user_id,
         plot_id=None,
         image_path=agg.representative.image_path,
-        overlay_path=agg.representative.overlay_path,
+        overlay_path=agg.overlay_path,
         disease_key=agg.top_key,
         disease_name=disease.get("name_vi", agg.top_key),
         confidence=agg.avg_confidence,
         probabilities=agg.avg_probabilities,
-        severity=rep_interp.severity,
-        severity_name=rep_interp.severity_name,
-        affected_ratio=rep_interp.affected_ratio,
-        explanation=rep_interp.text,
+        severity=agg.interpretation.severity,
+        severity_name=agg.interpretation.severity_name,
+        affected_ratio=agg.interpretation.affected_ratio,
+        explanation=agg.interpretation.text,
         model_version=agg.representative.prediction.model_version,
         latency_ms=sum(r.prediction.latency_ms for r in agg.results),
         note=None,
