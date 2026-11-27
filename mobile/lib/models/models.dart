@@ -397,6 +397,7 @@ class DiagnosisImageResult {
     this.overlayUrl,
     this.imageFile,
     this.overlayFile,
+    this.rejected = false,
   });
 
   factory DiagnosisImageResult.fromApi(Map<String, dynamic> json) {
@@ -405,8 +406,13 @@ class DiagnosisImageResult {
       confidence: '${((json['confidence'] as num) * 100).round()}%',
       imageUrl: DiagnosisCase._absoluteUrl(json['image_url'] as String?),
       overlayUrl: DiagnosisCase._absoluteUrl(json['overlay_url'] as String?),
+      rejected: json['disease_key'] == 'not_tomato_leaf',
     );
   }
+
+  /// `true` khi bộ lọc ảnh đầu vào từ chối ảnh này — ảnh không được tính vào
+  /// kết quả chung, `confidence` khi đó là độ tin cậy của bộ lọc.
+  final bool rejected;
 
   final String diseaseName;
   final String confidence;

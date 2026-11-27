@@ -327,8 +327,11 @@ class _ResultScreenState extends State<ResultScreen> {
                   overlayFile: img.overlayFile,
                   imageUrl: img.imageUrl,
                   imageFile: img.imageFile,
-                  badge: '${i + 1}/${images.length} · ${img.diseaseName} '
-                      '${img.confidence}',
+                  // Câu báo đầy đủ quá dài cho nhãn góc ảnh.
+                  badge: img.rejected
+                      ? '${i + 1}/${images.length} · Chưa nhận ra lá cây'
+                      : '${i + 1}/${images.length} · ${img.diseaseName} '
+                          '${img.confidence}',
                 ),
               );
             },
