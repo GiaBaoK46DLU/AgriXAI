@@ -691,6 +691,10 @@ máy chủ:
   của Pillow (golden test `mobile/test/image_resize_test.dart`). Không dùng
   `img.copyResize` của package `image`: hàm đó không khử răng cưa, làm bộ lọc
   quyết định lệch máy chủ ở một số ảnh.
+- Mở app khi đang mất mạng: `AuthService.tryRestore` dùng hồ sơ đã lưu
+  (`TokenStore.readUser`) thay vì về màn Đăng nhập. Trước đó mở app ngoài vườn
+  không có sóng thì không tới được chẩn đoán ngoại tuyến. Hồ sơ bị xoá khi đăng
+  xuất hoặc phiên hết hạn (test `mobile/test/auth_restore_test.dart`).
 
 ⚠️ Giới hạn của bộ lọc: đo trên 76 ảnh lá cây khác cà chua lấy từ PlantDoc, bộ
 lọc chỉ từ chối 7 ảnh. Bộ lọc chặn tốt vật thể không phải lá, **không** bảo đảm
