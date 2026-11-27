@@ -637,15 +637,18 @@ tầng ẩn hay dùng attention pooling) thì `_ExportWrapper` trong `export_onn
 không còn đúng nữa — phải viết lại cách tính CAM, không chỉ export lại.
 
 **Cách sinh file mô hình cho mobile** (không tự động, làm lại thủ công mỗi khi
-`model/checkpoints/leaf_disease_detection_model.pt` đổi):
+`model/checkpoints/leaf_disease_detection_model.pt` hoặc `organ_gate.pt` đổi):
 
 ```bash
 docker exec plantdx-backend pip install onnx onnxruntime  # nếu image chưa có
 docker exec -w /model plantdx-backend python -m src.export_onnx \
     --checkpoint /model/checkpoints/leaf_disease_detection_model.pt \
+    --gate-checkpoint /model/checkpoints/organ_gate.pt \
     --out /app/model_export_tmp
-docker cp plantdx-backend:/app/model_export_tmp/tomato_leaf_v1.onnx mobile/assets/model/
-docker cp plantdx-backend:/app/model_export_tmp/tomato_leaf_v1_meta.json mobile/assets/model/
+for f in tomato_leaf_v1.onnx tomato_leaf_v1_meta.json \
+         organ_gate_v1.onnx organ_gate_v1_meta.json; do
+    docker cp plantdx-backend:/app/model_export_tmp/$f mobile/assets/model/
+done
 cp shared/data/tomato_diseases.json mobile/assets/model/tomato_diseases.json
 ```
 
@@ -660,10 +663,43 @@ dung cũ, tự nhắc bản thân kiểm tra khi sửa danh mục bệnh.
 logic của `backend/app/services/xai/explain.py` + `overlay.py` (ngưỡng cắt
 heatmap 0.5, tỉ lệ vùng tối thiểu 0.5%, cách mô tả vị trí, câu giải thích) bằng
 Dart thuần — không dùng chung code với backend vì khác ngôn ngữ. Sửa một bên
-phải nhớ soát lại bên kia. Điểm khác duy nhất với backend: backend vẽ elip
-bằng OpenCV `fitEllipse` trên đường viền thật của vùng heatmap; bản Dart tìm
-vùng liên thông lớn nhất bằng BFS trên lưới 56×56 rồi vẽ elip theo khung bao —
-đơn giản hơn nhưng đủ dùng vì CAM gốc chỉ có độ phân giải 7×7.
+phải nhớ soát lại bên kia. Hai điểm khác chính với backend: (1) backend dùng
+Grad-CAM++ và vẽ theo đường viền thật của vùng (từ #47), còn bản Dart dùng CAM
+cổ điển, tìm vùng liên thông lớn nhất bằng BFS trên lưới 56×56 rồi vẽ elip theo
+khung bao; (2) docker-compose cho server dùng checkpoint đã thích ứng miền,
+còn ONNX trên điện thoại xuất từ mô hình gốc `leaf_disease_detection_model.pt`.
+
+### Ngoại tuyến có bộ lọc ảnh và nhận 3–5 ảnh (chốt 27/11/2026)
+
+Trước đó chế độ ngoại tuyến chỉ phân tích ảnh đầu tiên và không có bộ lọc, nên
+mất mạng thì ảnh cái bàn vẫn ra tên bệnh. Nay ngoại tuyến chạy cùng quy tắc với
+máy chủ:
+
+- Mỗi ảnh đi qua `organ_gate_v1.onnx` (xuất từ `organ_gate.pt`) trước. Ảnh bị từ
+  chối không chạy mô hình bệnh và không tính vào kết quả chung. Cả lô bị từ
+  chối thì báo đúng câu của máy chủ (`NOT_TOMATO_LEAF_MESSAGE` trong
+  `catalog.py` **phải khớp nguyên văn** `OfflineInferenceService.notLeafMessage`).
+- Yêu cầu 3–5 ảnh, kết quả chung là trung bình xác suất của các ảnh được cho qua
+  (`offline_aggregation.dart`).
+- Ảnh đại diện (cả backend lẫn ngoại tuyến) ưu tiên ảnh cũng tự chọn đúng bệnh
+  chung. Trước đó backend chỉ lấy ảnh có xác suất cao nhất cho bệnh chung, rồi
+  dùng câu giải thích theo top-1 của ảnh đó, nên có lô kết luận một bệnh mà giải
+  thích bệnh khác (test `backend/tests/test_aggregation.py`). Ngoại tuyến có CAM
+  của mọi lớp nên luôn khoanh theo bệnh chung; backend chỉ có bản đồ nhiệt cho
+  top-1 của ảnh, nên khi không ảnh nào chọn bệnh chung thì không khoanh vùng.
+- Thu phóng ảnh dùng `image_resize.dart`, port đúng phép bilinear có khử răng cưa
+  của Pillow (golden test `mobile/test/image_resize_test.dart`). Không dùng
+  `img.copyResize` của package `image`: hàm đó không khử răng cưa, làm bộ lọc
+  quyết định lệch máy chủ ở một số ảnh.
+
+⚠️ Giới hạn của bộ lọc: đo trên 76 ảnh lá cây khác cà chua lấy từ PlantDoc, bộ
+lọc chỉ từ chối 7 ảnh. Bộ lọc chặn tốt vật thể không phải lá, **không** bảo đảm
+chặn lá của cây khác. Mô hình bệnh hiện chỉ biết 10 lớp của cà chua.
+
+**Cách gọi trong hệ thống:** chữ hiển thị dùng "lá cây", không dùng "lá cà chua",
+vì hệ thống hướng tới nhiều loại cây. Chỗ nói về dữ liệu thật (tên cây trồng,
+bộ PlantVillage/PlantDoc, danh mục 10 lớp) vẫn ghi "cà chua". Các định danh gắn
+với checkpoint (`tomato_leaf`, `not_tomato_leaf`, tên file `tomato_*`) giữ nguyên.
 
 **Nâng cấp toolchain Android đi kèm bắt buộc** (không phải lựa chọn — thiếu là
 build APK lỗi ngay): Gradle 8.3→8.14.1, AGP 8.2.1→8.11.1, Kotlin 2.1.0→2.2.20,
