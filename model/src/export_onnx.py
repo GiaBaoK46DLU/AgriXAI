@@ -15,11 +15,18 @@ Output của mô hình ONNX:
         phía Dart tự chọn đúng lớp theo argmax(probs), ReLU rồi min-max chuẩn
         hoá — xem `mobile/lib/services/offline_inference_service.dart`.
 
+Bộ lọc ảnh đầu vào (#92) cũng được xuất bằng script này để chế độ ngoại tuyến
+chặn ảnh không phải lá giống máy chủ. Bộ lọc chỉ cần ``probs`` (không vẽ CAM):
+``organ_gate_v1.onnx`` + ``organ_gate_v1_meta.json``.
+
 Chạy trong container backend (đã có sẵn torch CPU, xem CLAUDE.md mục IN-01):
 
     docker exec plantdx-backend python -m src.export_onnx \\
         --checkpoint /model/checkpoints/leaf_disease_detection_model.pt \\
+        --gate-checkpoint /model/checkpoints/organ_gate.pt \\
         --out /app/model_export_tmp
+
+Có thể chỉ truyền một trong hai cờ ``--checkpoint`` / ``--gate-checkpoint``.
 """
 
 from __future__ import annotations
@@ -128,9 +135,78 @@ def export(checkpoint_path: str, out_dir: str) -> None:
     print(f"cam_grid: {meta['cam_grid']}")
 
 
+class _GateExportWrapper(nn.Module):
+    """Bộ lọc 2 lớp: chỉ trả xác suất đã qua softmax."""
+
+    def __init__(self, model: nn.Module) -> None:
+        super().__init__()
+        self.model = model
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return torch.softmax(self.model(x), dim=1)
+
+
+def export_gate(checkpoint_path: str, out_dir: str) -> None:
+    """Xuất bộ lọc ảnh đầu vào (#92) cho chế độ ngoại tuyến."""
+    model, ckpt = load_checkpoint(checkpoint_path, device="cpu")
+    model.eval()
+
+    wrapper = _GateExportWrapper(model).eval()
+    image_size = ckpt.get("image_size", 224)
+    dummy = torch.zeros(1, 3, image_size, image_size)
+
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    onnx_path = out / "organ_gate_v1.onnx"
+
+    torch.onnx.export(
+        wrapper,
+        (dummy,),
+        str(onnx_path),
+        input_names=["image"],
+        output_names=["probs"],
+        dynamic_axes=None,
+        opset_version=17,
+        dynamo=False,
+    )
+
+    import onnxruntime as ort
+
+    # So khớp trên đầu vào ngẫu nhiên (không chỉ ảnh toàn số 0) để lỗi trọng số
+    # hay thứ tự lớp lộ ra ngay lúc xuất.
+    generator = torch.Generator().manual_seed(0)
+    sess = ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
+    for _ in range(4):
+        sample = torch.randn(1, 3, image_size, image_size, generator=generator)
+        with torch.no_grad():
+            probs_ref = wrapper(sample)
+        (probs_onnx,) = sess.run(None, {"image": sample.numpy()})
+        torch.testing.assert_close(probs_ref, torch.from_numpy(probs_onnx), atol=1e-4, rtol=1e-3)
+
+    meta = {
+        "model_version": ckpt.get("model_version", Path(checkpoint_path).stem),
+        "image_size": image_size,
+        "mean": IMAGENET_MEAN,
+        "std": IMAGENET_STD,
+        "class_keys": ckpt["class_keys"],
+    }
+    meta_path = out / "organ_gate_v1_meta.json"
+    meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    size_mb = onnx_path.stat().st_size / 1_048_576
+    print(f"Đã xuất {onnx_path} ({size_mb:.1f} MB) + {meta_path}")
+    print(f"class_keys ({len(meta['class_keys'])}): {meta['class_keys']}")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--checkpoint", required=True)
+    parser.add_argument("--checkpoint", help="Checkpoint mô hình bệnh (10 lớp)")
+    parser.add_argument("--gate-checkpoint", help="Checkpoint bộ lọc ảnh đầu vào (2 lớp)")
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
-    export(args.checkpoint, args.out)
+    if not args.checkpoint and not args.gate_checkpoint:
+        parser.error("cần ít nhất --checkpoint hoặc --gate-checkpoint")
+    if args.checkpoint:
+        export(args.checkpoint, args.out)
+    if args.gate_checkpoint:
+        export_gate(args.gate_checkpoint, args.out)
