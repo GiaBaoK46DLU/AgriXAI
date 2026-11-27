@@ -20,7 +20,7 @@ from app.services.inference.base import NOT_TOMATO_LEAF_KEY
 # Câu tiếng Việt hiển thị cho người dùng khi bộ chặn #92 từ chối ảnh — nguồn
 # duy nhất cho câu này, dùng cả ở đây (tên hiển thị) lẫn ở
 # `diagnosis_service` (thông báo lỗi 422 khi cả lô ảnh đều bị chặn).
-NOT_TOMATO_LEAF_MESSAGE = "Ảnh chưa rõ lá cà chua, bạn chụp lại giúp mình nhé"
+NOT_TOMATO_LEAF_MESSAGE = "Ảnh chưa rõ lá cây, bạn chụp lại giúp mình nhé"
 
 
 @lru_cache(maxsize=1)
@@ -53,7 +53,7 @@ def get_disease(key: str) -> dict[str, Any]:
         return {
             "key": key,
             "name_vi": NOT_TOMATO_LEAF_MESSAGE,
-            "name_en": "Not a tomato leaf",
+            "name_en": "Leaf not recognized",
             "is_healthy": False,
             "visual_cue": "",
             "symptoms": "",

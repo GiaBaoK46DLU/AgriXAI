@@ -1,4 +1,4 @@
-# Cấu hình mặc định cho huấn luyện mô hình nhận diện bệnh lá cà chua.
+# Cấu hình mặc định cho huấn luyện mô hình nhận diện bệnh trên lá cây.
 # Chạy:  python -m src.training.train --config configs/default.yaml
 
 seed: 42

@@ -3,7 +3,7 @@
 > Đồ án tốt nghiệp — Khoa Công nghệ Thông tin, Trường Đại học Đà Lạt
 > GVHD: TS. Nguyễn Thị Lương
 
-Hệ thống nhận diện bệnh trên lá cà chua từ ảnh chụp, **kèm phần giải thích trực quan** (Explainable AI): thay vì chỉ trả về một nhãn bệnh khô khan, hệ thống khoanh vùng đúng khu vực trên ảnh đã khiến mô hình đưa ra kết luận đó, kèm một câu giải thích bằng ngôn ngữ thông thường và gợi ý xử lý.
+Hệ thống nhận diện bệnh trên lá cây từ ảnh chụp, **kèm phần giải thích trực quan** (Explainable AI): thay vì chỉ trả về một nhãn bệnh khô khan, hệ thống khoanh vùng đúng khu vực trên ảnh đã khiến mô hình đưa ra kết luận đó, kèm một câu giải thích bằng ngôn ngữ thông thường và gợi ý xử lý.
 
 | | |
 |---|---|
@@ -31,7 +31,7 @@ Bản đồ nhiệt gốc quá kỹ thuật với nông dân. Hệ thống chuy�
 
 ## Phạm vi
 
-**Cây cà chua**, 10 lớp theo bộ dữ liệu PlantVillage (9 bệnh + lá khoẻ):
+Hệ thống hướng tới chẩn đoán bệnh trên lá của nhiều loại cây trồng. Mô hình phân loại hiện tại được huấn luyện cho **cây cà chua**, gồm 10 lớp theo bộ dữ liệu PlantVillage (9 bệnh + lá khoẻ):
 
 | Khoá | Tên tiếng Việt |
 |---|---|
@@ -194,7 +194,7 @@ và cách tái lập nằm trong [báo cáo domain adaptation](docx/bao-cao-cat-
 
 Đây là đích cần đạt, dùng làm thước đo "hệ thống chạy trơn tru":
 
-> Mở app → thấy danh sách lô đất cà chua → bấm **+** → chụp ảnh lá cà chua ngay tại chỗ → chọn lô đất → gửi → **trong vòng 3 giây** hiện ảnh có elip khoanh đúng vết bệnh, dòng chữ *"Đốm lá vi khuẩn — 87%"*, mức độ, câu giải thích và gợi ý xử lý → bấm lưu → mở web admin trên máy chiếu → bản ghi vừa tạo đã xuất hiện trong bảng và biểu đồ dashboard đã cập nhật.
+> Mở app → thấy danh sách lô đất → bấm **+** → chụp ảnh lá cây ngay tại chỗ → chọn lô đất → gửi → **trong vòng 3 giây** hiện ảnh có elip khoanh đúng vết bệnh, dòng chữ *"Đốm lá vi khuẩn — 87%"*, mức độ, câu giải thích và gợi ý xử lý → bấm lưu → mở web admin trên máy chiếu → bản ghi vừa tạo đã xuất hiện trong bảng và biểu đồ dashboard đã cập nhật.
 
 Ba chỗ dễ vỡ nhất cần canh chừng:
 

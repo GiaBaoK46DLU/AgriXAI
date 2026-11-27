@@ -1,4 +1,7 @@
-"""Huấn luyện bộ chặn 2 lớp lá cà chua / không phải lá cà chua (issue #92).
+"""Huấn luyện bộ lọc ảnh đầu vào 2 lớp (issue #92).
+
+Dữ liệu huấn luyện hiện tại: lớp ``tomato_leaf`` là ảnh lá cà chua, lớp
+``not_tomato_leaf`` là bộ ảnh âm của #91 (vật thể, nền đất, lá cây khác...).
 
 Đây là cách chữa gốc cho lỗi "chụp vật thể bất kỳ vẫn báo bệnh lá": mô hình 10
 lớp dùng softmax nên 10 xác suất luôn cộng bằng 1, **không có chỗ nào biểu đạt

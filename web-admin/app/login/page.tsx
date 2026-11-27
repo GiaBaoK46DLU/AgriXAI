@@ -30,7 +30,7 @@ export default async function LoginPage() {
           AgriXAI Admin
         </h1>
         <p className="mb-7 text-sm text-ink/70">
-          Hệ thống chẩn đoán bệnh cây cà chua bằng AI
+          Hệ thống chẩn đoán bệnh trên lá cây bằng AI
         </p>
 
         <LoginForm />

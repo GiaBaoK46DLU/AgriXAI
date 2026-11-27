@@ -1,4 +1,4 @@
-"""Huấn luyện mô hình phân loại bệnh lá cà chua.
+"""Huấn luyện mô hình phân loại bệnh trên lá cây.
 
 Chạy:
     cd model
@@ -71,7 +71,7 @@ def run_epoch(model, loader, criterion, device, optimizer=None, scaler=None,
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Huấn luyện mô hình nhận diện bệnh cà chua")
+    ap = argparse.ArgumentParser(description="Huấn luyện mô hình nhận diện bệnh trên lá cây")
     ap.add_argument("--config", default="configs/default.yaml")
     ap.add_argument("--device", default=None, help="cuda | cpu (mặc định: tự dò)")
     ap.add_argument("--resume", default=None, help="Đường dẫn checkpoint để học tiếp")

@@ -210,7 +210,7 @@ class _PlotFormScreenState extends State<PlotFormScreen> {
                   const FieldLabel('Cây trồng'),
                   GlassField(
                     controller: _crop,
-                    hintText: 'Ví dụ: Cà chua',
+                    hintText: 'Ví dụ: Cà chua, ớt, dưa leo',
                   ),
                   const SizedBox(height: 15),
                   const FieldLabel('Trạng thái', bottomGap: 8),

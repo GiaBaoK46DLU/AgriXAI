@@ -78,7 +78,7 @@ async def create_diagnosis(
     db: DbSession,
     user: CurrentUser,
     files: list[UploadFile] = File(
-        ..., description="3–5 ảnh lá cà chua (JPEG/PNG/WEBP), cùng một lá/vết bệnh"
+        ..., description="3–5 ảnh lá cây (JPEG/PNG/WEBP), cùng một lá/vết bệnh"
     ),
     plot_id: int | None = Form(default=None, description="Lô đất áp dụng"),
     note: str | None = Form(default=None, description="Ghi chú của người dùng"),
@@ -92,7 +92,7 @@ async def create_diagnosis(
     ),
 ):
     """Nhận 3–5 ảnh, chạy mô hình + Grad-CAM++ riêng cho từng ảnh, rồi tổng hợp kết
-    quả bằng bỏ phiếu theo đa số (xem ``diagnosis_service.run_diagnosis``).
+    quả bằng trung bình xác suất giữa các ảnh (xem ``diagnosis_service``).
 
     Đây là endpoint mà app di động gọi ở màn hình *Chụp / tải ảnh*.
     """
