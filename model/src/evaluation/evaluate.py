@@ -111,7 +111,7 @@ def plot_confusion_matrix(cm: np.ndarray, labels: list[str], out_path: Path,
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Đánh giá mô hình nhận diện bệnh cà chua")
+    ap = argparse.ArgumentParser(description="Đánh giá mô hình nhận diện bệnh trên lá cây")
     ap.add_argument("--checkpoint", default="checkpoints/best.pt")
     ap.add_argument("--manifest", default="data/processed/split.csv")
     ap.add_argument("--split", default="test", choices=["train", "val", "test"])

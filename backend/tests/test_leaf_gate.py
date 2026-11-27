@@ -1,4 +1,4 @@
-"""Kiểm thử #47 — nối bộ chặn lá cà chua / không phải lá (#92) vào backend.
+"""Kiểm thử #47 — nối bộ lọc ảnh đầu vào (#92) vào backend.
 
 Không cần torch hay checkpoint thật: giả một predictor trả về
 ``disease_key="not_tomato_leaf"`` giống hệt hình dạng mà ``DiseasePredictor``

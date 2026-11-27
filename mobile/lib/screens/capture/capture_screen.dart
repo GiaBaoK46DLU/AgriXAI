@@ -26,9 +26,10 @@ const int _maxNoteLength = 500;
 
 /// **03 Chụp ảnh** — UC-M7.
 ///
-/// Cần 3–5 ảnh cùng một lá/vết bệnh — kết quả cuối cùng tổng hợp theo đa số
-/// phiếu giữa các ảnh (xem CLAUDE.md). Nén thật xảy ra ở [AnalyzingScreen]
-/// ngay trước khi gửi (giữ ảnh gốc ở đây để còn xem lại/bỏ bớt được).
+/// Cần 3–5 ảnh cùng một lá/vết bệnh — kết quả cuối cùng là trung bình xác suất
+/// giữa các ảnh, cả khi gọi máy chủ lẫn khi phân tích ngoại tuyến. Nén thật xảy
+/// ra ở [AnalyzingScreen] ngay trước khi gửi (giữ ảnh gốc ở đây để còn xem
+/// lại/bỏ bớt được).
 ///
 /// Lô đất (nếu có) luôn đến từ màn *Chi tiết lô đất* qua [initialPlotId] —
 /// không còn cho chọn lô ngay ở đây. Vào từ nút chụp ảnh chung (không có lô

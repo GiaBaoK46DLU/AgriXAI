@@ -42,8 +42,8 @@ class Prediction:
     Attributes:
         disease_key: khoá lớp bệnh, ví dụ ``"early_blight"``. Luôn nằm trong
             danh mục ``shared/data/tomato_diseases.json`` — **trừ** giá trị
-            đặc biệt ``"not_tomato_leaf"`` khi bộ chặn của #92 kết luận ảnh
-            không phải lá cà chua. Khoá đó **không** có trong danh mục JSON,
+            đặc biệt ``"not_tomato_leaf"`` khi bộ lọc đầu vào (#92) không nhận
+            ra lá cây trong ảnh. Khoá đó **không** có trong danh mục JSON,
             nên backend phải xử lý riêng trước khi tra danh mục (xem #47).
         confidence: xác suất của lớp được chọn, 0..1.
         probabilities: xác suất của TẤT CẢ các lớp, ``{khoá: xác suất}``.
@@ -69,7 +69,7 @@ class DiseasePredictor:
     """Nạp checkpoint và chạy suy luận + Grad-CAM++ trên ảnh đơn lẻ.
 
     ``gate_checkpoint`` (#92) bật bộ chặn 2 lớp chạy **trước** mô hình bệnh: ảnh
-    không phải lá cà chua thì trả thẳng ``disease_key="not_tomato_leaf"`` kèm
+    không nhận ra lá cây thì trả thẳng ``disease_key="not_tomato_leaf"`` kèm
     ``heatmap=None``, không chạy mô hình bệnh nữa.
 
     ⚠️ **Mặc định TẮT, và phải bàn với Học trước khi bật.** Bật lên là backend

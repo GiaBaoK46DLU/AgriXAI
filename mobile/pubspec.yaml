@@ -1,5 +1,5 @@
 name: agrixai_farmer
-description: "AgriXAI — ứng dụng nông dân chẩn đoán bệnh cà chua kèm giải thích XAI."
+description: "AgriXAI — ứng dụng nông dân chẩn đoán bệnh trên lá cây kèm giải thích XAI."
 publish_to: 'none'
 version: 0.1.0+1
 
@@ -58,8 +58,10 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    # Mô hình nhận diện bệnh + danh mục bệnh, dùng khi không có mạng — xem
-    # mobile/lib/services/offline_inference_service.dart.
+    # Bộ lọc ảnh đầu vào + mô hình nhận diện bệnh + danh mục bệnh, dùng khi
+    # không có mạng — xem mobile/lib/services/offline_inference_service.dart.
+    - assets/model/organ_gate_v1.onnx
+    - assets/model/organ_gate_v1_meta.json
     - assets/model/tomato_leaf_v1.onnx
     - assets/model/tomato_leaf_v1_meta.json
     - assets/model/tomato_diseases.json

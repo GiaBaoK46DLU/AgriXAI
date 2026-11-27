@@ -12,7 +12,7 @@ const openSans = Open_Sans({
 
 export const metadata: Metadata = {
   title: "AgriXAI Admin",
-  description: "Quản trị nội dung hệ thống chẩn đoán bệnh cây cà chua AgriXAI",
+  description: "Quản trị nội dung hệ thống chẩn đoán bệnh trên lá cây AgriXAI",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

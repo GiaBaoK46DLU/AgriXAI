@@ -53,7 +53,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description=(
-        "API chẩn đoán bệnh trên lá cà chua kèm giải thích trực quan (XAI).\n\n"
+        "API chẩn đoán bệnh trên lá cây kèm giải thích trực quan (XAI).\n\n"
         "Đồ án tốt nghiệp — Khoa CNTT, Trường Đại học Đà Lạt."
     ),
     version="0.1.0",

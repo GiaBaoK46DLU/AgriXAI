@@ -39,7 +39,7 @@ NOT_LEAF_KEY = "not_tomato_leaf"
 
 def ten_benh(key: str) -> str:
     if key == NOT_LEAF_KEY:
-        return "Không phải lá cà chua"
+        return "Bộ lọc từ chối"
     return key_to_name_vi().get(key, key)
 
 

@@ -1,4 +1,4 @@
-"""Mô hình nhận diện bệnh lá cà chua + XAI (phần phụ trách: Gia Bảo)."""
+"""Mô hình nhận diện bệnh trên lá cây + XAI (phần phụ trách: Gia Bảo)."""
 
 import sys
 

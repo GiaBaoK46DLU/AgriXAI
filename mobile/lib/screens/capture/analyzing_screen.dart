@@ -29,9 +29,10 @@ import '../result/result_screen.dart';
 /// chờ) trong lúc `POST /diagnoses` chạy thật ở nền; màn chỉ chuyển tiếp khi
 /// cả hai xong. Backend giới hạn 10 MB/ảnh nên nén trước khi gửi.
 ///
-/// Nhận 3–5 ảnh (`widget.images`) — mỗi ảnh chạy qua mô hình riêng ở backend,
-/// kết quả cuối cùng tổng hợp theo đa số phiếu (xem CLAUDE.md). Suy luận
-/// ngoại tuyến (khi mất mạng) chỉ hỗ trợ một ảnh nên dùng ảnh đầu tiên.
+/// Nhận 3–5 ảnh (`widget.images`) — mỗi ảnh chạy qua mô hình riêng, kết quả
+/// cuối cùng là trung bình xác suất của các ảnh được bộ lọc đầu vào cho qua.
+/// Mất mạng thì cả lô ảnh được phân tích ngay trên máy theo cùng quy tắc
+/// (`OfflineInferenceService`).
 class AnalyzingScreen extends StatefulWidget {
   const AnalyzingScreen({
     required this.images,
@@ -64,26 +65,26 @@ class AnalyzingScreen extends StatefulWidget {
 }
 
 class _AnalyzingScreenState extends State<AnalyzingScreen> {
-  /// Câu báo lỗi khi bộ chặn lá/không-phải-lá (#92, nối vào backend ở #47)
-  /// từ chối cả lô ảnh. PHẢI khớp nguyên văn với `NOT_TOMATO_LEAF_MESSAGE`
-  /// trong `backend/app/services/catalog.py` — hai bên không import chung
-  /// được (khác ngôn ngữ) nên chép tay, cùng kiểu với cách
-  /// `mobile/assets/model/tomato_diseases.json` chép tay từ `shared/data/`
-  /// (xem CLAUDE.md). Dùng để hiện một màn phản hồi nhẹ nhàng hơn (icon máy
-  /// ảnh) thay vì màn lỗi chung (icon cảnh báo) — đây không phải một lỗi hệ
-  /// thống, mà là hệ thống đang làm đúng việc của nó.
-  static const String _notTomatoLeafMessage =
-      'Ảnh chưa rõ lá cây, bạn chụp lại giúp mình nhé';
-
   static const List<String> _labels = <String>[
     'Nén và tải ảnh lên máy chủ',
     'Nhận diện bệnh',
     'Khoanh vùng nghi ngờ (Grad-CAM++)',
   ];
 
+  /// Nhãn khi phân tích ngay trên máy: không có bước tải lên, và vùng nghi ngờ
+  /// tính bằng CAM thay cho Grad-CAM++.
+  static const List<String> _offlineLabels = <String>[
+    'Nén ảnh và lọc ảnh đầu vào',
+    'Nhận diện bệnh',
+    'Khoanh vùng nghi ngờ (CAM)',
+  ];
+
   final List<Timer> _timers = <Timer>[];
   int _step = 0;
   String? _error;
+
+  /// `true` khi không gọi được máy chủ và đang phân tích ngay trên máy.
+  bool _offline = false;
 
   @override
   void initState() {
@@ -167,11 +168,13 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
         // bộ chặn #92 từ chối ("không phải lá cây") — nên phải rơi xuống
         // `on ApiException` bên dưới để người dùng thấy đúng thông báo, thay
         // vì âm thầm chạy lại offline (không có bộ chặn) và có thể vẫn ra một
-        // tên bệnh cho một tấm ảnh rõ ràng không phải lá. Suy luận ngoại
-        // tuyến chỉ hỗ trợ một ảnh — dùng ảnh đầu tiên.
+        // tên bệnh cho một tấm ảnh rõ ràng không phải lá.
+        if (mounted) setState(() => _offline = true);
         result = await OfflineInferenceService.instance.diagnose(
-          imageFile: widget.images.first,
-          imageBytes: images.first.bytes,
+          images: <OfflineImageInput>[
+            for (int i = 0; i < widget.images.length; i++)
+              (file: widget.images[i], bytes: images[i].bytes),
+          ],
           plotLabel: widget.plotName ?? 'Chưa gán lô đất',
         );
       }
@@ -183,6 +186,8 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
       if (!mounted) return;
       AppNav.replace(context, (_) => ResultScreen(diagnosisCase: result));
     } on ApiException catch (e) {
+      if (mounted) setState(() => _error = e.message);
+    } on OfflineDiagnosisException catch (e) {
       if (mounted) setState(() => _error = e.message);
     } catch (_) {
       if (mounted) {
@@ -212,12 +217,14 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
     );
   }
 
-  /// `true` khi bộ chặn #92 từ chối ảnh — không phải một lỗi hệ thống nên
-  /// hiện màn phản hồi riêng, nhẹ nhàng hơn (xem `_notTomatoLeafMessage`).
-  bool get _isNotTomatoLeaf => _error == _notTomatoLeafMessage;
+  /// `true` khi bộ lọc đầu vào từ chối cả lô ảnh (trực tuyến hoặc ngoại
+  /// tuyến). Đây không phải lỗi hệ thống nên hiện màn phản hồi riêng, nhẹ
+  /// nhàng hơn (biểu tượng máy ảnh thay vì tam giác cảnh báo). Câu của máy chủ
+  /// phải khớp nguyên văn `OfflineInferenceService.notLeafMessage`.
+  bool get _isNotLeaf => _error == OfflineInferenceService.notLeafMessage;
 
   List<Widget> _errorContent() {
-    final bool notLeaf = _isNotTomatoLeaf;
+    final bool notLeaf = _isNotLeaf;
     return <Widget>[
       Center(
         child: GlassCard(
@@ -286,13 +293,19 @@ class _AnalyzingScreenState extends State<AnalyzingScreen> {
       ),
       const SizedBox(height: 8),
       Text(
-        'Thường mất 2–4 giây tuỳ đường mạng.',
+        _offline
+            ? 'Không kết nối được máy chủ, đang phân tích ngay trên máy.'
+            : 'Thường mất 2–4 giây tuỳ đường mạng.',
         textAlign: TextAlign.center,
         style: agriStyle(size: 14, color: AgriColors.inkA(.72)),
       ),
       const SizedBox(height: 28),
       for (int i = 0; i < _labels.length; i++) ...<Widget>[
-        _StepRow(index: i, label: _labels[i], done: _step > i),
+        _StepRow(
+          index: i,
+          label: _offline ? _offlineLabels[i] : _labels[i],
+          done: _step > i,
+        ),
         if (i != _labels.length - 1) const SizedBox(height: 11),
       ],
       const SizedBox(height: 26),

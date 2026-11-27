@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -49,6 +51,8 @@ class _AgriXaiFarmerAppState extends State<AgriXaiFarmerApp> {
   /// hiện ra ngay là tín hiệu đủ rõ cho người dùng biết phải đăng nhập lại.
   void _handleSessionExpired() {
     session.currentUser = null;
+    // Không để lần mở app khi mất mạng vào lại bằng phiên đã hết hạn.
+    unawaited(session.authService.forgetSavedUser());
     appNavigatorKey.currentState?.pushAndRemoveUntil<void>(
       AgriRiseRoute<void>(builder: (_) => const LoginScreen()),
       (Route<dynamic> route) => false,

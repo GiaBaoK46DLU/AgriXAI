@@ -4,7 +4,7 @@ Thứ mà **nhiều phần của hệ thống cùng đọc**, để không bị 
 
 ## `data/tomato_diseases.json`
 
-Danh mục 10 lớp bệnh cà chua — **nguồn sự thật duy nhất** cho cả `model/` lẫn `backend/`.
+Danh mục lớp bệnh trên lá cây — **nguồn sự thật duy nhất** cho cả `model/` lẫn `backend/`. Hiện có 10 lớp của cây cà chua, đúng với mô hình đang dùng.
 
 Mỗi bệnh có: `key`, tên Việt/Anh, tác nhân gây bệnh, tên thư mục PlantVillage tương ứng, triệu chứng, điều kiện phát sinh, gợi ý xử lý, biện pháp phòng ngừa, và `visual_cue` (mô tả dấu hiệu bằng lời — dùng để sinh câu giải thích XAI cho nông dân).
 
