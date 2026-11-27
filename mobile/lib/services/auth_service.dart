@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'api_client.dart';
 import 'token_store.dart';
 
@@ -19,6 +21,16 @@ class CurrentUser {
         email: json['email'] as String?,
         phone: json['phone'] as String?,
       );
+
+  /// Cùng tên trường với phản hồi của backend để đọc lại được bằng [fromJson].
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'username': username,
+        'full_name': fullName,
+        'role': role,
+        'email': email,
+        'phone': phone,
+      };
 
   final int id;
   final String username;
@@ -88,12 +100,15 @@ class AuthService {
     _api.setRefreshToken(refreshToken);
     await _tokenStore.write(token);
     await _tokenStore.writeRefresh(refreshToken);
-    return CurrentUser.fromJson(body['user'] as Map<String, dynamic>);
+    final CurrentUser user = CurrentUser.fromJson(body['user'] as Map<String, dynamic>);
+    await _saveUser(user);
+    return user;
   }
 
   /// Gọi lúc app khởi động — nếu có token đã lưu thì nạp lại và xác nhận
   /// còn hiệu lực. Trả về `null` nếu chưa đăng nhập hoặc cả access lẫn
-  /// refresh token đều đã hết hạn.
+  /// refresh token đều đã hết hạn. Khi không gọi được máy chủ thì trả về hồ sơ
+  /// đã lưu của phiên đó (nếu có) để vẫn dùng được chẩn đoán ngoại tuyến.
   ///
   /// Nạp cả refresh token vào [ApiClient] trước khi gọi [me] — access token
   /// đã lưu có thể đã hết hạn (chỉ sống 30 phút) trong lúc app đóng, lúc đó
@@ -107,7 +122,9 @@ class AuthService {
     _api.setToken(token);
     _api.setRefreshToken(refreshToken);
     try {
-      return await me();
+      final CurrentUser user = await me();
+      await _saveUser(user);
+      return user;
     } on ApiException {
       await logout();
       return null;
@@ -117,15 +134,38 @@ class AuthService {
       // token lúc này chắc chắn đã không còn hợp lệ để thu hồi).
       await _tokenStore.delete();
       await _tokenStore.deleteRefresh();
+      await forgetSavedUser();
       return null;
     } on NetworkException {
       // Mất mạng lúc khởi động không có nghĩa phiên đã hết hạn — giữ
-      // nguyên token trong TokenStore (không logout), chỉ coi như chưa
-      // xác nhận được để _StartupGate không treo vô thời hạn. Mở lại app
-      // khi có mạng thì tryRestore() chạy lại và tự đăng nhập như cũ.
-      return null;
+      // nguyên token và mở app bằng hồ sơ đã lưu, nếu không thì nông dân ở
+      // ngoài vườn mất sóng sẽ kẹt ở màn Đăng nhập và không tới được chẩn
+      // đoán ngoại tuyến. Khi có mạng lại, lệnh gọi API đầu tiên vẫn đi qua
+      // kiểm tra token của backend như bình thường.
+      return _readSavedUser();
     }
   }
+
+  /// Lưu hồ sơ chỉ để dùng khi mất mạng — ghi lỗi thì bỏ qua, không làm hỏng
+  /// việc đăng nhập đang diễn ra.
+  Future<void> _saveUser(CurrentUser user) async {
+    try {
+      await _tokenStore.writeUser(jsonEncode(user.toJson()));
+    } catch (_) {}
+  }
+
+  Future<CurrentUser?> _readSavedUser() async {
+    final String? raw = await _tokenStore.readUser();
+    if (raw == null) return null;
+    try {
+      return CurrentUser.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    } catch (_) {
+      return null; // dữ liệu lưu bị hỏng thì coi như chưa có
+    }
+  }
+
+  /// Bỏ hồ sơ đã lưu để lần mở app khi mất mạng không vào lại phiên đã hết hạn.
+  Future<void> forgetSavedUser() => _tokenStore.deleteUser();
 
   Future<CurrentUser> me() async {
     final dynamic body = await _api.get('/auth/me');
@@ -139,7 +179,9 @@ class AuthService {
       if (fullName != null) 'full_name': fullName,
       if (phone != null) 'phone': phone,
     });
-    return CurrentUser.fromJson(body as Map<String, dynamic>);
+    final CurrentUser user = CurrentUser.fromJson(body as Map<String, dynamic>);
+    await _saveUser(user);
+    return user;
   }
 
   /// Đổi mật khẩu tự phục vụ — bắt buộc đúng mật khẩu hiện tại
@@ -175,5 +217,6 @@ class AuthService {
     _api.setRefreshToken(null);
     await _tokenStore.delete();
     await _tokenStore.deleteRefresh();
+    await forgetSavedUser();
   }
 }

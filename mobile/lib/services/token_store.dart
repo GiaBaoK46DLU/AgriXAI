@@ -11,6 +11,12 @@ abstract class TokenStore {
   Future<String?> readRefresh();
   Future<void> writeRefresh(String token);
   Future<void> deleteRefresh();
+
+  /// Hồ sơ người dùng (chuỗi JSON) của phiên đang lưu — để mở được app khi
+  /// mất mạng, xem `AuthService.tryRestore`.
+  Future<String?> readUser();
+  Future<void> writeUser(String userJson);
+  Future<void> deleteUser();
 }
 
 class SecureTokenStore implements TokenStore {
@@ -19,6 +25,7 @@ class SecureTokenStore implements TokenStore {
 
   static const String _key = 'agrixai_token';
   static const String _refreshKey = 'agrixai_refresh_token';
+  static const String _userKey = 'agrixai_user';
 
   final FlutterSecureStorage _storage;
 
@@ -40,4 +47,14 @@ class SecureTokenStore implements TokenStore {
 
   @override
   Future<void> deleteRefresh() => _storage.delete(key: _refreshKey);
+
+  @override
+  Future<String?> readUser() => _storage.read(key: _userKey);
+
+  @override
+  Future<void> writeUser(String userJson) =>
+      _storage.write(key: _userKey, value: userJson);
+
+  @override
+  Future<void> deleteUser() => _storage.delete(key: _userKey);
 }

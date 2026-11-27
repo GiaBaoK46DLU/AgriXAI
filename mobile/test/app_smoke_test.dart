@@ -24,6 +24,7 @@ import 'package:http/testing.dart';
 class _FakeTokenStore implements TokenStore {
   String? _token;
   String? _refreshToken;
+  String? _user;
 
   @override
   Future<void> delete() async => _token = null;
@@ -42,6 +43,15 @@ class _FakeTokenStore implements TokenStore {
 
   @override
   Future<void> writeRefresh(String token) async => _refreshToken = token;
+
+  @override
+  Future<void> deleteUser() async => _user = null;
+
+  @override
+  Future<String?> readUser() async => _user;
+
+  @override
+  Future<void> writeUser(String userJson) async => _user = userJson;
 }
 
 /// Sáu bản ghi chẩn đoán giả — đủ để kiểm được cả tổng số lẫn lọc theo mức độ
