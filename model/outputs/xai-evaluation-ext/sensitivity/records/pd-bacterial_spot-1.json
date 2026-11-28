@@ -1,0 +1,135 @@
+{
+  "sample_id": "pd-bacterial_spot-1",
+  "dataset": "pd",
+  "correct": false,
+  "predicted": "septoria_leaf_spot",
+  "perturbations": {
+    "sang_hon_15": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": true,
+      "target_probability": 0.3630969226360321,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.3874534848153832,
+          "one_minus_spearman": 0.03810277344054058,
+          "contour_iou": 0.326632581919591
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.11213434224174097,
+          "one_minus_spearman": 0.005923036266730852,
+          "contour_iou": 0.8174454828660436
+        },
+        "lime": {
+          "rel_l2": 0.5941503586397074,
+          "one_minus_spearman": 0.34611069741877887,
+          "contour_iou": 0.5396858638743456
+        },
+        "kernel_shap": {
+          "rel_l2": 0.4930573464169471,
+          "one_minus_spearman": 0.46144525129451364,
+          "contour_iou": 0.6696675900277008
+        }
+      }
+    },
+    "toi_hon_15": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": true,
+      "target_probability": 0.41472432017326355,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.13011988676746736,
+          "one_minus_spearman": 0.028098213516652537,
+          "contour_iou": 0.8256934306569343
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.06312290741834498,
+          "one_minus_spearman": 0.0023372097849497786,
+          "contour_iou": 0.897869383974062
+        },
+        "lime": {
+          "rel_l2": 0.5062131701998592,
+          "one_minus_spearman": 0.27872817837380226,
+          "contour_iou": 0.4330555062954424
+        },
+        "kernel_shap": {
+          "rel_l2": 0.2162577601201731,
+          "one_minus_spearman": 0.28119486212172284,
+          "contour_iou": 0.9922928709055877
+        }
+      }
+    },
+    "jpeg_q70": {
+      "predicted": "late_blight",
+      "label_kept": false,
+      "target_probability": 0.06525247544050217,
+      "methods": {}
+    },
+    "mo_sigma1": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": true,
+      "target_probability": 0.27420467138290405,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.711123370915146,
+          "one_minus_spearman": 0.4986618739079586,
+          "contour_iou": 0.27259718578583353
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.2610992285872413,
+          "one_minus_spearman": 0.056418865357964365,
+          "contour_iou": 0.4760557476684481
+        },
+        "lime": {
+          "rel_l2": 0.9823177872061644,
+          "one_minus_spearman": 0.5076023333000614,
+          "contour_iou": 0.14572452636968766
+        },
+        "kernel_shap": {
+          "rel_l2": 1.378314290194574,
+          "one_minus_spearman": 0.90176195642778,
+          "contour_iou": 0.1875350926445817
+        }
+      }
+    },
+    "nhieu_sd5": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": true,
+      "target_probability": 0.7662224769592285,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.6526565307885261,
+          "one_minus_spearman": 0.708362020500896,
+          "contour_iou": 0.41051397957475305
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.2626361343060452,
+          "one_minus_spearman": 0.06892184015745506,
+          "contour_iou": 0.7256691747872209
+        },
+        "lime": {
+          "rel_l2": 0.5794584604832819,
+          "one_minus_spearman": 0.2327053546829938,
+          "contour_iou": 0.48927832807227606
+        },
+        "kernel_shap": {
+          "rel_l2": 0.4418985163765126,
+          "one_minus_spearman": 0.4918471470629522,
+          "contour_iou": 0.5025
+        }
+      }
+    }
+  },
+  "noise_floor": {
+    "lime": {
+      "rel_l2": 0.24974245432808456,
+      "one_minus_spearman": 0.145579306281169,
+      "contour_iou": 0.6707839613821274
+    },
+    "kernel_shap": {
+      "rel_l2": 0.33275356888626734,
+      "one_minus_spearman": 0.2643515497923306,
+      "contour_iou": 0.38327085135698036
+    }
+  },
+  "reproduction": {}
+}

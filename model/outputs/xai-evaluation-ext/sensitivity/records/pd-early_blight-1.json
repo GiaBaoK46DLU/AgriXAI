@@ -1,0 +1,135 @@
+{
+  "sample_id": "pd-early_blight-1",
+  "dataset": "pd",
+  "correct": true,
+  "predicted": "early_blight",
+  "perturbations": {
+    "sang_hon_15": {
+      "predicted": "late_blight",
+      "label_kept": false,
+      "target_probability": 0.2575087547302246,
+      "methods": {}
+    },
+    "toi_hon_15": {
+      "predicted": "early_blight",
+      "label_kept": true,
+      "target_probability": 0.626038670539856,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.13951106198186303,
+          "one_minus_spearman": 0.016826960554305326,
+          "contour_iou": 0.7628383647098139
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.07557317575534546,
+          "one_minus_spearman": 0.0057613609226371265,
+          "contour_iou": 0.8723153868784936
+        },
+        "lime": {
+          "rel_l2": 0.18991833128489274,
+          "one_minus_spearman": 0.029426665560844723,
+          "contour_iou": 0.5575934012615236
+        },
+        "kernel_shap": {
+          "rel_l2": 0.3552935103536919,
+          "one_minus_spearman": 0.10320242807269031,
+          "contour_iou": 0.3948264125255276
+        }
+      }
+    },
+    "jpeg_q70": {
+      "predicted": "early_blight",
+      "label_kept": true,
+      "target_probability": 0.5219694972038269,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.31653380874219617,
+          "one_minus_spearman": 0.07870381948649618,
+          "contour_iou": 0.3119427627958173
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.2995120904481662,
+          "one_minus_spearman": 0.06097495081877069,
+          "contour_iou": 0.3939581856839121
+        },
+        "lime": {
+          "rel_l2": 0.6964748180288036,
+          "one_minus_spearman": 0.3715748584922084,
+          "contour_iou": 0.0
+        },
+        "kernel_shap": {
+          "rel_l2": 0.7587151085316816,
+          "one_minus_spearman": 0.49181648590854565,
+          "contour_iou": 0.0
+        }
+      }
+    },
+    "mo_sigma1": {
+      "predicted": "early_blight",
+      "label_kept": true,
+      "target_probability": 0.7567242980003357,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.3151730466100687,
+          "one_minus_spearman": 0.0480626355592596,
+          "contour_iou": 0.5503724394785847
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.2449949969095802,
+          "one_minus_spearman": 0.04999325293059609,
+          "contour_iou": 0.47442982015472723
+        },
+        "lime": {
+          "rel_l2": 0.7103360441129933,
+          "one_minus_spearman": 0.29383594003200764,
+          "contour_iou": 0.1732534324508837
+        },
+        "kernel_shap": {
+          "rel_l2": 0.877770006356928,
+          "one_minus_spearman": 0.3992967099473458,
+          "contour_iou": 0.15267175572519084
+        }
+      }
+    },
+    "nhieu_sd5": {
+      "predicted": "early_blight",
+      "label_kept": true,
+      "target_probability": 0.4243699908256531,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.3785514256580262,
+          "one_minus_spearman": 0.039138167696522674,
+          "contour_iou": 0.23035230352303523
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.21316460463569203,
+          "one_minus_spearman": 0.038227753558730315,
+          "contour_iou": 0.45660232647321997
+        },
+        "lime": {
+          "rel_l2": 0.6937400085426978,
+          "one_minus_spearman": 0.37346830338965065,
+          "contour_iou": 0.23592592592592593
+        },
+        "kernel_shap": {
+          "rel_l2": 0.6829814764273592,
+          "one_minus_spearman": 0.5098526480850991,
+          "contour_iou": 0.3488372093023256
+        }
+      }
+    }
+  },
+  "noise_floor": {
+    "lime": {
+      "rel_l2": 0.22220565519910196,
+      "one_minus_spearman": 0.05800629257975881,
+      "contour_iou": 0.5120470173209348
+    },
+    "kernel_shap": {
+      "rel_l2": 0.7110361681017424,
+      "one_minus_spearman": 0.2893036294063231,
+      "contour_iou": 0.24116510215350634
+    }
+  },
+  "reproduction": {}
+}

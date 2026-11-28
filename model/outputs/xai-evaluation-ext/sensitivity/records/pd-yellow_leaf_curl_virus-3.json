@@ -1,0 +1,156 @@
+{
+  "sample_id": "pd-yellow_leaf_curl_virus-3",
+  "dataset": "pd",
+  "correct": true,
+  "predicted": "yellow_leaf_curl_virus",
+  "perturbations": {
+    "sang_hon_15": {
+      "predicted": "yellow_leaf_curl_virus",
+      "label_kept": true,
+      "target_probability": 0.656118631362915,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.15622106602738423,
+          "one_minus_spearman": 0.020921235137259186,
+          "contour_iou": 0.7144923343939832
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.06344945667866185,
+          "one_minus_spearman": 0.005227449628576242,
+          "contour_iou": 0.8816679188580016
+        },
+        "lime": {
+          "rel_l2": 1.0796812108603688,
+          "one_minus_spearman": 0.5069940035440053,
+          "contour_iou": 0.11107399365291465
+        },
+        "kernel_shap": {
+          "rel_l2": 0.7897756757709127,
+          "one_minus_spearman": 0.40868456246160045,
+          "contour_iou": 0.3015692517625654
+        }
+      }
+    },
+    "toi_hon_15": {
+      "predicted": "yellow_leaf_curl_virus",
+      "label_kept": true,
+      "target_probability": 0.6084556579589844,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.13267716166553642,
+          "one_minus_spearman": 0.03680712211422421,
+          "contour_iou": 0.7063615205585725
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.05153814410103727,
+          "one_minus_spearman": 0.0032122704776949007,
+          "contour_iou": 0.8345005528934759
+        },
+        "lime": {
+          "rel_l2": 0.27813526320021553,
+          "one_minus_spearman": 0.12794905248700428,
+          "contour_iou": 0.9801699716713881
+        },
+        "kernel_shap": {
+          "rel_l2": 0.34942482949501724,
+          "one_minus_spearman": 0.09536006814486564,
+          "contour_iou": 0.4432252701579385
+        }
+      }
+    },
+    "jpeg_q70": {
+      "predicted": "yellow_leaf_curl_virus",
+      "label_kept": true,
+      "target_probability": 0.8647512793540955,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.8822324289201867,
+          "one_minus_spearman": 0.20445296139188207,
+          "contour_iou": 0.15922798552472858
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.6553510600051197,
+          "one_minus_spearman": 0.14339479334707905,
+          "contour_iou": 0.2288095463585567
+        },
+        "lime": {
+          "rel_l2": 1.0222977872020336,
+          "one_minus_spearman": 0.6507174000404832,
+          "contour_iou": 0.14900563965568417
+        },
+        "kernel_shap": {
+          "rel_l2": 0.8268569385433197,
+          "one_minus_spearman": 0.6169031490601345,
+          "contour_iou": 0.31004366812227074
+        }
+      }
+    },
+    "mo_sigma1": {
+      "predicted": "yellow_leaf_curl_virus",
+      "label_kept": true,
+      "target_probability": 0.8444886207580566,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.7946123947111012,
+          "one_minus_spearman": 0.33789390198289404,
+          "contour_iou": 0.25718405603048716
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.37979130832973723,
+          "one_minus_spearman": 0.12088528798383857,
+          "contour_iou": 0.08483542319749217
+        },
+        "lime": {
+          "rel_l2": 1.4782820291651102,
+          "one_minus_spearman": 0.548263299744028,
+          "contour_iou": 0.0
+        },
+        "kernel_shap": {
+          "rel_l2": 1.354277296631722,
+          "one_minus_spearman": 0.7818758126192716,
+          "contour_iou": 0.1635741769987174
+        }
+      }
+    },
+    "nhieu_sd5": {
+      "predicted": "yellow_leaf_curl_virus",
+      "label_kept": true,
+      "target_probability": 0.6061956286430359,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.5750190525159206,
+          "one_minus_spearman": 0.18893663888883017,
+          "contour_iou": 0.48753738783649053
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.3279520720898394,
+          "one_minus_spearman": 0.06943880367008015,
+          "contour_iou": 0.3973305954825462
+        },
+        "lime": {
+          "rel_l2": 0.40972694964543066,
+          "one_minus_spearman": 0.24284097853920394,
+          "contour_iou": 0.9227586206896552
+        },
+        "kernel_shap": {
+          "rel_l2": 0.5694850834995664,
+          "one_minus_spearman": 0.2501673124272855,
+          "contour_iou": 0.33467319119189093
+        }
+      }
+    }
+  },
+  "noise_floor": {
+    "lime": {
+      "rel_l2": 0.1746816355175405,
+      "one_minus_spearman": 0.07048025985688122,
+      "contour_iou": 1.0
+    },
+    "kernel_shap": {
+      "rel_l2": 0.47805590611332693,
+      "one_minus_spearman": 0.07750345809268999,
+      "contour_iou": 0.4839379446433948
+    }
+  },
+  "reproduction": {}
+}

@@ -1,0 +1,114 @@
+{
+  "sample_id": "pd-early_blight-2",
+  "dataset": "pd",
+  "correct": false,
+  "predicted": "septoria_leaf_spot",
+  "perturbations": {
+    "sang_hon_15": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": true,
+      "target_probability": 0.45501554012298584,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.19511195710228438,
+          "one_minus_spearman": 0.06814001225181132,
+          "contour_iou": 0.9144243493603882
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.11661424261253371,
+          "one_minus_spearman": 0.06724929314856842,
+          "contour_iou": 0.8262359275575134
+        },
+        "lime": {
+          "rel_l2": 0.47117775139043494,
+          "one_minus_spearman": 0.37706614819007755,
+          "contour_iou": 0.9918831168831169
+        },
+        "kernel_shap": {
+          "rel_l2": 0.5758511626838535,
+          "one_minus_spearman": 0.45916334188260166,
+          "contour_iou": 0.5524412296564195
+        }
+      }
+    },
+    "toi_hon_15": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": true,
+      "target_probability": 0.4792981445789337,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.29969389252612394,
+          "one_minus_spearman": 0.026721334989193712,
+          "contour_iou": 0.7288135593220338
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.22154045988392668,
+          "one_minus_spearman": 0.07868582724387208,
+          "contour_iou": 0.7118143459915611
+        },
+        "lime": {
+          "rel_l2": 0.7310528985734532,
+          "one_minus_spearman": 0.15551785184380817,
+          "contour_iou": 0.24949041989400733
+        },
+        "kernel_shap": {
+          "rel_l2": 0.574048648852199,
+          "one_minus_spearman": 0.44217387901196725,
+          "contour_iou": 0.6293546544831525
+        }
+      }
+    },
+    "jpeg_q70": {
+      "predicted": "late_blight",
+      "label_kept": false,
+      "target_probability": 0.16709475219249725,
+      "methods": {}
+    },
+    "mo_sigma1": {
+      "predicted": "late_blight",
+      "label_kept": false,
+      "target_probability": 0.28907138109207153,
+      "methods": {}
+    },
+    "nhieu_sd5": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": true,
+      "target_probability": 0.5002020597457886,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.2666213340631804,
+          "one_minus_spearman": 0.05402498285965762,
+          "contour_iou": 0.6422287390029325
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.16604347974735925,
+          "one_minus_spearman": 0.05750855377052422,
+          "contour_iou": 0.9490950226244343
+        },
+        "lime": {
+          "rel_l2": 0.9818640728985967,
+          "one_minus_spearman": 0.3971740979217132,
+          "contour_iou": 0.2708333333333333
+        },
+        "kernel_shap": {
+          "rel_l2": 0.6945683293503656,
+          "one_minus_spearman": 0.5351769363746881,
+          "contour_iou": 0.3279279279279279
+        }
+      }
+    }
+  },
+  "noise_floor": {
+    "lime": {
+      "rel_l2": 0.32367682325954855,
+      "one_minus_spearman": 0.19384686897987002,
+      "contour_iou": 1.0
+    },
+    "kernel_shap": {
+      "rel_l2": 0.4209530747979002,
+      "one_minus_spearman": 0.27879722034003734,
+      "contour_iou": 0.777979157227005
+    }
+  },
+  "reproduction": {}
+}

@@ -1,0 +1,114 @@
+{
+  "sample_id": "pd-mosaic_virus-1",
+  "dataset": "pd",
+  "correct": false,
+  "predicted": "septoria_leaf_spot",
+  "perturbations": {
+    "sang_hon_15": {
+      "predicted": "healthy",
+      "label_kept": false,
+      "target_probability": 0.192425936460495,
+      "methods": {}
+    },
+    "toi_hon_15": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": true,
+      "target_probability": 0.5129975080490112,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.38106506056213935,
+          "one_minus_spearman": 0.06416212688563494,
+          "contour_iou": 0.31949856005420973
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.2053796603319564,
+          "one_minus_spearman": 0.017063273484398733,
+          "contour_iou": 0.6122410188177153
+        },
+        "lime": {
+          "rel_l2": 0.3750582796208222,
+          "one_minus_spearman": 0.06904997257523549,
+          "contour_iou": 0.8182507200242535
+        },
+        "kernel_shap": {
+          "rel_l2": 0.3732796624337253,
+          "one_minus_spearman": 0.08990051416841871,
+          "contour_iou": 0.5784690667598742
+        }
+      }
+    },
+    "jpeg_q70": {
+      "predicted": "bacterial_spot",
+      "label_kept": false,
+      "target_probability": 0.17528097331523895,
+      "methods": {}
+    },
+    "mo_sigma1": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": true,
+      "target_probability": 0.3781530261039734,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.4120804361569804,
+          "one_minus_spearman": 0.1103938956369388,
+          "contour_iou": 0.7343202181534866
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.30030686935567036,
+          "one_minus_spearman": 0.03534697344715243,
+          "contour_iou": 0.34329752452125173
+        },
+        "lime": {
+          "rel_l2": 0.7426473989883166,
+          "one_minus_spearman": 0.5511604895447888,
+          "contour_iou": 0.5937301688031477
+        },
+        "kernel_shap": {
+          "rel_l2": 0.6757651964024044,
+          "one_minus_spearman": 0.4236449146563903,
+          "contour_iou": 0.2826011760636458
+        }
+      }
+    },
+    "nhieu_sd5": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": true,
+      "target_probability": 0.6700904965400696,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.19304648922161588,
+          "one_minus_spearman": 0.05475747822113175,
+          "contour_iou": 0.8224553224553225
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.1920537254740753,
+          "one_minus_spearman": 0.022384458562928033,
+          "contour_iou": 0.6037240391501552
+        },
+        "lime": {
+          "rel_l2": 0.5299668398942111,
+          "one_minus_spearman": 0.39891760728593484,
+          "contour_iou": 0.3737937273823884
+        },
+        "kernel_shap": {
+          "rel_l2": 0.5777944015226363,
+          "one_minus_spearman": 0.2819361577385576,
+          "contour_iou": 0.0
+        }
+      }
+    }
+  },
+  "noise_floor": {
+    "lime": {
+      "rel_l2": 0.34734807261734546,
+      "one_minus_spearman": 0.16428512482447838,
+      "contour_iou": 0.8881098279519208
+    },
+    "kernel_shap": {
+      "rel_l2": 0.35881850423187084,
+      "one_minus_spearman": 0.10309418552737948,
+      "contour_iou": 0.3158231202776499
+    }
+  },
+  "reproduction": {}
+}

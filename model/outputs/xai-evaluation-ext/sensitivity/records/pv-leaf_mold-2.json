@@ -1,0 +1,135 @@
+{
+  "sample_id": "pv-leaf_mold-2",
+  "dataset": "pv",
+  "correct": true,
+  "predicted": "leaf_mold",
+  "perturbations": {
+    "sang_hon_15": {
+      "predicted": "leaf_mold",
+      "label_kept": true,
+      "target_probability": 0.8584078550338745,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.06071611809826222,
+          "one_minus_spearman": 0.002651580078320226,
+          "contour_iou": 0.8848200312989045
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.06040417571417009,
+          "one_minus_spearman": 0.0073100998152551,
+          "contour_iou": 0.9118374558303887
+        },
+        "lime": {
+          "rel_l2": 0.2739708520553459,
+          "one_minus_spearman": 0.14383673677182496,
+          "contour_iou": 0.7350451872041314
+        },
+        "kernel_shap": {
+          "rel_l2": 0.2919661241686309,
+          "one_minus_spearman": 0.06728135197468854,
+          "contour_iou": 0.4975288303130148
+        }
+      }
+    },
+    "toi_hon_15": {
+      "predicted": "leaf_mold",
+      "label_kept": true,
+      "target_probability": 0.875839352607727,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.038094935244827016,
+          "one_minus_spearman": 0.0032112938379746936,
+          "contour_iou": 0.9496291718170581
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.026530137352004653,
+          "one_minus_spearman": 0.001287844748775635,
+          "contour_iou": 0.9564903412168262
+        },
+        "lime": {
+          "rel_l2": 0.17461944371409152,
+          "one_minus_spearman": 0.06582977801660328,
+          "contour_iou": 0.740895350511012
+        },
+        "kernel_shap": {
+          "rel_l2": 0.15812394997846732,
+          "one_minus_spearman": 0.01736981541508409,
+          "contour_iou": 0.7369981137159796
+        }
+      }
+    },
+    "jpeg_q70": {
+      "predicted": "leaf_mold",
+      "label_kept": true,
+      "target_probability": 0.7055268287658691,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.25512418547939986,
+          "one_minus_spearman": 0.041995795389821455,
+          "contour_iou": 0.5711543076553875
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.12776220495152457,
+          "one_minus_spearman": 0.028750957789220544,
+          "contour_iou": 0.8886220908755079
+        },
+        "lime": {
+          "rel_l2": 0.6723997892753832,
+          "one_minus_spearman": 0.5623417144460114,
+          "contour_iou": 0.17833907386146192
+        },
+        "kernel_shap": {
+          "rel_l2": 0.7815614360349332,
+          "one_minus_spearman": 0.6435103036622429,
+          "contour_iou": 0.2727808905927455
+        }
+      }
+    },
+    "mo_sigma1": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": false,
+      "target_probability": 0.07966771721839905,
+      "methods": {}
+    },
+    "nhieu_sd5": {
+      "predicted": "leaf_mold",
+      "label_kept": true,
+      "target_probability": 0.5312194228172302,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.1882777687978753,
+          "one_minus_spearman": 0.048074005773404815,
+          "contour_iou": 0.755936278929967
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.14432362723209094,
+          "one_minus_spearman": 0.04169736517687761,
+          "contour_iou": 0.7691100298226338
+        },
+        "lime": {
+          "rel_l2": 0.5483577852440166,
+          "one_minus_spearman": 0.25616589239357845,
+          "contour_iou": 0.4094206821873308
+        },
+        "kernel_shap": {
+          "rel_l2": 0.7760494736449448,
+          "one_minus_spearman": 0.4003956860110861,
+          "contour_iou": 0.0
+        }
+      }
+    }
+  },
+  "noise_floor": {
+    "lime": {
+      "rel_l2": 0.4007810783142107,
+      "one_minus_spearman": 0.2745913960693211,
+      "contour_iou": 0.3375246089961893
+    },
+    "kernel_shap": {
+      "rel_l2": 0.32002442845292833,
+      "one_minus_spearman": 0.2041677349453443,
+      "contour_iou": 0.5779385171790236
+    }
+  },
+  "reproduction": {}
+}
