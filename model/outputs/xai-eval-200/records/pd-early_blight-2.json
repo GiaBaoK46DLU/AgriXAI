@@ -1,0 +1,197 @@
+{
+  "sample_id": "pd-early_blight-2",
+  "dataset": "pd",
+  "label": "early_blight",
+  "path": "data/field/plantdoc/test/Tomato Early blight leaf/100983448.jpg",
+  "predicted": "early_blight",
+  "correct": true,
+  "target_probability": 0.7482185363769531,
+  "gate_leaf_probability": 0.9748928546905518,
+  "gate_pass": true,
+  "determinism_max_abs_diff": {
+    "gradcam_plusplus": 0.0,
+    "gradcam": 0.0
+  },
+  "agreement": {
+    "slic": {
+      "spearman": 0.8361344537815126,
+      "top20_agreement": 1.0
+    },
+    "grid": {
+      "spearman": 0.7476397335162136,
+      "top20_agreement": 0.9183673469387754
+    }
+  },
+  "perturbation_labels": {
+    "sang_hon_15": {
+      "predicted": "early_blight",
+      "label_kept": true
+    },
+    "toi_hon_15": {
+      "predicted": "early_blight",
+      "label_kept": true
+    },
+    "jpeg_q70": {
+      "predicted": "early_blight",
+      "label_kept": true
+    },
+    "mo_sigma1": {
+      "predicted": "early_blight",
+      "label_kept": true
+    },
+    "nhieu_sd5": {
+      "predicted": "early_blight",
+      "label_kept": true
+    }
+  },
+  "methods": {
+    "gradcam_plusplus": {
+      "empty": false,
+      "faithfulness": {
+        "slic|mean": {
+          "deletion_auc": 0.19475101828297461,
+          "insertion_auc": 0.2883743981017651,
+          "gap": 0.09362337981879046
+        },
+        "slic|blur": {
+          "deletion_auc": 0.2474194185149604,
+          "insertion_auc": 0.440401450828269,
+          "gap": 0.19298203231330857
+        },
+        "slic|road": {
+          "deletion_auc": 0.18305174504170355,
+          "insertion_auc": 0.4838807651935245,
+          "gap": 0.300829020151821
+        },
+        "grid|mean": {
+          "deletion_auc": 0.1561803618560032,
+          "insertion_auc": 0.32706036992675186,
+          "gap": 0.17088000807074866
+        },
+        "grid|blur": {
+          "deletion_auc": 0.17713958450726103,
+          "insertion_auc": 0.463271446830156,
+          "gap": 0.28613186232289495
+        },
+        "grid|road": {
+          "deletion_auc": 0.1657071423773863,
+          "insertion_auc": 0.5111481135292929,
+          "gap": 0.34544097115190664
+        }
+      },
+      "drop": {
+        "multiply": {
+          "drop": 88.69204444283703,
+          "increase": 0.0,
+          "masked_probability": 0.08460821956396103
+        },
+        "keep_top15": {
+          "drop": 88.19808179288114,
+          "increase": 0.0,
+          "masked_probability": 0.08830413967370987
+        }
+      },
+      "robustness": {
+        "sang_hon_15": {
+          "rel_l2": 0.13401992156784454,
+          "one_minus_spearman": 0.020622957247036,
+          "contour_iou": 0.7993084569946693
+        },
+        "toi_hon_15": {
+          "rel_l2": 0.07881823985231311,
+          "one_minus_spearman": 0.006294005600237074,
+          "contour_iou": 0.8961654459284791
+        },
+        "jpeg_q70": {
+          "rel_l2": 0.10536868804911563,
+          "one_minus_spearman": 0.036304662183116454,
+          "contour_iou": 0.8901049475262369
+        },
+        "mo_sigma1": {
+          "rel_l2": 0.09620412859796351,
+          "one_minus_spearman": 0.03372716972771994,
+          "contour_iou": 0.8799194298109699
+        },
+        "nhieu_sd5": {
+          "rel_l2": 0.16975828356997802,
+          "one_minus_spearman": 0.03980044925596049,
+          "contour_iou": 0.6400063351282863
+        }
+      }
+    },
+    "gradcam": {
+      "empty": false,
+      "faithfulness": {
+        "slic|mean": {
+          "deletion_auc": 0.20517960345736055,
+          "insertion_auc": 0.317700486003875,
+          "gap": 0.11252088254651446
+        },
+        "slic|blur": {
+          "deletion_auc": 0.24275422983191672,
+          "insertion_auc": 0.47620677866447925,
+          "gap": 0.23345254883256253
+        },
+        "slic|road": {
+          "deletion_auc": 0.1682416098207183,
+          "insertion_auc": 0.5690359132170169,
+          "gap": 0.4007943033962985
+        },
+        "grid|mean": {
+          "deletion_auc": 0.15615137358557205,
+          "insertion_auc": 0.31715265448604313,
+          "gap": 0.16100128090047108
+        },
+        "grid|blur": {
+          "deletion_auc": 0.1779117542033901,
+          "insertion_auc": 0.5845796208904713,
+          "gap": 0.4066678666870812
+        },
+        "grid|road": {
+          "deletion_auc": 0.16750384585893885,
+          "insertion_auc": 0.6146907798793851,
+          "gap": 0.4471869340204463
+        }
+      },
+      "drop": {
+        "multiply": {
+          "drop": 87.60081335780127,
+          "increase": 0.0,
+          "masked_probability": 0.09277301281690598
+        },
+        "keep_top15": {
+          "drop": 90.2829708602485,
+          "increase": 0.0,
+          "masked_probability": 0.07270461320877075
+        }
+      },
+      "robustness": {
+        "sang_hon_15": {
+          "rel_l2": 0.17006474322855022,
+          "one_minus_spearman": 0.03249835606249507,
+          "contour_iou": 0.7430671103716029
+        },
+        "toi_hon_15": {
+          "rel_l2": 0.07557676796940231,
+          "one_minus_spearman": 0.005871449879813695,
+          "contour_iou": 0.8868827793735468
+        },
+        "jpeg_q70": {
+          "rel_l2": 0.1578203672334827,
+          "one_minus_spearman": 0.020643465827871132,
+          "contour_iou": 0.8234101849505954
+        },
+        "mo_sigma1": {
+          "rel_l2": 0.07695092922582791,
+          "one_minus_spearman": 0.019046655904654153,
+          "contour_iou": 0.9193079383541727
+        },
+        "nhieu_sd5": {
+          "rel_l2": 0.18924742666390879,
+          "one_minus_spearman": 0.029571845614659642,
+          "contour_iou": 0.6115384615384616
+        }
+      }
+    }
+  }
+}
