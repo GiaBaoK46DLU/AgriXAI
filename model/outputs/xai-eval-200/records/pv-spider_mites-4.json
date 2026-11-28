@@ -1,0 +1,197 @@
+{
+  "sample_id": "pv-spider_mites-4",
+  "dataset": "pv",
+  "label": "spider_mites",
+  "path": "data/raw/Tomato___Spider_mites Two-spotted_spider_mite/1ba7b39c-c687-42da-b283-edf7a03b17b7___Com.G_SpM_FL 9484.JPG",
+  "predicted": "spider_mites",
+  "correct": true,
+  "target_probability": 0.9366171360015869,
+  "gate_leaf_probability": 0.9587620496749878,
+  "gate_pass": true,
+  "determinism_max_abs_diff": {
+    "gradcam_plusplus": 0.0,
+    "gradcam": 0.0
+  },
+  "agreement": {
+    "slic": {
+      "spearman": 0.7750585944402831,
+      "top20_agreement": 0.8837209302325582
+    },
+    "grid": {
+      "spearman": 0.7644907484055569,
+      "top20_agreement": 0.979591836734694
+    }
+  },
+  "perturbation_labels": {
+    "sang_hon_15": {
+      "predicted": "spider_mites",
+      "label_kept": true
+    },
+    "toi_hon_15": {
+      "predicted": "spider_mites",
+      "label_kept": true
+    },
+    "jpeg_q70": {
+      "predicted": "spider_mites",
+      "label_kept": true
+    },
+    "mo_sigma1": {
+      "predicted": "spider_mites",
+      "label_kept": true
+    },
+    "nhieu_sd5": {
+      "predicted": "spider_mites",
+      "label_kept": true
+    }
+  },
+  "methods": {
+    "gradcam_plusplus": {
+      "empty": false,
+      "faithfulness": {
+        "slic|mean": {
+          "deletion_auc": 0.13436104396361995,
+          "insertion_auc": 0.7052562807422911,
+          "gap": 0.5708952367786712
+        },
+        "slic|blur": {
+          "deletion_auc": 0.1601391775378089,
+          "insertion_auc": 0.8822064098797511,
+          "gap": 0.7220672323419421
+        },
+        "slic|road": {
+          "deletion_auc": 0.14801510661850537,
+          "insertion_auc": 0.8296400046947754,
+          "gap": 0.68162489807627
+        },
+        "grid|mean": {
+          "deletion_auc": 0.1290369919045087,
+          "insertion_auc": 0.703781739941665,
+          "gap": 0.5747447480371564
+        },
+        "grid|blur": {
+          "deletion_auc": 0.17450292824710512,
+          "insertion_auc": 0.8424034416675568,
+          "gap": 0.6679005134204516
+        },
+        "grid|road": {
+          "deletion_auc": 0.11877149307378093,
+          "insertion_auc": 0.7714776849868346,
+          "gap": 0.6527061919130537
+        }
+      },
+      "drop": {
+        "multiply": {
+          "drop": 8.172578954026989,
+          "increase": 0.0,
+          "masked_probability": 0.8600713610649109
+        },
+        "keep_top15": {
+          "drop": 83.61748486746832,
+          "increase": 0.0,
+          "masked_probability": 0.1534414440393448
+        }
+      },
+      "robustness": {
+        "sang_hon_15": {
+          "rel_l2": 0.010615279734720373,
+          "one_minus_spearman": 0.00021295889154926417,
+          "contour_iou": 0.9808823529411764
+        },
+        "toi_hon_15": {
+          "rel_l2": 0.01636893872354263,
+          "one_minus_spearman": 0.019389317546314788,
+          "contour_iou": 0.9725411882176734
+        },
+        "jpeg_q70": {
+          "rel_l2": 0.07817697570365702,
+          "one_minus_spearman": 0.019566012483864248,
+          "contour_iou": 0.8725711703569815
+        },
+        "mo_sigma1": {
+          "rel_l2": 0.06480058464808948,
+          "one_minus_spearman": 0.02150744826235218,
+          "contour_iou": 0.9123143267848587
+        },
+        "nhieu_sd5": {
+          "rel_l2": 0.055948196499898475,
+          "one_minus_spearman": 0.0239035660519602,
+          "contour_iou": 0.9151128557409225
+        }
+      }
+    },
+    "gradcam": {
+      "empty": false,
+      "faithfulness": {
+        "slic|mean": {
+          "deletion_auc": 0.12826307258958933,
+          "insertion_auc": 0.7443424131607218,
+          "gap": 0.6160793405711324
+        },
+        "slic|blur": {
+          "deletion_auc": 0.13543372676935067,
+          "insertion_auc": 0.8989374268626585,
+          "gap": 0.7635037000933078
+        },
+        "slic|road": {
+          "deletion_auc": 0.12442007918867158,
+          "insertion_auc": 0.8575968354731341,
+          "gap": 0.7331767562844625
+        },
+        "grid|mean": {
+          "deletion_auc": 0.1295783563507531,
+          "insertion_auc": 0.7319939905891614,
+          "gap": 0.6024156342384083
+        },
+        "grid|blur": {
+          "deletion_auc": 0.1727641454935834,
+          "insertion_auc": 0.8693345630047271,
+          "gap": 0.6965704175111437
+        },
+        "grid|road": {
+          "deletion_auc": 0.12853228422927154,
+          "insertion_auc": 0.8032792426493702,
+          "gap": 0.6747469584200987
+        }
+      },
+      "drop": {
+        "multiply": {
+          "drop": 7.256487725333381,
+          "increase": 0.0,
+          "masked_probability": 0.8686516284942627
+        },
+        "keep_top15": {
+          "drop": 76.10787136018034,
+          "increase": 0.0,
+          "masked_probability": 0.22377777099609375
+        }
+      },
+      "robustness": {
+        "sang_hon_15": {
+          "rel_l2": 0.016832585131573447,
+          "one_minus_spearman": 0.007528837505430874,
+          "contour_iou": 0.9731783638801967
+        },
+        "toi_hon_15": {
+          "rel_l2": 0.03163525338530651,
+          "one_minus_spearman": 0.00474660129418647,
+          "contour_iou": 0.9572806614607258
+        },
+        "jpeg_q70": {
+          "rel_l2": 0.11783596543875502,
+          "one_minus_spearman": 0.11023943485145282,
+          "contour_iou": 0.8572617561381606
+        },
+        "mo_sigma1": {
+          "rel_l2": 0.08610243371156918,
+          "one_minus_spearman": 0.1342441196648202,
+          "contour_iou": 0.9141480508103372
+        },
+        "nhieu_sd5": {
+          "rel_l2": 0.06371928371204076,
+          "one_minus_spearman": 0.04287610974974132,
+          "contour_iou": 0.9101277372262774
+        }
+      }
+    }
+  }
+}

@@ -40,6 +40,11 @@ với cách lấp ROAD/làm mờ, và độ bền khi chụp lại. Dữ liệu 
 [cách chạy lại](../model/outputs/xai-evaluation-ext/PHUONG_PHAP.md) nằm trong
 `model/outputs/xai-evaluation-ext/`.
 
+[Đánh giá Grad-CAM++ trên bộ 200 ảnh mới](bao-cao-danh-gia-gradcam-plus-plus-200-anh.md)
+kiểm tra lại Grad-CAM++ (đối chứng Grad-CAM) trên 200 ảnh không trùng bộ 56, bằng checkpoint
+đang triển khai. [Bản Word ngắn có hình và bảng](GradCAM-200-anh.docx). Dữ liệu và [cách chạy lại](../model/outputs/xai-eval-200/PHUONG_PHAP.md) nằm
+trong `model/outputs/xai-eval-200/`.
+
 ## Kế hoạch và rà soát
 
 [Cắt lá, chốt hiển thị XAI và cải thiện domain gap (#93/#90/#50)](bao-cao-cat-la-domain-adaptation.md):

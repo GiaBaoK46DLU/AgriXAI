@@ -1,0 +1,28 @@
+{
+  "seed": 20261128,
+  "total": 200,
+  "pool": "test-inventory.json của domain-50-20261104-b8",
+  "dropped": {
+    "old_56": 35,
+    "seen_in_training": 0,
+    "duplicate": 1
+  },
+  "plantdoc": 61,
+  "plantvillage_quota": {
+    "bacterial_spot": 14,
+    "early_blight": 14,
+    "healthy": 14,
+    "late_blight": 14,
+    "leaf_mold": 13,
+    "mosaic_virus": 14,
+    "septoria_leaf_spot": 14,
+    "spider_mites": 14,
+    "target_spot": 14,
+    "yellow_leaf_curl_virus": 14
+  },
+  "checks": [
+    "băm file khớp inventory",
+    "không trùng đường dẫn/băm với 56 ảnh #17",
+    "không trùng băm với training, rehearsal, bn-calibration inventory"
+  ]
+}
