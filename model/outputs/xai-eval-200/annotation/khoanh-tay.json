@@ -1,0 +1,4030 @@
+{
+ "bo_du_lieu": "model/outputs/xai-eval-200/samples.csv (61 PlantDoc test + 139 PlantVillage test)",
+ "nguoi_khoanh": "Claude Opus 5.5 (28/11/2026), chưa có người soát lại",
+ "luoi": 14,
+ "khoanh_mu": true,
+ "ghi_chu_phuong_phap": [
+  "Cùng quy ước #17: lưới 14x14 trên ảnh 224x224 mô hình nhìn thấy; N nền, L lá lành (kể cả cuống), V vết bệnh.",
+  "Quy tắc rộng rãi: ô nào thấy triệu chứng là V.",
+  "kieu_trieu_chung: cuc_bo (vết khu trú), khuech_tan (triệu chứng phủ gần cả lá, mọi ô lá là V: virus khảm, xoăn vàng lá, nhện đỏ, lá cháy toàn bộ), khong_co_vet (lớp healthy).",
+  "Khoanh mù: phiếu chỉ có ảnh + lưới, không in bản đồ nhiệt.",
+  "Ngoại lệ mù: 5 ảnh đã lộ bản đồ nhiệt trong hình báo cáo trước khi khoanh (seen_heatmap_before_annotation) — vẫn khoanh, summarize báo thêm kết quả loại chúng ra.",
+  "Ảnh cuc_bo mà ở 224 px không thấy được đốm nào thì không khoanh V; region_metrics tự bỏ ảnh đó khỏi chỉ số vết bệnh.",
+  "co_van_de_du_lieu=true: ảnh chụp slide hoặc ảnh ghép; region_metrics loại khỏi chỉ số vùng.",
+  "Lá nền mờ tính L nếu trông như lá; tay, quả, hoa, cọc, chữ, đất là N."
+ ],
+ "seen_heatmap_before_annotation": [
+  "pv-healthy-6",
+  "pv-late_blight-10",
+  "pd-late_blight-2",
+  "pd-yellow_leaf_curl_virus-1",
+  "pv-mosaic_virus-10"
+ ],
+ "annotations": {
+  "pd-early_blight-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": true,
+   "ghi_chu": "Anh chup lai slide trinh chieu: hai anh nho + chu, khong phai anh la that.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNLLLLLN",
+    "NNNNNNNNLLLLLN",
+    "NNNNNNNNLVLLLN",
+    "NNNNNNNNLVLLLN",
+    "NNNNNNNNLLLLLN",
+    "NNNNNNNNLLLLLN",
+    "NNNNNNNNLLLLLN",
+    "NNNNNNNNLLLLLN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-early_blight-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La lon cheo anh, nhieu dom vong dong tam va mang chay nau; nen toi.",
+   "luoi": [
+    "NNNNLLLLLLLLNN",
+    "NNNLLLLLLLLLLN",
+    "NNLLVLLLLLLLNN",
+    "NLLLVVLLLLNNNN",
+    "NNNLLVVVVLLNNN",
+    "NNVVLLLVVVLNNN",
+    "NNVVLLVVVVLLNN",
+    "NNVVLLLVVLLLNN",
+    "NNVVLLLLLVVLNN",
+    "NNNVVLLLVVLLNN",
+    "NNNNVVLVLVLLNN",
+    "NNNNNVVVVVVLNN",
+    "LLLNNNVVVVVNLL",
+    "LLLNNNNNNNNNLL"
+   ]
+  },
+  "pd-early_blight-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Cum la giua anh vang mep, dom nau; nua duoi la dat.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "NNLLLLLLLLLLLL",
+    "NNLLVVLLVVVLLL",
+    "NLLVVVLLVVVVLL",
+    "LLLVVVVVVVVLLL",
+    "LLLLVVVLVLLLLL",
+    "NNLLVLLVLLLLNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNLVLLNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-early_blight-4": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Can canh tan la; vai dom nho, mot dom lon o giua.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLVLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLVLLLLLL",
+    "LLLLLLVVLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLVL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL"
+   ]
+  },
+  "pd-early_blight-5": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Cay non tren nen rom va dat; vai la chet vang co dom.",
+   "luoi": [
+    "LLNLLLLLNNNNNN",
+    "LLNLLLLLLNNNNN",
+    "LNNLLLLLLLNNNN",
+    "LNLLLLLLVLNNNN",
+    "LLLLLLLLLLNNNN",
+    "LLLLLVVLLLNNNN",
+    "LLLLLLVLVLNNNN",
+    "LLLLLLVLVVNNNN",
+    "LLLLLLVLVVNNNN",
+    "LLLLLVVNNNNNNN",
+    "LLNNNVVNNNNNNN",
+    "LLNNNNVNNNNNNN",
+    "LLNNNNNNNNNNNN",
+    "LNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-early_blight-6": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Tan la day, nhieu la kho nau rui xuong theo cot doc.",
+   "luoi": [
+    "LLLLVLLLLLLLVL",
+    "LVLLVLLLLLLLVL",
+    "LVLVVLLLLLVLVL",
+    "NVLVVLLLLLVLLL",
+    "LVLVLLLLLLVLLL",
+    "LVLVLLLVLLVLLL",
+    "LVLVLLVVLLVVLL",
+    "LLLVLLVVLLVVLL",
+    "LVLLVLLVVLVVLL",
+    "LVLLVLLVVLVLLL",
+    "LVLLVLLLVLVLLL",
+    "LLLLVLLLLLVLLL",
+    "LLLLVLLLLLVLLN",
+    "LLLLVLLLLLLLLN"
+   ]
+  },
+  "pd-early_blight-7": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Can canh phien la, cac dom lon co quang vang.",
+   "luoi": [
+    "NNNNNNNVVVVVVV",
+    "NNNNNNVVVVVVVV",
+    "NNNNNLLLLVVVVL",
+    "NLLLLLLLLVVVVL",
+    "VVLLLLLLLLLVVL",
+    "VVVLLLLLLLLLLV",
+    "VVVLLLLLLLLLLL",
+    "VVLLLLLLVVVVLL",
+    "LLLLLLLLVVVLLL",
+    "LLLLLLLLVVLLLL",
+    "LLLLLLLLLVLLLL",
+    "LLLLLLLLLLLVVL",
+    "NNNNNNNLLLLVVL",
+    "NNNNNNNNLLVVLL"
+   ]
+  },
+  "pd-early_blight-8": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Coc tre ben trai; mot la giua co mang hoai tu nau.",
+   "luoi": [
+    "NLLLLLLLLLLLLL",
+    "NLLLLLLLLLLLLL",
+    "NLLLLLLLLVLLLL",
+    "NLLLLLLLLLLLLL",
+    "NLLLLLLVLLLLLL",
+    "NLLLLLLVVLLLLL",
+    "NLLLLLLVVLLLLL",
+    "NLLLLLLVVVLLLL",
+    "NLLLLLLVVVLLNL",
+    "NLLLLLLLVVLLNL",
+    "NLLLLLLLVVLLLL",
+    "NLLLLLLLVLLLLL",
+    "NLLLLLLLLLLLLL",
+    "NLLLLLLLLLLLLL"
+   ]
+  },
+  "pd-early_blight-9": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Tan la nhieu la co dom/mep chay; chu chu thich o 2 hang duoi.",
+   "luoi": [
+    "VVLLLLLLVVVLLN",
+    "VVLLLLLLLVVVLN",
+    "VLLVLLLLLVVLLN",
+    "LLLVLLLLLVVLLN",
+    "LLLVLLLLLVLLNN",
+    "LLLLLLLLLLLLNN",
+    "LLLLLLLLLLLNNN",
+    "LLLLLVLLLLLNNN",
+    "VVLLVVLLLLLNNN",
+    "LLLLVLLLLLNNNN",
+    "LLLLVLLLLLNNNN",
+    "LLLVVLLLLLNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-septoria_leaf_spot-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": true,
+   "ghi_chu": "Anh chup man hinh trang tai lieu: tieu de, hai anh nho, chu.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLVN",
+    "NLLVLLLLLLLLVN",
+    "NLLLLLLLLLLLVN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-septoria_leaf_spot-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Mot la tren nen trang, dom rai deu ca phien la.",
+   "luoi": [
+    "NNNNVVVVVVNNNN",
+    "NNNVVVVVVVVNNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVVN",
+    "NNVVVVVVVVVVVN",
+    "NNVVVVVVVVVVVN",
+    "NNVVVVVVVVVVVN",
+    "NNVVVVVVVVVVNN",
+    "NNNVVVVVVVVVNN",
+    "NNNVVVVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNVVVNNNNN"
+   ]
+  },
+  "pd-septoria_leaf_spot-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Hai la vang tren nen den, dom rai khap ca hai la.",
+   "luoi": [
+    "NNNNNNNNVVNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNVVVVVVVVNNNN",
+    "NVVVVVVVVVNNVN",
+    "NVVVVVVVVVVVVN",
+    "NVVVVVVVVVVVVN",
+    "NVVVVVVVVVVVNN",
+    "VVVVVVVVVVVVNN",
+    "VVVVVVVVVVVVNN",
+    "VVVVVVVVVVVVNN",
+    "VVVVVVVVVVVNNN",
+    "NVVVVNNVVVNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-septoria_leaf_spot-4": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vai la vang dom day giua tan la xanh mo.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLVVVVLLLVVVLL",
+    "LLVVVVVLVVVVVL",
+    "LLLLVVVLLVVVVL",
+    "LLLVVVVLLLLLLL",
+    "LLLVVVVVVVLLLL",
+    "LLLVVVVVVVLLLL",
+    "LLVVVVLLVVLLLL",
+    "LLLVVVLLVVLLLL",
+    "LLLLLLLLVLLLLL",
+    "VVLLLLLLLLLLLL",
+    "VVVLLLLLLLLLLL",
+    "VVVLLLLLLLLLLL"
+   ]
+  },
+  "pd-septoria_leaf_spot-5": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mot la lon dom day o giua, xung quanh la xanh; coc go mep phai.",
+   "luoi": [
+    "LLLLLLLLLLLLLN",
+    "LLLLLLLLLLLLLN",
+    "LLLLLLLLLLLLLN",
+    "LLLVLLVVLLLLLN",
+    "LLLLVVVVVLLLLN",
+    "LLLLVVVVVVLLLN",
+    "LLLVVVVVVVVVLL",
+    "LLLVVVVVVVVVLL",
+    "LLLVVVVVVVVLLL",
+    "LLLVVVVVVVLLLL",
+    "LLLLVVVVVLLLLL",
+    "LLLLLLVVLNNLLL",
+    "LLLLLLLNNNNNLL",
+    "LLLLLLLLNNNLLL"
+   ]
+  },
+  "pd-septoria_leaf_spot-6": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu la la tha tren nen toi, phan lon la co dom.",
+   "luoi": [
+    "LLLVVLLNNNVLLL",
+    "LLLVVNLLLLVLLL",
+    "NLLLNNNNNNNLLL",
+    "NLLNNNNNNNNVLL",
+    "NNNVVVNNNNVVVL",
+    "NLLVVVNNNNVVVL",
+    "LLLVVVNNNNVVVL",
+    "NLLLVNNNNNVVNN",
+    "NLVVNNNNNNVVNN",
+    "NLVVNNNNNNVVNN",
+    "NLVVNNNNNNNVNN",
+    "NNVNNNNNNNNNNN",
+    "NNVVLNNNNNNNNN",
+    "NNVVVNNNNNNNNN"
+   ]
+  },
+  "pd-septoria_leaf_spot-7": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Can canh mot la, dom nho rai khap; nen mo; chu chu thich goc duoi.",
+   "luoi": [
+    "NNNNNNVVVVVVNN",
+    "NNNVVVVVVVVVNN",
+    "NNVVVVVVVVVVVN",
+    "NNVVVVVVVVVVVN",
+    "NVVVVVVVVVVVVN",
+    "NVVVVVVVVVVVVN",
+    "VVVVVVVVVVVVVN",
+    "VVVVVVVVVVVVVN",
+    "VVVVVVVVVVVVVN",
+    "VVVVVVVVVVVVVN",
+    "NVVVVVVVVVVVVN",
+    "NNNVVVVVVVVVVN",
+    "NNLLLLLNNNNNNL",
+    "NNLLLLLLLLLLLL"
+   ]
+  },
+  "pd-septoria_leaf_spot-8": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Bon la dom day tren nen xanh duong; than cay hang 13.",
+   "luoi": [
+    "VVNNNNNNNNNVNN",
+    "VVNNNNNNNNVVNN",
+    "VVNNNNNNNVVVNN",
+    "VVNNNNNNNVVVNN",
+    "VVNNNNNNVVVVVN",
+    "VVNNNNNNVVVVVN",
+    "VVNNVNNVVVVVNN",
+    "VVNNVVNVVVVVNN",
+    "VNNNVVNVVVVNNN",
+    "NNNNVVNVVVVNNN",
+    "NNNNVVNVVVNNVV",
+    "NNNNVNNVVVNNVV",
+    "LLLLLLLLLLLLVV",
+    "NNNNNNNNNNNNNV"
+   ]
+  },
+  "pd-septoria_leaf_spot-9": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Tan la toi; mot la trai dom vang, mot la nho duoi giua co dom.",
+   "luoi": [
+    "NNNLLLLLLLLLLL",
+    "NNLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "VVVVVLLVVLLLLL",
+    "VVVVVVLVLLLLLL",
+    "VVVVVVLLLLLLLL",
+    "LVVVVLLLLLLLLL",
+    "NNNNLLLLLLLLLL",
+    "NNNNNLLLLLLLLL",
+    "NNNNNLVVLLLLLL",
+    "NNNNNLVVLLLLLL",
+    "NNNNNLLLLLLLLL",
+    "NNNNNLLLLLLLLL"
+   ]
+  },
+  "pd-septoria_leaf_spot-10": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La tren mat ban go; nua trai vang chay nhieu dom, nua phai dom thua.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNVVVVVNNNNNNN",
+    "NNVVVVLLLNNNNN",
+    "NVVVVLLLLLLNNN",
+    "NVVVVLLLVLVLNN",
+    "LLVVVLVLLLLLLL",
+    "LLVVLLLVLLLLLL",
+    "NVVVLLVLLLLLNN",
+    "NVVVLLLLVLVLNN",
+    "NNVVLLLLLLLNNN",
+    "NNNVVLLLLLNNNN",
+    "NNNNLLLLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-bacterial_spot-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "co_van_de_du_lieu": true,
+   "ghi_chu": "Anh chup slide: tieu de, anh la nho va anh qua, chu.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NLLLLLNNNNNNNN",
+    "NLVVLLNNNNNNNN",
+    "NLVVLLNNNNNNNN",
+    "NLVVLLNNNNNNNN",
+    "NLLLLLNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-bacterial_spot-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Tan la, nhieu la kho nau.",
+   "luoi": [
+    "LLLLLLLLLLLVLN",
+    "LLLLLLLLLLVVVN",
+    "LLLLLLLLLVVVVN",
+    "LLLLLLLLLVVVVL",
+    "LLLVVVLLLVVLLL",
+    "LLLVVVLLLVVLLL",
+    "VLLLVVLLLLVLLL",
+    "LLLLVVLLLVVLLL",
+    "LLLLLVLLVVLLLL",
+    "LLLLLVLLVLVLLL",
+    "LLLLLVLLVLVLLL",
+    "LLLLLVVLLLVLLN",
+    "LLLLLLVLLVVLNN",
+    "LLLLLVVLLLLLNN"
+   ]
+  },
+  "pd-bacterial_spot-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La tren nen xanh/xam, dom rai rac.",
+   "luoi": [
+    "LLLLLLLLLLVLLL",
+    "LLLLLLLLLLLLLL",
+    "LLNLLLLLLLLLLN",
+    "LLNNLLLLLLLLLN",
+    "LLNNNLVLLLLLLN",
+    "LLLNNLLLLLLLLN",
+    "LVLNNLLLLLLLLL",
+    "LLLNNNLLLLLLLN",
+    "LVLLVNLLVLLLLN",
+    "LLLVVNLVVLLLVN",
+    "NNNVNNNNLLLLLN",
+    "NNNNNNNNNLVVLN",
+    "NNNNNNNNNNLLNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-bacterial_spot-4": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kep tren nen vang xanh, dom khap la.",
+   "luoi": [
+    "NNNNNNVNNNNNNN",
+    "NNNNVVVNNNNNNN",
+    "NNNVVVVNNNNNNN",
+    "NNNVVVVNVNNNNN",
+    "NNNVVVNVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNLLVLLVVVVVNN",
+    "NNLLLLLVVVVVVN",
+    "NNVVNVVVVVVNNN",
+    "NNVVNVVVVVNNNN",
+    "NNNVNVVVVNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-bacterial_spot-5": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La vang co dom cam tren tay; ngon tay la N.",
+   "luoi": [
+    "LLLLLLLLLLLNNN",
+    "LLLLLLLLLLLNNN",
+    "VVVLLLLLLLLNNN",
+    "VVVVLLLLLLLNNN",
+    "LLLLVVVLLLLNNN",
+    "NLLLVVVVVLLNNN",
+    "NLLLLVVVVVLNNN",
+    "NLLLLVVVVVLNNN",
+    "NLVVLVVVVVLNNN",
+    "LLVLLVVVVVLNNN",
+    "LLNNNNVVVVLNNN",
+    "LNNNNNNVVVVNNN",
+    "NNNNNNNNLLLNNN",
+    "NNNNNNNNLLLNNN"
+   ]
+  },
+  "pd-bacterial_spot-6": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Dom nho tren mot la lon, nen mo.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "NLLLLLLLLLLLLL",
+    "NLLLLLLLLLLLLL",
+    "NLLLLLLLLLLLLV",
+    "NLLLLVLVVLLLLL",
+    "NLVLVVVVVVVLLL",
+    "NLVVLVLVLVVLLL",
+    "NLLVLLLLVVLLLL",
+    "NNLLLLLLLLLLLL",
+    "NNNNLLLLLLLLLL",
+    "NNNNLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL"
+   ]
+  },
+  "pd-bacterial_spot-7": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu dom sam o giua la, ngon tay ben phai.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLVLLLLL",
+    "LLLLLVLLVLLLLL",
+    "LLLLVLVVVLLLLL",
+    "LLVLVVLLVVVLLL",
+    "LLVVVLVVVVVLLL",
+    "LVLVVLVVLVVLLN",
+    "VVVVVVVLVVLLLN",
+    "LLVVVVLVVLLLLN",
+    "LLVVLLLLLLLLLN",
+    "NLLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN"
+   ]
+  },
+  "pd-late_blight-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vet hoai tu nau o cot 2-8, hang 5-8.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLVVVLLLLLLLL",
+    "LLVVVVVLLLLLLL",
+    "LLVVVVVVLLLLLL",
+    "LLVVLVVVLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL"
+   ]
+  },
+  "pd-late_blight-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Anh da lo ban do nhiet truoc khi khoanh (SEEN_HEATMAP). La tren nen nau, vet hoai tu trang/hong lon.",
+   "luoi": [
+    "NNNNNNNNLLLLNN",
+    "NNNNNNLLLLLLLN",
+    "NNNNNLLLLLLLLL",
+    "NNNNNLLLLLLLLL",
+    "NNNNLLVLLVLLLL",
+    "NNNNLLVLLVLLLN",
+    "NNNNLLVVVVVLLN",
+    "NNNLVVVVVVVLLN",
+    "NNLVVVVVVVLLLN",
+    "NLVVVVVVVLLLNN",
+    "NVVVVVLLLLLLNN",
+    "VVVVLLLLLLLNNN",
+    "VVVNLLLLLLNNNN",
+    "VNNNNLLLNNNNNN"
+   ]
+  },
+  "pd-late_blight-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Ngon tay cot 1-3; la heo xam o giua; nen co la N.",
+   "luoi": [
+    "NNNLLLNNNNNNNN",
+    "NNNLLLNNNNNNNN",
+    "NNNNLLNNNNNLLN",
+    "NNNNLLVVVNLLLN",
+    "NNNNLVVVVVLLLN",
+    "NNNLVVVVVVLLLN",
+    "NNNLVVVVVVVNNN",
+    "NNNLLVVVVVNNNN",
+    "NNNLLLLNNNNNNN",
+    "NNNLLLNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-late_blight-4": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La giua co dom tron; la kho nau/tim ben phai va duoi trai tinh V.",
+   "luoi": [
+    "LLLLLLLLLLVVVV",
+    "LLLLLLLLLLVVVV",
+    "LLLLLLVVLLVVVV",
+    "LLLLLLLLLLVVVV",
+    "LLLLVLLLLLLVVL",
+    "LLLLLLLLLLLVVL",
+    "LLLLLLVLLLVVVV",
+    "LLLLLLLVLLVVVV",
+    "NNNLLLLLLLLVVL",
+    "NNNLLVLLLLLVLL",
+    "NNLLLLLVLLLLLL",
+    "LLVVVVLLLLLLLL",
+    "LLVVVVLLLLLLLL",
+    "LLLLVVLLLLLLVL"
+   ]
+  },
+  "pd-late_blight-5": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Hai la tren nen xam, vet hoai tu sam o la giua; la sam mep phai tinh V; chu watermark goc duoi trai.",
+   "luoi": [
+    "NNNNLLLLLNNNNN",
+    "NNNLLLLLLLNNNN",
+    "NNLLLLLLLLNNNN",
+    "NNLLLLLLLLNNNV",
+    "NNNLLLLLLLNNVV",
+    "NNNNNLLLLLLNVV",
+    "NNNNNLLVLLLNVV",
+    "NNNNNLVVVLLNVV",
+    "NNNNNLVVVLLNVV",
+    "NNNNNLVVVLLNVV",
+    "NNNNNLLVVLLNNV",
+    "NNNNNLLVLLNNNV",
+    "NNNNNNLLLLNNNV",
+    "NNNNNNLLLNNNNN"
+   ]
+  },
+  "pd-late_blight-6": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Tan la ram, vet nau rai rac; hoa trang goc duoi phai la N.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLNL",
+    "LLLLVVLLLLLLLL",
+    "LLLLVVLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLVVLL",
+    "LLLLLLLLLLVVNL",
+    "LLLLLLLLLVLLNL",
+    "LLLLLLLLVVLLNL",
+    "LLLLLLLVVVLNNL",
+    "LLLLLLLLVVNNNL",
+    "LLLLLLLLVNNNNL",
+    "LLLLLLLLNNNNNL",
+    "LLLLLLLLLNNNNN"
+   ]
+  },
+  "pd-late_blight-7": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nen den; qua xanh la N; la giua co vet sam + vang; watermark goc duoi phai.",
+   "luoi": [
+    "LLNNNNNLLLLLLN",
+    "LLNNNNNLLLLLLN",
+    "LLNNLNLLLLLLLL",
+    "LLNNLLLLLLLLLL",
+    "LLNNLLVLLVLLLV",
+    "LLNNLLVLLNLLLV",
+    "LLNNNNLVVNNLLN",
+    "LLNNNNLVVNNNLN",
+    "LLNNNNLVVVNNNN",
+    "LLNNNNLLVVNNNN",
+    "LLNNNNLLVLNNNN",
+    "LNLLNNNLVLNNNN",
+    "LNNNNNNLVNNNNN",
+    "LNNNNNNVLNNNNN"
+   ]
+  },
+  "pd-late_blight-8": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La can canh co mang hoai tu nau lon o giua; nen mo vang/toi.",
+   "luoi": [
+    "LLLLNNNNNNNNNN",
+    "LLLLLNNNNNNNNN",
+    "NLLLLLLLNNNNNN",
+    "NNLLLLLLLLNNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNLLVVLLLNN",
+    "NNNNNVVVVVLLLN",
+    "NNNNNVVVVVLLLL",
+    "NNNNNNVVVLLLLL",
+    "NNNNNNNLLLLLLL",
+    "NNNNNNNNLLLLLL",
+    "NNNNNNNNNLLLLL",
+    "NNNNNNNNNNLLLL"
+   ]
+  },
+  "pd-late_blight-9": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Qua xanh goc tren trai la N; la ben phai co hai mang nhat mau.",
+   "luoi": [
+    "NNNNNNNNLLLLLL",
+    "NNNNNNNLLLLLLL",
+    "NNNNNNLLLLLLLL",
+    "NNNNNNLVVLLLLL",
+    "NNNNNLLVVLLLLL",
+    "NNNNNLLLLLLVLL",
+    "NNNNNLLLLLLVVL",
+    "NNNNLLLLLLLVVL",
+    "NNNLLLLLLLLLLL",
+    "NNNNLLLLLLLLLL",
+    "NNNNNNLLLLLLLL",
+    "NNNNNNNLLLLLLN",
+    "NNNNNNNLLLLLNN",
+    "NNNNNNNLLLLNNN"
+   ]
+  },
+  "pd-late_blight-10": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nen xanh duong; ba la co mang xam lon; chu ngay gio goc duoi phai.",
+   "luoi": [
+    "LLNNNNNNNNNNNN",
+    "LLNNNNLLLLLNNN",
+    "LLNNNLVVVVLLNN",
+    "NLNNNVVVVVLLLN",
+    "LLLLLVVVVVLLLL",
+    "NLNNLLVVVLLLLL",
+    "LLNNNLLLLVLLLL",
+    "LLNNNNNNVVLLLL",
+    "LLNNNNNLVVLLLL",
+    "NLLVVVNLVLLLLL",
+    "NNVVVVLLLLLLLL",
+    "NNNLLLNNNLLLLL",
+    "NNNNNNNNNNLLLN",
+    "NNNNNNNNNNLNNN"
+   ]
+  },
+  "pd-mosaic_virus-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Ngon cay nhieu la, kham nhat; nen nau mo goc tren phai va day anh.",
+   "luoi": [
+    "VVVVVVVVVVVVNN",
+    "VVVVVVVVVVVNNN",
+    "VVVVVVVVVVVVNN",
+    "VVVVVVVVVVVVVN",
+    "VVVVVVVVVVVVVN",
+    "NVVVVVVVVVVVVN",
+    "NVVVVVVVVVVVVN",
+    "NVVVVLLLVVVVVN",
+    "NNVVVLLLVVVVVN",
+    "NNVVLLLLVVVVVN",
+    "NNVVNNNNNVVVVN",
+    "NNVVNNNNNNVVVN",
+    "NNNVNNNNNNNVNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-mosaic_virus-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La lon kham vang-xanh ro; la khac phia tren tinh L.",
+   "luoi": [
+    "LLLLLLLLLLLLNN",
+    "LLLLLLLLLLLLNN",
+    "LLLLLVVVLLLLLL",
+    "LLLLVVVVVLLLLL",
+    "LLLVVVVVVVVVVL",
+    "LLVVVVVVVVVVVL",
+    "LLVVVVVVVVVVVV",
+    "LVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "NVVVVVVVVVVVVL",
+    "NNVVVVVVVVVVLL",
+    "NNNVVVVVVVVLLL",
+    "LNNVVVVVVVLLLN",
+    "LNNNVVVVVLLLLN"
+   ]
+  },
+  "pd-mosaic_virus-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cay tren nen rom kho; qua xanh la N; thanh watermark alamy hang 13-14 la N.",
+   "luoi": [
+    "LVVVVVVVNVVVVL",
+    "LNVVVVVVNVVVVL",
+    "NNNVVVNVNNVVNN",
+    "NNNVVVNVNNVVNN",
+    "NVVVVVVVVNNNNN",
+    "VVVVVVVVVNNNNN",
+    "NNVVVVVNNNNNNN",
+    "NNVVVVVNNNNVNN",
+    "NNVVVVVNNNVVVN",
+    "NNVVVNNNNVVVVV",
+    "NNVVVNNNNNVVVV",
+    "NNVVNNNNNNVVVV",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-mosaic_virus-4": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cay trong dat, la lon ben phai; dat nau goc phai va day la N.",
+   "luoi": [
+    "VVVVVVVVVVNNVV",
+    "VVVVVVNVVVVNVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVNVVVVVVVVVV",
+    "VVVVVVVVVVVVVN",
+    "VVVVVVVVVVVVNN",
+    "VVVVVVVVVVVNNN",
+    "VVVVVVVVNNNNNN",
+    "VVVVVVVNNNNNNN",
+    "VVVVVVNNNNNNNN",
+    "VVVVVNNNNNNNNN"
+   ]
+  },
+  "pd-mosaic_virus-5": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Mot la can canh tren nen xam.",
+   "luoi": [
+    "NVVNNNNNNNNNNN",
+    "VVVVVVNNNNNNNN",
+    "VVVVVVVVVVNNNN",
+    "VVVVVVVVVVVNNN",
+    "VVVVVVVVVVVVNN",
+    "VVVVVVVVVVVVVN",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVN",
+    "VVVVVVVVVVVNNN",
+    "NVVVVVVVNNNNNN",
+    "NNVVNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-mosaic_virus-6": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kep tren nen den, kham ro.",
+   "luoi": [
+    "VNNVVVNNNNNNNN",
+    "VNVVVVNNNNNNNN",
+    "VVVVVVNNNNNNNN",
+    "VVVVVVNNNNNNNN",
+    "VVNVVVNVVNNNNN",
+    "VVNNVNVVVVVNNN",
+    "VNNNVVVVVVVVVN",
+    "VVVVVVVVVVVVVN",
+    "VNNVVVVVVVVVNN",
+    "VNNVVVVVVVVNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNNNVVNNNNNNN",
+    "NNNNNVVNNNNNNN"
+   ]
+  },
+  "pd-mosaic_virus-7": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Ban tay cam canh la tren nen nau; tay la N.",
+   "luoi": [
+    "NVVNNNVVVVNNNN",
+    "NVVVNNVVVNNNNN",
+    "NNVVVNVVNNNNNN",
+    "NNNVVNVNNNNNNN",
+    "NNNNVVVNNNNNNN",
+    "NNNNNVVVVVVVNN",
+    "NNNNNVVVVVVVNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNNVVNNNNNNN",
+    "NNNNNVNNNNVNNN",
+    "NNNNNNNNVVVNNN",
+    "NNNNNNNVVVNNNN",
+    "NNNVNNNNNNNNNN",
+    "NNNVNNNNNNNNNN"
+   ]
+  },
+  "pd-yellow_leaf_curl_virus-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Anh da lo ban do nhiet truoc khi khoanh (SEEN_HEATMAP). Tan la vang xoan kin khung, vai khe nen trang.",
+   "luoi": [
+    "VVVVVVVVVVVVVN",
+    "VVVVVVVVVVVVVN",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "NVVVVVVVVVVVVV",
+    "NVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV"
+   ]
+  },
+  "pd-yellow_leaf_curl_virus-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cay trong chau; dat den, chau, nen gach va hoa tim (co dai) la N.",
+   "luoi": [
+    "VVVNNVVVVVVVVV",
+    "VVNNNVVVVVVVVV",
+    "VVVNVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "NVVVVVVVVVVVVN",
+    "NNNVVVVVVVVVNN",
+    "NNNVVVVVNNNVVN",
+    "NNNNVVVVNNNNNV",
+    "NNNNVVVVVNNNNV",
+    "NNNNVVVVVVNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-yellow_leaf_curl_virus-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Tan la ram, nhieu la xoan vien vang kin khung.",
+   "luoi": [
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV"
+   ]
+  },
+  "pd-yellow_leaf_curl_virus-4": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Tan la xoan vien vang; nen da mo ben trai la N.",
+   "luoi": [
+    "VNNVVVVVVVVVVV",
+    "VVNVVVVVVVVVVV",
+    "NVVVNVVVVVVVVV",
+    "NVVVNVVVVVVVVV",
+    "VVNNVVVVVVVVVV",
+    "VVNNVVVVVVVVVV",
+    "VVVNVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "NVVVVVVVVVVVVV",
+    "NNVVVVVVVVVVVV",
+    "NNVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV"
+   ]
+  },
+  "pd-yellow_leaf_curl_virus-5": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": true,
+   "ghi_chu": "Anh ghep 3 dai doc noi bang vach trang (cot 5 va 10); khong phai mot anh chup lien.",
+   "luoi": [
+    "VVVVNVVVNVVVVV",
+    "VVVVNVVVNVVVVN",
+    "VVVVNVVVVVVVVN",
+    "VVVVNVVVVVVVVN",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVV",
+    "VVVVVNVVVVVVNV",
+    "VVVVVNVNVVNNNV",
+    "VVVVNNNNVVNVNV",
+    "VVVVNNNNVVNVNV"
+   ]
+  },
+  "pd-healthy-1": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La kep tren nen xam nhat.",
+   "luoi": [
+    "NNNNNLNNNNNNNN",
+    "NNNNNLLNNNNNNN",
+    "NNNNLLLNNNNNNN",
+    "NNNNLLLLNNNNLN",
+    "NNNNLLLLNNNLLN",
+    "NNNNNLLLNLLLLN",
+    "NLLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "LNNNLLLLLLNNNN",
+    "LLNNNLLNLNNNNN",
+    "NNNNNNLLLLNNNN",
+    "LLLLLLLLNLLLLL",
+    "NNLLLLLLNLLLLL",
+    "NNNNNNNLLLLLLN"
+   ]
+  },
+  "pd-healthy-2": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "Dong la hai tren mat ban go, mau bi lech (xanh lo).",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNLLNNN",
+    "NNNNNNNLNLLNNN",
+    "NNNNLLLLLLLLLN",
+    "NNNLLLLLLLLLLN",
+    "NNNLLLLLLLLLLN",
+    "NNNLLLLLLLLLLN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNNNLLLLLLN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNNNLLLLNNN",
+    "NNNNNNNNLLLNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-healthy-3": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La cam tren tay; tay la N; nen toi ben phai.",
+   "luoi": [
+    "NNNNLLLLLLLLLL",
+    "NNNNLLLLNNLLLL",
+    "NNNLLLLLNNNLLL",
+    "NNNLLLLLNNNNLL",
+    "NNNLLLLLLNNNLL",
+    "NNLLLLLLLNNNNL",
+    "NLLLLLLLLLNNNL",
+    "NNLLLLLLLLLNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNLLLLLLLLN"
+   ]
+  },
+  "pd-healthy-4": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "Cay con tren dat soi. Hinh la trong giong cay ot hon ca chua, co the nhan sai nhung khong chac nen khong gan co.",
+   "luoi": [
+    "NNLLLLNLLNNNNN",
+    "NLLLLLLLLNNNNN",
+    "LLLLLLLLLLLLNN",
+    "LLLLLLLLLLLLLN",
+    "LLLLLLLLLLLLLL",
+    "NLLLNLLLLLLLNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-healthy-5": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La can canh, nen la mo tinh L.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLN",
+    "LLLLLLLLLLLLNN"
+   ]
+  },
+  "pd-healthy-6": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "Cay ca chua truoc cua so; khung cua, chau, nen gach la N.",
+   "luoi": [
+    "LLLNNNNNLLLLLL",
+    "LLLNNNNLLLLLLL",
+    "LLLLNNLLLLLLNN",
+    "LLLLLNLLLLLLNN",
+    "LLLLLLLLLLLLLN",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLLLNLL",
+    "LLLLLLLLLLLNNL",
+    "LLLLLLLLLLNNNL",
+    "LLLLLLLLLLLNLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLNNLLLL",
+    "LLLLLLLLNNNLNN"
+   ]
+  },
+  "pd-healthy-7": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La tach nen trang.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNNNLLLLLNN",
+    "NNNNNNNNNLLLNN",
+    "NNNNNNLLLLLLLN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNNLLLLLLNLLNN",
+    "NNNLLLLLLNLLNN",
+    "NNLLLLLLNNLLNN",
+    "NLLLLLLLNNLLNN",
+    "NLLLNNNNNNLLNN",
+    "NNNNNNNNNNLNNN",
+    "NNNNNNNNNNLNNN"
+   ]
+  },
+  "pd-leaf_mold-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La tren bia carton, cac mang vang nhat (mat tren la).",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "LLLLLVVLLLLLNN",
+    "NLLLLVVVLLLLLN",
+    "NLLLLLVLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNNLLLLLLVVLLN",
+    "NNNNLLLLLVVLLN",
+    "NNNNNNLLLVLVLN",
+    "NNNNNNLLLVLLNN",
+    "NNNNNNNNLLNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-leaf_mold-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La tren bia carton, mang vang o giua va duoi trai.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNLNNLNNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLVVLLLNN",
+    "NNLLLLVVVVLLNN",
+    "NNNLLVVVLLLNNN",
+    "NNNLVVLLLLLNNN",
+    "NLLVVLLLLLNNNN",
+    "NNLVVVLLLLNNNN",
+    "NNNLVLLLLNNNNN",
+    "NNNNLLNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-leaf_mold-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "co_van_de_du_lieu": true,
+   "ghi_chu": "Anh chup slide trinh chieu (tieu de + 3 anh nho); chi anh cay ben phai co la, khong thay ro vet moc.",
+   "luoi": [
+    "NNNNNNNNNNVVVN",
+    "NNNNNNNNNNVVVN",
+    "NNNNNNNNNNVVVN",
+    "NNNNNNNNNNVVVN",
+    "NNNNNNNNNNVVVN",
+    "NNNNNNNNNNVVVN",
+    "NNNNNNNNNNVNNN",
+    "NNNNNNNNNNVNNN",
+    "NNNNNNNNNNVNNN",
+    "NNNNNNNNNNVNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-leaf_mold-4": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Trong nha luoi; khung, cot, nguoi, troi la N; mang sam tren la ben trai va la tren cung.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNLNNN",
+    "NNNNNNNNNVVNNN",
+    "NNNNNNNNNVVLNN",
+    "NNNVVLLLLVLLLL",
+    "NNNVVVLLLLLLLL",
+    "NNNVVVVLLLLLLL",
+    "NNNLVVLLLLLLLL",
+    "NNNLLLLLLLLLLL",
+    "NNNLLLLLLLLLLL",
+    "NNNLLLLLLLLLLL",
+    "NNNLLLLLLLLLLL",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pd-leaf_mold-5": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Tay cam la co mang nau lon; nen toi ben phai.",
+   "luoi": [
+    "LLLLLLLLLNNNNN",
+    "NLLLLLLLLNNNNN",
+    "NNNLVVVLLNNNNN",
+    "NNNLVVVVLNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNLVVVVVVNNNN",
+    "NNLLLVVVVVNNNN",
+    "NNLLLLVVVVNNNN",
+    "NNLLLLLVVVVNNN",
+    "LLLLLLLLVVVNNN",
+    "LLLLLLLLLVVNNN",
+    "LLLLLLLLNNNNNN",
+    "LLLLLLNNNNNNNN",
+    "LLLLLLNNNNNNNN"
+   ]
+  },
+  "pd-leaf_mold-6": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Tan la ram, nhieu mang vang-nau rai rac tren nhieu la.",
+   "luoi": [
+    "LLLVVVLLLLLLLL",
+    "LLLVVVLLLVLLLL",
+    "LLNLVVLLLLLLLL",
+    "LLNLLLLLLLLLLL",
+    "LLLLVVVLVVVLLL",
+    "LLLLVVVVVLLLLL",
+    "LLLLVVVLLVVVVL",
+    "LNLLVVLLLVVVLL",
+    "LLLLLVLLVVVLLL",
+    "LLLLLLLVVVLLLL",
+    "LLNLLLLLVVLLLL",
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLVVVVLL",
+    "LLLLLLLLVVVVVL"
+   ]
+  },
+  "pv-bacterial_spot-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La tren nen xam, dom nau doc mep phai.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNLLLVNNNNN",
+    "NNNNLLLLLVNNNN",
+    "NNNNLLLLLVVNNN",
+    "NNNNVLLLLVVNNN",
+    "NNNNNLLLLVVNNN",
+    "NNNNNNLLLVVNNN",
+    "NNNNNNNNLLNNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La vang, dom sam tap trung nua trai va giua.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNLLLLVNNNN",
+    "NNNNVLLLVVNNNN",
+    "NNNNVVLLVVLNNN",
+    "NNNNVVVLVVLNNN",
+    "NNNNVVVVVLLNNN",
+    "NNNNLLVLLLNNNN",
+    "NNNNNLLVLNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La lon, mang hoai tu nau phia tren va dom mep trai.",
+   "luoi": [
+    "NNNNNNLLLNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLLLVVVLNNN",
+    "NNNNLLLVVVVNNN",
+    "NNNLLLLLVVVNNN",
+    "NNNLLLLLVLLNNN",
+    "NNNLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNVLLLLLLLLLLN",
+    "NVVLLLLLLLLLNN",
+    "NVLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-4": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La gan kin khung; vang o dinh va dom mep trai, mep phai.",
+   "luoi": [
+    "NNNNNNLVNNNNNN",
+    "NNNNNLVVLNNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNLLLLLLLLNNNN",
+    "NLLLLLVLLLNNNN",
+    "NLLLLLLLLLNNNN",
+    "LLLLLLLLLLLNNN",
+    "VLLLLLLLLLLNNN",
+    "VLLLLLLLLLVVNN",
+    "VVLLLLLLLLLLNN",
+    "NVLLLLLNLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLNNN"
+   ]
+  },
+  "pv-bacterial_spot-5": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La xanh sam, chi thay vai dom nho (dinh la, goc duoi trai).",
+   "luoi": [
+    "NNNNNLNNNNNNNN",
+    "NNNNLVLLNNNNNN",
+    "NNLLLVLLLNNNNN",
+    "NLLLLLLLLLNNNN",
+    "NLLLLLLLLLNNNN",
+    "NLLLLLLLLLLNNN",
+    "LLLLLLLLLLLLNN",
+    "NLLLLLLLLLLLNN",
+    "NNLLLLLLLLLLLN",
+    "NNLVLLLLLLLLLN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNNLNNNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-6": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La kep, chi thay hai dom nau nho.",
+   "luoi": [
+    "NLLNNNNNNNNNNN",
+    "NNLLLLNNNNNNNN",
+    "NNLLLLLNNNLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNVLLLLLLLLNN",
+    "NNNLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNNLLLLLLLLLLN",
+    "NNNLLLLVLLLLLN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLLLLNNN",
+    "NNNNLLLLLLLNNN"
+   ]
+  },
+  "pv-bacterial_spot-7": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Khong nhin thay dom nao o do phan giai 224 nen khong khoanh V; anh tu loai khoi chi so vet benh (khong co o V).",
+   "luoi": [
+    "NNNNNNNLLLNNNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NNLLLLLLLLLLNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNNNLNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-8": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La xanh, mot vet vang-nau keo dai o giua.",
+   "luoi": [
+    "NNNNNNLLLNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLVVLLNNN",
+    "NNNLLLVVLLLNNN",
+    "NNNLLLVLLLLNNN",
+    "NNLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNNLLNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-9": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Dom vang-nau day o nua tren va mep la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNVVLVLLVNNN",
+    "NNNNVVLLLLLNNN",
+    "NNNVLLLLLLLLNN",
+    "NNVVVLLLLLLLNN",
+    "NNVVLLLLLLLVVN",
+    "NNLLLLLLLLLVVN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNNVLLLNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-10": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Khong nhin thay dom nao o 224 px nen khong khoanh V; tu loai khoi chi so vet benh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNLNNNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLNNN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNNLNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-11": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Dom sam day doc mep trai va mep duoi, mot mang nau mep phai.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLLLLNNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNLLLLLLLLLN",
+    "NNNVVLLLLLLLLN",
+    "NNNVLLLLLLLLLN",
+    "NNVLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NVVLLLLLLLLLLN",
+    "NNVLLLLLLLVVLN",
+    "NNVVVLLLLLLLLN",
+    "NNVVVVVLLLLLNN",
+    "NNNVVVVVVLLNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-12": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La gan nhu sach, chi thay hai dom nau rat nho.",
+   "luoi": [
+    "NNNLNNNNNNNNNN",
+    "NNNLLLNNNNNNNN",
+    "NNLLLLLLNNNNNN",
+    "NNLLLLLLLNNNNN",
+    "NNLLLLLLLLLNNN",
+    "NLLLLLLLLLLLNN",
+    "LLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLVLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLVLLNNN",
+    "NNNNNNNLLNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-13": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu dom nau nho rai rac giua la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLLLLVNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLVVVVLLNN",
+    "NNLLLLLVVLVLLN",
+    "NNLLLLVLVLLLLN",
+    "NNLLLLLLLVLLLN",
+    "NNLLLLLLLLLVLN",
+    "NNLLLVLLVLLLLN",
+    "NNNLLLVLLLLLNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNLNNNNNNN"
+   ]
+  },
+  "pv-bacterial_spot-14": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La kep, chi thay hai dom sam nho.",
+   "luoi": [
+    "NNNLNNNNNNNNNN",
+    "NNNLLLNNNNNNNN",
+    "NNNLLLLNNNNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNNLLLLLLLNNNN",
+    "NNLLLLLLLLNNNN",
+    "NNNLLLLVLLNNNN",
+    "NNNLLLLLLLLNNN",
+    "NLVLLLLLLLLLNN",
+    "NLLLLLLLLLLNNN",
+    "NNLLLLLLLLNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNNNNLLLNNNNNN",
+    "NNNNNLLNNNNNNN"
+   ]
+  },
+  "pv-early_blight-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mang hoai tu lon o giua la; bong den phia tren phai la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNLLVVLNNNN",
+    "NNNNLLVVVVNNNN",
+    "NNNNLLVVVLLNNN",
+    "NNNLLLVVVLLNNN",
+    "NNNLLVVVLLLNNN",
+    "NNNLLVVVLLLNNN",
+    "NNNLLLVVLLLNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-early_blight-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu dom sam khap la va mep phai hoai tu.",
+   "luoi": [
+    "NNNNNNNNVNNNNN",
+    "NNNNNNLVVVNNNN",
+    "NNNNVLVVLVLNNN",
+    "NNNNLVLLLVVLNN",
+    "NNNVLLLLLLLLNN",
+    "NNNLLLLLVLLLNN",
+    "NNNLLVVVLLVLNN",
+    "NNNLLLVVLLVVNN",
+    "NNLLLLLVLVVVNN",
+    "NNLVLLVLLLVVNN",
+    "NNLLLLLLLVVVNN",
+    "NLLLLLLLLLVNNN",
+    "NNLVLLLLLNNNNN",
+    "NNNLLLLLLNNNNN"
+   ]
+  },
+  "pv-early_blight-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La co hai dom nau nho ben trai; bong den ben phai la N.",
+   "luoi": [
+    "NNNNNNLNNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLVLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLVLLLLLLNN",
+    "NNNLLLLLLLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNNLNNNNN",
+    "NNNNNNNNLNNNNN"
+   ]
+  },
+  "pv-early_blight-4": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La kep, vet sam mep trai va dom nho phia tren.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNLLLVLLNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNVVLLLLLLNNNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLLLLLNNNN",
+    "NLLLLLLLLNNNNN",
+    "NNLLLLLLNNNNNN",
+    "NNNNLLLLNNNNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-early_blight-5": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La quan, phan lon nua phai hoai tu nau; goc trai duoi con xanh vang.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVVVVNNN",
+    "NNNNVVVVVVVVNN",
+    "NNNVVVVVVVVNNN",
+    "NNLLVVVVVVVNNN",
+    "NNLLLVVVVVVNNN",
+    "NLLLLLVVVVVNNN",
+    "NNLLLLLLVVNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-early_blight-6": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu mang nau dong tam tren la; bong den goc duoi phai la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNLLLLNN",
+    "NNNNNNNLVVLLLN",
+    "NNNNNNLLVVVVLN",
+    "NNNNNLLLLLVVVN",
+    "NNNNNLLLLLVVNN",
+    "NNNNLLLLLVVVNN",
+    "NNNNLLLLLLVVLN",
+    "NNNNLLLLLVLNNN",
+    "NNNNLVLVVNNNNN",
+    "NNLLLLLVVNNNNN",
+    "NNLLLLLVNNNNNN",
+    "NNNLLNNLLNNNNN",
+    "NNNNNNNLLNNNNN"
+   ]
+  },
+  "pv-early_blight-7": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Dai hoai tu lon nua phai; la chet ben trai con xanh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNVVNNNN",
+    "NNNNNNNVVVNNNN",
+    "NNNNNLLVVVVNNN",
+    "NNNNNLLVVVVNNN",
+    "NNNNLLLVVVVNNN",
+    "NNNNLLLVVVVNNN",
+    "LLLLLLLVVVVNNN",
+    "LLLLLLLLVVVNNN",
+    "NLLLLLLLVVVNNN",
+    "NNNLLLLLVVNNNN",
+    "NNNNVLLLVVNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-early_blight-8": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Ca la vang, dom dong tam day dac va nua phai hoai tu.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNVVVVN",
+    "NNNNNNVVVVVVVN",
+    "NNNNNVVVVVVVVN",
+    "NNNNVVVVVVVVVN",
+    "NNNVVVVVVVVVVN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NVVVVVVVVVVVNN",
+    "VVVVVVVVVVVNNN",
+    "NVVVVVVVVVNNNN",
+    "NNVVVVVVVNNNNN",
+    "NNNVVVVVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-early_blight-9": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La can canh, mang hoai tu lon phia tren trai.",
+   "luoi": [
+    "NNNNNLLLLLLLLL",
+    "NNNNNVVVLLLLLL",
+    "NNNNVVVVVVLLLL",
+    "NNLLVVVVVLLLLL",
+    "NLLLLVVVLLLLLL",
+    "NNLLLLVLLLLLLL",
+    "NNLLLLLVLLLLLL",
+    "NNNLLLLVLLLLLL",
+    "NNNNLLLLLLLLLL",
+    "NNNNNLLLLLLLLL",
+    "NNNNLLLLLLLLLL",
+    "NNNLLNNLLLLLLL",
+    "NNNNNNNNNLLLLL",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-early_blight-10": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Ca la vang nau, vet hoai tu khap la.",
+   "luoi": [
+    "NNNNNNNVNNNNNN",
+    "NNNNNNNVVVNNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNVVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNVVVVVVVVVVN",
+    "NNNVVVVVVVVVNN",
+    "NNVVVVVVVVVNNN",
+    "NVVVVVVVVVVNNN",
+    "VVVVVVVVVVVNNN",
+    "NVVVVVVVVVVNNN",
+    "NNVVVVVVVVNNNN",
+    "NNNNNVNNNNNNNN",
+    "NNNNNVNNNNNNNN"
+   ]
+  },
+  "pv-early_blight-11": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La vang, nhieu dom dong tam sam rai rac.",
+   "luoi": [
+    "NNNNNLLLLNNNNN",
+    "NNNNNLVVLLLNNN",
+    "NNNNNLVVLLVLNN",
+    "NNNVVVLLLLLLNN",
+    "NNNNVVLLLLLLLN",
+    "NNNNVVVLLLLLLN",
+    "NNNNVVLLVVLLNN",
+    "NNLLVVVLLLVLNN",
+    "NLLLVVLLLLVLLN",
+    "NLLLVLLLLLVVLN",
+    "NLLLVLLLLLLLNN",
+    "NNLLLLLLLLLNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNLLNNNNNN"
+   ]
+  },
+  "pv-early_blight-12": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nua tren la hoai tu day dac; thuy duoi trai con xanh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNVVVN",
+    "NNNNNNNNNVVVVN",
+    "NNNNNNVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNVVVVVVLLLN",
+    "NNNNVVLLLLLLNN",
+    "NNNVVVLLLLLNNN",
+    "NNNVVVLLNNNNNN",
+    "NNNNLLLNNNNNNN",
+    "NNNNLLLLNNNNNN",
+    "NNNNLLLLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-early_blight-13": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu dom sam rai rac, day hon o goc duoi trai.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNLLNNNN",
+    "NNNNNNVLVLNNNN",
+    "NNNNNLLLVLLNNN",
+    "NNNNLVLLLLLNNN",
+    "NNNNLVVLLLLLNN",
+    "NNLLVVLLVVLLNN",
+    "NNLLLVLVVLLLNN",
+    "NNNLLLLLVVVLNN",
+    "NNLLLLLLLVVVVN",
+    "NNVVVVVLLLLLNN",
+    "NNVVVVVLLNNNNN",
+    "NNNVVVLLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-early_blight-14": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vai dom nau mo tren la xanh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLVVLLLNNN",
+    "NNNNVLLLLLLNNN",
+    "NNNNVLLLLLLLNN",
+    "NNNNLLLVLLLLNN",
+    "NNNNLLLLVVLLNN",
+    "NNNNLLLLVLLNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNLLLLNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-healthy-1": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe; bong den ben phai la N.",
+   "luoi": [
+    "NNNNNNNLNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NLLLLLLLLLLNNN",
+    "NLLLLLLLLLLNNN",
+    "NNLLLLLLLLNNNN",
+    "NNNLLLLLLLNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-healthy-2": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe tren nen xam.",
+   "luoi": [
+    "NNNNNNLNNNNNNN",
+    "NNNNNLLLNNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLLN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-healthy-3": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe va mot thuy nho goc duoi trai.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNLLNNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNNLLLLNNN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNNNNLLLNNN",
+    "NNNLLLLLLLNNNN",
+    "NNLLLLLNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-healthy-4": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe, bong den ben trai la N.",
+   "luoi": [
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-healthy-5": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe tren nen toi.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLLN",
+    "NNNNLLLLLLLLLN",
+    "NNNNNLLLLLLLNN",
+    "NNNNNNNLLLLNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-healthy-6": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe gan kin khung.",
+   "luoi": [
+    "NNNNNNNLLNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNLLLLLLLLLLNN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNNLLLLLLLLLLN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNLNNNNNNN"
+   ]
+  },
+  "pv-healthy-7": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe gan kin khung.",
+   "luoi": [
+    "NNNNNNNNNLNNNN",
+    "NNNNNNNLLLLNNN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLLN",
+    "NNNLLLLLLLLLLN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNNNNNNLLLLLNN",
+    "NNNNNNNLLNNNNN"
+   ]
+  },
+  "pv-healthy-8": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe, cuong dai phia duoi.",
+   "luoi": [
+    "NNNNNNNLNNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NNLLLLLLLLLLNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-healthy-9": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe nho o giua.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-healthy-10": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe gan kin khung.",
+   "luoi": [
+    "NNNNNNNLLNNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNLLNNNNNN"
+   ]
+  },
+  "pv-healthy-11": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La kep, bong den giua cac thuy la N.",
+   "luoi": [
+    "NNNNNNNNLNNNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNLLNLLLLLNN",
+    "NNNNLNNLLLLLLN",
+    "NNNNLLNLLLLLNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLLLNNNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNNNLLNNNN"
+   ]
+  },
+  "pv-healthy-12": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe; bong den tren phai la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNNLLLLLLLLLLN",
+    "NNNLLLLLLLLLLN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLLLLLNNNN",
+    "NNNLLLLLLLNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-healthy-13": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe tren nen toi.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLLN",
+    "NNNLLLLLLLLLNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNNLNNNNNNN"
+   ]
+  },
+  "pv-healthy-14": {
+   "kieu_trieu_chung": "khong_co_vet",
+   "ghi_chu": "La khoe tren nen toi.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLLN",
+    "NNNLLLLLLLLLLN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Canh la, vet hoai tu sam doc cuong va mep phai.",
+   "luoi": [
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNLLLLVVNNNN",
+    "NNNLLLLVVVNNNN",
+    "NNNLLLLVVNNNNN",
+    "NNNLLLLLVLNNNN",
+    "NNNNLLLVVLNNNN",
+    "NNNNNLLVVVLLVN",
+    "NNNNNNVVLLLLVV",
+    "NNNLLLVVLLLLNN",
+    "NNNLLLVVLLLNNN",
+    "NNNLLVVLLLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NNNNLNNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mang nau lon nua phai la; bong den ben trai duoi la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNLLNNNNNNN",
+    "NNNLLLLLNNNNNN",
+    "NNLLLLLLLNNNNN",
+    "NLLLLLVVVNNNNN",
+    "LLLLLVVVVNNNNN",
+    "LLLLLVVVVNNNNN",
+    "NLLLLLVVVNNNNN",
+    "NNLLLLLVVLNNNN",
+    "NNNLLLLLLLNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNLLLLLNN"
+   ]
+  },
+  "pv-late_blight-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La nho quan lai, mang nau vang nua duoi phai.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNLLLLLVVNNNN",
+    "NNNNNLLVVVLNNN",
+    "NNNNNLLVVVLNNN",
+    "NNNNNLVVVVNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-4": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La gap, dau thuy hoai tu va vai dom trang/nau.",
+   "luoi": [
+    "NNNNNNNNVVNNNN",
+    "NNNNNNNNVVVNNN",
+    "NNNNVLVVLLVNNN",
+    "NNNLLLLLVLLNNN",
+    "NVLLLLNLLLLNNN",
+    "NVVLLLNLLLVNNN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNNVLLLLNNN",
+    "NNNNNNVVLLLNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNNNLNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-5": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vet sam doc gan chinh, dam hon o day la.",
+   "luoi": [
+    "NNNNNNLLLLLLLL",
+    "NNNNNLLLLLLLLL",
+    "NNLLLLLLLLLNNN",
+    "NNNNLLLVLLLNNN",
+    "NNNNLLLVLLLLLN",
+    "NNNNLLLVLLLLLN",
+    "NNNNLLLVLLLNNN",
+    "NNNNNLLVLLLNNN",
+    "NNNNNLLVLLLLNN",
+    "NNNNNLLVVLLNNN",
+    "NNNNNNLVVLNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-6": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Dai hoai tu xam doc giua; thuy duoi con xanh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNLLNNNNNNNN",
+    "NNNNLVLLLVNNNN",
+    "NNNNVVNLLLNNNN",
+    "NNNNVVVNNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNLLLLLLLNNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNNLLLLLNNNNNN",
+    "NNNLLLLLNNNNNN",
+    "NNNLLLLNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-7": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La teo quan gan nhu hoai tu het, chi con mau xanh o dinh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVLLNNNNN",
+    "NNNNNNVLLNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNVVVNNNNNNN",
+    "NNNNVVNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-8": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La nho gap, dai vang nau o giua.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNLLVLNNNNN",
+    "NNNNNLLVNNNNNN",
+    "NNNNNLLVVNNNNN",
+    "NNNNNLLVVNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-9": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La lon, mang hoai tu goc duoi trai.",
+   "luoi": [
+    "NNNNNLLLLLLNNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNLLVLLLLLNN",
+    "NNNNLLVLLLLLNN",
+    "NNNNVVLLLLLLNN",
+    "NNNVVVLLLLLNNN",
+    "NNVVVVLLLLLNNN",
+    "NLLVVVLLLLNNNN",
+    "NLLLLVLLLNNNNN",
+    "NNLLLLLNNNNNNN",
+    "NNNNNLNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-10": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nen den, mang nhat mau o giua la.",
+   "luoi": [
+    "NNNLNNNNLLNNNN",
+    "NNLLLLNNLLLNNN",
+    "NLLLLLLLLLLLNN",
+    "NLLLLLLVVLLLNN",
+    "NLLLLLLVVLLLLN",
+    "NLLLLLVVVLLLLN",
+    "NLLLLLVVVLLLLN",
+    "NNLLLLLVLLLLLN",
+    "NNLNLLLLLLLLLN",
+    "NNLNLLLLLLLLLN",
+    "NNNNNLLLLVLLLN",
+    "NNNNNLLLLLLNLN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-11": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La lon can canh; cuong sam va thuy la teo trang ben phai.",
+   "luoi": [
+    "LLLLLLLLLLLLLL",
+    "LLLLLLLLLNNNLL",
+    "LLLLLLLLVNNLLL",
+    "LLLLLLLLVNNLLL",
+    "LLLLLLLLVNNNLL",
+    "LLLLLLLLVNNNNL",
+    "LLLLNLLLVNNNNN",
+    "LLLLLLLLVVVNNN",
+    "LLLLLLLLVVVVNN",
+    "LLLLLLLLVVVVNN",
+    "LLLLLLLLNVVNNN",
+    "LLLLLLLNNNNNNN",
+    "LLLLLLNNNNNNNN",
+    "LLLLLLNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-12": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La quan, mang nau lon ben trai va giua.",
+   "luoi": [
+    "NNNNNNNNNNNLNN",
+    "NNNNNNNNNLLLNN",
+    "NNNNNNNNLLLLNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNLVVVLLNNN",
+    "NNNNLLVVVLLLNN",
+    "NNNNLLVLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNVVVLLLLLLLNN",
+    "NNVVVVLLLLLLNN",
+    "NNNVVLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLNNN",
+    "NNNNLLLLLLNNNN"
+   ]
+  },
+  "pv-late_blight-13": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La cheo, chi mot vet nau nho o giua.",
+   "luoi": [
+    "NNNNNNNNNNNNLN",
+    "NNNNNNNNNNLLLN",
+    "NNNNNNNNNLLLLN",
+    "NNNNNNNNLLLLLN",
+    "NNNNNNLLLLLLLN",
+    "NNNNNLLLLLLLLN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLVLLLLLNN",
+    "NNLLLLLLLLLNNN",
+    "NNNLLLLLLNNNNN",
+    "NNNNLLLNNNNNNN",
+    "NNNLLNNNNNNNNN",
+    "NNNLNNNNNNNNNN",
+    "NNNLNNNNNNNNNN"
+   ]
+  },
+  "pv-late_blight-14": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La teo, mang hoai tu trang-nau giua than la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNLVVVNNNNN",
+    "NNNNNNLVVNNNNN",
+    "NNNNNNLVVNNNNN",
+    "NNNNNNLLVVNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNLNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La cheo, vai mang vang nhat mo; bong den trai la N.",
+   "luoi": [
+    "NNNNNNNNNNNLLN",
+    "NNNNNNNNNLLLLN",
+    "NNNNNNNNLLLLNN",
+    "NNNNNNLLLLVLNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNLLLLVLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLVLLLNNNN",
+    "NNVVLLLLLLNNNN",
+    "NNLLLLLLLNNNNN",
+    "NNNLLVVLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mang vang rong nua tren la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNLN",
+    "NNNNNNNNNVVVLN",
+    "NNNNNNNVVVVVNN",
+    "NNNNNVVVVVVLNN",
+    "NNNNVVVVVVLNNN",
+    "NNNLLLVVVLNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNNLLLLLNNNNNN",
+    "NLLLNNNNNNNNNN",
+    "NLLNNNNNNNNNNN",
+    "NLLNNNNNNNNNNN",
+    "NLLNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La kep, mang vang o thuy trai duoi va thuy phai.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NLNNNNNNNNNNNN",
+    "NLLLLNNNNNNNNN",
+    "NNLLLLLNNNNNNN",
+    "NNNVLLLLLVNNNN",
+    "NNNLLLLLLVNNNN",
+    "NNNNLLLLLLNLLN",
+    "NNNNLLLLLLNLLN",
+    "NNNNVVLLLNLLLN",
+    "NNNNNVVLLNLVVN",
+    "NNNNNNNLLLLLLN",
+    "NNNNNNNNNLLLNN",
+    "NNNNNNNNNLNNNN",
+    "NNNNNNNNNLNNNN"
+   ]
+  },
+  "pv-leaf_mold-4": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vai mang vang nho tren la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNLLNN",
+    "NNNNNNLLLLVNNN",
+    "NNNNNLLVLLLNNN",
+    "NNNNLLLVLLNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNVLLLLLNNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNNNLLLLLNNNNN",
+    "NNNNLLVLNNNNNN",
+    "NNNNLNNNNNNNNN",
+    "NNNLNNNNNNNNNN",
+    "NNNLNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-5": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mang vang nua tren va giua la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNLNNNNN",
+    "NNNNNNLVVLNNNN",
+    "NNNNNLLVVLNNNN",
+    "NNNNNLLVLLNNNN",
+    "NNNNNLVVLLLNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNLLLVLLLNN",
+    "NNNNLLLLVLLNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-6": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mot mang vang ro o giua la; bong den trai la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNLLLNNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLVVLLLNN",
+    "NNNLLLLVVVLLNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNLNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-7": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La cheo, vai mang vang nho; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNLNN",
+    "NNNNNNNNNNLLNN",
+    "NNNNNNNNNLVLNN",
+    "NNNNNNNNLLVLNN",
+    "NNNNLNNLLLVLNN",
+    "NNNNLLVVLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNLLLLLLLLNNNN",
+    "NNVLLLLLLLNNNN",
+    "NNVLLLLLLNNNNN",
+    "NNLLLLLLNNNNNN",
+    "NNLLLLLNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-8": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La kep xanh sam, chi mot vung nhat mau nho gan cuong; bong den la N.",
+   "luoi": [
+    "NNNNNLNNNNNNNN",
+    "NNNLLLLLNNNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNLLLLLLLNNNNN",
+    "NNLLLLLLLNLLNN",
+    "NLLLLLLLLLLLNN",
+    "LLLLLLLLLLLLNN",
+    "NLLLLLLLLLLLNN",
+    "NLLLLVVLLLLLNN",
+    "NLLLLVVLLLLNNN",
+    "NNNNLLLNNNNNNN",
+    "NNNNLLLNNNNNNN",
+    "NNNNLLNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-9": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La kep, nhieu mang vang rai rac; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNVVVLN",
+    "NNNNNNNNVVLLNN",
+    "NNNNVVLVLLLNNN",
+    "NNNLVVLLLLNNNN",
+    "NNNNLLVVLNNNNN",
+    "NNNNLLVLLNNNNN",
+    "NNNNLLLLLNNNNN",
+    "NNLLLLLLLNNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNNLVVVVNNNNNN",
+    "NNNLVVVNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-10": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nen xanh duong; mang vang mep trai va giua la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNLLNNNNNNN",
+    "NNNNNLVLLNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLVLLLLLNNN",
+    "NNNNLLLVVLLNNN",
+    "NNNVLLLVLLLLNN",
+    "NNNVVLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNNNNLLNNNNN"
+   ]
+  },
+  "pv-leaf_mold-11": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mang vang day nua tren la; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNL",
+    "NNNNNNNNNNLLVV",
+    "NNNNNNNNVVVVVN",
+    "NNNNNNLVVVVVNN",
+    "NNNNNNLVVVVLNN",
+    "NNNNNLLLVVVLNN",
+    "NNNNNLLLLVVNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNLLLLLNNNN",
+    "NLNNNLLLLLNNNN",
+    "NNLLLLLLNNNNNN",
+    "NNNNLNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-12": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La cheo, mang vang rong o giua va tren.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNLLLN",
+    "NNNNNNNNNVVVNN",
+    "NNNNNNNNVVVVNN",
+    "NNNNVVLVVVLNNN",
+    "NNNNVVVVLLLNNN",
+    "NNNNVVVLLLNNNN",
+    "NNNNLVVLLNNNNN",
+    "NNNNLLLLNNNNNN",
+    "NNNLLLLLNNNNNN",
+    "NNNVVLLLNNNNNN",
+    "NNNVVLLNNNNNNN",
+    "NLLLLNNNNNNNNN",
+    "NNLNNNNNNNNNNN"
+   ]
+  },
+  "pv-leaf_mold-13": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mang vang o giua va dinh la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNVNN",
+    "NNNNNNNNNVVNNN",
+    "NNNNNNNNLLLNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLLLLVLNNNN",
+    "NNLLLLLVVVNNNN",
+    "NNLLLLLVVNNNNN",
+    "NNLLLLLLLNNNNN",
+    "NNNLLLLNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham toan phien; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNVNNN",
+    "NNNNNNNNVVVNNN",
+    "NNNNNNNVVVVNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-4": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham toan phien; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-5": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNVVNNNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNNNVVVNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-6": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham toan phien, nam cheo.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNVVNNNNNNNN",
+    "NNNNVVVNNNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNNNVVVVNNN",
+    "NNNNNNNNVVVNNN",
+    "NNNNNNNNNVVNNN",
+    "NNNNNNNNNNVNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-7": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-8": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham vang-xanh toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNNVVVVVVVNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-9": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-10": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Anh da lo ban do nhiet truoc khi khoanh (SEEN_HEATMAP). La kham nho ben phai; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNVVNNN",
+    "NNNNNNNNVVVNNN",
+    "NNNNNNNNVVVNNN",
+    "NNNNNNNVVVVNNN",
+    "NNNNNNNVVVVVNN",
+    "NNNNNNNNVVVVNN",
+    "NNNNNNNNVVVNNN",
+    "NNNNNNNNVVVNNN",
+    "NNNNNNNNNVNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-11": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham toan phien; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNVNNN",
+    "NNNNNNNNVVVNNN",
+    "NNNNNNNVVVVNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNNVVVVVVNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNVVVVVVVNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNNVVVVVVNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-12": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham vang-xanh toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNVVVVVVVVVVNN",
+    "NNNVVVVVVVVVVN",
+    "NNNNVVVVVVVVNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-13": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNVNNNNNNN"
+   ]
+  },
+  "pv-mosaic_virus-14": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La kham toan phien; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNVVNNNNNNNN",
+    "NNNNVVVNNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNVVVVVVVNN",
+    "NNNNNVVVVVVVNN",
+    "NNNNNNVVVVVVNN",
+    "NNNNNNVVVVVVNN",
+    "NNNNNNNVVVVNNN",
+    "NNNNNNNNNNVNNN",
+    "NNNNNNNNNNVNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La vang, phan dinh hoai tu sam va dom rai rac nua duoi.",
+   "luoi": [
+    "NNNNNNNVNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNNVVLNNNNNN",
+    "NNNNNLVVVNNNNN",
+    "NNNNNLLVVVNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNVLLLLLLLLNNN",
+    "NNLLLLLLLLLLNN",
+    "NNVLVLLLLLNNNN",
+    "NNNNNLLLNNNNNN",
+    "NNNNNLLNNNNNNN",
+    "NNNNNLNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La vang, nhieu dom nau tron rai rac.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNLLLNNNNNNNN",
+    "NNNLVLLLNNNNNN",
+    "NNNVLLLLNNNNNN",
+    "NNNLLLLLVNNNNN",
+    "NNNLLLLVLVNNNN",
+    "NNNLLLLVLLNNNN",
+    "NNVVVLLLLLNNNN",
+    "NNVLLLLVLLLLNN",
+    "NNVLLLLVVLLLNN",
+    "NNNVLLLVVLLNNN",
+    "NNNNLLLLVNNNNN",
+    "NNNNNNLVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La xanh, chi vai dom nho (dinh la vang).",
+   "luoi": [
+    "NNNNNNNVNNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNLLLVLLNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNLLLLLLVLLLLN",
+    "NNNLLLLLLLLLLN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-4": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Dom nau nho rai rac tren la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNNLVNNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLVLLLLNNN",
+    "NNNNLVLLVLLLNN",
+    "NNNLLLLLLLVLNN",
+    "NNNLLLLLVLLLNN",
+    "NNNLLLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-5": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu dom nho rai rac, day hon o mep trai; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNLVNN",
+    "NNNNNNNNNLLVNN",
+    "NNNNNNLLLLLLLN",
+    "NNNNLLLLLLLLLN",
+    "NNNLLLVLLLLLLN",
+    "NNNLLLLVLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNVLLLLLLLLNNN",
+    "NVVLLVLLVVLNNN",
+    "VVLLLLLLLLLNNN",
+    "VLLLLLLLLLNNNN",
+    "NLVLLLLLVLNNNN",
+    "NNLLVLLLNNNNNN",
+    "NNNLLLLNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-6": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vang va dom o thuy trai, vai dom nho khac.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNVLNNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNVLLLLLLNNN",
+    "NNNVVLLLLLLNNN",
+    "NNLVLLLLLLNNNN",
+    "NNLLLLVLLLNNNN",
+    "NNNLLLLLLLNNNN",
+    "NNNNNLLLNNNNNN",
+    "NNNNNLNNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-7": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La vang, thuy trai hoai tu va vai dom tron.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNLLLNNNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNNLLLVLLLNNNN",
+    "NNNLLLVLVLNNNN",
+    "NNNVVLLLLLLNNN",
+    "NNNVVVLLLLLNNN",
+    "NNNVVVLLVLLNNN",
+    "NNNNVLLLLLLNNN",
+    "NNNNNLLNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-8": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu dom nau nua tren, vai dom tren cac thuy ben.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNVVLNNNNN",
+    "NNNNNLLVVLNNNN",
+    "NNNNNLLLLVNNNN",
+    "NNNNNLVLLVNNNN",
+    "NNNNNLLLVLNNNN",
+    "NNLLVLVLNLLNNN",
+    "NNNLLLLLLLVLLN",
+    "NNNNLLLLNLLNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-9": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nhieu dom nau vien vang rai rac.",
+   "luoi": [
+    "NNNNNNNNNLLNNN",
+    "NNNNNNNLLLLLNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNLLVLLVVLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLVLVLLN",
+    "NNVVLLLLVVLLLN",
+    "NNLLLLLLLLVVLN",
+    "NNLVVLLLVLLLNN",
+    "NNVLLLLLVLLNNN",
+    "NNLLLLLLLLNNNN",
+    "NNNLLLLLNNNNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNNLNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-10": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mep tren hoai tu vien vang, dom nho rai rac.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNVVNNNN",
+    "NNNNNNNVVLLNNN",
+    "NNNNNNVVLLLNNN",
+    "NNNNNVVLLLLLNN",
+    "NNNNLVVLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLVVLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLVLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNNNLLLLLLNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-11": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Dom nau nho rai rac tren la lon.",
+   "luoi": [
+    "NNNNNNLNNNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNLLVLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLVLLVLLVNN",
+    "NLLVLLLLLLLLNN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLVVLLLLN",
+    "NLLLLLLLVLLLNN",
+    "NVLLLVLLLLLLNN",
+    "NNLLLLLLLLNNNN",
+    "NNNNNLLNNNNNNN",
+    "NNNNNNLNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-12": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Dom tap trung o dinh la tren trai.",
+   "luoi": [
+    "NNLNNNNNNNNNNN",
+    "NNVVNNNNNNNNNN",
+    "NNVVVLNNNNNNNN",
+    "NNLLLLLNNNNNNN",
+    "NNLLLLLLNNNNNN",
+    "NNNLLLLLLNNNNN",
+    "NNNLLLLLLLLLLN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLNLLLLLNNN",
+    "NNNNLLLLLNNNNN",
+    "NNNNLLLLLNNNNN",
+    "NNNNLLLLLNNNNN",
+    "NNNNNLLLLNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-13": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mang hoai tu lon ben trai va vai dom nho.",
+   "luoi": [
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNVLLVLLLLNN",
+    "NNNVVVLLLLLLLN",
+    "NNNVVVLLLLLLVN",
+    "NNLVVLLLLLLLLN",
+    "NNLLVLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NLLVLLLLLLLLLN",
+    "NNLLLLLLLVVVNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-septoria_leaf_spot-14": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Nua tren la vang lam tam dom; nua duoi con xanh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNLLVVVVVNNN",
+    "NNNNNLLLLVVNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNLNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham li ti do nhen khap la; bong den ben phai la N.",
+   "luoi": [
+    "NNNNVVNNNNNNNN",
+    "NNNNVVVNNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNVVVVVNNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNVVVVVVVNNNNN",
+    "NNNNVVVNNNNNNN",
+    "NNNNNVNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham li ti khap la; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNVVVVVVVVVNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham li ti khap la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNVVNNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNVVVVVNNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNVVVVVVVNNNNN",
+    "NNVVVVVVVNNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNVVVVVVVVVNNN",
+    "NNVVVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-4": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham vang li ti khap la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNNVVVVVVNNN",
+    "NNVVVVVVVVVVNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-5": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham vang li ti khap la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNVVVVVVVVVNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-6": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham vang li ti khap la.",
+   "luoi": [
+    "NNNNNNNNVNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVVNN",
+    "NNNVVVVVVVVVNN",
+    "NNNNVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-7": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham vang li ti khap la; bong den ben phai la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNNNNNVNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-8": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham li ti khap la; bong den lon ben trai la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNVNNNNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNNNVVVVVNN",
+    "NNNNNNNVVVVVVN",
+    "NNNNNNNVVVVVVN",
+    "NNNNNNNVVVVVNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNNNNNVVNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-9": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La vang nhat, cham li ti khap la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNNVNNNNNN"
+   ]
+  },
+  "pv-spider_mites-10": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham li ti khap la xanh sam; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVVNN",
+    "NNNVVVVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNNVVVVVVVNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-11": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham vang li ti khap la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNVVVVVVVVVVNN",
+    "NVVVVVVVVVVVNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-12": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham vang li ti khap la.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-spider_mites-13": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham vang li ti khap la lon.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVVVNNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNVVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNVVVVVVVVVVN",
+    "NNVVVVVVVVVVVN",
+    "NNVVVVVVVVVVNN",
+    "NNNVVVVVVVVVNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNNNNVNNNNN",
+    "NNNNNNNNVNNNNN"
+   ]
+  },
+  "pv-spider_mites-14": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "Cham vang li ti khap la; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNVVVNNN",
+    "NNNNNNNVVVVNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNVVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NNNVVVVVVVVNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNNNVNNNNN"
+   ]
+  },
+  "pv-target_spot-1": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La kep, khong nhin thay dom nao o 224 px nen khong khoanh V; tu loai khoi chi so vet benh.",
+   "luoi": [
+    "NNNNNNNLLNNNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNNNLNNNNNNN"
+   ]
+  },
+  "pv-target_spot-2": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vai vet nau o mep la va dinh la.",
+   "luoi": [
+    "NNNNNNNVNNNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNVLLLLLLLVNN",
+    "NNNLLLLLLLLNNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNNLNNNNNNN",
+    "NNNNNNLLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-target_spot-3": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La kep, khong nhin thay dom nao o 224 px nen khong khoanh V; tu loai khoi chi so vet benh.",
+   "luoi": [
+    "NNNNNLLNNNNNNN",
+    "NNNNLLLLNNNNNN",
+    "NNNNLLLLLNNNNN",
+    "NNNNLLLLLNNNNN",
+    "NNNLLLLLLLNNNN",
+    "NNLLLLLLLLNNNN",
+    "NNLLLLLLLLNNNN",
+    "NLLLLLLLLNNNNN",
+    "NNLLLLLLLNNNNN",
+    "NNLLLLLLLNNNNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLLN",
+    "NNNLLLNNLLLNNN",
+    "NNNNLNNNNNNNNN"
+   ]
+  },
+  "pv-target_spot-4": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Dom dong tam o dinh la vang va mot dom tren thuy phai.",
+   "luoi": [
+    "NNNNNNNNVVNNNN",
+    "NNNNNNNNVVLNNN",
+    "NNNNNNNLLLLNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNLLLLLLLLLN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNLLLLLLVNNN",
+    "NNLLLLLLLLLLNN",
+    "NLLLLLLLLLLNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNNNNLNNNNNN"
+   ]
+  },
+  "pv-target_spot-5": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Khong nhin thay dom nao o 224 px nen khong khoanh V; tu loai khoi chi so vet benh.",
+   "luoi": [
+    "NNNNNNNNNLNNNN",
+    "NNNNNNNLLLLNNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNNNNLNNNNNN"
+   ]
+  },
+  "pv-target_spot-6": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Chi mot dom nau nho mep phai; bong den la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNLLNNNN",
+    "NNNNNNNLLLLNNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNLLLLLLLLLN",
+    "NNNLLLLLLLLVNN",
+    "NNLLLLLLLLLNNN",
+    "NNLLLLLLLLNNNN",
+    "NNLLLLLLLNNNNN",
+    "NNNLLLLLNNNNNN",
+    "NNNNNNLNNNNNNN"
+   ]
+  },
+  "pv-target_spot-7": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Khong nhin thay dom nao o 224 px nen khong khoanh V; tu loai khoi chi so vet benh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNLNNNNN",
+    "NNNNNNNLLLNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNNNLLLNNNNN",
+    "NNNNLLLNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-target_spot-8": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Mot vet vang mep trai tren va vai dom nau nho.",
+   "luoi": [
+    "NNNNNNLLNNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNVLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLVLLLLN",
+    "NNNLLLLLLLLLLN",
+    "NNNNNLLLLLVLNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-target_spot-9": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La kep, vai dom nho tren thuy phai; bong den la N.",
+   "luoi": [
+    "NNNNNNNNLNNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLVLVLN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNNNLLLLNNN",
+    "NNNNNNNLNNNNNN"
+   ]
+  },
+  "pv-target_spot-10": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vai dom nau nho rai rac.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNLLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNLLLLLLVLLN",
+    "NNNNLLLVLLLLLN",
+    "NNNNLLLLLLLLLN",
+    "NNNLLLLLLLLLLN",
+    "NNLLLLLLLVLLLN",
+    "NLLLLLLLLLLLLN",
+    "NLLLLLLLLLLLLN",
+    "NNLLLLLLLLLLLN",
+    "NNLLLLLLLLLLNN"
+   ]
+  },
+  "pv-target_spot-11": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "La kep toi, khong nhin thay dom nao o 224 px nen khong khoanh V; tu loai khoi chi so vet benh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLLN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNLNNNNNN"
+   ]
+  },
+  "pv-target_spot-12": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Khong nhin thay dom nao o 224 px nen khong khoanh V; tu loai khoi chi so vet benh.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNLLNNNNN",
+    "NNNNNNLLLLNNNN",
+    "NNNNNLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNNLLLLLLLNNN",
+    "NNNLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLLLLLLLNN",
+    "NNNNNNLLLLLLNN",
+    "NNNNNNLLLLLNNN",
+    "NNNNNNNLLLNNNN"
+   ]
+  },
+  "pv-target_spot-13": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vai vet nau nho mep phai va giua.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNLLLNNNNNN",
+    "NNNNLLLLLNNNNN",
+    "NNNNLLLLLLNNNN",
+    "NNNLLLLLLVNNNN",
+    "NNNLLLLLLVNNNN",
+    "NNLLLLVLLLNNNN",
+    "NNLLLLLLLLNNNN",
+    "NNLLLLLVVLLLNN",
+    "NNNLLLLLLLLNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNNLNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-target_spot-14": {
+   "kieu_trieu_chung": "cuc_bo",
+   "ghi_chu": "Vai dom nau nho rai rac.",
+   "luoi": [
+    "NNNNNNLLNNNNNN",
+    "NNNNNLLLLNNNNN",
+    "NNNNLVVLLLNNNN",
+    "NNNLLLLLLLNNNN",
+    "NNNLLLLLLLLNNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLLLLNN",
+    "NNLLLLLLLVLLNN",
+    "NNNLLLLVLLLLLN",
+    "NNNLLLLLLLLLNN",
+    "NNNNLLVLLLVLNN",
+    "NNNNNLLLLLLLNN",
+    "NNNNNNNLNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-1": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La vang toan phien, mep xoan.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNVVVVVVVVVNNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NVVVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NNNVVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNNNNVVVNNNN",
+    "NNNNNNNVNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-2": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La xanh sam, vien vang nhe; trieu chung toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVVNNN",
+    "NNVVVVVVVVVNNN",
+    "NNNVVVVVVVVVNN",
+    "NNNVVVVVVVVVNN",
+    "NNNVVVVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNNNNVVVNNN",
+    "NNNNNNNNNVVNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-3": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La vang xoan toan phien; bong den trai la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-4": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La vien vang xoan toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVVNN",
+    "NNNVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVVN",
+    "NNVVVVVVVVVVVN",
+    "NVVVVVVVVVVVVN",
+    "NVVVVVVVVVVVNN",
+    "VVVVVVVVVVVNNN",
+    "VVVVVVVVNNNNNN",
+    "VVVVVVVVNNNNNN",
+    "NNNNNNVVNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-5": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La vang nhat toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNNVVVVNNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNNVVVVVVVVNNN",
+    "NNVVVVVVVVVNNN",
+    "NNVVVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVVNN",
+    "NNNVVVVVVVVNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNNVVNNNNNNN",
+    "NNNNNVNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-6": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La vien vang, nhan toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNVNNNNN",
+    "NNNNNNNVVVNNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNNVVVVVVVVN",
+    "NNNNNVVVVVVVVN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NNNVVVNVVVVNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-7": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La loang vang-xanh toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNVVVVVVVVVNN",
+    "NNNVVVVVVVVVNN",
+    "NNNVVVVVVVVVVN",
+    "NVVVVVVVVVVVVN",
+    "NNVVVVVVVVVVNN",
+    "NNNVVVVVVVVNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNNVNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-8": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La xoan vien vang; bong den va cuong cong la N.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNNVVVVVVNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNNNNNVVNNNN",
+    "NNNNNNNNVVNNNN",
+    "NNNNNNNNNVNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-9": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La loang vang-xanh, mep xoan.",
+   "luoi": [
+    "NNNNNNVNNNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NNNVVVVVVVVVNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-10": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La xoan va mot thuy nho ben trai.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVVVVVVNN",
+    "NNNNNVVVVVVVNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNVVNVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNNNNVVVVVNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNNNNVVNNNNN",
+    "NNNNNNNVNNNNNN",
+    "NNNNNNNNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-11": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La xanh sam, mep vang nhe; trieu chung toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNVVVNNNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVVVNNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVVN",
+    "NNNVVVVVVVVVNN",
+    "NNNNVVVVVVVVNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-12": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La nho vien vang.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNVVVNNNNNN",
+    "NNNNNVVVVNNNNN",
+    "NNNNVVVVVNNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNNNNVVVVNNNN",
+    "NNNNNNVVNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-13": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La vang xoan toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNVVVNNNNNNN",
+    "NNNVVVVVNNNNNN",
+    "NNNVVVVVVNNNNN",
+    "NNNVVVVVVVNNNN",
+    "NNVVVVVVVVNNNN",
+    "NNVVVVVVVVVNNN",
+    "NVVVVVVVVVVNNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NNNNVVVVVVVNNN",
+    "NNNNNVVVVVNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  },
+  "pv-yellow_leaf_curl_virus-14": {
+   "kieu_trieu_chung": "khuech_tan",
+   "ghi_chu": "La tron, vien vang nhe, trieu chung toan phien.",
+   "luoi": [
+    "NNNNNNNNNNNNNN",
+    "NNNNNNVVVNNNNN",
+    "NNNNVVVVVVNNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NNVVVVVVVVVVNN",
+    "NNNVVVVVVVVNNN",
+    "NNNVVVVVVVVNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNVNNNNNNN",
+    "NNNNNNNNNNNNNN"
+   ]
+  }
+ }
+}
