@@ -46,6 +46,13 @@ wandb/
 model/outputs/audit-gradcam-17/*/phieu/
 model/outputs/audit-gradcam-17/*/doi-chieu/
 
+# Bo 200 anh co mat na: phieu khoanh (~63 MB) va ban do nhiet (~49 MB) sinh lai duoc
+# bang `python -m src.evaluation.lesion_eval_200 sheets` / `run`. batches/ la cac dot
+# khoanh truoc khi gop, noi dung da nam nguyen trong khoanh-tay.json (van theo Git).
+model/outputs/xai-eval-200/annotation/phieu/
+model/outputs/xai-eval-200/annotation/batches/
+model/outputs/xai-eval-200/lesion/maps/
+
 # ─── Ảnh người dùng tải lên ─────────────────────────────
 backend/storage/uploads/**
 backend/storage/overlays/**

@@ -45,6 +45,12 @@ kiểm tra lại Grad-CAM++ (đối chứng Grad-CAM) trên 200 ảnh không tr�
 đang triển khai. [Bản Word ngắn có hình và bảng](GradCAM-200-anh.docx). Dữ liệu và [cách chạy lại](../model/outputs/xai-eval-200/PHUONG_PHAP.md) nằm
 trong `model/outputs/xai-eval-200/`.
 
+[Vùng lá và vết bệnh trên bộ 200 ảnh có mặt nạ](GradCAM-200-anh-mat-na.docx) (bản Word)
+bổ sung phần báo cáo trên còn thiếu: khoanh mù mặt nạ lá/vết bệnh cho cả 200 ảnh rồi đo các
+chỉ số vùng của #98 cho Grad-CAM++ và Grad-CAM. Mã chạy lại:
+`python -m src.evaluation.lesion_eval_200 {sheets,run,summarize,figures}`; mặt nạ ở
+`model/outputs/xai-eval-200/annotation/khoanh-tay.json`, kết quả ở `.../lesion/`.
+
 ## Kế hoạch và rà soát
 
 [Cắt lá, chốt hiển thị XAI và cải thiện domain gap (#93/#90/#50)](bao-cao-cat-la-domain-adaptation.md):

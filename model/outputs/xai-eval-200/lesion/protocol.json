@@ -1,0 +1,24 @@
+{
+  "started_utc": "2026-11-28T09:05:52.936714+00:00",
+  "checkpoint": "checkpoints\\leaf_disease_domain_adapted.pt",
+  "checkpoint_sha256": "c54e3dc0795791a11afd25b9df567ae213ec27be34fe2beda598b99c40b5ac41",
+  "model_version": "efficientnet_b0-domain50-adaptation-domain-50-20261104-b8-rehearsal",
+  "device": "cuda",
+  "overlay_threshold": 0.62,
+  "grid": 14,
+  "annotation_sha256": "8e5b7fcc5819053782c73e568b04070e3b720bc439f40479ab7ac3e3e265c26d",
+  "sources_sha256": {
+    "model/src/evaluation/lesion_eval_200.py": "74cb99a4be41b297128ea261d4a166a70101872728ab795a80a9ad8909e8b4e0",
+    "model/src/evaluation/compare_gradcam_plusplus.py": "38997acac721d88ee6899798ec87fb06771465c6337ec89c4d9d763c3fb9c30e",
+    "model/src/xai/gradcam.py": "47c239e03f4738ec815a1fbbeb8aa0267c9e303677952254af8d3ba8d88b5478",
+    "model/src/xai/gradcam_plusplus.py": "a22543130a0ccde8342a697f6aaa7347aef7a1dd6147b94a19b0a708bd971d07",
+    "backend/app/services/xai/overlay.py": "770c56c62f048de67b7db4d57d416fee30d5c635a44b7d69d814624bd0a76260"
+  },
+  "seen_heatmap_before_annotation": [
+    "pv-healthy-6",
+    "pv-late_blight-10",
+    "pd-late_blight-2",
+    "pd-yellow_leaf_curl_virus-1",
+    "pv-mosaic_virus-10"
+  ]
+}
