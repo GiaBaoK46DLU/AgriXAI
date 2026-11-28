@@ -1,0 +1,93 @@
+{
+  "sample_id": "pd-healthy-2",
+  "dataset": "pd",
+  "correct": false,
+  "predicted": "late_blight",
+  "perturbations": {
+    "sang_hon_15": {
+      "predicted": "late_blight",
+      "label_kept": true,
+      "target_probability": 0.4374874234199524,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.12986022134333147,
+          "one_minus_spearman": 0.011939315633883174,
+          "contour_iou": 0.6541884013501074
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.056936213454295025,
+          "one_minus_spearman": 0.007155192122149212,
+          "contour_iou": 0.9192902117916428
+        },
+        "lime": {
+          "rel_l2": 0.7295800747754038,
+          "one_minus_spearman": 0.3827677468438604,
+          "contour_iou": 0.001752021563342318
+        },
+        "kernel_shap": {
+          "rel_l2": 0.7211633777669616,
+          "one_minus_spearman": 0.40687272543229536,
+          "contour_iou": 0.11791194129419613
+        }
+      }
+    },
+    "toi_hon_15": {
+      "predicted": "late_blight",
+      "label_kept": true,
+      "target_probability": 0.41413870453834534,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.09621039559545155,
+          "one_minus_spearman": 0.01665336801188011,
+          "contour_iou": 0.8450437317784256
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.08874597317970692,
+          "one_minus_spearman": 0.0069004737924073245,
+          "contour_iou": 0.6781883194278904
+        },
+        "lime": {
+          "rel_l2": 0.30474131430733337,
+          "one_minus_spearman": 0.10639220436888663,
+          "contour_iou": 0.8671171171171171
+        },
+        "kernel_shap": {
+          "rel_l2": 0.2873285020695714,
+          "one_minus_spearman": 0.0928867402345992,
+          "contour_iou": 0.547378104875805
+        }
+      }
+    },
+    "jpeg_q70": {
+      "predicted": "yellow_leaf_curl_virus",
+      "label_kept": false,
+      "target_probability": 0.2388858199119568,
+      "methods": {}
+    },
+    "mo_sigma1": {
+      "predicted": "yellow_leaf_curl_virus",
+      "label_kept": false,
+      "target_probability": 0.23106037080287933,
+      "methods": {}
+    },
+    "nhieu_sd5": {
+      "predicted": "yellow_leaf_curl_virus",
+      "label_kept": false,
+      "target_probability": 0.28509506583213806,
+      "methods": {}
+    }
+  },
+  "noise_floor": {
+    "lime": {
+      "rel_l2": 0.26083847763411955,
+      "one_minus_spearman": 0.033134696470657976,
+      "contour_iou": 0.7197492251770561
+    },
+    "kernel_shap": {
+      "rel_l2": 0.289377522472638,
+      "one_minus_spearman": 0.04500536280212669,
+      "contour_iou": 0.659581449995357
+    }
+  },
+  "reproduction": {}
+}

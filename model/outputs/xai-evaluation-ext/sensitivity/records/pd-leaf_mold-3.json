@@ -1,0 +1,114 @@
+{
+  "sample_id": "pd-leaf_mold-3",
+  "dataset": "pd",
+  "correct": false,
+  "predicted": "bacterial_spot",
+  "perturbations": {
+    "sang_hon_15": {
+      "predicted": "bacterial_spot",
+      "label_kept": true,
+      "target_probability": 0.6123398542404175,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.208792243459755,
+          "one_minus_spearman": 0.04950954840712052,
+          "contour_iou": 0.767083129755008
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.23475834528301015,
+          "one_minus_spearman": 0.12676911440374572,
+          "contour_iou": 0.5197286446075038
+        },
+        "lime": {
+          "rel_l2": 0.4265634892613562,
+          "one_minus_spearman": 0.15237111033289807,
+          "contour_iou": 0.6469014712438698
+        },
+        "kernel_shap": {
+          "rel_l2": 0.5635868558416046,
+          "one_minus_spearman": 0.2732286140685152,
+          "contour_iou": 0.20485533754572663
+        }
+      }
+    },
+    "toi_hon_15": {
+      "predicted": "late_blight",
+      "label_kept": false,
+      "target_probability": 0.24057137966156006,
+      "methods": {}
+    },
+    "jpeg_q70": {
+      "predicted": "bacterial_spot",
+      "label_kept": true,
+      "target_probability": 0.4605153799057007,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.11276189737982914,
+          "one_minus_spearman": 0.019942100185437406,
+          "contour_iou": 0.8752067756236352
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.15875923052240054,
+          "one_minus_spearman": 0.10424014811003368,
+          "contour_iou": 0.5065353286607313
+        },
+        "lime": {
+          "rel_l2": 0.5366536761549775,
+          "one_minus_spearman": 0.22502316124692712,
+          "contour_iou": 0.6007840574975498
+        },
+        "kernel_shap": {
+          "rel_l2": 0.5694960817263522,
+          "one_minus_spearman": 0.2588886568964376,
+          "contour_iou": 0.4036723163841808
+        }
+      }
+    },
+    "mo_sigma1": {
+      "predicted": "late_blight",
+      "label_kept": false,
+      "target_probability": 0.23396818339824677,
+      "methods": {}
+    },
+    "nhieu_sd5": {
+      "predicted": "bacterial_spot",
+      "label_kept": true,
+      "target_probability": 0.457004576921463,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.32135466699022247,
+          "one_minus_spearman": 0.16759945543532773,
+          "contour_iou": 0.7192028985507246
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.3107176050489765,
+          "one_minus_spearman": 0.27067099889295354,
+          "contour_iou": 0.3220073183481443
+        },
+        "lime": {
+          "rel_l2": 0.5943745489519243,
+          "one_minus_spearman": 0.25763190139895165,
+          "contour_iou": 0.1852765058119056
+        },
+        "kernel_shap": {
+          "rel_l2": 0.6888065478192338,
+          "one_minus_spearman": 0.3831117827539158,
+          "contour_iou": 0.17436564736499674
+        }
+      }
+    }
+  },
+  "noise_floor": {
+    "lime": {
+      "rel_l2": 0.2703006395608152,
+      "one_minus_spearman": 0.04978220240093301,
+      "contour_iou": 0.5951232392330528
+    },
+    "kernel_shap": {
+      "rel_l2": 0.2563159408272862,
+      "one_minus_spearman": 0.0480197756207798,
+      "contour_iou": 0.7236767073202874
+    }
+  },
+  "reproduction": {}
+}

@@ -1,0 +1,138 @@
+{
+  "sample_id": "pv-early_blight-3",
+  "dataset": "pv",
+  "correct": true,
+  "predicted": "early_blight",
+  "perturbations": {
+    "sang_hon_15": {
+      "predicted": "early_blight",
+      "label_kept": true,
+      "target_probability": 0.8742236495018005,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.06136506979726806,
+          "one_minus_spearman": 0.0028042437370962014,
+          "contour_iou": 0.9083675905052381
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.0487987346682212,
+          "one_minus_spearman": 0.0010928444044080443,
+          "contour_iou": 0.8987668482936622
+        },
+        "lime": {
+          "rel_l2": 0.13525245060945149,
+          "one_minus_spearman": 0.08521034091080171,
+          "contour_iou": 0.9869451697127938
+        },
+        "kernel_shap": {
+          "rel_l2": 0.14569770779131863,
+          "one_minus_spearman": 0.03980671855190221,
+          "contour_iou": 1.0
+        }
+      }
+    },
+    "toi_hon_15": {
+      "predicted": "early_blight",
+      "label_kept": true,
+      "target_probability": 0.8622012734413147,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.057352694764446294,
+          "one_minus_spearman": 0.009119135276692503,
+          "contour_iou": 0.8949540673678604
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.05226117616103595,
+          "one_minus_spearman": 0.0025093229855760457,
+          "contour_iou": 0.8804056069191769
+        },
+        "lime": {
+          "rel_l2": 0.3292371303331555,
+          "one_minus_spearman": 0.11451849747252829,
+          "contour_iou": 0.19979322822434736
+        },
+        "kernel_shap": {
+          "rel_l2": 0.3159408334674842,
+          "one_minus_spearman": 0.05569822172145,
+          "contour_iou": 0.9017199017199017
+        }
+      }
+    },
+    "jpeg_q70": {
+      "predicted": "early_blight",
+      "label_kept": true,
+      "target_probability": 0.4497632384300232,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.29913458525029707,
+          "one_minus_spearman": 0.23003909782337628,
+          "contour_iou": 0.7425933581369712
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.31946065157609,
+          "one_minus_spearman": 0.04410953999511358,
+          "contour_iou": 0.32477437396720477
+        },
+        "lime": {
+          "rel_l2": 0.4554957885292579,
+          "one_minus_spearman": 0.2929280669414016,
+          "contour_iou": 0.47372210223182143
+        },
+        "kernel_shap": {
+          "rel_l2": 0.4929638598624039,
+          "one_minus_spearman": 0.3677913220287844,
+          "contour_iou": 0.8599269183922046
+        }
+      }
+    },
+    "mo_sigma1": {
+      "predicted": "early_blight",
+      "label_kept": true,
+      "target_probability": 0.9357602596282959,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.18215385412464638,
+          "one_minus_spearman": 0.0697299621881019,
+          "contour_iou": 0.5763567522086663
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.31188031152501783,
+          "one_minus_spearman": 0.0683983558918766,
+          "contour_iou": 0.4390610893770689
+        },
+        "lime": {
+          "rel_l2": 0.6395907631209291,
+          "one_minus_spearman": 0.573809293155657,
+          "contour_iou": 0.4118462071354347
+        },
+        "kernel_shap": {
+          "rel_l2": 0.8968373407841457,
+          "one_minus_spearman": 0.49967353955873817,
+          "contour_iou": 0.2130993418990912
+        }
+      }
+    },
+    "nhieu_sd5": {
+      "predicted": "septoria_leaf_spot",
+      "label_kept": false,
+      "target_probability": 0.16064850986003876,
+      "methods": {}
+    }
+  },
+  "noise_floor": {
+    "lime": {
+      "rel_l2": 0.19825217648960117,
+      "one_minus_spearman": 0.10305811884278132,
+      "contour_iou": 0.7668539325842696
+    },
+    "kernel_shap": {
+      "rel_l2": 0.5511849868771302,
+      "one_minus_spearman": 0.45291782381936396,
+      "contour_iou": 0.23878793483454325
+    }
+  },
+  "reproduction": {
+    "lime": 0.0,
+    "kernel_shap": 0.0
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "sample_id": "pd-spider_mites-2",
+  "dataset": "pd",
+  "correct": false,
+  "predicted": "late_blight",
+  "perturbations": {
+    "sang_hon_15": {
+      "predicted": "late_blight",
+      "label_kept": true,
+      "target_probability": 0.5557153224945068,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.25793635705166607,
+          "one_minus_spearman": 0.07234310541456879,
+          "contour_iou": 0.7370860927152317
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.15260357384159232,
+          "one_minus_spearman": 0.016962152771005434,
+          "contour_iou": 0.9248716752216519
+        },
+        "lime": {
+          "rel_l2": 0.5190099095203484,
+          "one_minus_spearman": 0.42588334406634565,
+          "contour_iou": 0.7776923076923077
+        },
+        "kernel_shap": {
+          "rel_l2": 0.5071093148433545,
+          "one_minus_spearman": 0.2630493263249307,
+          "contour_iou": 0.7776923076923077
+        }
+      }
+    },
+    "toi_hon_15": {
+      "predicted": "late_blight",
+      "label_kept": true,
+      "target_probability": 0.664882242679596,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.23140617631126478,
+          "one_minus_spearman": 0.04488152654142541,
+          "contour_iou": 0.6291325695581015
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.09763927807060245,
+          "one_minus_spearman": 0.0170125660871826,
+          "contour_iou": 0.7467314157639149
+        },
+        "lime": {
+          "rel_l2": 0.4061737630039785,
+          "one_minus_spearman": 0.11903859651187221,
+          "contour_iou": 0.38536221060492903
+        },
+        "kernel_shap": {
+          "rel_l2": 0.20070798023175448,
+          "one_minus_spearman": 0.15360098580615955,
+          "contour_iou": 1.0
+        }
+      }
+    },
+    "jpeg_q70": {
+      "predicted": "late_blight",
+      "label_kept": true,
+      "target_probability": 0.7280625104904175,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.4375642657950173,
+          "one_minus_spearman": 0.19685069556536228,
+          "contour_iou": 0.48267784490198495
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.40286042445763975,
+          "one_minus_spearman": 0.27555361937352296,
+          "contour_iou": 0.2977321483297579
+        },
+        "lime": {
+          "rel_l2": 0.86633190167318,
+          "one_minus_spearman": 0.48695250755618313,
+          "contour_iou": 0.33720087019579403
+        },
+        "kernel_shap": {
+          "rel_l2": 0.6388912774082586,
+          "one_minus_spearman": 0.4435981606651034,
+          "contour_iou": 0.8691588785046729
+        }
+      }
+    },
+    "mo_sigma1": {
+      "predicted": "yellow_leaf_curl_virus",
+      "label_kept": false,
+      "target_probability": 0.19268092513084412,
+      "methods": {}
+    },
+    "nhieu_sd5": {
+      "predicted": "late_blight",
+      "label_kept": true,
+      "target_probability": 0.5198155641555786,
+      "methods": {
+        "gradcam": {
+          "rel_l2": 0.3020446319651482,
+          "one_minus_spearman": 0.1188989358164193,
+          "contour_iou": 0.5246808510638298
+        },
+        "gradcam_plusplus": {
+          "rel_l2": 0.23986269113854206,
+          "one_minus_spearman": 0.10722501785266447,
+          "contour_iou": 0.9556761646313885
+        },
+        "lime": {
+          "rel_l2": 0.5743561571038037,
+          "one_minus_spearman": 0.3624903595884068,
+          "contour_iou": 0.6294227188081937
+        },
+        "kernel_shap": {
+          "rel_l2": 0.42285573466920984,
+          "one_minus_spearman": 0.20551970702261446,
+          "contour_iou": 0.950328022492971
+        }
+      }
+    }
+  },
+  "noise_floor": {
+    "lime": {
+      "rel_l2": 0.15617891565095665,
+      "one_minus_spearman": 0.07020211959483269,
+      "contour_iou": 1.0
+    },
+    "kernel_shap": {
+      "rel_l2": 0.23599179016606847,
+      "one_minus_spearman": 0.1811950098777042,
+      "contour_iou": 1.0
+    }
+  },
+  "reproduction": {}
+}

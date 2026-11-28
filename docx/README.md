@@ -34,6 +34,12 @@ AgriXAI (issue #122). SHAP trong thực nghiệm là Kernel SHAP. Dữ liệu, h
 và [cách chạy lại](../model/outputs/xai-comparison-122/PHUONG_PHAP.md) nằm trong
 `model/outputs/xai-comparison-122/`.
 
+[Đánh giá XAI mở rộng](bao-cao-danh-gia-xai-mo-rong.md) đo thêm năm nhóm chỉ số trên cùng
+56 ảnh: đồng thuận giữa phương pháp, sanity check MPRT, Average Drop, deletion/insertion
+với cách lấp ROAD/làm mờ, và độ bền khi chụp lại. Dữ liệu và
+[cách chạy lại](../model/outputs/xai-evaluation-ext/PHUONG_PHAP.md) nằm trong
+`model/outputs/xai-evaluation-ext/`.
+
 ## Kế hoạch và rà soát
 
 [Cắt lá, chốt hiển thị XAI và cải thiện domain gap (#93/#90/#50)](bao-cao-cat-la-domain-adaptation.md):
